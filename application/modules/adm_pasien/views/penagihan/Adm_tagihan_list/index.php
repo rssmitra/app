@@ -138,7 +138,7 @@
     preventDefault();
     // beban pasien
     var beban_pasien = $('#beban_pasien_'+kode_tc_trans_kasir+'').text();
-    $.getJSON("adm_pasien/penagihan/Adm_tagihan_list/get_billing_detail/" + kode_tc_trans_kasir, '', function (response) {
+    $.getJSON("adm_pasien/penagihan/Adm_tagihan_list/get_billing_detail/" + kode_tc_trans_kasir+'?id_tc_tagih='+id_tc_tagih+'', '', function (response) {
       $('#dt_detail_invoice_'+id_tc_tagih+' tbody').remove();
       $('#txt_no_invoice_'+id_tc_tagih+'').text(response.no_registrasi);
       $.each(response.data, function (i, o) {
@@ -147,9 +147,10 @@
           }
       });
       $('<tr><td align="right" colspan="2">Subtotal</td><td align="right">'+formatMoney(response.total)+'</td></tr>').appendTo($('#dt_detail_invoice_'+id_tc_tagih+'')); 
-      $('<tr><td align="right" colspan="2">Beban Pasien</td><td align="right">'+formatMoney(beban_pasien)+'</td></tr>').appendTo($('#dt_detail_invoice_'+id_tc_tagih+'')); 
-      var total_tagihan = parseInt(response.total) - parseInt(beban_pasien);
-      $('<tr><td align="right" colspan="2"><b>Total Tagihan</b></td><td align="right"><a href="#" onclick="PopupCenter('+"'billing/Billing/print_preview?no_registrasi="+response.no_registrasi+"&status_nk=1&flag_bill=true'"+', '+"'Rincian Billing Pasien'"+', 900, 650)">'+formatMoney(total_tagihan)+'</a></td></tr>').appendTo($('#dt_detail_invoice_'+id_tc_tagih+'')); 
+      $('<tr><td align="right" colspan="2">Jumlah dibayarkan pasien</td><td align="right">'+formatMoney(beban_pasien)+'</td></tr>').appendTo($('#dt_detail_invoice_'+id_tc_tagih+'')); 
+      $('<tr><td align="right" colspan="2">Penyesuaian</td><td align="right">'+formatMoney(response.invoice.penyesuaian)+'</td></tr>').appendTo($('#dt_detail_invoice_'+id_tc_tagih+'')); 
+      var total_tagihan = parseInt(response.total) - parseInt(beban_pasien) - parseInt(response.invoice.penyesuaian);
+      $('<tr><td align="right" colspan="2"><b>Total Tagihan</b></td><td align="right"><b><a href="#" onclick="PopupCenter('+"'billing/Billing/print_preview?no_registrasi="+response.no_registrasi+"&status_nk=1&flag_bill=true'"+', '+"'Rincian Billing Pasien'"+', 900, 650)">'+formatMoney(total_tagihan)+'</a></b></td></tr>').appendTo($('#dt_detail_invoice_'+id_tc_tagih+'')); 
       
     });
   }

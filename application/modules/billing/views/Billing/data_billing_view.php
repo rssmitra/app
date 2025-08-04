@@ -124,6 +124,7 @@ function delete_transaksi(myid){
                         <div class="timeline-items">
                             <?php 
                                 foreach($row_dt_kunj as $key_s=>$row_s) : 
+                                    // echo "<pre>"; print_r($row_s); echo "</pre>";
                             ?>
                                 
                             <div class="timeline-item clearfix">
@@ -138,7 +139,14 @@ function delete_transaksi(myid){
                                 <div class="widget-box transparent">
                                     <div class="widget-body">
                                         <div class="widget-main no-padding">
-                                            <?php echo '<span style="font-size: 14px; font-weight: bold">'.ucwords($key_s).'</span>';?>
+                                            <?php echo '<span style="font-size: 14px; font-weight: bold">'.ucwords($key_s).'</span> ';?>
+                                            
+                                            <?php if(substr($row_s[0]->kode_bagian, 0, 2) == '05') : ?>
+                                                <a href="#" class="label label-success" style="margin: 3px" onclick="PopupCenter('pelayanan/Pl_pelayanan_pm/preview_pengantar_penunjang/<?php echo $row_s[0]->no_kunjungan?>?kode_penunjang=<?php echo $row_s[0]->kode_penunjang?>&type=PM&kode_bagian=<?php echo $row_s[0]->kode_bagian?>&kode_bag_asal=<?php echo $row_s[0]->kode_bagian_asal?>&no_mr=<?php echo $row_s[0]->no_mr?>&klas=<?php echo $row_s[0]->kode_klas?>', 'change_form_pengantar_pm')">Surat Pengantar</a>
+                                            <?php endif; ?>
+
+
+
                                             <table class="table_billing_data table-2 table-striped table-bordered" width="100%" style="color: black">
                                                 <tr style="background-color: lightgrey;">
                                                     <th class="center" width="50px">

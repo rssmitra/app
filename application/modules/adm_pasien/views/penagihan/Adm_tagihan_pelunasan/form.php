@@ -67,7 +67,7 @@ function checkOne(id_tc_tagih_det) {
     $('#tr_'+id_tc_tagih_det+' input[type=text]').attr('disabled', false);
 
     $('#txt_penyesuaian_'+id_tc_tagih_det+'').text(formatMoney($('#jml_tagihan_hidden_'+id_tc_tagih_det+'').val()));
-    $('#input_penyesuaian_'+id_tc_tagih_det+'').val($('#jml_tagihan_hidden_'+id_tc_tagih_det+'').val());
+    $('#total_diterima_'+id_tc_tagih_det+'').val($('#jml_tagihan_hidden_'+id_tc_tagih_det+'').val());
     
     $('#jml_tagihan_'+id_tc_tagih_det+'').text(formatMoney($('#jml_tagihan_hidden_'+id_tc_tagih_det+'').val()));
     $('#jml_tagihan_class_'+id_tc_tagih_det+'').val($('#jml_tagihan_hidden_'+id_tc_tagih_det+'').val());
@@ -76,7 +76,7 @@ function checkOne(id_tc_tagih_det) {
     
   }else{
       $('#tr_'+id_tc_tagih_det+' input[type=text]').attr('disabled', true);
-      $('#input_penyesuaian_'+id_tc_tagih_det+'').val(0);
+      $('#total_diterima_'+id_tc_tagih_det+'').val(0);
       $('#jml_tagihan_'+id_tc_tagih_det+'').text(0);
       $('#jml_tagihan_class_'+id_tc_tagih_det+'').val(0);
       $('#subtotal').text(0);
@@ -90,20 +90,19 @@ function checkOne(id_tc_tagih_det) {
 
 function inputPenyesuaian(id_tc_tagih_det){
     preventDefault();
-    var input = $('#input_penyesuaian_'+id_tc_tagih_det+'').val();
+    var input = $('#total_diterima_'+id_tc_tagih_det+'').val();
     var bill = $('#bill_'+id_tc_tagih_det+'').val();
     var beban_pasien = $('#beban_pasien_'+id_tc_tagih_det+'').val();
     // txt penyesuaian
     $('#txt_penyesuaian_'+id_tc_tagih_det+'').text(formatMoney(input));
     console.log(input);
-    console.log(bill);
-    console.log(beban_pasien);
     // jumlah tagihan row
     // jml_tagihan -> Jml Dibayar Oleh Perusahaan setelah dikurangi oleh yang dibayarkan oleh pasien (beban Pasein)
     var jml_tagihan = parseInt(bill) - parseInt(beban_pasien);
-    console.log(jml_tagihan);
-    $('#jml_tagihan_'+id_tc_tagih_det+'').text(formatMoney(jml_tagihan));
-    $('#jml_tagihan_class_'+id_tc_tagih_det+'').val(jml_tagihan);
+    // console.log(jml_tagihan);
+    $('#jml_tagihan_'+id_tc_tagih_det+'').text(formatMoney(input));
+    $('#input_class_'+id_tc_tagih_det+'').val(input);
+    $('#jml_tagihan_hidden_'+id_tc_tagih_det+'').val(input);
     hitungSubtotalTrx();
     // inputDisc(id_tc_tagih_det);
     // inputPpn(id_tc_tagih_det);
@@ -152,7 +151,24 @@ function inputPenyesuaian(id_tc_tagih_det){
  }
 
 </script>
+<style>
+  input[type=checkbox].ace.ace-switch + .lbl::before{
+    content: "Lunas\a0\a0\a0\a0\a0\a0\a0\a0\a0\a0\a0 Pending" !important;
+    width: 90px !important;
+    height: 25px !important;
+    line-height: 21px !important;
+  }
 
+  input[type=checkbox].ace.ace-switch + .lbl::after {
+    top: 1px !important;
+  }
+
+  input[type=checkbox].ace.ace-switch:checked + .lbl::after {
+    left: 72px !important;
+    background-color: #FFF;
+    color: #98A0A5;
+  }
+</style>
 <div class="page-header">
   <h1>
     <?php echo $title?>
@@ -244,9 +260,10 @@ function inputPenyesuaian(id_tc_tagih_det){
                     <th style="text-align:center; width: 5%; border: 1px solid #cec5c5; border-collapse: collapse">No MR</th>
                     <th style="text-align:left; padding-left:3px; width: 45%; border: 1px solid #cec5c5; border-collapse: collapse">Nama Pasien</th>
                     <th style="text-align:center; width: 10%; border: 1px solid #cec5c5; border-collapse: collapse">Jumlah Tagihan</th>
-                    <th style="text-align:center; width: 10%; border: 1px solid #cec5c5; border-collapse: collapse">Penyesuaian</th>
+                    <th style="text-align:center; width: 10%; border: 1px solid #cec5c5; border-collapse: collapse">Jumlah Diterima</th>
                     <th style="text-align:center; width: 10%; border: 1px solid #cec5c5; border-collapse: collapse" width="100px">Keterangan</th>
-                    <th style="text-align:center; width: 10%; border: 1px solid #cec5c5; border-collapse: collapse" width="100px">Jumlah Dibayar</th>
+                    <th style="text-align:center; width: 10%; border: 1px solid #cec5c5; border-collapse: collapse" width="100px">Status</th>
+                    <!-- <th style="text-align:center; width: 10%; border: 1px solid #cec5c5; border-collapse: collapse" width="100px">Jumlah Dibayar</th> -->
                   </tr>
                 </thead>
                 <tbody>
@@ -261,7 +278,6 @@ function inputPenyesuaian(id_tc_tagih_det){
                       </td>
                       <!-- tgl_tagih -->
                       <td style="text-align:center; border-left: 1px solid #cec5c5; border-collapse: collapse">
-                        <!-- <input type="hidden" name="tgl_tagih[<?php //echo $row->id_tc_tagih_det?>]" value="<?php //echo $value->tgl_tagih ?>"> -->
                         <?php echo $this->tanggal->formatDateDmy($value->tgl_tagih)?>
                       </td>
                       <!-- no_mr -->
@@ -271,39 +287,64 @@ function inputPenyesuaian(id_tc_tagih_det){
                       </td>
                       <!-- nama_pasien -->
                       <td style="text-align:left; border-left: 1px solid #cec5c5; border-collapse: collapse; padding-left:3px; ">
-                        <!-- <input type="hidden" name="nama_pasien[<?php //echo $row->id_tc_tagih_det?>]" value="<?php //echo $row->nama_pasien ?>"> -->
                         <?php echo $row->nama_pasien; ?>
                       </td>
                       <!-- Jumlah Tagihan as jml_tagihan (tc_tagih_det -> jumlah billing, sebelum diskon per pasien) -->
                       <td style="text-align:right; padding-right:5px; border-left: 1px solid #cec5c5; border-collapse: collapse">
-                        <!-- <input type="hidden" class="tagihan_utuh" id="bill_<?php //echo $row->id_tc_tagih_det; ?>" name="jml_tagihan[<?php //echo $row->id_tc_tagih_det ?>]" value="<?php //echo $row->jumlah_tagih_int; ?>"> -->
-                        <?php echo number_format($row->jumlah_tagih_int); ?>
+                       
+                        <?php echo number_format($row->jumlah_dijamin); ?>
                       </td>
                       <!-- penyesuaian -->
-                      <td style="text-align:right; padding-right:5px; border-left: 1px solid #cec5c5; border-collapse: collapse">
-                        <!-- <input type="hidden" id="beban_pasien_<?php //echo $row->id_tc_tagih_det; ?>" name="beban_pasien[<?php //echo $row->id_tc_tagih_det; ?>]" value="<?php //echo $row->penyesuaian_int; ?>"> -->
-                        <?php echo number_format($row->penyesuaian_int); ?>
-                      </td>
-                      <!-- field Keterangan -->
-                      <td style="text-align:right; padding-right:5px; padding-left:5px; border-right: 1px solid #cec5c5; border-left: 1px solid #cec5c5; border-collapse: collapse">
-                        <input type="text" name="keterangan[<?php echo $row->id_tc_tagih_det ?>]" style="text-align: center; border:none;" maxlength="15" placeholder="Silakan isi keterangan..." disabled>
-                      </td>
-                      <!-- jml dibayar -->
-                      <td style="text-align:right; padding-right:5px; border-right: 1px solid #cec5c5; border-left: 1px solid #cec5c5; border-collapse: collapse">
+                      <!-- <td style="text-align:right; padding-right:5px; border-left: 1px solid #cec5c5; border-collapse: collapse">
+                        <input style="text-align: right" type="text" name="jumlah_diterima[<?php echo $row->id_tc_tagih_det ?>]" value="<?php echo number_format($row->jumlah_dijamin); ?>">
+                      </td> -->
+                      <td align="right" style="text-align:right; padding-right:5px; padding-left:5px; border-right: 1px solid #cec5c5; border-left: 1px solid #cec5c5; border-collapse: collapse">
+
+                        <input type="hidden" class="jml_tagihan_class" id="jml_tagihan_hidden_<?php echo $row->id_tc_tagih_det; ?>" name="jml_tagihan_per_pasien[<?php echo $row->id_tc_tagih_det?>]" value="<?php echo $row->jumlah_dijamin?>">
+                        <input type="hidden"  id="kode_tc_trans_kasir_<?php echo $row->id_tc_tagih_det; ?>" name="kode_tc_trans_kasir[<?php echo $row->id_tc_tagih_det?>]" value="<?php echo $row->kode_tc_trans_kasir?>">
+
+                        <div class="input-group" id="frm_upd_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>" style="display: none">
+                          <input type="text" name="total_diterima_<?php echo $row->id_tc_tagih_det; ?>" id="total_diterima_<?php echo $row->id_tc_tagih_det; ?>" style="text-align: right" class="form-control search-query format_number" value="" onchange="inputPenyesuaian(<?php echo $row->id_tc_tagih_det; ?>)" disabled>
+                          <span class="input-group-addon" style="cursor: pointer" onclick="showHideDiv(<?php echo $row->id_tc_tagih_det; ?>,'div_txt_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>', 'frm_upd_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>')">
+                            <i class="ace-icon fa fa-check"></i>
+                          </span>
+                        </div>
                         <span id="div_txt_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>">
-                          <input type="hidden" class="jml_tagihan_class" id="jml_tagihan_hidden_<?php echo $row->id_tc_tagih_det; ?>" name="jml_tagihan_per_pasien[<?php echo $row->id_tc_tagih_det?>]" value="<?php echo $row->jumlah_dijamin?>">
-                          <span id="jml_tagihan_<?php echo $row->id_tc_tagih_det; ?>" ></span>
+                          <a href="#" onclick="showHideDiv(<?php echo $row->id_tc_tagih_det; ?>,'frm_upd_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>', 'div_txt_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>')"><span id="txt_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>"></span></a>
                         </span>
                       </td>
+                      
+                      <!-- field Keterangan -->
+                      <td style="text-align:right; padding-right:5px; padding-left:5px; border-right: 1px solid #cec5c5; border-left: 1px solid #cec5c5; border-collapse: collapse">
+                        <input type="text" name="keterangan[<?php echo $row->id_tc_tagih_det ?>]" style="text-align: center; border:none;" maxlength="15" placeholder="Silakan isi keterangan...">
+                      </td>
+
+                      <td style="text-align:center; border-right: 1px solid #cec5c5; border-left: 1px solid #cec5c5; border-collapse: collapse">
+                          <label>
+                            <input name="status_lunas[<?php echo $row->id_tc_tagih_det ?>]" class="ace ace-switch" id="status_lunas_<?php echo $row->id_tc_tagih_det ?>" onchange="udpateStatusLock(<?php echo $row->id_tc_tagih_det ?>)" type="checkbox" value="1">
+                            <span class="lbl"></span>
+                          </label>
+                      </td>
+
+                      <!-- jml dibayar -->
+                      <!-- <td style="text-align:right; padding-right:5px; border-right: 1px solid #cec5c5; border-left: 1px solid #cec5c5; border-collapse: collapse">
+                        <span id="div_txt_penyesuaian_<?php echo $row->id_tc_tagih_det; ?>">
+                          
+                          <span id="jml_tagihan_<?php echo $row->id_tc_tagih_det; ?>" ></span>
+                        </span>
+                      </td> -->
                     </tr>
                   <?php endforeach; ?>
                   </tbody>
-                  <tr> 
-                    <td colspan="7" style="text-align:right; padding: 5px; border-top: 1px solid #cec5c5; border-collapse: collapse">Subtotal :</td>
+
+                  <input type="hidden" name="subtotal_hidden" id="subtotal_val" val="">
+                  <input type="hidden" name="total_diskon_hidden" id="total_diskon_val" value="<?php echo $value->tr_yg_diskon?>">
+
+                  <!-- <tr> 
+                    <td colspan="5" style="text-align:right; padding: 5px; border-top: 1px solid #cec5c5; border-collapse: collapse">Subtotal :</td>
                     <td id="subtotal" style="text-align:right; padding: 5px; border-top: 1px solid #cec5c5; border-collapse: collapse">0</td>
-                    <input type="hidden" name="subtotal_hidden" id="subtotal_val" val="">
-                    <input type="hidden" name="total_diskon_hidden" id="total_diskon_val" value="<?php echo $value->tr_yg_diskon?>">
-                  </tr>
+                    
+                  </tr> -->
                   <!-- <tr> 
                     <td colspan="7" style="text-align:right; padding: 5px; " id="total_diskon_txt"></td>
                     <td style="text-align:right; padding: 5px; "><span id="total_diskon"></span>

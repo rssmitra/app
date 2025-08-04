@@ -340,6 +340,13 @@ class E_resep extends MX_Controller {
             /*execution*/
             $this->db->trans_begin();           
             
+            // cek apakah sudah dilock atau belum
+            $kode_pesan_resep = $this->input->post('kode_pesan_resep');
+            $pesan_resep = $this->db->get_where('fr_tc_pesan_resep', array('kode_pesan_resep' => $kode_pesan_resep))->row();
+            if(isset($pesan_resep->lock_eresep) && $pesan_resep->lock_eresep == 1){
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Resep sudah di kunci, silahkan hubungi petugas farmasi untuk membuka kembali'));
+                return;
+            }
             $table = ($_POST['id_template'] > 0)? 'fr_tc_template_resep_detail' : 'fr_tc_pesan_resep_detail';
 
             $id = ($this->input->post('id_pesan_resep_detail')) ? $this->input->post('id_pesan_resep_detail') : "0";
@@ -391,7 +398,6 @@ class E_resep extends MX_Controller {
                 $kode_brg = $dataexc['kode_brg'];
                 $flag = 'update';
             }
-
 
             if ($this->db->trans_status() === FALSE)
             {

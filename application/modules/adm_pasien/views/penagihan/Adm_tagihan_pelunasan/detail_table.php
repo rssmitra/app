@@ -9,8 +9,8 @@
         <th width="50px">Kode</th>
         <th width="50px">No MR</th>
         <th>Nama Pasien</th>
-        <th>Tanggal</th>
-        <th>Jumlah Tagihan</th>
+        <th width="80px">Tanggal</th>
+        <th width="130px">Jumlah Tagihan</th>
       </tr>
     </thead>
     <tbody>
@@ -23,7 +23,7 @@
           <td><?php echo $v->no_mr?></td>
           <td><?php echo $v->nama_pasien?></td>
           <td width="50px"><?php echo $this->tanggal->formatDateDmy($v->tgl_jam); ?></td>
-          <td align="right"><a href="#" onclick="show_detail_inv(<?php echo $v->kode_tc_trans_kasir; ?>, <?php echo $id_tc_tagih; ?>)" ><?php echo number_format($v->jumlah_tagih_int)?></a></td>
+          <td align="right"><a href="#" onclick="show_detail_inv(<?php echo $v->kode_tc_trans_kasir; ?>, <?php echo $id_tc_tagih; ?>)" ><?php echo number_format($v->jumlah_dijamin)?></a></td>
         </tr>
       <?php endforeach; ?>
     </tbody>

@@ -378,6 +378,12 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
 
   $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($value)?$value->kode_kelompok:0?>&kode_perusahaan="+$('#kode_perusahaan').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal&urgensi="+$().val()+"", '' , function (response) {
     $('#sisa_stok').val(response.sisa_stok);
+    if(response.is_restrict == 'Y'){
+      $('#warning_restriksi').show();
+      $('#warning_restriksi').html('<b>Obat Restriksi!</b><br>'+response.restrict_desc+'');
+    }else{
+      $('#warning_restriksi').hide();
+    }
 
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
@@ -386,7 +392,7 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
       $('#info_stok').html('Stok kosong !').removeClass('green').addClass('red');
       $('#jumlah_pesan').val('0');
       $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
-      $('#detailPembelianObatHtml').html('');
+      $('#detailPembelianObatHtml').html('-Tidak ada Obat diberikan-');
       $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
       $('#prb_ditangguhkan').attr('readonly', true);
       $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
@@ -410,6 +416,8 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
         $('#detailPembelianObatHtml').html(response.html);
       })
     }
+
+
     /*show detail tarif html*/
     $('#div_detail_obat').show('fast');
     $('#detailObatHtml').html(response.html);
@@ -502,7 +510,7 @@ function reset_form(){
    /*show detail tarif html*/
   // $('#div_detail_obat').hide('fast');
   $('#detailObatHtml').html('<img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%">');
-  $('#detailPembelianObatHtml').html('');
+  $('#detailPembelianObatHtml').html('-Tidak ada Obat diberikan-');
 }
 
 $('#btn_racikan').click(function () {  
@@ -759,6 +767,7 @@ $('#lampiran_lab').click(function (e) {
     <input type="hidden" name="flag_resep" value="biasa">
     <input type="hidden" name="no_kunjungan" id="no_kunjungan" class="form-control" value="<?php echo isset($value)?ucwords($value->no_kunjungan):''?>" >
     <input type="hidden" name="no_resep" id="no_resep" class="form-control" value="<?php echo isset($value)?$value->kode_pesan_resep:''?>" >
+    <input type="hidden" name="no_sep" id="no_sep" class="form-control" value="<?php echo isset($value)?$value->no_sep:''?>" >
     <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="<?php echo isset($value)?$value->kode_kelompok:''?>" >
     <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" >
     <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
@@ -833,7 +842,7 @@ $('#lampiran_lab').click(function (e) {
               </div>
               <label class="control-label col-sm-1">Iter</label>
               <div class="col-md-2">
-                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_iter')), isset($trans_farmasi->iter) ? $trans_farmasi->iter : 0 , 'jenis_iter', 'jenis_iter', '', '', '');?>
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_iter')), isset($trans_farmasi->iter) ? $trans_farmasi->iter : $value->resep_iter , 'jenis_iter', 'jenis_iter', '', '', '');?>
               </div> 
             </div>
 
@@ -1001,17 +1010,20 @@ $('#lampiran_lab').click(function (e) {
               </a>
             </li>
 
-            <li>
+            <!-- <li>
               <a data-toggle="tab" href="#tab_riwayat_pemberian_obat">
                 Riwayat Pemberian Obat
               </a>
-            </li>
+            </li> -->
 
           </ul>
 
           <div class="tab-content">
 
             <div id="tab_eresep" class="tab-pane fade in active">
+
+              <div class="alert alert-danger" id="warning_restriksi" style="display:none"></div>
+
               <?php
                 // echo "<pre>"; print_r($eresep_result);die;
                 if(isset($eresep[0]->kode_pesan_resep)) : 
@@ -1073,10 +1085,18 @@ $('#lampiran_lab').click(function (e) {
                 endif;
               ?>
               <hr>
+
+              <p style="font-weight: bold">RIWAYAT PEMBERIAN OBAT</p>
+              <div id="detailPembelianObatHtml" style="margin-top: 5px">
+                <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
+              </div>
+              <hr>
               <!-- copy resep -->
-                <div id="copy_resep_form"></div>
+              <div id="copy_resep_form"></div>
 
             </div>
+
+            
 
             <div id="tab_riwayat_pm" class="tab-pane fade">
               <p style="font-weight: bold">Riwayat Pemeriksaan Penunjang Medis</p>
@@ -1125,11 +1145,11 @@ $('#lampiran_lab').click(function (e) {
               </div>
             </div>
 
-            <div id="tab_riwayat_pemberian_obat" class="tab-pane fade">
+            <!-- <div id="tab_riwayat_pemberian_obat" class="tab-pane fade">
               <div id="detailPembelianObatHtml" style="margin-top: 5px">
                 <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
 
@@ -1231,7 +1251,7 @@ $('#lampiran_lab').click(function (e) {
               <input type="checkbox" class="ace" name="perubahan_resep" id="perubahan_resep" value="1" <?php if(isset($ver->all)) : echo ($trans_farmasi->perubahan_resep == 1) ? 'checked' : ''; endif;?>>
               <span class="lbl" > &nbsp; Ya</span>
             </label>
-            <div id="perubahan_resep_dokter" <?php echo ($trans_farmasi->perubahan_resep == 1) ? '' : 'style="display: none"'?> >
+            <div id="perubahan_resep_dokter" <?php echo (isset($trans_farmasi->perubahan_resep) && $trans_farmasi->perubahan_resep == 1) ? '' : 'style="display: none"'?> >
               <?php
                 // echo "<pre>"; print_r($eresep_result);die;
                 if(isset($eresep[0]->kode_pesan_resep)) : 

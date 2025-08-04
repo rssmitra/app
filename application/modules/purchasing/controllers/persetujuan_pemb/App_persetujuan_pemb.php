@@ -17,6 +17,7 @@ class App_persetujuan_pemb extends MX_Controller {
         }
         /*load model*/
         $this->load->model('purchasing/persetujuan_pemb/App_persetujuan_pemb_model', 'App_persetujuan_pemb');
+        $this->load->model('purchasing/permintaan/Req_pembelian_model', 'Req_pembelian');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -244,13 +245,14 @@ class App_persetujuan_pemb extends MX_Controller {
             $newId = $id;
             $this->logs->save($table, $newId, 'update record'.$this->title.' module', json_encode($dataexc), 'id_tc_permohonan');
             
-            // update detail
-            $rincian_brg = $this->db->where('(status_po is null or status_po=0)')->get_where($table.'_det', array('id_tc_permohonan' => $id) )->result();
             if( in_array($this->input->post('verifikator'), array('verifikator_nm_1','verifikator_m_1')) ){
                 $field_verifikator = 'jml_acc_pemeriksa';
             }else{
                 $field_verifikator = 'jml_acc_penyetuju';
             }
+
+            // update detail
+            $rincian_brg = $this->db->where('(status_po is null or status_po=0)')->get_where($table.'_det', array('id_tc_permohonan' => $id) )->result();
             // print_r($rincian_brg); die;
             $keys = [];
             $rincian = [];
@@ -265,14 +267,32 @@ class App_persetujuan_pemb extends MX_Controller {
                     // $jml_acc['jumlah_besar_acc'] = 0;
                     $jml_acc['jml_besar_acc'] = 0;
                 }
-                
                 $jml_acc['updated_date'] = date('Y-m-d H:i:s');
                 $jml_acc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                // print_r($jml_acc);die;
                 $this->App_persetujuan_pemb->update($table.'_det', array('id_tc_permohonan' => $id, 'kode_brg' => $_POST['selected'][$keys]), $jml_acc);
                 $newId = $id;
-                $this->logs->save($table.'_det', $row->id_tc_permohonan_det, 'update record', json_encode($jml_acc), 'id_tc_permohonan_det');
-                // print_r($jml_acc);die;
+                // $this->logs->save($table.'_det', $row->id_tc_permohonan_det, 'update record', json_encode($jml_acc), 'id_tc_permohonan_det');
+            }
+
+            // update detail
+            $rincian_brg_log = $this->db->get_where('tc_permohonan_det_log', array('id_tc_permohonan' => $id) )->result();
+            // print_r($rincian_brg_log); die;
+            $keys = [];
+            $rincian = [];
+            foreach($rincian_brg_log as $key=>$row){
+                $keys = array_search($row->id, $_POST['selected']);
+                if((string)$keys != ''){
+                    $jml_acc_log[$field_verifikator] = $_POST['acc_value'][$keys];
+                    $jml_acc_log['jml_besar_acc'] = $_POST['acc_value'][$keys];
+                }else{
+                    $jml_acc_log[$field_verifikator] = 0;
+                    $jml_acc_log['jml_besar_acc'] = 0;
+                }
+                $jml_acc_log['updated_date'] = date('Y-m-d H:i:s');
+                $jml_acc_log['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                $this->App_persetujuan_pemb->update('tc_permohonan_det_log', array('id' => $id), $jml_acc_log);
+                $newId = $id;
+                // $this->logs->save($table.'_det', $row->id_tc_permohonan_det, 'update record', json_encode($jml_acc_log), 'id_tc_permohonan_det');
             }
             
             if ($this->db->trans_status() === FALSE)
@@ -290,7 +310,7 @@ class App_persetujuan_pemb extends MX_Controller {
 
     public function get_detail($id){
         $flag = $_GET['flag'];
-        $result = $this->App_persetujuan_pemb->get_detail_brg_permintaan($flag, $id);
+        $result = $this->Req_pembelian->get_detail_brg_permintaan($flag, $id);
         $data = array(
             'dt_detail_brg' => $result,
             'flag' => $flag,
@@ -304,7 +324,7 @@ class App_persetujuan_pemb extends MX_Controller {
 
     public function get_detail_view($flag, $id){
         $title = ($flag=='medis')?'Medis':'Non Medis';
-        $result = $this->App_persetujuan_pemb->get_detail_brg_permintaan($flag, $id);
+        $result = $this->Req_pembelian->get_detail_brg_permintaan($flag, $id);
         $data = array(
             'dt_detail_brg' => $result,
             'flag' => $flag,

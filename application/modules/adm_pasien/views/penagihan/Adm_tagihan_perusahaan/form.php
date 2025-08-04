@@ -246,13 +246,13 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                       <table class="table">
                           <tr style="background: linear-gradient(0deg, #134911bd, #8bc127bf)">
                             <th class="center"><input type="checkbox" onClick="checkAll(this);" style="cursor:pointer"></th>
-                            <th>Tanggal</th>
-                            <th>No MR</th>
+                            <th width="80px">Tanggal</th>
+                            <th width="70px">No MR</th>
                             <th>Nama Pasien</th>
-                            <th>Billing</th>
-                            <th>Beban Pasien</th>
-                            <th width="100px">Penyesuaian</th>
-                            <th width="100px">Jml Ditagih</th>
+                            <th width="130px">Total Billing</th>
+                            <th width="130px">Dibayarkan Pasien</th>
+                            <th width="130px">Penyesuaian</th>
+                            <th width="150px">Total Penagihan</th>
                           </tr>
                           <?php 
                             foreach($detail_pasien as $row) : 

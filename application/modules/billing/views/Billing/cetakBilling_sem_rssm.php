@@ -360,14 +360,14 @@
 
           <tr>
             <td style="text-align: right"><b>Diskon</b></td>
-            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px; font-weight: bold"><i><?php echo isset($kasir_data[0]->potongan)?number_format($kasir_data[0]->potongan):0?>,-</i></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px; font-weight: bold"><i><?php echo isset($kasir_data[$_GET['kode_tc_trans_kasir']]->potongan)?number_format($kasir_data[$_GET['kode_tc_trans_kasir']]->potongan):0?>,-</i></td>
           </tr>
           <tr>
             <td style="text-align: right;"><b>Nota Kredit</b></td>
             <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px; font-weight: bold; border-bottom: 1px solid black"><i>
               <?php 
-                $nkk = isset($kasir_data[0]->nk_karyawan)?$kasir_data[0]->nk_karyawan:0;
-                $nkp = isset($kasir_data[0]->nk_perusahaan)?$kasir_data[0]->nk_perusahaan:0;
+                $nkk = isset($kasir_data[$_GET['kode_tc_trans_kasir']]->nk_karyawan)?$kasir_data[$_GET['kode_tc_trans_kasir']]->nk_karyawan:0;
+                $nkp = isset($kasir_data[$_GET['kode_tc_trans_kasir']]->nk_perusahaan)?$kasir_data[$_GET['kode_tc_trans_kasir']]->nk_perusahaan:0;
                 $nk = $nkk + $nkp;
                 echo number_format($nk);
                 ?>,-
@@ -379,8 +379,8 @@
             <td style="text-align: right;"><b>Jumlah Bayar</b></td>
             <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px; font-weight: bold; "><i>
               <?php 
-                $bill = isset($kasir_data[0]->bill)?$kasir_data[0]->bill:0;
-                $disc = isset($kasir_data[0]->potongan)?$kasir_data[0]->potongan:0;
+                $bill = isset($kasir_data[$_GET['kode_tc_trans_kasir']]->bill)?$kasir_data[$_GET['kode_tc_trans_kasir']]->bill:0;
+                $disc = isset($kasir_data[$_GET['kode_tc_trans_kasir']]->potongan)?$kasir_data[$_GET['kode_tc_trans_kasir']]->potongan:0;
                 $jb = $bill - ($nkk + $nkp + $disc);
                 echo number_format($jb);
                 ?>,-
@@ -396,8 +396,8 @@
             <td style="text-align: right; font-size: 13px;"><b>Kredit/Debit</b></td>
             <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b>
             <?php 
-                $kredit = isset($kasir_data[0]->kredit)?$kasir_data[0]->kredit:0;
-                $debet = isset($kasir_data[0]->debet)?$kasir_data[0]->debet:0;
+                $kredit = isset($kasir_data[$_GET['kode_tc_trans_kasir']]->kredit)?$kasir_data[$_GET['kode_tc_trans_kasir']]->kredit:0;
+                $debet = isset($kasir_data[$_GET['kode_tc_trans_kasir']]->debet)?$kasir_data[$_GET['kode_tc_trans_kasir']]->debet:0;
                 $nontunai = $kredit + $debet;
                 echo number_format($nontunai);
                 ?>,-
@@ -408,7 +408,7 @@
           <tr>
             <td style="text-align: right; font-size: 13px;"><b>Tunai</b></td>
             <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b>
-            <?php echo isset($kasir_data[0]->tunai)?number_format($kasir_data[0]->tunai):0?>,-</b></i>
+            <?php echo isset($kasir_data[$_GET['kode_tc_trans_kasir']]->tunai)?number_format($kasir_data[$_GET['kode_tc_trans_kasir']]->tunai):0?>,-</b></i>
             </td>
           </tr>
 

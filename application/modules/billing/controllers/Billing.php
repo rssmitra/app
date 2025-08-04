@@ -436,7 +436,7 @@ class Billing extends MX_Controller {
             'kunjungan' => $grouping,
             'log_activity' => $log_activity,
         );
-        // echo '<pre>';print_r($result);die;
+        // echo '<pre>';print_r($data);die;
         $this->load->view('Billing/data_billing_view', $data, false);
 
     }
@@ -533,6 +533,9 @@ class Billing extends MX_Controller {
         $tipe = $this->Billing->cek_tipe_pasien($_GET['no_registrasi']);
         $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
 
+        foreach($result->kasir_data as $row){
+            $getKasirData[$row->kode_tc_trans_kasir] = $row;
+        }
         $data = array(
             'title' => 'Billing Pasien Sementara',
             'breadcrumbs' => $this->breadcrumbs->show(),
@@ -540,7 +543,7 @@ class Billing extends MX_Controller {
             'tipe' => $tipe,
             'flag_bill' => isset($_GET['flag_bill'])?$_GET['flag_bill']:'temporary',
             'data' => $result,
-            'kasir_data' => $result->kasir_data,
+            'kasir_data' => $getKasirData,
             'kunjungan' => $grouping,
         );
         // echo '<pre>';print_r($data['data']);die;

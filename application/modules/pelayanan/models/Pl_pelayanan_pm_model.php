@@ -652,7 +652,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			  LEFT JOIN tc_kunjungan ON tc_kunjungan.no_kunjungan=pm_tc_penunjang.no_kunjungan
 			WHERE tc_kunjungan.no_kunjungan = t.no_kunjungan
 			FOR XML PATH(''))as varchar(max)) as nama_tarif");
-		$this->db->select('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)) as xray_foto, CAST(diagnosa as NVARCHAR(2000)) as diagnosa, CAST(kontra_indikasi as NVARCHAR(2000)) as kontra_indikasi, CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)) as keterangan, kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian as bagian_asal, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang, CAST(keterangan_order as NVARCHAR(2000)) as keterangan_order');
+		$this->db->select('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)) as xray_foto, CAST(diagnosa as NVARCHAR(2000)) as diagnosa, CAST(kontra_indikasi as NVARCHAR(2000)) as kontra_indikasi, CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)) as keterangan, kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian as bagian_asal, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang, CAST(keterangan_order as NVARCHAR(2000)) as keterangan_order, no_registrasi, tgl_daftar');
 		$this->db->from('pm_tc_penunjang_order_detail');
 		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.id_pm_tc_penunjang=pm_tc_penunjang_order_detail.id_pm_tc_penunjang','left');
 		$this->db->join('tc_kunjungan t','t.no_kunjungan=pm_tc_penunjang.no_kunjungan','left');
@@ -670,6 +670,10 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			$this->db->where('pm_tc_penunjang_order_detail.id_pm_tc_penunjang', $_GET['id_pm_tc_penunjang'] );
 		}
 
+		if(isset($_GET['kode_penunjang']) && !empty($_GET['kode_penunjang'])){
+			$this->db->where('pm_tc_penunjang.kode_penunjang', $_GET['kode_penunjang'] );
+		}
+
 		if(isset($_GET['search_by']) && $_GET['search_by'] != '' && isset($_GET['keyword']) && $_GET['keyword'] != ''){	
 			if($_GET['search_by'] == 'no_mr'){
 				$this->db->where('t.no_mr', $_GET['keyword'] );
@@ -679,7 +683,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			}
 		}
 
-		$this->db->group_by('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)), CAST(diagnosa as NVARCHAR(2000)), CAST(kontra_indikasi as NVARCHAR(2000)), CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)), kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang, CAST(keterangan_order as NVARCHAR(2000))');
+		$this->db->group_by('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)), CAST(diagnosa as NVARCHAR(2000)), CAST(kontra_indikasi as NVARCHAR(2000)), CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)), kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang, CAST(keterangan_order as NVARCHAR(2000)), no_registrasi, tgl_daftar');
 
 	}
 
@@ -722,6 +726,14 @@ class Pl_pelayanan_pm_model extends CI_Model {
 	function get_datatables_order_penunjang()
 	{
 		
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function _get_data_order_penunjang()
+	{
+		$this->_main_query_order_penunjang();
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

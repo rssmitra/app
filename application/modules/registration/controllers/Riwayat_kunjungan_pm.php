@@ -252,8 +252,9 @@ class Riwayat_kunjungan_pm extends MX_Controller {
       $list = $this->Riwayat_kunjungan_pm->get_data();
       $data =array();
       $data['list'] = $list;
+      $data['nama_bagian'] = $this->db->get_where('mt_bagian', ['kode_bagian' => $_GET['bagian_tujuan']])->row()->nama_bagian;
 
-    //   echo "<pre>";print_r($list); die;
+    //   echo "<pre>";print_r($data); die;
 
       $this->load->view('Riwayat_kunjungan_pm/export_excel', $data);
     }

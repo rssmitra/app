@@ -1719,7 +1719,7 @@ class Pl_pelayanan_ri extends MX_Controller {
             if($_POST['submit'] == 'btn_work_day'){
                 $dataexc = [
                     'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor'],
+                    'jam_monitor' => $_POST['jam_monitor5'],
                     'no_registrasi' => $_POST['no_registrasi'],
                     'no_kunjungan' => $_POST['no_kunjungan'],
                     'no_mr' => $_POST['no_mr'],
@@ -1755,6 +1755,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     'td' => isset($_POST['td'])?$_POST['td']:'',
                     'nd' => isset($_POST['nd'])?$_POST['nd']:'',
                     'sh' => isset($_POST['sh'])?$_POST['sh']:'',
+                    'spo2' => isset($_POST['spo2'])?$_POST['spo2']:'',
                     'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
                     'catatan' => isset($_POST['catatan_hemodinamik'])?$_POST['catatan_hemodinamik']:'',
                     'created_date' => date('Y-m-d H:i:s'),
@@ -1814,7 +1815,7 @@ class Pl_pelayanan_ri extends MX_Controller {
             if($_POST['submit'] == 'btn_keseimbangan_cairan'){
                 $dataexc = [
                     'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor3'],
+                    'jam_monitor' => $_POST['jam_monitor6'],
                     'no_registrasi' => $_POST['no_registrasi'],
                     'no_kunjungan' => $_POST['no_kunjungan'],
                     'no_mr' => $_POST['no_mr'],
@@ -2170,7 +2171,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         $output = http_build_query($_GET) . "\n";
         $data[6] = array(
             'nameid' => 'graph-trend-kunjungan',
-            'style' => 'line',
+            'style' => 'line_hemodinamik',
             'col_size' => 12,
             'url' => 'pelayanan/Pl_pelayanan_ri/content_chart_data?prefix=1&TypeChart=line&style=6&'.$output.'',
         );
@@ -2222,7 +2223,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
                 $row_data = [];
                 $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = '<b><a href="#" onclick="edit_row('.$row->id.', '."'tbl_observasi_harian_keperawatan'".')">'.$this->tanggal->formatDateDmy($row->tgl_monitor).'</a></b><br><small><i class="fa fa-user"></i> '. $row->created_by.'</small>';
+                $row_data[] = '<b><a href="#" onclick="edit_row('.$row->id.', '."'tbl_observasi_harian_keperawatan'".')">'.$this->tanggal->formatDateDmy($row->tgl_monitor).' '.$this->tanggal->formatTime($row->jam_monitor).'</a></b><br>('. $row->created_by.')';
                 $row_data[] = '<div '.$line.'>'.nl2br($row->intake_enteral).'</div>';
                 $row_data[] = '<div '.$line.'>'.nl2br($row->intake_parenteral).'</div>';
                 $row_data[] = '<div '.$line.'>'.nl2br($row->polavent).'</div>';
@@ -2239,9 +2240,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
                 $row_data = [];
                 $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = '<a href="#" onclick="edit_row('.$row->id.', '."'dt_hemodinamik'".')">'.$this->tanggal->formatDateDmy($row->tgl_monitor).'</a>';
-                $row_data[] = '<i class="fa fa-clock-o"></i> '.$this->tanggal->formatTime($row->jam_monitor).'';
-                $row_data[] = '<i class="fa fa-user"></i> '. $row->created_by.'';
+                $row_data[] = '<a href="#" onclick="edit_row('.$row->id.', '."'dt_hemodinamik'".')"><b>'.$this->tanggal->formatDateDmy($row->tgl_monitor).' '.$this->tanggal->formatTime($row->jam_monitor).'</b></a>';
+                $row_data[] = $row->created_by.'';
                 // content
                 $row_data[] = '<div class="center" '.$line.'>'.$row->sistolik.'</div>';
                 $row_data[] = '<div class="center" '.$line.'>'.$row->diastolik.'</div>';
@@ -2299,8 +2299,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
                 $row_data = [];
                 $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = $this->tanggal->formatDateDmy($row->tgl_monitor).'&nbsp;'.$this->tanggal->formatTime($row->jam_monitor).'';
-                $row_data[] = '<i class="fa fa-user"></i> '. $row->created_by.'';
+                $row_data[] = '<a href="#" style="font-weight: bold" onclick="edit_row('.$row->id.', '."'btn_keseimbangan_cairan'".')">'.$this->tanggal->formatDateDmy($row->tgl_monitor).'&nbsp;'.$this->tanggal->formatTime($row->jam_monitor).'</a>';
+                $row_data[] = $row->created_by;
                 // content
                 $row_data[] = '<div class="center" '.$line.'>'.$row->nilai_konstanta.'</div>';
                 $row_data[] = '<div class="center" '.$line.'>'.$row->berat_badan.'</div>';
@@ -2333,9 +2333,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
                 $row_data = [];
                 $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = $this->tanggal->formatDateDmy($row->created_date);
-                $row_data[] = $this->tanggal->formatTime($row->jam_monitor).'';
-                $row_data[] = '<i class="fa fa-user"></i> '. $row->created_by.'';
+                $row_data[] = '<a href="#" onclick="edit_row('.$row->id.', '."'btn_program_pemberian_obat'".')"><b>'.$this->tanggal->formatDateDmy($row->created_date).' '. $this->tanggal->formatTime($row->jam_monitor).'</b></a>';
+                $row_data[] = $row->created_by;
                 // content
                 $row_data[] = '<div class="left" '.$line.'>'.nl2br($row->infus).'</div>';
                 $row_data[] = '<div class="left" '.$line.'>'.nl2br($row->nutrisi_enteral).'</div>';

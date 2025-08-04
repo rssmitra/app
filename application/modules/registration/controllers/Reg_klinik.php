@@ -686,7 +686,7 @@ class Reg_klinik extends MX_Controller {
             $jeniskunjungan = ($_POST['jeniskunjunganbpjs'] > 0) ? $_POST['jeniskunjunganbpjs'] : 3;
             $nomorreferensi = ($jeniskunjungan == 3) ? $_POST['noSuratSKDP'] : $_POST['noRujukan'];
 
-            if(!isset($_POST)) : 
+            if(!isset($_POST['post_ranap'])) : 
 
                 $config_antrol = array(
                     "no_registrasi" => $dt_reg->no_registrasi,

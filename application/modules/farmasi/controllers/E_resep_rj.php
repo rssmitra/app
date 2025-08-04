@@ -132,6 +132,8 @@ class E_resep_rj extends MX_Controller {
                             </div>';
             $row[] = '<div class="center">'.$btn_status.'</div>';
             $verifikasi_apotik_online = ($row_list->verifikasi_apotik_online ==  1)?'checked':'';
+            $lock_eresep = ($row_list->lock_eresep ==  1)?'checked':'';
+
             if($_GET['flag'] == 'RJ') {
                 if($row_list->kode_perusahaan == 120){
                     $row[] = '<div class="center"><label>
@@ -139,9 +141,23 @@ class E_resep_rj extends MX_Controller {
                                             <span class="lbl"></span>
                                         </label></div>';
 
+                   $row[] = '<div class="center"><label>
+                            <input name="switch-field-1" class="ace ace-switch" id="status_lock_'.$row_list->kode_pesan_resep.'" onchange="udpateStatusLock('.$row_list->kode_pesan_resep.')" type="checkbox" value="1" '.$lock_eresep.'>
+                            <span class="lbl"></span>
+                        </label></div>';
+
                 }else{
                     $row[] = '<div class="center"><i class="fa fa-check green bigger-120"></i></div>';
+                    $row[] = '<div class="center"><label>
+                            <input name="switch-field-1" class="ace ace-switch" id="status_lock_'.$row_list->kode_pesan_resep.'" onchange="udpateStatusLock('.$row_list->kode_pesan_resep.')" type="checkbox" value="1" '.$lock_eresep.'>
+                            <span class="lbl"></span>
+                        </label></div>';
                 }
+            }else{
+                $row[] = '<div class="center"><label>
+                            <input name="switch-field-1" class="ace ace-switch" id="status_lock_'.$row_list->kode_pesan_resep.'" onchange="udpateStatusLock('.$row_list->kode_pesan_resep.')" type="checkbox" value="1" '.$lock_eresep.'>
+                            <span class="lbl"></span>
+                        </label></div>';
             }
             
             

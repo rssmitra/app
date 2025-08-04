@@ -34,14 +34,19 @@
             </td>
             <td class="center">
               <?php 
-                $label = ( $row_dt['jml_besar_acc'] == $row_dt['total_po'] ) ? 'badge-success' : 'badge-danger' ;
-                $val_td = '<span class="badge '.$label.' "><a href="#" style="color: white" onclick="show_modal('."'purchasing/permintaan/Req_pembelian/log_brg?id=".$row_dt['id_tc_permohonan_det']."&kode_brg=".$row_dt['kode_brg']."&flag=".$flag."'".', '."'LOG DETAIL BARANG'".')">'.number_format($row_dt['total_po'], 2).'</span>';
-                $text = ($row_dt['total_po']==0) ? '-' : $val_td ;
+                if(isset($row_dt['id_tc_permohonan_det']) && $row_dt['id_tc_permohonan_det'] != 0){
+                  $label = ( $row_dt['jml_besar_acc'] == $row_dt['total_po'] ) ? 'badge-success' : 'badge-danger' ;
+                  $val_td = '<span class="badge '.$label.' "><a href="#" style="color: white" onclick="show_modal('."'purchasing/permintaan/Req_pembelian/log_brg?id=".$row_dt['id_tc_permohonan_det']."&kode_brg=".$row_dt['kode_brg']."&flag=".$flag."'".', '."'LOG DETAIL BARANG'".')">'.number_format($row_dt['total_po'], 2).'</span>';
+                  $text = ($row_dt['total_po']==0) ? '-' : $val_td ;
+                }else{
+                  $text = '';
+                }
+                
                 echo $text;
               ?>
             </td>
             <td class="center"><?php echo $row_dt['satuan_besar']?></td>
-            <td class="center"><?php echo $row_dt['rasio']?></td>
+            <td class="center"><?php echo isset($row_dt['rasio'])?$row_dt['rasio']:'1'?></td>
             <td class="center"><?php echo $row_dt['keterangan']?></td>
           </tr>
           <?php endforeach; else: echo '<tr><td colspan="8">Tidak ada barang ditemukan</td></tr>'; endif; ?>

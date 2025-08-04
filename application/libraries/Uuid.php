@@ -65,7 +65,7 @@ class Uuid
 			// 48 bits for "node"
 			substr($hash, 20, 12)
 		);
-  }
+  	}
 
 	public function v4($trim = false) 
 	{
@@ -144,6 +144,6 @@ class Uuid
 
 	public function is_valid($uuid) 
 	{
-    return preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
+    	return preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
 	}
 }

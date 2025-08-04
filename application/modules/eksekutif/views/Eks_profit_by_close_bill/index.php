@@ -59,28 +59,43 @@
           $("#um_ttl_pasien").text(formatMoney(objData.um_ttl_pasien));
           $("#asuransi_ttl_pasien").text(formatMoney(objData.asuransi_ttl_pasien));
           $("#bpjs_ttl_pasien").text(formatMoney(objData.bpjs_ttl_pasien));
+          $("#naker_ttl_pasien").text(formatMoney(objData.naker_ttl_pasien));
+
           $("#um_revenue").text(formatMoney(objData.um_ttl_revenue));
           $("#asuransi_revenue").text(formatMoney(objData.asuransi_ttl_revenue));
           $("#bpjs_revenue").text(formatMoney(objData.bpjs_ttl_revenue));
+          $("#naker_revenue").text(formatMoney(objData.naker_ttl_revenue));
+
           $("#um_cost").text(formatMoney(objData.um_ttl_cost));
           $("#asuransi_cost").text(formatMoney(objData.asuransi_ttl_cost));
           $("#bpjs_cost").text(formatMoney(objData.bpjs_ttl_cost));
+          $("#naker_cost").text(formatMoney(objData.naker_ttl_cost));
+
           $("#um_profit").text(formatMoney(objData.um_ttl_profit));
           $("#asuransi_profit").text(formatMoney(objData.asuransi_ttl_profit));
           $("#bpjs_profit").text(formatMoney(objData.bpjs_ttl_profit));
+          $("#naker_profit").text(formatMoney(objData.naker_ttl_profit));
+
           // rekap rawat inap by kategori
           $("#ri_um_ttl_pasien").text(formatMoney(objData.ri_um_ttl_pasien));
           $("#ri_asuransi_ttl_pasien").text(formatMoney(objData.ri_asuransi_ttl_pasien));
           $("#ri_bpjs_ttl_pasien").text(formatMoney(objData.ri_bpjs_ttl_pasien));
+          $("#ri_naker_ttl_pasien").text(formatMoney(objData.ri_naker_ttl_pasien));
+
           $("#ri_um_revenue").text(formatMoney(objData.ri_um_ttl_revenue));
           $("#ri_asuransi_revenue").text(formatMoney(objData.ri_asuransi_ttl_revenue));
           $("#ri_bpjs_revenue").text(formatMoney(objData.ri_bpjs_ttl_revenue));
+          $("#ri_naker_revenue").text(formatMoney(objData.ri_naker_ttl_revenue));
+
           $("#ri_um_cost").text(formatMoney(objData.ri_um_ttl_cost));
           $("#ri_asuransi_cost").text(formatMoney(objData.ri_asuransi_ttl_cost));
           $("#ri_bpjs_cost").text(formatMoney(objData.ri_bpjs_ttl_cost));
+          $("#ri_naker_cost").text(formatMoney(objData.ri_naker_ttl_cost));
+
           $("#ri_um_profit").text(formatMoney(objData.ri_um_ttl_profit));
           $("#ri_asuransi_profit").text(formatMoney(objData.ri_asuransi_ttl_profit));
           $("#ri_bpjs_profit").text(formatMoney(objData.ri_bpjs_ttl_profit));
+          $("#ri_naker_profit").text(formatMoney(objData.ri_naker_ttl_profit));
 
           // rekap total
           
@@ -445,7 +460,10 @@
             </tr>
           </table>
           <div class="col-md-6 no-padding">
-            <span>Rekap Berdasarkan Instalasi</span><br>
+            <h4 class="header smaller lighter black padding-10">
+              Rekap Pasien Berdasarkan Instalasi
+            </h4>
+          
             <table class="table">
               <tr style="font-weight: bold; background: #c7cccb">
                 <td rowspan="2" style="vertical-align: middle" width="30px" align="center">NO</td>
@@ -520,7 +538,9 @@
             </table>
           </div>
           <div class="col-md-6 no-padding" style="padding-left: 5px !important">
-            <span>Rekap Berdasarkan Penjamin Pasien</span><br>
+            <h4 class="header smaller lighter black padding-10">
+              Rekap Berdasarkan Penjamin Pasien
+            </h4>
             <table class="table" >
               <tr style="font-weight: bold; background: #c7cccb">
                 <td rowspan="2" style="vertical-align: middle" width="30px" align="center">NO</td>
@@ -539,7 +559,7 @@
                 <td width="100px" align="right">REVENUE</td>
               </tr>
               <tr>
-                <td>1.</td>
+                <td align="center">1.</td>
                 <td>UMUM</td>
                 <td align="center"><span id="um_ttl_pasien"></span></td>
                 <!-- <td align="right"><span id="um_cost"></span></td>
@@ -551,7 +571,7 @@
                 <td align="right"><span id="ri_um_revenue"></span></td>
               </tr>
               <tr>
-                <td>2.</td>
+                <td align="center">2.</td>
                 <td>ASURANSI</td>
                 <td align="center"><span id="asuransi_ttl_pasien"></span></td>
                 <!-- <td align="right"><span id="asuransi_cost"></span></td>
@@ -563,7 +583,7 @@
                 <td align="right"><span id="ri_asuransi_revenue"></span></td>
               </tr>
               <tr>
-                <td>3.</td>
+                <td align="center">3.</td>
                 <td>BPJS KESEHATAN</td>
                 <td align="center"><span id="bpjs_ttl_pasien"></span></td>
                 <!-- <td align="right"><span id="bpjs_cost"></span></td>
@@ -573,6 +593,19 @@
                 <!-- <td align="right"><span id="ri_bpjs_cost"></span></td>
                 <td align="right"><span id="ri_bpjs_profit"></span></td> -->
                 <td align="right"><span id="ri_bpjs_revenue"></span></td>
+              </tr>
+
+              <tr>
+                <td align="center">4.</td>
+                <td>BPJS KETENAGAKERJAAN</td>
+                <td align="center"><span id="naker_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="naker_cost"></span></td>
+                <td align="right"><span id="naker_profit"></span></td> -->
+                <td align="right"><span id="naker_revenue"></span></td>
+                <td align="center"><span id="ri_naker_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="ri_naker_cost"></span></td>
+                <td align="right"><span id="ri_naker_profit"></span></td> -->
+                <td align="right"><span id="ri_naker_revenue"></span></td>
               </tr>
 
               <tr>

@@ -16,13 +16,13 @@
 
     }
 
-    function delete_row(id){
+    function delete_row(id, free_text = 0){
       preventDefault();
       $('#tr_id_'+id+'').hide();
       $.ajax({
         url: 'purchasing/permintaan/Req_selected_detail_brg/delete',
         type: "post",
-        data: {ID: id, flag: $('#flag_string').val(), id_tc_permohonan: $('#id_tc_permohonan').val() },
+        data: {ID: id, flag: $('#flag_string').val(), id_tc_permohonan: $('#id_tc_permohonan').val(), is_free_text: free_text},
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -38,13 +38,14 @@
         
     }
 
-    function update_row(id){
+    function update_row(id, free_text = 0){
       // alert(id); 
         var post_data = {
           id : id,
           flag : $('#flag_string').val(),
           jml_besar : $('#jml_besar_'+id+'').val(),
           keterangan : $('#keterangan_'+id+'').val(),
+          is_free_text : free_text,
         };
         preventDefault();
         $.ajax({
@@ -180,7 +181,13 @@
           <td align="center"><?php echo isset($row_dt['stok_gudang']) ? number_format($row_dt['stok_gudang']) : 0?> <?php echo isset($row_dt['satuan_kecil']) ? $row_dt['satuan_kecil'] : 0?></td>
 
           <td class="center">
-            <input type="text" name="jml_besar['<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>']" value="<?php echo number_format($row_dt['jml_besar'], 2)?>" style="text-align: right; width: 80px" id="jml_besar_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)"></td>
+            <?php if(isset($row_dt['id_tc_permohonan_det'])) : ?>
+              <input type="text" name="jml_besar['<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>']" value="<?php echo number_format($row_dt['jml_besar'], 2)?>" style="text-align: right; width: 80px" id="jml_besar_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)">
+            <?php else: ?>
+              <input type="text" name="jml_besar['<?php echo $row_dt['id']?>']" value="<?php echo number_format($row_dt['jml_besar'], 2)?>" style="text-align: right; width: 80px" id="jml_besar_<?php echo $row_dt['id']?>" onchange="update_row(<?php echo $row_dt['id']?>, 1)">
+            <?php endif; ?>
+
+          </td>
           <td class="center">
             <?php echo $row_dt['satuan_besar']?>
             <!-- hidden form -->
@@ -193,13 +200,27 @@
           </td>
 
           <td class="center">
-            <?php echo number_format($konversi)?> <?php echo isset($row_dt['satuan_kecil']) ? $row_dt['satuan_kecil'] : 0?>
+            <?php echo number_format($konversi)?> <?php echo isset($row_dt['satuan_kecil']) ? $row_dt['satuan_kecil'] : $row_dt['satuan_besar']?>
           </td>
-          <td class="center"><input type="text" id="keterangan_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" style="width: 150px" value="<?php echo $row_dt['keterangan']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)"></td>
           <td class="center">
+            <?php if(isset($row_dt['id_tc_permohonan_det'])) : ?>  
+              <input type="text" id="keterangan_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" style="width: 150px" value="<?php echo $row_dt['keterangan']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)">
+            <?php else: ?>
+              <input type="text" id="keterangan_<?php echo $row_dt['id']?>" style="width: 150px" value="<?php echo $row_dt['keterangan']?>" onchange="update_row(<?php echo $row_dt['id']?>, 1)">
+            <?php endif; ?>
+
+
+          </td>
+          <td class="center">
+            <?php if(isset($row_dt['id_tc_permohonan_det'])) : ?>
             <a  href="#" class="btn btn-xs btn-danger" onclick="delete_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)">
                 <i class="ace-icon fa fa-trash icon-on-right bigger-110"></i>
             </a>
+            <?php else: ?>
+              <a  href="#" class="btn btn-xs btn-danger" onclick="delete_row(<?php echo $row_dt['id']?>, 1)">
+                <i class="ace-icon fa fa-trash icon-on-right bigger-110"></i>
+            </a>
+            <?php endif; ?>
           </td>
         </tr>
         <?php endforeach; else: echo '<tr><td colspan="8">Tidak ada barang ditemukan</td></tr>'; endif; ?>

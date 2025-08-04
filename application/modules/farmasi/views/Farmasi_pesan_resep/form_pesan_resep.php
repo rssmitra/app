@@ -248,6 +248,7 @@
                     $('#keterangan_pesan_resep').val(resep.keterangan);
                     $('#kode_bagian_asal').val(resep.kode_bagian_asal);
                     $("input[name=jenis_resep][value='"+resep.jenis_resep+"']").prop("checked",true);
+                    $("input[name=resep_iter][value='"+resep.resep_iter+"']").prop("checked",true);
                 } else {
                     $.achtung({message: data.message, timeout:5});   
                 }
@@ -319,8 +320,29 @@
                     <span class="lbl"> PRB</span>
                 </label>
                 <label>
-                    <input name="jenis_resep" id="jenis_resep" value="non_prb" type="radio" class="ace">
+                    <input name="jenis_resep" id="jenis_resep" value="non_prb" type="radio" class="ace" checked>
                     <span class="lbl"> Non PRB</span>
+                </label>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">Resep Iter?</label>
+        <div class="col-md-6">
+            <div class="radio">
+                <label>
+                    <input name="resep_iter" id="resep_iter" value="0" type="radio" class="ace" checked>
+                    <span class="lbl"> N/A</span>
+                </label>
+                <label>
+                    <input name="resep_iter" id="resep_iter" value="1" type="radio" class="ace">
+                    <span class="lbl"> 1x</span>
+                </label>
+                <label>
+                    <input name="resep_iter" id="resep_iter" value="2" type="radio" class="ace">
+                    <span class="lbl"> 2x</span>
                 </label>
             </div>
             

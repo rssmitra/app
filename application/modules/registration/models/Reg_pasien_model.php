@@ -725,7 +725,7 @@ class Reg_pasien_model extends CI_Model {
 		$return = [];
 		$date_visit = ($date != '') ? $date : date('Y-m-d');
 		if(!empty($query)){
-			$range = ($query->tgl_jam_masuk == $date_visit ) ? 31 : $this->tanggal->getRangeDay($query->tgl_jam_masuk, $date_visit);
+			$range = ($query->tgl_jam_masuk == $date_visit ) ? MIN_REVISIT_BPJS : $this->tanggal->getRangeDay($query->tgl_jam_masuk, $date_visit);
 			$return = [
 				'tgl_masuk' => $query->tgl_jam_masuk,
 				'tgl_keluar' => $query->tgl_jam_keluar,
@@ -943,6 +943,20 @@ class Reg_pasien_model extends CI_Model {
 	}
 
 	public function delete_registrasi_and_kunjungan($no_reg, $no_kunjungan){
+
+		// save log who's delete this data
+		$this->db->insert('tc_log_delete', array(
+			'no_registrasi' => $no_reg,
+			'no_kunjungan' => $no_kunjungan,
+			'user_id' => $this->session->userdata('user')->user_id,
+			'tgl_jam_delete' => date('Y-m-d H:i:s'),
+			'ip_address' => $this->input->ip_address(),
+			'user_agent' => $this->input->user_agent(),
+			'data_registrasi' => json_encode($this->get_detail_resume_medis($no_reg, $no_kunjungan)),
+			'keterangan' => 'Hapus data registrasi dan kunjungan pasien',
+			'created_by' => $this->session->userdata('user')->fullname,
+			'created_date' =>  date('Y-m-d H:i:s'),
+		));
 
 		// delete akunting and trans pelayanan
 		$this->deleteAkunting($no_reg, $no_kunjungan);		

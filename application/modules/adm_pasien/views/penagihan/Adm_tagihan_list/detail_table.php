@@ -10,9 +10,8 @@
         <th width="50px">No MR</th>
         <th>Nama Pasien</th>
         <th>Tanggal</th>
-        <th width="95px">Jumlah Billing</th>
-        <th>Penyesuaian</th>
-        <th width="60px">Subtotal</th>
+        <th width="130px">Total Penagihan</th>
+        <!-- <th width="60px">Subtotal</th> -->
       </tr>
     </thead>
     <tbody>
@@ -24,10 +23,9 @@
           <!-- <td align="center"><?php //echo $v->kode_tc_trans_kasir?></td> -->
           <td><?php echo $v->no_mr?></td>
           <td><?php echo $v->nama_pasien?></td>
-          <td width="50px"><?php echo $this->tanggal->formatDateDmy($v->tgl_jam); ?></td>
-          <td align="right" width="50px"><a href="#" onclick="show_detail_inv(<?php echo $v->kode_tc_trans_kasir; ?>, <?php echo $id_tc_tagih; ?>)" ><?php echo number_format($v->jumlah_billing) ?></a></td>
-          <td align="right" width="50px"><?php echo number_format($v->penyesuaian) ?></td>
-          <td align="right"><?php echo number_format($v->jumlah_tagih_int)?></td>
+          <td width="50px"><?php echo $this->tanggal->formatDateDmy($v->tgl_jam_masuk); ?></td>
+          <td align="right" width="50px"><a href="#" onclick="show_detail_inv(<?php echo $v->kode_tc_trans_kasir; ?>, <?php echo $id_tc_tagih; ?>)" ><?php echo number_format($v->jumlah_tagih_int) ?></a></td>
+          <!-- <td align="right"><?php echo number_format($v->jumlah_tagih_int)?></td> -->
         </tr>
       <?php endforeach; ?>
     </tbody>

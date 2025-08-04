@@ -59,10 +59,6 @@ function popUnder(node) {
 
     <form class="form-horizontal" method="post" id="form_search" action="Templates/References/find_data" autocomplete="off">
 
-      <center>
-        <h4>Riwayat Transaksi Farmasi <br> <small>Data yang ditampilkan adalah data transaksi 30 hari terakhir.</small></h4>
-      </center>
-
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
@@ -130,14 +126,14 @@ function popUnder(node) {
           <thead>
             <tr>  
               <th class="center">No</th>
-              <th>Kode</th>
               <th>No Resep</th>
               <th>Tgl Pesan</th>
               <th>No Mr</th>
               <th>Nama Pasien</th>
               <th>Nama Dokter</th>
               <th>No SEP</th>
-              <th>Jumlah Iter</th>
+              <th>Tgl Pengambilan</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>

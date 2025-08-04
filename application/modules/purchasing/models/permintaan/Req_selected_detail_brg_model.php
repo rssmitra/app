@@ -110,8 +110,14 @@ class Req_selected_detail_brg_model extends CI_Model {
 	public function delete_by_id($table, $id)
 	{
 		/*delete stok opname*/
-		$this->db->where_in('id_tc_permohonan_det', $id)->delete( $table );
-		return true;
+		if($table == 'tc_permohonan_det_log'){
+			$this->db->where_in('id', $id);
+			$this->db->delete('tc_permohonan_det_log');
+			return true;
+		}else{
+			$this->db->where_in('id_tc_permohonan_det', $id)->delete( $table );
+			return true;
+		}
 	}
 
 	

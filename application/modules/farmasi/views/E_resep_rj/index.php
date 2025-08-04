@@ -96,6 +96,34 @@ function udpateStatusVerif(kode_pesan_resep){
   
 }
 
+function udpateStatusLock(kode_pesan_resep){
+  preventDefault();
+  var checked = $("#status_lock_"+kode_pesan_resep+"").is(':checked');
+  console.log(checked);
+  $.ajax({
+    url: 'farmasi/process_entry_resep/update_status_lock',
+    type: "post",
+    data: { ID : kode_pesan_resep, status : checked },
+    dataType: "json",
+    beforeSend: function() {
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+    },
+    complete: function(xhr) {     
+      var data=xhr.responseText;
+      var jsonResponse = JSON.parse(data);
+      if(jsonResponse.status === 200){
+        $.achtung({message: jsonResponse.message, timeout:5});
+      }else{
+        $.achtung({message: jsonResponse.message, timeout:5, 'className' : 'achtungFail'});
+      }
+      achtungHideLoader();
+    }
+
+  });
+  
+}
+
 function udpateStatusVerifperItem(id){
   preventDefault();
   var checked = $("#status_verif_"+id+"").is(':checked');
@@ -309,8 +337,9 @@ function saveCatatanVerif(id){
                 <?php endif;  ?>
                 <th width="90px">Status Resep</th>
                 <?php if($flag == 'RJ') : ?>
-                <th width="80px">Verifikasi</th>
+                <th width="80px">Verifikasi Apotik Online</th>
                 <?php endif;?>
+                <th width="80px">Lock eResep</th>
               </tr>
             </thead>
             <tbody>

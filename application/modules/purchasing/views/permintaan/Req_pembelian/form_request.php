@@ -14,6 +14,7 @@ $(document).ready(function(){
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
           load_request_form();
+          get_detail_permintaan_brg();
         }else{
           $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
         }

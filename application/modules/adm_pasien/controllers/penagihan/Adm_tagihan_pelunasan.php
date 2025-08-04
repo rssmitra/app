@@ -17,6 +17,7 @@ class Adm_tagihan_pelunasan extends MX_Controller {
         }
         /*load model*/
         $this->load->model('adm_pasien/penagihan/Adm_tagihan_pelunasan_model', 'Adm_tagihan_pelunasan');
+        $this->load->model('adm_pasien/penagihan/Adm_tagihan_list_model', 'Adm_tagihan_list');
         $this->load->model('billing/Billing_model', 'Billing');
         /*enable profiler*/
         $this->output->enable_profiler(false);
@@ -60,6 +61,30 @@ class Adm_tagihan_pelunasan extends MX_Controller {
         $this->load->view('penagihan/Adm_tagihan_pelunasan/form', $data);
     }
 
+    public function form_bukti_bayar($id='')
+    {
+
+        $qry_url = http_build_query($_GET);
+        /*if id is not null then will show form edit*/
+            /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Create Invoice '.strtolower($this->title).'', 'Adm_tagihan_pelunasan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?'.$qry_url);
+        /*get value by id*/
+        $data['value'] = $this->Adm_tagihan_pelunasan->get_by_id($id); 
+        
+        /*initialize flag for form*/
+        $data['flag'] = "update";
+    
+        /*title header*/
+        $data['qry_url'] = $qry_url;
+        $data['detail_pasien'] = $this->Adm_tagihan_pelunasan->get_detail_pasien($id); 
+        $data['title'] = $this->title;
+        // echo '<pre>'; print_r($data);die;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('penagihan/Adm_tagihan_pelunasan/form', $data);
+    }
+
 
     public function find_data()
     {   
@@ -70,7 +95,8 @@ class Adm_tagihan_pelunasan extends MX_Controller {
     public function get_data()
     {
         /*get data from model*/
-        $list = isset($_GET['no_invoice']) ? $this->Adm_tagihan_pelunasan->get_datatables() : [];
+        // $list = isset($_GET['no_invoice']) ? $this->Adm_tagihan_pelunasan->get_datatables() : [];
+        $list = $this->Adm_tagihan_pelunasan->get_datatables();
         $qry_url = ($_GET) ? http_build_query($_GET) : '' ;
         // print_r($list);die;
         $data = array();
@@ -93,15 +119,26 @@ class Adm_tagihan_pelunasan extends MX_Controller {
             $row[] = '<div class="pull-right">'.number_format($row_list->tr_yg_diskon).'</div>';
             $row[] = '<div class="pull-right">'.number_format($row_list->jumlah_tagih).'</div>';
             $saldo = $row_list->jumlah_tagihan - $row_list->jumlah_bayar;
-            if ($saldo == 0) {
+
+            if($row_list->statusLunas == 1) {
                 $status = '<label class="label label-xs label-success">Lunas</label>';
-            }elseif ($saldo == $row_list->jumlah_tagihan) {
-                $status = '<label class="label label-xs label-danger">Belum Bayar</label>';
-            }elseif ($saldo != 0 AND $saldo < $row_list->jumlah_tagihan) {
-                $status = '<label class="label label-xs label-danger">Cicil</label>';
+            }else{
+                if ($saldo == $row_list->jumlah_tagihan) {
+                    $status = '<label class="label label-xs label-danger">Belum Bayar</label>';
+                }elseif ($saldo != 0 AND $saldo < $row_list->jumlah_tagihan) {
+                    $status = '<label class="label label-xs label-danger">Sisa '.number_format($saldo).'</label>';
+                }
             }
+            
             $row[] = '<div class="center">'.$status.'</div>';
-            $row[] = '<div class="center"><a href="#" class="label label-xs label-primary" onclick="getMenu('."'adm_pasien/penagihan/Adm_tagihan_pelunasan/form/".$row_list->id_tc_tagih."?".$qry_url."'".')">Bayar Tagihan</a></div>';
+
+            if($row_list->statusLunas == 1) {
+                $row[] = 'No. <a href="#" onclick="PopupCenter('."'adm_pasien/penagihan/Adm_tagihan_pelunasan/preview_invoice_pelunasan?ID=".$row_list->id_tc_bayar_tagih."&".$qry_url."'".')"><b>'.$row_list->no_kuitansi_bayar.'</b></a><br>
+                            Tgl. '.$this->tanggal->formatDateDmy($row_list->tgl_bayar).'<br>';
+            }else{
+                $row[] = '<div class="center"><a href="#" class="label label-xs label-primary" onclick="getMenu('."'adm_pasien/penagihan/Adm_tagihan_pelunasan/form/".$row_list->id_tc_tagih."?".$qry_url."'".')">Bayar Tagihan</a></div>';
+            }
+            
 
             $data[] = $row;
               
@@ -134,6 +171,8 @@ class Adm_tagihan_pelunasan extends MX_Controller {
 
     public function get_invoice_detail($id_tc_tagih)
     {
+
+        
         /*get data from model*/
         $list = $this->Adm_tagihan_pelunasan->get_invoice_detail($id_tc_tagih);
 
@@ -143,6 +182,8 @@ class Adm_tagihan_pelunasan extends MX_Controller {
 
     public function get_billing_detail($kode_tc_trans_kasir)
     {
+        $inv = $this->Adm_tagihan_list->get_invoice_detail($_GET['id_tc_tagih'], $kode_tc_trans_kasir);
+        $dt_tagih = $inv[0];
         /*get data from model*/
         $list = $this->db->get_where('tc_trans_kasir', array('kode_tc_trans_kasir' => $kode_tc_trans_kasir) )->row();
         // echo '<pre>';print_r($list);die;
@@ -169,7 +210,7 @@ class Adm_tagihan_pelunasan extends MX_Controller {
             }
             
         }
-        echo json_encode(array('data' => $getData, 'no_registrasi' => $list->no_registrasi, 'total' => array_sum($arr_subtotal)));
+        echo json_encode(array('data' => $getData, 'no_registrasi' => $list->no_registrasi, 'total' => array_sum($arr_subtotal), 'invoice' => $dt_tagih));
     }
 
     public function preview_invoice(){
@@ -178,6 +219,15 @@ class Adm_tagihan_pelunasan extends MX_Controller {
         $data['result'] = $list;
         
         $this->load->view('penagihan/Adm_tagihan_pelunasan/preview_invoice', $data);
+    }
+
+    public function preview_invoice_pelunasan(){
+        $data = array();
+        $list = $this->Adm_tagihan_pelunasan->get_invoice_pelunasan_detail($_GET['ID']);
+        $data['result'] = $list;
+        // echo '<pre>'; print_r($data);die;
+        
+        $this->load->view('penagihan/Adm_tagihan_pelunasan/preview_invoice_pelunasan', $data);
     }
     
     public function create_invoice(){
@@ -242,16 +292,6 @@ class Adm_tagihan_pelunasan extends MX_Controller {
                 'id_dd_user' => $this->regex->_genRegex($this->session->userdata('user')->user_id, 'RGXQSL'),
                 'tgl_input' => date('Y-m-d H:i:s'),
 
-                // HAPUS!
-                // 'no_invoice_tagih' => $this->regex->_genRegex($_POST['no_invoice'],'RGXQSL'),
-                // 'jenis_tagih' => $this->regex->_genRegex(3,'RGXINT'),
-                // 'tgl_tagih' => $this->regex->_genRegex($_POST['tgl_tagihan'],'RGXQSL'),
-                // 'jumlah_tagih' => $this->regex->_genRegex($_POST['total_tagihan'],'RGXINT'),
-                // 'diskon' => $this->regex->_genRegex($_POST['diskon'],'RGXINT'),
-                // 'nama_tertagih' => $this->regex->_genRegex($_POST['nama_perusahaan'],'RGXQSL'),
-                // 'id_tertagih' => $this->regex->_genRegex($_POST['kode_perusahaan'],'RGXINT'),
-                // 'tgl_jt_tempo' => $this->regex->_genRegex($_POST['tgl_jatuh_tempo'],'RGXQSL'),
-                // 'tr_yg_diskon' => $this->regex->_genRegex($_POST['total_diskon_val'],'RGXINT'),
             );
             
             if($id==0){
@@ -262,8 +302,8 @@ class Adm_tagihan_pelunasan extends MX_Controller {
                 $this->logs->save('tc_bayar_tagih', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_bayar_tagih');
                 // print_r($_POST);die;
             }else{
-                // $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                // $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname);
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname);
                 /*print_r($dataexc);die;*/
                 /*update record*/
                 $this->Adm_tagihan_pelunasan->update('tc_bayar_tagih', array('id_tc_bayar_tagih' => $id), $dataexc);
@@ -279,26 +319,14 @@ class Adm_tagihan_pelunasan extends MX_Controller {
                         'id_tc_tagih_det' => $value,
                         'jumlah_bayar' => $_POST['jml_tagihan_per_pasien'][$value],
                         'keterangan' => $_POST['keterangan'][$value],
-                        
-                        // 'no_mr' => $_POST['no_mr'][$value],
-                        // 'no_registrasi' => $_POST['no_registrasi'][$value],
-                        // 'nama_pasien' => $_POST['nama_pasien'][$value],
-                        // 'kode_perusahaan' => $_POST['kode_perusahaan'],
-                        // 'jumlah_billing' => $_POST['jumlah_billing'][$value],
-                        // 'jumlah_dijamin' => $_POST['jumlah_ditagih'][$value],
-                        // 'jumlah_tagih' => $_POST['beban_pasien'][$value],
-                        // 'penyesuaian' => $_POST['input_penyesuaian_'.$value.''],
                     );
                     $data_update[] = array(
-                        'StatusLunas' => 1, // 1 Lunas 0/Null Belum Lunas
+                        'StatusLunas' => ($_POST['status_lunas'][$value])?$_POST['status_lunas'][$value]:0, // 1 Lunas 0/Null Belum Lunas
                         'id_tc_tagih_det' => $value,
-
-                        // 'kode_tc_trans_kasir' => $value,
-                        // 'kd_inv_persh_tx' => $newId,
                     );
                     // Update tc_trans_kasir -> kd_inv_persh_tx
-                    // $this->db->where('kode_tc_trans_kasir', $value);
-                    // $this->db->update('tc_trans_kasir', ['kd_inv_persh_tx' => $newId, 'nama_pasien' => $_POST['nama_pasien'][$value]]);
+                    $this->db->where('kode_tc_trans_kasir', $value);
+                    $this->db->update('tc_trans_kasir', ['kd_inv_persh_tx' => $newId]);
                 }
                 $this->db->insert_batch('tc_bayar_tagih_det', $data_detail);
                 $this->db->update_batch('tc_tagih_det', $data_update, 'id_tc_tagih_det');

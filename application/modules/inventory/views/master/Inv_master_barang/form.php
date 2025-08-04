@@ -384,6 +384,29 @@ $('select[name="kode_sub_gol"]').change(function () {
                   </div>
                 </div>
 
+                <div class="form-group">
+                  <label class="control-label col-md-2">Restriksi?</label>
+                  <div class="col-md-2">
+                    <div class="radio">
+                          <label>
+                            <input name="is_restrict" type="radio" class="ace" value="Y" <?php echo isset($value) ? ($value->is_restrict == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Ya</span>
+                          </label>
+                          <label>
+                            <input name="is_restrict" type="radio" class="ace" value="N" <?php echo isset($value) ? ($value->is_restrict == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl">Tidak</span>
+                          </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2">Keterangan Restriksi</label>
+                  <div class="col-md-6">
+                    <textarea name="restrict_desc" id="restrict_desc" class="form-control" style="height: 80px !important"><?php echo isset($value)?$value->restrict_desc:''?></textarea>
+                  </div>
+                </div>
+
                 <?php endif; ?>
                 <div class="form-group">
                   <label class="control-label col-md-2">Is active?</label>
@@ -400,15 +423,6 @@ $('select[name="kode_sub_gol"]').change(function () {
                     </div>
                   </div>
                 </div>
-
-                <div class="form-group">
-                  <label class="control-label col-md-2">Last update</label>
-                  <div class="col-md-8" style="padding-top:8px;font-size:11px">
-                      <i class="fa fa-calendar"></i> <?php echo isset($value->updated_date)?$this->tanggal->formatDateTime($value->updated_date):isset($value)?$this->tanggal->formatDateTime($value->created_date):date('d-M-Y H:i:s')?> - 
-                      by : <i class="fa fa-user"></i> <?php echo isset($value->updated_by)?$value->updated_by:isset($value->created_by)?$value->created_by:$this->session->userdata('user')->username?>
-                  </div>
-                </div>
-
 
                 <div class="form-actions center">
 

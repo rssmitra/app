@@ -3,9 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pengambilan_resep_iter_model extends CI_Model {
 
-	var $table = 'fr_tc_far';
+	var $table = 'fr_tc_resep_iter';
 	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, mt_bagian.nama_bagian, fr_tc_far.kode_bagian_asal, iter, fr_tc_far.kode_dokter';
+	var $select = 'fr_tc_resep_iter.id_iter, fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, fr_tc_resep_iter.kode_pesan_resep, tgl_trans, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, mt_bagian.nama_bagian, fr_tc_far.kode_bagian_asal, iter, fr_tc_far.kode_dokter, status_iter, tgl_pengambilan_resep';
 
 	var $order = array('tgl_trans' => 'DESC');
 
@@ -18,6 +18,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->from($this->table);
+		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=fr_tc_resep_iter.kode_trans_far','left');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=fr_tc_far.no_registrasi','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left');
@@ -29,8 +30,6 @@ class Pengambilan_resep_iter_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-		$this->db->where('iter > 0');
-		$this->db->where('referensi IS NULL');
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);

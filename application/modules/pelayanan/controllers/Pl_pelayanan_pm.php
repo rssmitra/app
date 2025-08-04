@@ -29,6 +29,9 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
+
     }
 
     public function index() { 
@@ -449,15 +452,17 @@ class Pl_pelayanan_pm extends MX_Controller {
 
             $row[] = '<div class="center">'.$status.'</div>';
 
+            $btn_cetak_pengantar = '<a href="#" onclick="PopupCenter('."'pelayanan/Pl_pelayanan_pm/preview_pengantar_penunjang/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bagian=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-success" style="width: 120px !important; margin-top: 3px">Cetak Pengantar</a>';
+
             if($row_list->kode_bagian_tujuan == '050101'){
-                $row[] = '<div class="center"><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/form_lab_detail/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bag=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-primary">Buat Pengantar</a></div>';
+                $row[] = '<div class="center"><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/form_lab_detail/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bag=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-primary" style="width: 120px !important;">Buat Pengantar Lab</a><br>'.$btn_cetak_pengantar.'</div>';
             }elseif ($row_list->kode_bagian_tujuan == '050201') {
                 # code...
                 // pelayanan/Pl_pelayanan/form_order_penunjang/849245/1644182?type=PM&kode_bag=050201
 
-                $row[] = '<div class="center"><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/form_order_radiologi/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bag=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-primary">Buat Pengantar</a></div>';
+                $row[] = '<div class="center"><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/form_order_radiologi/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bag=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-primary" style="width: 120px !important;">Buat Pengantar Rad</a><br>'.$btn_cetak_pengantar.'</div>';
             }elseif ($row_list->kode_bagian_tujuan == '050301') {
-                $row[] = '<div class="center"><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/form_order_fisio/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bag=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-primary">Buat Pengantar</a></div>';
+                $row[] = '<div class="center"><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/form_order_fisio/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bag=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-primary" style="width: 120px !important;">Buat Pengantar Fisio</a><br>'.$btn_cetak_pengantar.'</div>';
                 # code...
             }
            
@@ -1615,6 +1620,77 @@ class Pl_pelayanan_pm extends MX_Controller {
 
         echo json_encode( $output );
     
+    }
+
+    public function preview_pengantar_penunjang()
+    {
+        $list = $this->Pl_pelayanan_pm->_get_data_order_penunjang();
+        // echo "<pre>";print_r($list);die;
+        if(empty($list)){
+            echo "<div class='alert alert-danger' style='padding: 20px; background: #ff000038; font-family: sans-serif'><b>Mohon Maaf</b><br>Data tidak ditemukan, tidak dapat mencetak surat pengantar</div>";
+            return;
+        }else{
+            $this->load->module('Templates/Templates.php');
+            $temp = new Templates;
+            $result = json_decode($this->Csm_billing_pasien->getDetailData($list[0]->no_registrasi));
+            $result->nama_ppa = $result->reg_data->nama_pegawai;
+            $result->kode_dr = $result->reg_data->kode_dokter;
+            $header = $temp->setGlobalProfileCppt($result);
+            $footer = $temp->setGlobalFooterCppt($result);
+
+            $data = array();
+            $data['kode_penunjang'] = $list[0]->kode_penunjang;
+            $data['tgl_daftar'] = $list[0]->tgl_daftar;
+            $data['header'] = $header;
+            $data['footer'] = $footer;
+            // unit
+            switch ($_GET['kode_bagian']) {
+                case '050101':
+                    $unit = 'LAB';
+                    break;
+                case '050201':
+                    $unit = 'RAD';
+                    break;
+                case '050301':
+                    $unit = 'Fisio';
+                    break;
+            }
+            $data['unit'] = $unit;
+
+            $result_data = [];
+            $no = 0;
+            foreach ($list as $row_list) {
+                $no++;
+                $arr_str = array_filter(explode("|", $row_list->nama_tarif));
+                $html = '<ol>';
+                foreach ($arr_str as $value) {
+                    if(strlen($value) > 0){
+                        $html .= '<li>' . htmlspecialchars($value) . '</li>';
+                    }
+                }
+                $html .= '</ol>';
+
+                $status = ($row_list->status == 1)
+                ? '<span style="font-weight: bold; color: green">sudah diproses</span>'
+                : '<span style="font-weight: bold; color: red">belum diproses</span>';
+
+                $result_data[] = [
+                '<div class="center">' . $no . '</div>',
+                $this->tanggal->formatDateTime($row_list->created_date),
+                htmlspecialchars($row_list->no_mr) . '<br>' . htmlspecialchars($row_list->nama_pasien),
+                $html,
+                htmlspecialchars($row_list->dr_pengirim),
+                htmlspecialchars($row_list->bagian_asal),
+                ];
+            }
+
+            $data['result'] = $result_data;
+        }
+
+        // echo "<pre>"; print_r($data);die;
+
+        $this->load->view('Pl_pelayanan_pm/preview_pengantar_penunjang', $data);
+        
     }
 
 }

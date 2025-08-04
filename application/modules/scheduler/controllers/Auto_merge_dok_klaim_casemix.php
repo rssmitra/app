@@ -49,7 +49,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
 		$this->db->from('csm_reg_pasien');
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
 		$this->db->where("(csm_dokumen_klaim.no_sep is null AND LEN(csm_rp_no_sep) > 18)");
-        // $this->db->where("csm_rp_tipe = 'RJ' " );
+        // $this->db->where("csm_rp_tipe = 'RI' " );
         $this->db->where("csm_reg_pasien.is_scheduler is null" );
         $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) < '". $last_date."' " );
         $this->db->where("MONTH(csm_reg_pasien.csm_rp_tgl_keluar) = '".$month."' " );
