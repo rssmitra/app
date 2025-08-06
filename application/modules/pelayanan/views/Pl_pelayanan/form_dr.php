@@ -657,7 +657,7 @@ function show_icare() {
   #ace-settings-container-rj::-webkit-scrollbar-thumb:hover {
     background: #b30000; 
   }
-  .user-info{
+  .user-info-dr{
     max-width: 500px !important;
     width: 100% !important;
   }
@@ -686,7 +686,7 @@ function show_icare() {
             <img src="<?php echo base_url().'uploaded/images/photo_karyawan/'.$value->kode_dokter.'.png'; ?>" alt="Foto Dokter" style="width:48px; height:48px; object-fit:cover;">
           </div>
           <div style="display:flex; flex-direction:column; justify-content:center;">
-            <span class="user-info" style="line-height:1.2; color: black">
+            <span class="user-info-dr" style="line-height:1.2; color: black">
               <b><?php echo isset($nama_dokter)?''.$nama_dokter.'':''?></b><br>
               <small><?php echo ucwords($nama_bagian); ?></small>
             </span>

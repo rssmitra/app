@@ -121,6 +121,8 @@ class Process_entry_resep extends MX_Controller {
                     $waktukirim_task_6 = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
                     $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking->kodebookingantrol, 'taskid' => 6, 'waktu' => $waktukirim_task_6));
                 }
+
+                // update log_time_1
                 
             }
 
@@ -318,7 +320,6 @@ class Process_entry_resep extends MX_Controller {
             $getData[$v->kd_tr_resep] = $v;
         }
         
-
         /*execution begin*/
         $this->db->trans_begin();
 
@@ -444,6 +445,7 @@ class Process_entry_resep extends MX_Controller {
                 'lampiran_lab_kode_penunjang' => $kode_penunjang,
                 'lampiran_memo_inhibitor' => isset($_POST['lampiran_memo_inhibitor'])?$_POST['lampiran_memo_inhibitor']:'',
                 'perubahan_resep' => isset($_POST['perubahan_resep'])?$_POST['perubahan_resep']:'',
+                'log_time_2' => date('Y-m-d H:i:s'),
             ];
 
             $this->db->where('kode_trans_far', $ID);
@@ -659,7 +661,7 @@ class Process_entry_resep extends MX_Controller {
         // print_r($_POST);die;
         $this->db->trans_begin();
         $status = ($_POST['status'] == 'true') ? 1 : 0;
-        if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['lock_eresep' => $status]))
+        if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['lock_eresep' => $status, 'log_time_1' => date('Y-m-d H:i:s')]))
         {
             $this->db->where('lock_eresep IS NULL')->update('fr_tc_pesan_resep_detail', ['lock_eresep' => $status], ['kode_pesan_resep' => $_POST['ID']]);
 

@@ -23,8 +23,13 @@ class Display_antrian extends MX_Controller {
     }
 
     public function farmasi() {
-   
-        $this->load->view('display_antrian/index_farmasi');
+        
+        $data = array();
+        $resep = $this->db->order_by('tgl_trans', 'ASC')->get_where('fr_tc_far', ['CAST(tgl_trans as DATE) = ' => date('Y-m-d'), 'flag_trans' => 'RJ', 'pengambilan_resep' => 'ditunggu'])->result();
+        $data['resep'] = $resep;
+
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('display_antrian/index_farmasi', $data);
     }
 
     public function poli_farmasi() {

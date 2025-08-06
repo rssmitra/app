@@ -21,6 +21,9 @@ $(function () {
           if(o.style=='line'){
             GraphLineStyle(o.mod, o.nameid, o.url);
           }
+          if(o.style=='line_hemodinamik'){
+            GraphLineStyleHemodinamik(o.mod, o.nameid, o.url);
+          }
           if(o.style=='table'){
             GraphTableStyle(o.mod, o.nameid, o.url);
           }
@@ -156,6 +159,64 @@ $(function () {
           series: chartData.series
 
         });
+
+      });
+    }
+
+    function GraphLineStyleHemodinamik(id, nameid, url){
+
+      //use getJSON to get the dynamic data via AJAX call
+      $.getJSON(url, {id: id}, function(chartData) {
+      // Set custom colors for specific series names
+      var customColors = {
+        'Sistolik': '#000000', // black
+        'Diastolik': '#464545ff', // black
+        'Nadi': '#FF0000',           // red
+        'Suhu': '#0000FF',          // blue
+        'Spo2': '#008000'           // green
+      };
+
+      // Map colors to series
+      chartData.series = chartData.series.map(function(series) {
+        if (customColors[series.name]) {
+        series.color = customColors[series.name];
+        }
+        return series;
+      });
+
+      $('#'+nameid).highcharts({
+
+        title: {
+          text: chartData.title,
+          x: -20 //center
+        },
+        subtitle: {
+          text: chartData.subtitle,
+          x: -20
+        },
+        xAxis: chartData.xAxis,
+        yAxis: {
+          title: {
+            text: 'Total'
+          },
+          plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+          }]
+        },
+        tooltip: {
+          valueSuffix: ''
+        },
+        legend: {
+          layout: 'horizontal',
+          align: 'center',
+          verticalAlign: 'bottom',
+          borderWidth: 0
+        },
+        series: chartData.series
+
+      });
 
       });
     }
