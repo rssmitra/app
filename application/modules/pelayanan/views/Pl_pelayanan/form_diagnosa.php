@@ -72,7 +72,6 @@
   <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
 
-
 <div style="margin-top: 6px">
     <label for="form-field-8">Diagnosa (ICD10) <span style="color:red">* : </span></label>
       <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">

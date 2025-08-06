@@ -1,236 +1,404 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>Display Antrian Instalasi Farmasi</title>
+    <title>SHS 4.0 - Antrian farmasiklinik</title>
 
     <meta name="description" content="top menu &amp; navigation" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
-    <!-- css default for blank page -->
+    <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-fonts.css" />
+    <!-- css date-time -->
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+    <!-- end css date-time -->
+    <!-- ace styles -->
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <!-- js -->
-    <script src='<?php echo base_url()?>/assets/js/jquery.js'></script>
-    <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace-extra.js"></script>
-    <script src="<?php echo base_url('assets/jquery/jquery-2.2.3.min.js')?>"></script>
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" />
+    <link rel="shortcut icon" href="<?php echo base_url().'assets/insani/favicon_rssm.png'; ?>">
 
-    <script>
-      $(document).ready( function(){
-
-        setInterval( function () {
-        
-          $.getJSON("<?php echo site_url('display_antrian/reload_antrian_farmasi') ?>", '', function (data) {              
-            console.log(data.result)
-            $('.nama-pasien-antrian span').remove();
-            $('.nama-pasien-antrian-small span').remove();
-
-            $.each(data.result, function (i, o) {    
-               console.log(o);
-               if (i < 6) {
-                var blink_me = (i == 1) ? 'class="blink_me"' : '';
-                $('<span '+blink_me+'>'+o.nama_pasien.substr(0,15)+'</span>').appendTo($('#antrian-ke-'+i+''));
-               }
-
-               if (i > 5) {
-                $('<span>'+o.nama_pasien.substr(0,25)+'</span>').appendTo($('#antrian-ke-'+i+''));
-               }
-
-            });
-
-            $('#total-antrian').text(data.total);
-
-            console.log(data.total);
-          });
-
-        }, 2000 );
-      
-      });
-      
-      
-      setInterval("my_function();",3000); 
-
-      function my_function(){
-        $('#refresh').load(location.href + ' #time');
-      }
-    </script>
-    <style type="text/css">
-      
-      .blink_me {
-        animation: blinker 3s linear infinite;
-      }
-
-      @keyframes blinker {
-        50% {
-          opacity: 0;
-        }
-      }
-
-      @font-face { font-family: MyriadPro; src: url('assets/fonts/MyriadPro-Bold.otf'); } 
-
-      .custom-box-utama{
-        height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;
-      }
-
-      .nama-pasien-antrian-small{ font-size: 2em !important}
-
-     /* @media screen and (min-width: 320px) {
-      .nama-pasien-antrian, .text-no{ font-size: 14px !important }
-      }*/
-
-      @media screen and (min-width: 220px) {
-      .nama-pasien-antrian, .text-no{ font-size: 4em !important; font-weight: bold }
-      }
-
-      .footer {
-        width: 100%;
-        height:55px;
-        background-color: #ea0505;
-        color: white;
-        text-align: center;
-      }
-
-      .stamp {
-        position:absolute;
-        top:40%;
-        left: 24%;
-        transform: rotate(12deg);
-        color: red;
-        font-size: 7rem;
-        font-weight: 900;
-        border: 1rem solid red;
-        display: inline-block;
-        padding: 0.25rem 1rem;
-        text-transform: uppercase;
-        border-radius: 1rem;
-        /*font-family: 'Courier';*/
-        -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
-        -webkit-mask-size: 944px 604px;
-        mix-blend-mode: hard-light;
-        vertical-align: center;
-      }
-    </style>
   </head>
+  <style>
+    @font-face { 
+      font-family: 'MyriadPro'; 
+      src: url('<?php echo base_url()?>assets/fonts/MyriadPro-Bold.otf'); 
+    } 
 
-  <body class="no-skin" >
-    <!-- #section:basics/navbar.layout -->
-    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background-image: linear-gradient(to left, #005a00, #f9f9f9);">
+    body{
+      font-family: 'MyriadPro' !important;
+      background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg') fixed !important;
+      background-color: #E6E7E8;
+    }
+
+    .page-content {
+        background-color: white;
+        position: relative;
+        margin: 0;
+        padding: 0px 20px 24px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100% !important;
+        min-height: 670px;
+    }
+
+    .page-header {
+      padding-bottom: 9px;
+      margin: 0px 0 0px !important;
+      border-bottom: 1px solid #eee;
+      background-color: #E6E7E8;
+    }
+
+    .footer{
+      padding: 16px !important;
+    }
+
+    .table tr {
+      font-size: 2.2em;
+    }
+
+    .table {
+      /* border-collapse: collapse; */
+      width: 100%;
+    }
+
+    .table td, .table th {
+      border: 0px solid black !important;
+      padding: 8px;
+      color: white
+    }
+
+    .table th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      color: white !important;
+    }
+
+    .widget-main{
+      padding: 0px !important
+    }
+
+    .widget-header{
+      background: #00669f;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      border-top-left-radius: 10px 
+    }
+
+    .widget-body{
+      background: #00669f2b;
+      color: black;
+    }
+    
+
+  </style>
+
+  <body class="no-skin">
+  
+    <div class="main-container ace-save-state" id="main-container" style="min-height: 100vh; display: flex; flex-direction: column;">
       <script type="text/javascript">
-        try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+        try{ace.settings.loadState('main-container')}catch(e){}
       </script>
 
-      <div class="navbar-container" id="navbar-container">
-        <div class="navbar-header pull-left">
-          <!-- #section:basics/navbar.layout.brand -->
-          <a href="#" class="navbar-brand" style="">
-            <small style="font-size: 1.5em; text-shadow: 1px 2px #a5af98bf; color:#195005; font-weight: bold">
-              <i class="fa fa-leaf"></i>
-              ANTRIAN INSTALASI FARMASI
-            </small>
-          </a>
-          <!-- <div style="margin-left: -20px; width: auto">
-            <span style="font-size: 3em; text-shadow: 1px 2px #a5af98bf; color:#195005">Antrian Instalasi Farmasi </span>
-            <span style="font-size: 2em"> <?php echo COMP_LONG?> </span><br> 
-            <span style="font-size: 1em"> <?php echo COMP_ADDRESS?> </span>
-          </div> -->
-          <!-- /section:basics/navbar.toggle -->
+      <div class="main-content" style="flex: 1 1 auto; overflow-y: auto;">
+
+        <div class="col-md-12" style="padding: 10px">
+            <div style="float: left; margin-left: 20px; margin-top: 10px">
+              <img alt="" src="<?php echo base_url().COMP_ICON_INSANI?>" width="300px">
+            </div>
+            <div style="float: right; margin-top: 10px; margin-right: 10px">
+              <span class="title-text"><img alt="" src="<?php echo base_url().COMP_ICON_BY_INSANI?>" width="150"></span>
+            </div>
         </div>
 
+        
 
-      </div><!-- /.navbar-container -->
-    </div>
-
-    <!-- /section:basics/navbar.layout -->
-    <div class="main-container" id="main-container">
-      <script type="text/javascript">
-        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
-      </script>
-
-      <!-- /section:basics/sidebar.horizontal -->
-      <div class="main-content">
-        <div class="main-content-inner">
-          <!-- #section:basics/content.breadcrumbs -->
-          <div class="breadcrumbs" id="breadcrumbs" style="">
-            <script type="text/javascript">
-              try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
-            </script>
+        <div class="col-md-12 header-fixed" style="background: #00669F; color: white; padding: 5px; border-top-left-radius: 15px; border-top-right-radius: 15px; position: sticky; top: 0; z-index: 1000;">
+          <div style="font-size: 25px; font-weight: bold; float: left; padding-left: 20px">Antrian Resep Obat</div>
+          <div style="text-align: right; font-size: 20px; margin-top: 3px; float: right; margin-right: 20px" >
+            <i class="fa fa-calendar"></i> <?php date_default_timezone_set("Asia/Jakarta"); echo date('l, d F Y') ?> &nbsp; <i class="fa fa-clock-o"></i>  
+            <span id="refresh">&nbsp;
+                <span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></span> WIB
           </div>
-          <div class="page-content-main" style="background-color: black !important">
-            
-            <div class="no-padding" style="width:90%;float:left;">
-              <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:3px;"> Bagi pasien yang belum terdaftar pada Display Antrian Instalasi Farmasi diharapkan untuk menunggu antrian diluar agar tidak terjadi kerumunuan di ruang tunggu apotik. | <?php echo COMP_MOTTO?> </marquee>
-            </div>
-            <div style="width:10%;float:left;margin-top: 5px;color: white; text-align: center;">
-              <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
-              <p style="margin:0;font-size:16px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
-            </div>
-            <div class="row no-padding">
-              <div class="col-md-8 no-padding" style="padding-right: 5px !important">
-                <div class="col-xs-12 widget-container-col ui-sortable no-padding" style="padding-right: 20px" id="widget-container-col-1">
-                  <!-- <span style="" class="stamp is-nope-2">Uji Coba</span> -->
-                  <?php for($box=1;$box<6;$box++) :?>
-                    <div class="alert alert-success" style="background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
-                      <div class="text-no" style="width:15%;float:left;border-right:2px solid white; margin-right: 20px; text-align: center">
-                        <span><?php echo $box?></span>
-                      </div>
-                      <div class="nama-pasien-antrian" id="antrian-ke-<?php echo $box;?>" style="width: 85%">&nbsp;</div> 
-                    </div>
-                  <?php endfor; ?>
-                </div>
+        </div>
+
+        <div class="main-content-inner">
+          <div class="page-content">
+            <div id="page-area-content" >
+              <!-- section antrian farmasi -->
+              <div id="section_antrian_farmasi" class="row" style="margin-top: 10px">
                 
+                <!-- CONTENT HERE -->
+                <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">RESEP DITERIMA</h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <table width="100%">
+                          <thead>
+                          <tr style="font-size: 16px; border-bottom: 1px solid black;">
+                              <th width="30px">No</th>
+                              <th>Nama Pasien</th>
+                              <th class="center">Waktu</th>
+                          </tr>
+                          </thead>
+                          <?php 
+                            $no=0; 
+                              foreach($resep as $row) :
+                                if($row->log_time_1 != null && $row->log_time_2 == null) : 
+                              $no++;
+                          ?>
+                          <tr style="font-size: 14px; border-bottom: 1px solid grey;">
+                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
+                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
+                          </tr>
+                          <?php endif; endforeach;?>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">PENYEDIAAN OBAT</h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <table width="100%">
+                          <thead>
+                          <tr style="font-size: 16px; border-bottom: 1px solid black;">
+                              <th width="30px">No</th>
+                              <th>Nama Pasien</th>
+                              <th class="center">Waktu</th>
+                          </tr>
+                          </thead>
+                          <?php 
+                            $no=0; 
+                            foreach($resep as $row) : 
+                              if($row->log_time_2 != null && $row->log_time_3 == null) : 
+                                $no++;
+                          ?>
+                          <tr style="font-size: 14px; border-bottom: 1px solid grey;">
+                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
+                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
+                          </tr>
+                          <?php endif; 
+                        endforeach;?>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">PROSES RACIKAN</h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <table width="100%">
+                          <thead>
+                          <tr style="font-size: 16px; border-bottom: 1px solid black;">
+                              <th width="30px">No</th>
+                              <th>Nama Pasien</th>
+                              <th class="center">Waktu</th>
+                          </tr>
+                          </thead>
+                          <?php 
+                            $no=0; 
+                            foreach($resep as $row) : 
+                              if($row->log_time_3 != null && $row->log_time_4 == null) : 
+                                $no++;
+                          ?>
+                          <tr style="font-size: 14px; border-bottom: 1px solid grey;">
+                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
+                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
+                          </tr>
+                          <?php endif; endforeach;?>
+                        </table>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">PROSES ETIKET</h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <table width="100%">
+                          <thead>
+                          <tr style="font-size: 16px; border-bottom: 1px solid black;">
+                              <th width="30px">No</th>
+                              <th>Nama Pasien</th>
+                              <th class="center">Waktu</th>
+                          </tr>
+                          </thead>
+                          <?php 
+                            $no=0; 
+                            foreach($resep as $row) : 
+                              if($row->log_time_4 != null && $row->log_time_5 == null) : 
+                                $no++;
+                          ?>
+                          <tr style="font-size: 14px; border-bottom: 1px solid grey;">
+                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
+                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
+                          </tr>
+                          <?php endif; endforeach;?>
+                        </table>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">SIAP DIAMBIL</h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <table width="100%">
+                          <thead>
+                          <tr style="font-size: 16px; border-bottom: 1px solid black;">
+                              <th width="30px">No</th>
+                              <th>Nama Pasien</th>
+                              <th class="center">Waktu</th>
+                          </tr>
+                          </thead>
+                          <?php 
+                            $no=0; 
+                            foreach($resep as $row) : 
+                              if($row->log_time_5 != null && $row->log_time_6 == null) : 
+                                $no++;
+                          ?>
+                          <tr style="font-size: 14px; border-bottom: 1px solid grey;">
+                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
+                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
+                          </tr>
+                          <?php endif; endforeach;?>
+                        </table>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">OBAT DITERIMA</h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <table width="100%">
+                          <thead>
+                          <tr style="font-size: 16px; border-bottom: 1px solid black;">
+                              <th width="30px">No</th>
+                              <th>Nama Pasien</th>
+                              <th class="center">Waktu</th>
+                          </tr>
+                          </thead>
+                          <?php 
+                            $no=0; 
+                            foreach($resep as $row) : 
+                              if($row->log_time_6) : 
+                                $no++;
+                          ?>
+                          <tr style="font-size: 14px; border-bottom: 1px solid grey;">
+                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
+                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
+                          </tr>
+                          <?php endif; endforeach;?>
+                        </table>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
-              <div class="col-md-4 no-padding">
-                <div class="col-xs-12 widget-container-col ui-sortable no-padding" id="widget-container-col-1">
-                  <?php for($i=6;$i<9;$i++) :?>
-                    <div class="alert alert-success" style="background-image: linear-gradient(#bbf75a, #9be820d9); color: black !important; font-weight: bold">
-                      <div class="nama-pasien-antrian-small" id="antrian-ke-<?php echo $i;?>" style="text-align: left"></div>
-                    </div>
-                  <?php endfor; ?>
-                </div>
-                <div class="col-md-12 no-padding" style="padding-left: 5px">
-                  <div class="alert alert-success center" style="background-image: linear-gradient(#bbf75a, #e86120d9); color: black !important; font-weight: bold">
-                      <span style="font-size: 1.5em; font-weight: bold">Total antrian dalam proses</span><br>
-                      <span style="font-size: 4em; font-weight: bold" id="total-antrian">0</span><br><span style="font-size: 2em; font-weight: bold" id="txt-pasien"> (Resep Obat) </span>
-                    </div>
-                </div>
-                <div class="col-md-12 no-padding" style="padding-left: 5px">
-                  <div class="alert alert-success center" style="background-image: linear-gradient(#bbf75a, #2082e8d9); color: black !important; font-weight: bold">
-                      <span style="font-size: 3em; font-weight: bold" class="blink_me">LAYANAN ANTAR OBAT KE RUMAH</span><br>
-                      <span style="font-size: 1.5em; font-weight: bold">"Jika Bosan Menunggu Lama, Kami Yang Antar Kerumah Anda"</span>
-                    </div>
-                </div>
-                <!-- <div class="col-md-6 no-padding" style="padding-left: 5px">
-                  <div class="alert alert-success" style="background-image: linear-gradient(#bbf75a, #20d6e8d9); color: black !important; font-weight: bold">
-                      <span style="font-size: 1.5em; font-weight: bold">Sudah dilayani</span><br>
-                      <span style="font-size: 3em; font-weight: bold">153</span>
-                    </div>
-                </div> -->
-              </div><!-- /.col -->
-            </div><!-- /.row -->
+              
+            </div>
+
           </div><!-- /.page-content -->
         </div>
+
       </div><!-- /.main-content -->
-
-      <div class="footerx">
-        <div class="footer-inner">
-          <!-- #section:basics/footer -->
-          <!-- <div class="footer-content">
-            <div style="width:90%;float:left;">
-              <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:3px;"> Bagi pasien yang belum terdaftar pada Display Antrian Instalasi Farmasi diharapkan untuk menunggu antrian diluar agar tidak terjadi kerumunuan di ruang tunggu apotik. | <?php echo COMP_MOTTO?> </marquee>
-            </div>
-            <div style="width:10%;float:left;margin-top: 5px">
-              <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
-              <p style="margin:0;font-size:16px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
-            </div>
-          </div> -->
-
-          <!-- /section:basics/footer -->
+      
+      <div class="footer footer-fixed">
+        <div class="footer-inner" style="background: #0765a1; color: white; width: 100vw;">
+          <div class="footer-content" style="background: #0765a1; color: white; display: flex; justify-content: space-between; align-items: center; width: 100vw; padding: 0 2vw; min-height: 60px;">
+            <!-- <div class="center">
+              <span style="font-size: 1.5em; font-weight: bold; padding: 20px; font-style: italic;">Partners and Integrated System :</span><br>
+              <?php for($i=1; $i<13; $i++) : ?>
+              <img style="padding: 10px" height="80px" src="<?php echo base_url().'assets/insani/partner/'.$i.'.png'?>">
+              <?php endfor;?>
+            </div> -->
+            <span class="bigger-120" style="font-size: 1.2vw; font-weight: bold;">
+              <span class="white bolder">RS Setia Mitra</span>
+              | <i>Smart Hospital System 4.0 </i> &copy; 2018-<?php echo date('Y')?>
+            </span>
         </div>
+      </div>
+      <style>
+        .header-fixed {
+          position: sticky;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          z-index: 1000;
+          box-shadow: 0 2px 12px rgba(13,82,128,0.12);
+        }
+        .footer-fixed {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100vw;
+          z-index: 999;
+          box-shadow: 0 -2px 12px rgba(13,82,128,0.12);
+        }
+        .main-content {
+          margin-bottom: 70px; /* space for footer */
+        }
+        @media (max-width: 900px) {
+          .footer-content span {
+            font-size: 2vw !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .footer-content span {
+            font-size: 3vw !important;
+          }
+        }
+      </style>
       </div>
 
       <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
@@ -238,6 +406,101 @@
       </a>
     </div><!-- /.main-container -->
 
- 
-  </body>
+    <!-- basic scripts -->
+
+    
+    <!--[if !IE]> -->
+    <script type="text/javascript">
+      window.jQuery || document.write("<script src='<?php echo base_url()?>/assets/js/jquery.js'>"+"<"+"/script>");
+    </script>
+
+    <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery-ui.min.js"></script>
+
+    <script type="text/javascript">
+      if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+    </script>
+    <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
+
+    <!-- ace scripts -->
+    <script src="<?php echo base_url()?>assets/js/ace/ace.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.ajax-content.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.touch-drag.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.sidebar.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.sidebar-scroll-1.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.submenu-hover.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.widget-box.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.settings.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.settings-rtl.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.settings-skin.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.widget-on-reload.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.searchbox-autocomplete.js"></script>
+
+    <script type="text/javascript"> ace.vars['base'] = '..'; </script>
+    <script src="<?php echo base_url()?>assets/js/ace/elements.onpage-help.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.onpage-help.js"></script>
+    <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
+    
+    <!-- farmnasi -->
+    <script>
+      $(document).ready( function(){
+
+        // setInterval( function () {
+          
+
+          // antrian farmasi
+          $.getJSON("<?php echo site_url('display_antrian/reload_antrian_farmasi') ?>", '', function (data) {   
+            
+            // console.log(data.result);
+            $.each(data.result, function (key, val) { 
+              // console.log(val);
+              $.each(val, function (keys, vals) {  
+                console.log(key);
+                $('#table_'+key+'_'+keys+' tbody').remove();
+                var length = vals.length;
+                $.each(vals, function (k, v) {  
+                  // console.log(k);
+                  // console.log(v);
+                  if(k < 2){
+                    var prefix = (v.kode_perusahaan == 120)?'B':'A';
+                    var lgth_no_antrian = v.no_antrian.toString();
+                    // console.log(lgth_no_antrian);
+                    var no_antrian = (lgth_no_antrian.length == 1) ? '0'+v.no_antrian : v.no_antrian;
+                    var icon = (k == 0) ? '<span style="float: right !important"><i class="fa fa-circle green"></i></span>' : '' ;
+                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">'+prefix+' '+no_antrian+' &nbsp;&nbsp;</span></td><td><span>'+v.nama_pasien.substr(0,15)+'</span>'+icon+'</td></tr>').appendTo($('#table_'+v.kode_farmasi_bpjs+'_'+v.kode_dokter+''));
+                  }
+
+                  if(length == 1){
+                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">X 00 &nbsp;&nbsp;</span></td><td>-</td></tr>').appendTo($('#table_'+v.kode_farmasi_bpjs+'_'+v.kode_dokter+''));
+                  }
+                  
+                })
+
+                
+
+              })
+              
+            })
+
+            
+          });
+
+        // }, 2000 );
+      
+        setInterval("reload_page();",3000);
+
+      });
+      
+
+      function reload_page(){
+
+        // $('#refresh').load(location.href + ' #time');
+        location.reload(location.href);
+
+      }
+
+    </script>
+
+    
+</body>
 </html>

@@ -327,8 +327,8 @@ function saveCatatanVerif(id){
                 <th style="width: 100px">Jenis Resep</th>
                 <th style="width: 100px">No MR</th>
                 <th>Nama Pasien</th>
-                <th>Nama Dokter</th>
-                <th>Asal Poli/bagian</th>
+                <th>Dokter</th>
+                <th>Asal Unit</th>
                 <th>Penjamin</th>
                 <?php if($flag == 'RJ') : ?>
                 <th width="180px">Diagnosa Akhir</th>
@@ -337,9 +337,9 @@ function saveCatatanVerif(id){
                 <?php endif;  ?>
                 <th width="90px">Status Resep</th>
                 <?php if($flag == 'RJ') : ?>
-                <th width="80px">Verifikasi Apotik Online</th>
+                <th width="80px">Verif Apol</th>
                 <?php endif;?>
-                <th width="80px">Lock eResep</th>
+                <th width="80px">Terima Resep</th>
               </tr>
             </thead>
             <tbody>

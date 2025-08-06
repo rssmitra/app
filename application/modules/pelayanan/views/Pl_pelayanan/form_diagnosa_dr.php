@@ -1278,13 +1278,13 @@ audio, canvas, progress, video {
 <div class="form-group">
     <label class="control-label col-sm-3" for="">Cara Keluar Pasien</label>
     <div class="col-sm-4">
-        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), ($value->cara_keluar_pasien) ? $value->cara_keluar_pasien : 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
     </div>
 </div>
 <div class="form-group">
     <label class="control-label col-sm-3" for="">Pasca Pulang</label>
     <div class="col-sm-4">
-        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), ($riwayat->pasca_pulang) ? $riwayat->pasca_pulang : 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
     </div>
 </div>
 

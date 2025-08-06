@@ -109,7 +109,7 @@ $(document).ready(function() {
         else {
             /*data*/
             
-            $.getJSON("pelayanan/Pl_pelayanan/get_transaksi_by_id?type=html&kode=" + kode_trans_pelayanan, '', function (data) {
+            $.getJSON("pelayanan/Pl_pelayanan/get_transaksi_by_id?type=html&form=dr&kode=" + kode_trans_pelayanan, '', function (data) {
                 response_data = data;
                 // Open this row
                 row.child( format( response_data ) ).show();
