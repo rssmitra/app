@@ -25,10 +25,13 @@ class Display_antrian extends MX_Controller {
     public function farmasi() {
         
         $data = array();
+        $resep_diterima = $this->db->select('mt_master_pasien.nama_pasien, tgl_pesan, fr_tc_far.kode_trans_far')->order_by('tgl_pesan', 'ASC')->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_pesan_resep.no_mr','left')->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_tc_pesan_resep.kode_pesan_resep','left')->get_where('fr_tc_pesan_resep', ['CAST(tgl_pesan as DATE) = ' => date('Y-m-d')])->result();
+
+        // echo '<pre>';print_r($this->db->last_query());die;
         $resep = $this->db->order_by('tgl_trans', 'ASC')->get_where('fr_tc_far', ['CAST(tgl_trans as DATE) = ' => date('Y-m-d'), 'flag_trans' => 'RJ', 'pengambilan_resep' => 'ditunggu'])->result();
+        $data['resep_diterima'] = $resep;
         $data['resep'] = $resep;
 
-        // echo '<pre>';print_r($data);die;
         $this->load->view('display_antrian/index_farmasi', $data);
     }
 

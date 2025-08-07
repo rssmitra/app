@@ -661,10 +661,8 @@ class Process_entry_resep extends MX_Controller {
         // print_r($_POST);die;
         $this->db->trans_begin();
         $status = ($_POST['status'] == 'true') ? 1 : 0;
-        if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['lock_eresep' => $status, 'log_time_1' => date('Y-m-d H:i:s')]))
+        if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['lock_eresep' => $status, 'lock_time' => date('Y-m-d H:i:s')]))
         {
-            $this->db->where('lock_eresep IS NULL')->update('fr_tc_pesan_resep_detail', ['lock_eresep' => $status], ['kode_pesan_resep' => $_POST['ID']]);
-
             $this->db->trans_commit();
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['ID'] ));
         }

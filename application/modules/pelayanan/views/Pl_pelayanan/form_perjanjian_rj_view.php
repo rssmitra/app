@@ -41,9 +41,10 @@ jQuery(function($) {
     var dokter = $('#dokter_rajal').val();
     var jd_id = $('#jd_id').val();
     var no_mr = $('#no_mr').val();
+    var jeniskunjungan = $('input[name="jeniskunjungan"]:checked').val();
     /*check selected date */
 
-    $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id, no_mr : no_mr} , function(data) {
+    $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id, no_mr : no_mr, jeniskunjungan : jeniskunjungan} , function(data) {
 
         // cek selisih hari dari last_visit_date dengan selected_date
         var last_visit_date = new Date(data.last_visit_date);
