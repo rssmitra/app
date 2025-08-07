@@ -321,8 +321,20 @@ class References extends MX_Controller {
 		}
 
 		// cek 31 hari pelayanan bpjs
-		$last_visit = $this->Reg_pasien->cek_last_visit($_POST['no_mr'], $date);
-		$allow_visit = isset($last_visit['tgl_masuk']) ? date('Y-m-d', strtotime($last_visit['tgl_masuk']. '+ 31 days')) : '' ;
+		if(isset($_POST['jeniskunjungan']) && $_POST['jeniskunjungan'] != 2){
+			$last_visit = $this->Reg_pasien->cek_last_visit($_POST['no_mr'], $date);
+			$allow_visit = isset($last_visit['tgl_masuk']) ? date('Y-m-d', strtotime($last_visit['tgl_masuk']. '+ 31 days')) : '' ;
+		}else{
+			$last_visit = [
+				'tgl_masuk' => '',
+				'tgl_keluar' => '',
+				'poli' => '',
+				'dokter' => '',
+				'range' => 0,
+			]; 
+			$allow_visit = $date;
+		}
+		
 
 		// echo '<pre>'; print_r($allow_visit);
 		// echo '<pre>'; print_r($last_visit);

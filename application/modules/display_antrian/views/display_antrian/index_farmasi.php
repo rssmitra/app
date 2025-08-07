@@ -153,8 +153,8 @@
                           </thead>
                           <?php 
                             $no=0; 
-                              foreach($resep as $row) :
-                                if($row->log_time_1 != null && $row->log_time_2 == null) : 
+                              foreach($resep_diterima as $row) :
+                                if($row->kode_trans_far == null) :
                               $no++;
                           ?>
                           <tr style="font-size: 14px; border-bottom: 1px solid grey;">
