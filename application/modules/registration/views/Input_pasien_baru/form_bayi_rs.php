@@ -256,50 +256,57 @@
                
 
           <div id="data_bayi">
-                    <p><b><i class="fa fa-user"></i> DATA BAYI(*) </b></p>
+            <p><b><i class="fa fa-user"></i> DATA BAYI(*) </b></p>
 
-                    <div class="form-group" >
+            <div class="form-group" >
 
-                      <label class="control-label col-md-2">Nama Pasien</label>            
+              <label class="control-label col-md-2">Nama Bayi</label>    
+              <div class="col-md-4">      
+                <?php echo $this->master->get_change($params = array('table' => 'ri_bayi_lahir', 'id' => 'nama_bayi', 'name' => 'nama_bayi', 'where' => array()), '' , 'nama_pasien_input', 'nama_pasien_input', 'form-control', '', '') ?>
+              </div>
 
-                      <div class="col-md-4">            
+              <div class="col-md-2">
+                <label class="inline" style="margin-top: 4px;">
+                  <input type="checkbox" class="ace" name="bayi_kembar" id="bayi_kembar" value="1">
+                  <span class="lbl"> Bayi Lahir Kembar</span>
+                </label>
+              </div>
 
-                        <?php echo $this->master->get_change($params = array('table' => 'ri_bayi_lahir', 'id' => 'nama_bayi', 'name' => 'nama_bayi', 'where' => array()), '' , 'nama_pasien_input', 'nama_pasien_input', 'form-control', '', '') ?>
+            </div>
 
-                      </div>
+            
+            <div class="form-group">
 
-                    </div>
+              <label class="control-label col-md-2">Nama Ayah*</label>            
+
+              <div class="col-md-2">            
+
+                <div class="input-group">
+
+                  <input type="text" name="nama_ayah_pasien" id="nama_ayah_pasien" class="form-control" value="<?php echo isset($value)?$value->nama_ayah:''?>">
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="form-group">
+
+              <label class="control-label col-md-2">Pekerjaan Ayah*</label>
+
+              <div class="col-md-4">
+
+                <?php echo $this->master->custom_selection($params = array('table' => 'mst_job', 'id' => 'job_name', 'name' => 'job_name', 'where' => array()), isset($value)?$value->pekerjaan_ayah:'' , 'job', 'job', 'form-control', '', '') ?> 
+
+              </div>
+
+            </div>
+
 
                     
-                    <div class="form-group">
-
-                      <label class="control-label col-md-2">Nama Ayah*</label>            
-
-                      <div class="col-md-2">            
-
-                        <div class="input-group">
-
-                          <input type="text" name="nama_ayah_pasien" id="nama_ayah_pasien" class="form-control" value="<?php echo isset($value)?$value->nama_ayah:''?>">
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                      <label class="control-label col-md-2">Pekerjaan Ayah*</label>
-
-                      <div class="col-md-4">
-
-                        <?php echo $this->master->custom_selection($params = array('table' => 'mst_job', 'id' => 'job_name', 'name' => 'job_name', 'where' => array()), isset($value)?$value->pekerjaan_ayah:'' , 'job', 'job', 'form-control', '', '') ?> 
-
-                      </div>
-
-                    </div>
-                    
-          </div><br>
+          </div>
+          <br>
 
           <div id="data_ibu" style="display:none">
             <p><b><i class="fa fa-user"></i> DATA IBU(*) </b></p>

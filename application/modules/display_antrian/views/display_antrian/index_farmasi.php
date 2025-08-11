@@ -155,7 +155,7 @@
                             $no=0; 
                               foreach($resep_diterima as $row) :
                                 if($row->kode_trans_far == null) :
-                              $no++;
+                                  $no++;
                           ?>
                           <tr style="font-size: 14px; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
@@ -187,9 +187,11 @@
                           </thead>
                           <?php 
                             $no=0; 
+                            $arr_penyediaan_obat = [];
                             foreach($resep as $row) : 
                               if($row->log_time_2 != null && $row->log_time_3 == null) : 
                                 $no++;
+                                $arr_penyediaan_obat[] = $row;
                           ?>
                           <tr style="font-size: 14px; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
@@ -222,9 +224,11 @@
                           </thead>
                           <?php 
                             $no=0; 
+                            $arr_racikan = [];
                             foreach($resep as $row) : 
                               if($row->log_time_3 != null && $row->log_time_4 == null) : 
                                 $no++;
+                                $arr_racikan[] = $row;
                           ?>
                           <tr style="font-size: 14px; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
@@ -257,9 +261,11 @@
                           </thead>
                           <?php 
                             $no=0; 
+                            $arr_etiket = [];
                             foreach($resep as $row) : 
                               if($row->log_time_4 != null && $row->log_time_5 == null) : 
                                 $no++;
+                                $arr_etiket[] = $row;
                           ?>
                           <tr style="font-size: 14px; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
@@ -292,9 +298,11 @@
                           </thead>
                           <?php 
                             $no=0; 
+                            $arr_siap_diambil = [];
                             foreach($resep as $row) : 
                               if($row->log_time_5 != null && $row->log_time_6 == null) : 
                                 $no++;
+                                $arr_siap_diambil[] = $row;
                           ?>
                           <tr style="font-size: 14px; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
@@ -309,36 +317,87 @@
                   </div>
                 </div>
 
+
                 <div class="col-sm-2">
                   <div class="widget-box">
                     <div class="widget-header widget-header-flat">
-                      <h4 class="widget-title center" style="text-align: center !important">OBAT DITERIMA</h4>
+                      <h4 class="widget-title center" style="text-align: center !important">REKAP ANTRIAN OBAT</h4>
                     </div>
-
                     <div class="widget-body">
                       <div class="widget-main">
-                        <table width="100%">
-                          <thead>
-                          <tr style="font-size: 16px; border-bottom: 1px solid black;">
-                              <th width="30px">No</th>
-                              <th>Nama Pasien</th>
-                              <th class="center">Waktu</th>
-                          </tr>
-                          </thead>
-                          <?php 
-                            $no=0; 
-                            foreach($resep as $row) : 
-                              if($row->log_time_6) : 
-                                $no++;
-                          ?>
-                          <tr style="font-size: 14px; border-bottom: 1px solid grey;">
-                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
-                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
-                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
-                          </tr>
-                          <?php endif; endforeach;?>
-                        </table>
+                        <?php
+                          // Rekap antrian farmasi: total resep selesai dan rata-rata waktu tunggu
+                          $total_selesai = 0;
+                          $total_detik = 0;
+                          if (isset($resep) && is_array($resep)) {
+                            foreach($resep as $row) {
+                              if($row->log_time_6 != null && $row->log_time_1 != null) {
+                                $total_selesai++;
+                                $start = strtotime($row->log_time_1);
+                                $end = strtotime($row->log_time_6);
+                                $total_detik += ($end - $start);
+                              }
+                            }
+                          }
+                          $rata2 = '-';
+                          if($total_selesai > 0 && $total_detik > 0) {
+                            $avg = $total_detik / $total_selesai;
+                            $jam = floor($avg / 3600);
+                            $menit = floor(($avg % 3600) / 60);
+                            $detik = $avg % 60;
+                            $rata2 = sprintf('%02d:%02d:%02d', $jam, $menit, $detik);
+                          }
+                        ?>
                         
+                        <table style="width:100%; font-size:15px;">
+                          <tr>
+                            <td>Resep Masuk/Diterima</td>
+                          </tr>
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($resep_diterima); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Proses Penyediaan Obat</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_penyediaan_obat); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Proses Racikan</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_racikan); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Proses Etiket</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_etiket); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Siap Diambil</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_siap_diambil); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Rata-rata waktu tunggu obat</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo $rata2; ?></b></td>
+                          </tr>
+
+                        </table>
                       </div>
                     </div>
                   </div>

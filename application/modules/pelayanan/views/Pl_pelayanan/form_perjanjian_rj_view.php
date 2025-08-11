@@ -71,6 +71,7 @@ jQuery(function($) {
         if(data.range_visit > 0){
           // show informasi
           $('#div_less_then_31_bpjs').show();
+          $('#view_last_message').hide('fast');
           $('#show_notif_less_then_31').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien kurang dari 30 hari pelayanan BPJS. Berpotensi Gagal Rekam Obat Farmasi/ Resep PRB<br>Pasien dapat kontrol kembali diatas tanggal <b>'+data.allow_visit_date+'</b></div>');
           return false;
         }else{
@@ -181,6 +182,11 @@ $(document).ready(function(){
         }        
 
     });
+
+    $('input[name="jeniskunjungan"]').change(function(){
+      $('#view_last_message').hide();
+      $('#div_less_then_31_bpjs').hide();
+    })
 
     $('#perusahaan').typeahead({
         source: function (query, result) {
