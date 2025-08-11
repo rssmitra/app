@@ -103,6 +103,7 @@ class Process_entry_resep extends MX_Controller {
                 /*update existing*/
                 $data_farmasi['iter'] = isset($_POST['jenis_iter'])?$_POST['jenis_iter']:'';
                 $data_farmasi['kode_trans_far'] = $kode_trans_far;
+                $data_farmasi['log_time_1'] = date('Y-m-d H:i:s');
                 $data_farmasi['created_date'] = date('Y-m-d H:i:s');
                 $data_farmasi['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 // echo '<pre>';print_r($data_farmasi);die;

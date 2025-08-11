@@ -516,7 +516,7 @@ class Input_pasien_baru extends MX_Controller {
 
                 $mrID=$tambah_nol.$mrID;
 
-                $dataexc['no_mr'] = $mrID;
+                
                 $dataexc['create_date'] = date('Y-m-d H:i:s');
                 $dataexc['no_mr_barcode'] = $mrID;
                 $dataexc['masa_mulai'] = date('Y-m-d h:i:s');
@@ -535,8 +535,22 @@ class Input_pasien_baru extends MX_Controller {
                 //print_r($dataexc);die;
 
                 /*save pasien */
-                $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
-
+                // cek data pasien sebelumnya
+                $bayi = $this->db->get_where('mt_master_pasien', array('mr_ibu' => $this->input->post('mr_ibu')))->row();
+                
+                if(isset($_POST['bayi_kembar']) && $_POST['bayi_kembar'] == 1){
+                    $dataexc['no_mr'] = $mrID;
+                    $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
+                }else{
+                    if(!empty($bayi)){
+                        $dataexc['no_mr'] = $bayi->no_mr;
+                        $this->db->update('mt_master_pasien', $dataexc, array('no_mr' => $bayi->no_mr));
+                    }else{
+                        $dataexc['no_mr'] = $mrID;
+                        $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
+                    }
+                }
+                
                 /*save logs*/
                 $this->logs->save('mt_master_pasien', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_mt_master_pasien');
 

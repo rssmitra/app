@@ -258,20 +258,16 @@ class Entry_resep_racikan extends MX_Controller {
                         $this->db->insert('tc_far_racikan', $data_racikan);
                         // print_r($this->db->last_query());
                         $new_id_tc_far_racikan = $this->db->insert_id();
-                        // print_r($new_id_tc_far_racikan);
-                        // die;
-                         /*save log*/
-                        // $this->logs->save('tc_far_racikan', $new_id_tc_far_racikan, 'insert new record on entry resep racikan module', json_encode($data_racikan),'id_tc_far_racikan');                        
 
-                   
+                        // update fr_tc_far
+                        $this->db->where('kode_trans_far', $kode_trans_far)->update('fr_tc_far', array('jenis_resep' => 'racikan'));
+                        
                     }else{
                         $data_racikan['updated_date'] = date('Y-m-d H:i:s');
                         $data_racikan['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                         $new_id_tc_far_racikan = $_POST['id_tc_far_racikan'];
                         
                         $this->db->update('tc_far_racikan', $data_racikan, array('id_tc_far_racikan' => $_POST['id_tc_far_racikan']) );
-                         /*save log*/
-                        // $this->logs->save('tc_far_racikan', $new_id_tc_far_racikan, 'update record on entry resep racikan module', json_encode($data_racikan),'id_tc_far_racikan');
                         
                     }
 
