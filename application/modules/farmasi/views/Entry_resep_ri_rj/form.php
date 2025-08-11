@@ -380,7 +380,9 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
     $('#sisa_stok').val(response.sisa_stok);
     if(response.is_restrict == 'Y'){
       $('#warning_restriksi').show();
-      $('#warning_restriksi').html('<b>Obat Restriksi!</b><br>'+response.restrict_desc+'');
+      // Konversi newline (\n) menjadi <br> agar tampilan rapi
+      var restrictDesc = response.restrict_desc ? response.restrict_desc.replace(/\n/g, '<br>') : '';
+      $('#warning_restriksi').html('<b>Obat Restriksi!</b><br>' + restrictDesc);
     }else{
       $('#warning_restriksi').hide();
     }

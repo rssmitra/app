@@ -9,6 +9,7 @@ class Display_antrian extends MX_Controller {
         parent::__construct();
  
         $this->load->model('Display_antrian_model','display_antrian'); 
+        $this->load->model('farmasi/Log_proses_resep_obat_model', 'Log_proses_resep_obat');
         $this->load->model('antrian/loket_model','loket');
 
     }
@@ -25,10 +26,10 @@ class Display_antrian extends MX_Controller {
     public function farmasi() {
         
         $data = array();
-        $resep_diterima = $this->db->select('mt_master_pasien.nama_pasien, tgl_pesan as tgl_trans, fr_tc_far.kode_trans_far')->order_by('tgl_pesan', 'ASC')->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_pesan_resep.no_mr','left')->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_tc_pesan_resep.kode_pesan_resep','left')->get_where('fr_tc_pesan_resep', ['CAST(tgl_pesan as DATE) = ' => date('Y-m-d')])->result();
+        $resep_diterima = $this->db->select('mt_master_pasien.nama_pasien, tgl_pesan as tgl_trans, fr_tc_far.kode_trans_far')->order_by('tgl_pesan', 'ASC')->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_pesan_resep.no_mr','left')->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_tc_pesan_resep.kode_pesan_resep','left')->get_where('fr_tc_pesan_resep', ['CAST(tgl_pesan as DATE) = ' => date('Y-m-d'), 'fr_tc_pesan_resep.kode_profit' => 2000])->result();
 
-        // echo '<pre>';print_r($this->db->last_query());die;
-        $resep = $this->db->order_by('tgl_trans', 'ASC')->get_where('fr_tc_far', ['CAST(tgl_trans as DATE) = ' => date('Y-m-d'), 'flag_trans' => 'RJ', 'pengambilan_resep' => 'ditunggu'])->result();
+        $resep = $this->Log_proses_resep_obat->get_data();
+        // echo '<pre>';print_r($resep);die;
         $data['resep_diterima'] = $resep_diterima;
         $data['resep'] = $resep;
 

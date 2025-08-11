@@ -431,6 +431,9 @@ class Process_entry_resep extends MX_Controller {
                 $verifikasi = '';
             }
 
+            // cek fr_tc_far
+            $ex_dt = $this->db->where('kode_trans_far', $ID)->get('fr_tc_far')->row();
+
             // update status transaksi dan verifikasi
             $lampiran_lab = isset($_POST['lampiran_lab'])?$_POST['lampiran_lab']:'';
             $kode_penunjang = ($lampiran_lab == '') ? '' : $_POST['checklist_lab'][0]; 
@@ -447,6 +450,7 @@ class Process_entry_resep extends MX_Controller {
                 'lampiran_memo_inhibitor' => isset($_POST['lampiran_memo_inhibitor'])?$_POST['lampiran_memo_inhibitor']:'',
                 'perubahan_resep' => isset($_POST['perubahan_resep'])?$_POST['perubahan_resep']:'',
                 'log_time_2' => date('Y-m-d H:i:s'),
+                'jenis_resep' => ($ex_dt->jenis_resep == 'racikan')?'racikan':'non_racikan',
             ];
 
             $this->db->where('kode_trans_far', $ID);

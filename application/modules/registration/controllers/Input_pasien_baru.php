@@ -432,7 +432,11 @@ class Input_pasien_baru extends MX_Controller {
             /*execution*/
             $this->db->trans_begin();
 
-            $cek1 = $this->db->query("select * from mt_master_pasien where tgl_lhr='".$this->input->post('dob_pasien')."' and nama_pasien like '%".strtoupper($this->regex->_genRegex($this->form_validation->set_value('nama_pasien'),'RGXQSL'))."%'")->num_rows();
+            // $cek1 = $this->db->query("select * from mt_master_pasien where tgl_lhr='".$this->input->post('dob_pasien')."' and nama_pasien like '%".strtoupper($this->regex->_genRegex($this->form_validation->set_value('nama_pasien'),'RGXQSL'))."%'")->num_rows();
+
+
+            // cek data pasien sebelumnya
+            $bayi = $this->db->get_where('mt_master_pasien', array('mr_ibu' => $this->input->post('mr_ibu')));
         
             switch ($this->input->post('marital_status')) {
                 case 1:
@@ -499,60 +503,47 @@ class Input_pasien_baru extends MX_Controller {
                 }
                 $dataexc['url_foto_pasien'] = $this->upload_file->doUpload('path_foto', PATH_PHOTO_PROFILE_DEFAULT);
             }
-                            
-            if($cek1==0){
-                /*get max no mr*/
-                $cekMaxMr = $this->db->query("select TOP 1 no_mr from mt_master_pasien where LEN(no_mr)=8 order by no_mr desc ")->row();
-                
-                $mrID = $cekMaxMr->no_mr + 1;
-                
-                $panjang_mr=strlen($mrID);
-                $sisa_panjang=8-$panjang_mr;
-                $tambah_nol="";
-                
-                for ($i=1;$i<=$sisa_panjang;$i++){
-                    $tambah_nol=$tambah_nol."0";
-                }
 
-                $mrID=$tambah_nol.$mrID;
+            /*get max no mr*/
+            $cekMaxMr = $this->db->query("select TOP 1 no_mr from mt_master_pasien where LEN(no_mr)=8 order by no_mr desc ")->row();
+            
+            $mrID = $cekMaxMr->no_mr + 1;
+            
+            $panjang_mr=strlen($mrID);
+            $sisa_panjang=8-$panjang_mr;
+            $tambah_nol="";
+            
+            for ($i=1;$i<=$sisa_panjang;$i++){
+                $tambah_nol=$tambah_nol."0";
+            }
 
-                
-                $dataexc['create_date'] = date('Y-m-d H:i:s');
-                $dataexc['no_mr_barcode'] = $mrID;
-                $dataexc['masa_mulai'] = date('Y-m-d h:i:s');
-                $dataexc['masa_selesai'] = $this->input->post('tgl_akhir_kepemilikan');
-                $dataexc['jam_lahir'] = $this->input->post('dob_pasien');
+            $mrID=$tambah_nol.$mrID;
+            
+            $dataexc['create_date'] = date('Y-m-d H:i:s');
+            $dataexc['no_mr_barcode'] = $mrID;
+            $dataexc['masa_mulai'] = date('Y-m-d h:i:s');
+            $dataexc['masa_selesai'] = $this->input->post('tgl_akhir_kepemilikan');
+            $dataexc['jam_lahir'] = $this->input->post('dob_pasien');
 
-                $dataexc['nama_ayah'] = $this->input->post('nama_ayah_pasien');
-                $dataexc['pekerjaan_ayah'] = $this->input->post('job');
+            $dataexc['nama_ayah'] = $this->input->post('nama_ayah_pasien');
+            $dataexc['pekerjaan_ayah'] = $this->input->post('job');
 
-                $dataexc['mr_ibu'] = $this->input->post('mr_ibu');
-                $dataexc['nama_ibu'] = $this->input->post('nama_ibu_pasien');
+            $dataexc['mr_ibu'] = $this->input->post('mr_ibu');
+            $dataexc['nama_ibu'] = $this->input->post('nama_ibu_pasien');
 
-                $dataexc['berat_badan'] = $this->input->post('berat_badan');
-                $dataexc['panjang_badan'] = $this->input->post('panjang_badan');
+            $dataexc['berat_badan'] = $this->input->post('berat_badan');
+            $dataexc['panjang_badan'] = $this->input->post('panjang_badan');
 
+            if(isset($_POST['bayi_kembar']) && $_POST['bayi_kembar'] == 1){
                 //print_r($dataexc);die;
 
-                /*save pasien */
-                // cek data pasien sebelumnya
-                $bayi = $this->db->get_where('mt_master_pasien', array('mr_ibu' => $this->input->post('mr_ibu')))->row();
-                
-                if(isset($_POST['bayi_kembar']) && $_POST['bayi_kembar'] == 1){
+                if(!empty($bayi->row()->no_mr)){
+                    $dataexc['no_mr'] = $bayi->row()->no_mr;
+                    $this->db->update('mt_master_pasien', $dataexc, array('no_mr' => $bayi->row()->no_mr));
+                }else{
                     $dataexc['no_mr'] = $mrID;
                     $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
-                }else{
-                    if(!empty($bayi)){
-                        $dataexc['no_mr'] = $bayi->no_mr;
-                        $this->db->update('mt_master_pasien', $dataexc, array('no_mr' => $bayi->no_mr));
-                    }else{
-                        $dataexc['no_mr'] = $mrID;
-                        $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
-                    }
                 }
-                
-                /*save logs*/
-                $this->logs->save('mt_master_pasien', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_mt_master_pasien');
 
                 $this->Input_pasien_baru->update('ri_bayi_lahir', array('flag_lahir' => 1), array('id_bayi' => $this->input->post('id_bayi')));
 
@@ -566,10 +557,23 @@ class Input_pasien_baru extends MX_Controller {
                     $this->db->trans_commit();
                     echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $dataexc['no_mr']));
                 }
-
-            } else {
-
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Pasien Sudah Terdaftar, silahkan cek kembali data pasien tersebut'));            
+            }else {
+                if(empty($bayi->row())){
+                    $dataexc['no_mr'] = $mrID;
+                    $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
+                    if ($this->db->trans_status() === FALSE)
+                    {
+                        $this->db->trans_rollback();
+                        echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+                    }
+                    else
+                    {
+                        $this->db->trans_commit();
+                        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $dataexc['no_mr']));
+                    }
+                }else{
+                    echo json_encode(array('status' => 301, 'message' => 'Maaf Pasien Sudah Terdaftar, silahkan cek kembali data pasien tersebut'));            
+                }
 
             }
         

@@ -153,9 +153,11 @@
                           </thead>
                           <?php 
                             $no=0; 
+                            $arr_resep_diterima = [];
                               foreach($resep_diterima as $row) :
                                 if($row->kode_trans_far == null) :
                                   $no++;
+                                  $arr_resep_diterima[] = $row;
                           ?>
                           <tr style="font-size: 14px; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
@@ -189,7 +191,12 @@
                             $no=0; 
                             $arr_penyediaan_obat = [];
                             foreach($resep as $row) : 
-                              if($row->log_time_2 != null && $row->log_time_3 == null) : 
+                              if($row->jenis_resep == 'racikan'){
+                                $logtime = $row->log_time_3;
+                              }else{
+                                $logtime = $row->log_time_4;
+                              }
+                              if($row->log_time_2 != null && $logtime == null) : 
                                 $no++;
                                 $arr_penyediaan_obat[] = $row;
                           ?>
@@ -354,7 +361,7 @@
                             <td>Resep Masuk/Diterima</td>
                           </tr>
                           <tr>
-                            <td style="text-align:left; font-size: 24px"><b><?php echo count($resep_diterima); ?></b></td>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_resep_diterima); ?></b></td>
                           </tr>
 
                           <tr>
