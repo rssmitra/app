@@ -1747,10 +1747,10 @@ class Templates extends MX_Controller {
     public function setGlobalFooterBillingPM($nama_dokter, $flag='', $pm='', $data_pm=''){
         
         $config = [
-            'no_registrasi' => $data_pm->no_registrasi,
-            'kode' => $data_pm->kode_penunjang,
-            'tanggal' => $data_pm->tgl_daftar,
-            'flag' => $flag,
+            'no_registrasi' => isset($data_pm->no_registrasi)?$data_pm->no_registrasi:'',
+            'kode' => isset($data_pm->kode_penunjang)?$data_pm->kode_penunjang:'',
+            'tanggal' => isset($data_pm->tgl_daftar)?$data_pm->tgl_daftar:'',
+            'flag' => isset($flag)?$flag:'',
         ];
         // echo "<pre>"; print_r($config); die;
         $qr_url = $this->qr_code_lib->qr_url($config);

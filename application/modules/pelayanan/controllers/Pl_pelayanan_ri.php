@@ -438,8 +438,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $row[] = $this->tanggal->formatDateTime($row_list->tanggal);
                     
                     $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
-                    // $row[] = '<a href="#" onclick="show_modal_pengkajian('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
-                    // $row[] = '<a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
+                    
                     $row[] = '<a href="#" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                     
                     $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
@@ -463,50 +462,79 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $status = '&nbsp;<label class="label label-danger">BATAL</label>';
                 }
                 if($row_list->flag == 'resume'){
-                    $txt_resume = '<br>(RESUME MEDIS '.$row_list->tipe.')';
+                    $txt_resume = '<br>(Resume Medis - '.$row_list->tipe.')';
+                }else if($row_list->flag == 'cppt'){
+                    if(!empty($row_list->jenis_form)){
+                        $txt_resume = '<br>('.$row_list->jenis_pengkajian.')';
+                    }else{
+                        $txt_resume = '<br>(CPPT - '.$row_list->tipe.')'; 
+                    }
                 }else{
                     $txt_resume = '<br>('.$row_list->jenis_pengkajian.')';
                 }
                 $row[] = $this->tanggal->formatDateTime($row_list->tanggal).'<br>'.strtoupper($row_list->ppa).'<br>'.$row_list->nama_ppa.'<br><label class="label label-'.$class_label.'">'.$row_list->tipe.'</label>'.$txt_resume.'<br>'.$status.'';
 
-                $arr_text = isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '';
-                // $diagnosa_sekunder = '';
-                // foreach ($arr_text as $k => $v) {
-                //     $len = strlen(trim($v));
-                //     if($len > 0){
-                //         $diagnosa_sekunder += $v;
-                //     }
-                // }
+                $diagnosa_sekunder = isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '';
+                
                 $ttv = '';
-                if($row_list->flag == 'resume'){
-                    $ttv .= 'Vital Sign :<br>';
-                    if($row_list->tinggi_badan != ''){
-                        $ttv .= 'tb. '.$row_list->tinggi_badan.' cm<br>';
+                if($row_list->flag == 'resume' && $row_list->tipe == 'RJ'){
+                    $ttv .= '<br><b><i>Vital Sign :</i></b><br>';
+                    // Tampilkan vital sign dalam bentuk tabel horizontal
+                    $ttv .= '<table class="table table-bordered table-condensed" style="width:auto; margin-bottom:0">';
+                    $ttv .= '<tr>';
+                    if($row_list->tinggi_badan != '') {
+                        $ttv .= '<th style="text-align:center; width: 120px; background: #cacaca">Tinggi Badan</th>';
                     }
-                    if($row_list->berat_badan != ''){
-                        $ttv .= 'bb. '.$row_list->berat_badan.' kg<br>';
+                    if($row_list->berat_badan != '') {
+                        $ttv .= '<th style="text-align:center; width: 120px; background: #cacaca">Berat Badan</th>';
                     }
-                    if($row_list->tekanan_darah != ''){
-                        $ttv .= 'td. '.$row_list->tekanan_darah.' mm<br>';
+                    if($row_list->tekanan_darah != '') {
+                        $ttv .= '<th style="text-align:center; width: 120px; background: #cacaca">Tekanan Darah</th>';
                     }
-                    if($row_list->nadi != ''){
-                        $ttv .= 'nadi. '.$row_list->nadi.' bpm<br>';
+                    if($row_list->nadi != '') {
+                        $ttv .= '<th style="text-align:center; width: 120px; background: #cacaca">Nadi</th>';
                     }
-                    if($row_list->suhu != ''){
-                        $ttv .= 'suhu. '.$row_list->suhu.' &deg;C<br>';
+                    if($row_list->suhu != '') {
+                        $ttv .= '<th style="text-align:center; width: 120px; background: #cacaca">Suhu</th>';
                     }
+                    $ttv .= '</tr><tr>';
+                    if($row_list->tinggi_badan != '') {
+                        $ttv .= '<td style="text-align:center">'.$row_list->tinggi_badan.' cm</td>';
+                    }
+                    if($row_list->berat_badan != '') {
+                        $ttv .= '<td style="text-align:center">'.$row_list->berat_badan.' kg</td>';
+                    }
+                    if($row_list->tekanan_darah != '') {
+                        $ttv .= '<td style="text-align:center">'.$row_list->tekanan_darah.' mm</td>';
+                    }
+                    if($row_list->nadi != '') {
+                        $ttv .= '<td style="text-align:center">'.$row_list->nadi.' bpm</td>';
+                    }
+                    if($row_list->suhu != '') {
+                        $ttv .= '<td style="text-align:center">'.$row_list->suhu.' &deg;C</td>';
+                    }
+                    $ttv .= '</tr></table>';
                 }
+
                 if($row_list->jenis_form != null){
                     $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                 }else{
-                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br><br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$arr_text.''.'<br><br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>';
+                    $btn_monitoring = '';
+                    if($row_list->tipe == 'RI'){
+                        $btn_monitoring = '<a href="#" class="btn btn-xs btn-primary" onclick="show_modal('."'pelayanan/Pl_pelayanan_ri/observasi_harian_keperawatan_view_only/".$row_list->reff_id."/".$row_list->no_kunjungan."?type=Ranap&kode_bag=".$row_list->kode_bagian_tujuan."&tipe_monitoring=UMUM'".', '."'Monitoring Observasi Keperawatan Harian Pasien'".')"><i class="fa fa-folder"></i> Monitoring Observasi Keperawatan Harian Pasien</a>';
+                    }
+                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br><br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br><br>'.$btn_monitoring.'';
                 }
     
                 $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
                 $desc = ($row_list->is_verified == 1) ? ''.$row_list->verified_by.'<br>'.$this->tanggal->formatDateTime($row_list->verified_date).'' : '' ;
                 $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->id.', this.value)" '.$checked.' ><span class="lbl"></span><br><span id="verif_id_'.$row_list->id.'">'.$desc.'</span></div>';
                 if($row_list->jenis_form == null){
-                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+                    if($row_list->tipe == 'RI'){
+                        $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+                    }else{
+                        $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+                    }
                 }else{
                     $row[] = '<div class="center"></div>';
                 }
@@ -591,6 +619,50 @@ class Pl_pelayanan_ri extends MX_Controller {
         // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_monitoring', $data);
+    }
+
+    public function observasi_harian_keperawatan_view_only($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_ri'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['type']='Ranap';
+        $data['status_pulang'] = $data['value']->status_pulang;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+
+        // monitor perkembangan pasie
+        $riwayat_monitoring = $this->db->order_by('id', 'DESC')->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $no_kunjungan])->result();
+        $getDtMonitoring = [];
+        $getDtHemodinamik = [];
+        $getDtPerkembangan = [];
+        foreach($riwayat_monitoring as $key=>$row){
+            if($row->flag_form == 'btn_work_day'){
+                $getDtMonitoring[$row->tgl_monitor][] = $row;
+            }
+            if($row->flag_form == 'btn_hemodinamik'){
+                $getDtHemodinamik[$row->tgl_monitor][] = $row;
+            }
+
+            if($row->flag_form == 'btn_monitor_perkembangan_pasien'){
+                $getDtPerkembangan[$row->tgl_monitor][] = $row;
+            }
+                
+        }
+        $data['perkembangan'] = $getDtMonitoring;
+        $data['hemodinamik'] = $getDtHemodinamik;
+        $data['monitoring'] = $getDtPerkembangan;
+        // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_observasi_harian_keperawatan_view_only', $data);
     }
 
     public function observasi_harian_keperawatan($id='', $no_kunjungan='')
