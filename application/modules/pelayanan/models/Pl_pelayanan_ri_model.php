@@ -80,9 +80,9 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		} 
 
 		if((isset($_GET['is_icu']) AND $_GET['is_icu']=='Y')){
-			$this->db->where("ri_tc_rawatinap.bag_pas IN ('031001','032601') ");
+			$this->db->where("ri_tc_rawatinap.bag_pas IN ('031001','032601', '032501') ");
 		}else if((isset($_GET['is_icu']) AND $_GET['is_icu']=='N')){
-			$this->db->where("ri_tc_rawatinap.bag_pas NOT IN ('031001','032601') ");
+			$this->db->where("ri_tc_rawatinap.bag_pas NOT IN ('031001','032601', '032501') ");
 		}
         /*end parameter*/
 		/*check level user*/
@@ -591,10 +591,12 @@ class Pl_pelayanan_ri_model extends CI_Model {
 
 	function get_datatables_cppt($no_mr)
 	{	
-		$this->db->where('no_mr', $no_mr);
+		$this->db->select('view_cppt.*, tc_kunjungan.kode_bagian_tujuan');
+		$this->db->where('view_cppt.no_mr', $no_mr);
 		if(isset($_GET['no_registrasi'])){
-			$this->db->where('no_registrasi', $_GET['no_registrasi']);
+			$this->db->where('view_cppt.no_registrasi', $_GET['no_registrasi']);
 		}
+		$this->db->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=view_cppt.no_kunjungan', 'left');
 		$query = $this->db->order_by('tanggal', 'DESC')->get('view_cppt')->result();
 		// echo $this->db->last_query();
 		return $query;

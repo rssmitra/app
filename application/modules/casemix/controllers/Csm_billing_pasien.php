@@ -356,44 +356,72 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
             case 'RAD':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+                if(!isset($_GET['format'])){
                     $html .= $temp->setGlobalHeaderTemplate();
+                }else{
+                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                        $html .= $temp->setGlobalHeaderTemplate();
+                    }
                 }
+                
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
-                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+                if(!isset($_GET['format'])){
                     $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                }else{
+                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                        $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                    }
                 }
+                
                 break;
 
             case 'FSO':
                 $content_data = $this->Csm_billing_pasien->getOrderFisio($no_registrasi);
                 // echo "<pre>"; print_r($this->db->last_query());die;
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+                if(!isset($_GET['format'])){
                     $html .= $temp->setGlobalHeaderTemplate();
+                }else{
+                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                        $html .= $temp->setGlobalHeaderTemplate();
+                    }
                 }
+
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($temp->TemplatePengantarFisio($content_data));
-                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+
+                if(!isset($_GET['format'])){
                     $html .= $temp->setGlobalFooterRm($data, 'FSO');
+                }else{
+                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                        $html .= $temp->setGlobalFooterRm($data, 'FSO');
+                    }
                 }
+
+                
             break;
                 
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
                 $template_html = $temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm);
-                if(isset($_GET['format']) && $_GET['format'] == 'html'){
-                }else{
+                if(!isset($_GET['format'])){
                     $html .= $temp->setGlobalHeaderTemplate();
+                }else{
+                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                        $html .= $temp->setGlobalHeaderTemplate();
+                    }
                 }
 
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($template_html);
 
-                if(isset($_GET['format']) && $_GET['format'] == 'html'){
-                }else{
+                if(!isset($_GET['format'])){
                     $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
+                }else{
+                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                        $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
+                    }
                 }
                 break;
 

@@ -225,22 +225,29 @@ function upload_file_rm(){
   $('#section_history_cppt').hide('fast');
 }
 
-function show_edit(myid){
+function show_edit(myid, type, no_kunjungan, reff_id){
   preventDefault();
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
-    // show data
-    $('#section_form_cppt').show('fast');
-    $('#section_history_cppt').show('fast');
-    $('#cppt_id').val(response.cppt_id);
-    var subjective = response.cppt_subjective;
-    $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
-    var objective = response.cppt_objective;
-    $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
-    var assesment = response.cppt_assesment;
-    $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
-    var plan = response.cppt_plan;
-    $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
-  }); 
+  if(type == 'RJ'){
+    $('#form_edit_resume_rj').show();
+    $('#section_history_cppt').hide('fast');
+    $('#form_edit_resume_rj').load('pelayanan/Pl_pelayanan/diagnosa_dr_edit_from_cppt/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_bag=');
+  }else{
+    $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
+      // show data
+      $('#section_form_cppt').show('fast');
+      $('#section_history_cppt').hide('fast');
+      $('#cppt_id').val(response.id);
+      var subjective = response.subjective;
+      $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
+      var objective = response.objective;
+      $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
+      var assesment = response.assesment;
+      $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
+      var plan = response.planning;
+      $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
+    }); 
+  }
+  
 }
 
 function find_data_reload(result, base_url){
@@ -519,6 +526,8 @@ function tambah_file()
 
       </form>
   </div>
+
+  <div id="form_edit_resume_rj" style="display: none; padding: 10px"></div>
   
 </div>
 
