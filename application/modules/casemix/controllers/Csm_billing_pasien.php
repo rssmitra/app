@@ -609,9 +609,9 @@ EOD;
         foreach($doc_pdf as $key=>$value) {
             $str_replace = str_replace('uploaded/casemix/log/','',$value->csm_dex_fullpath);
             $nama_dok = ($value->is_adjusment == 'Y')?$str_replace:$value->csm_dex_nama_dok;
-            $date = date("Y-m-d",strtotime($value->csm_rp_tgl_masuk));
-            $month = date("M",strtotime($value->csm_rp_tgl_masuk));
-            $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
+            $date = date("Y-m-d",strtotime($value->csm_rp_tgl_keluar));
+            $month = date("M",strtotime($value->csm_rp_tgl_keluar));
+            $year = date("Y",strtotime($value->csm_rp_tgl_keluar));
             $fields_string .= $value->csm_dex_id.'='.$nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
         }
         
@@ -736,9 +736,9 @@ EOD;
         foreach($doc_pdf as $key=>$value) {
             $str_replace = str_replace('uploaded/casemix/log/','',$value->csm_dex_fullpath);
             $nama_dok = ($value->is_adjusment == 'Y')?$str_replace:$value->csm_dex_nama_dok;
-            $date = date("Y-m-d",strtotime($value->csm_rp_tgl_masuk));
-            $month = date("M",strtotime($value->csm_rp_tgl_masuk));
-            $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
+            $date = date("Y-m-d",strtotime($value->csm_rp_tgl_keluar));
+            $month = date("M",strtotime($value->csm_rp_tgl_keluar));
+            $year = date("Y",strtotime($value->csm_rp_tgl_keluar));
             $fields_string .= $value->csm_dex_id.'='.$nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
         }
 
