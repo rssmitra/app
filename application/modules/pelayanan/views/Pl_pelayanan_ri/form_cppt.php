@@ -216,6 +216,8 @@ function add_cppt(){
   $('#section_form_cppt').show('fast');
   $('#section_form_upload_file_rm').hide('fast');
   $('#section_history_cppt').hide('fast');
+  $("#section_form_cppt_sidebar").show();
+  loadCpptSidebarHistory();
 }
 
 function upload_file_rm(){
@@ -227,6 +229,8 @@ function upload_file_rm(){
 
 function show_edit(myid, type, no_kunjungan, reff_id){
   preventDefault();
+  $("#section_form_cppt_sidebar").show();
+  loadCpptSidebarHistory();
   if(type == 'RJ'){
     $('#form_edit_resume_rj').show();
     $('#section_history_cppt').hide('fast');
@@ -301,8 +305,7 @@ function tambah_file()
 </script>
 
 <div class="row">
-  
-  <div class="col-md-12" id="section_form_cppt" style="display: none">
+  <div class="col-md-8" id="section_form_cppt" style="display: none">
 
     <div class="center"><span style="font-size: 14px"><b>FORM CPPT</b></span><br><small>(Dilengkapi setelah PPA melakukan Assesment)</small></div>
     <br>
@@ -410,7 +413,81 @@ function tambah_file()
     <br>
     <hr>
   </div>
+  <div class="col-md-4" id="section_form_cppt_sidebar" style="display: none">
+    <div class="panel panel-default">
+      <div class="panel-heading"><b>Riwayat CPPT Sebelumnya</b></div>
+      <div class="panel-body" style="max-height: 900px; overflow-y: auto;">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th width="30px">No</th>
+              <th>SOAP/Pengkajian Pasien</th>
+            </tr>
+          </thead>
+          <tbody id="cppt_sidebar_history">
+            <!-- Data will be loaded via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function loadCpptSidebarHistory() {
+      $.ajax({
+        url: "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>",
+        type: "GET",
+        dataType: "json",
+        success: function(response) {
+          var html = "";
+          // DataTables server-side response: response.data is array of arrays, columns order as in table
+          // Adjust if your server returns differently
+          var rows = response.data || [];
+          if(rows.length > 0) {
+            $.each(rows, function(i, row) {
+              // Example: [No, Tanggal/Jam/PPA, SOAP, Verifikasi, Action]
+              // We'll use columns 1 (Tanggal/Jam/PPA) and 2 (SOAP)
+              if(row[7] == '' || row[7] == null){ 
+                html += "<tr>";
+                html += "<td>"+(i+1)+"</td>";
+                // Escape double quotes in SOAP text
+                var soapText = row[2] ? row[2].replace(/\"/g, '&quot;') : '';
+                html += "<td>"+row[1]+"<br>"+row[2]+"<br><a href='#' class='label label-primary' onclick='copy_soap("+row[5]+")'><i class='fa fa-copy'></i> Copy SOAP</a></td>";
+                html += "</tr>";
+              }
+              
+            });
+          } else {
+            html = "<tr><td colspan='2' class='text-center'>Tidak ada data CPPT sebelumnya</td></tr>";
+          }
+          $("#cppt_sidebar_history").html(html);
+        }
+      });
+    }
 
+    // Fungsi Copy SOAP ke form
+    function copy_soap(cppt_id) {
+
+      preventDefault();
+      $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: cppt_id} , function (response) {    
+        // show data
+        $('#section_form_cppt').show('fast');
+        $('#section_history_cppt').hide('fast');
+        var subjective = response.subjective;
+        $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
+        var objective = response.objective;
+        $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
+        var assesment = response.assesment;
+        $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
+        var plan = response.planning;
+        $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
+      }); 
+
+    }
+
+  </script>
+</div>
+
+<div class="row">
   <div class="col-md-12" id="section_form_upload_file_rm" style="display: none">
 
     <div class="center"><span style="font-size: 14px"><b>Upload File Rekam Medis </b></span><br><small>(File Rekam Medis yang diupload adalah file PDF yang keluar dari Alat Medis atau hasil penunjang dari Luar RS )</small></div>
@@ -460,7 +537,9 @@ function tambah_file()
     </div>
 
   </div>
+</div>
 
+<div class="row">
   <div class="col-md-12" id="section_history_cppt">
     <!-- add form -->
     <div style="">
@@ -526,9 +605,10 @@ function tambah_file()
 
       </form>
   </div>
+</div>
 
-  <div id="form_edit_resume_rj" style="display: none; padding: 10px"></div>
-  
+<div class="row">
+  <div id="form_edit_resume_rj" style="display: none; padding: 10px"></div>  
 </div>
 
 

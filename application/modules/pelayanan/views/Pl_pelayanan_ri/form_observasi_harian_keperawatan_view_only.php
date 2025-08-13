@@ -278,7 +278,7 @@ function GraphLineStyleHemodinamik(id, nameid, url){
     <!-- HEMODINAMIK -->
     <div class="row" style="padding: 10px !important">
       <div class="col-md-12 no-padding">
-        <h3 class="header smaller lighter blue padding-10" style="background: #ef8122; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
+        <h3 class="header smaller lighter blue padding-10" style="background: #0d5280; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
             HEMODINAMIK
           </h3>
           
@@ -343,7 +343,7 @@ function GraphLineStyleHemodinamik(id, nameid, url){
     <!-- DATA MONITORING PERKEMBANGAN PASIEN -->
     <div class="row" style="padding: 10px !important">
       <div class="col-md-12 no-padding">
-        <h3 class="header smaller lighter blue padding-10" style="background: #e01a8e; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
+        <h3 class="header smaller lighter blue padding-10" style="background: #0d5280; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
           DATA MONITORING PERKEMBANGAN PASIEN
         </h3>
         

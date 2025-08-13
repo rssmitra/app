@@ -163,21 +163,40 @@ function find_pasien_by_keyword(keyword){
 
 }
 
-function get_list_pasien(){  
+function get_list_pasien(dokter_filter = ''){  
 
   $('#box_list_pasien').html('Loading...');
   
   var is_icu = ( $('#bag_pas').val() == '031001' ) ? 'Y' : '';
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_list_pasien?is_icu=') ?>"+is_icu, '', function (response) {    
-    html = '';  
-    // html = '<div class="left" style="padding: 5px; font-size: 12px;background: darkblue; color: white"><b>PASIEN RAWAT INAP</b><br>Pasien dirawat s.d tgl <?php echo date('d/M/Y')?><br>BPJS : 20 <br>Umum/Asuransi : 10</div>';
-    html += '<div style="padding-top: 1px; padding-bottom: 10px;"><b>Cari pasien rawat inap:</b> <br><input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);"><a style="margin-top:4px" href="#" onclick="get_list_pasien()" class="btn btn-block btn-primary">Refresh</a></div>';
+  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_list_pasien?is_icu=') ?>"+is_icu+"&dokter="+dokter_filter+"", '', function (response) {    
+    var html = '';
+    html += '<div style="padding-top: 1px; padding-bottom: 10px;">';
+    html += '<b>Cari pasien rawat inap:</b> <br>';
+    html += '<input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);">';
+    html += '<select id="dokter_filter" class="form-control" style="margin-top:4px;margin-bottom:4px;" onchange="get_list_pasien(this.value)">';
+    html += '<option value="">-- Semua Dokter --</option>';
+    
+    // Buat list dokter unik dari response
+    var dokterList = {};
+    $.each(response.data, function(i, v) {
+      var obj = v[0];
+      if(obj.dokter) dokterList[obj.kode_dokter] = obj.dokter;
+    });
+
+    console.log(dokter_filter);
+
+    $.each(dokterList, function(key, val) {
+      html += '<option value="'+key+'"'+(key==dokter_filter?' selected':'')+'>'+val+'</option>';
+    });
+    html += '</select>';
+    html += '<a style="margin-top:4px" href="#" onclick="get_list_pasien()" class="btn btn-block btn-primary">Refresh</a></div>';
     html += '<ol class="list-group list-group-unbordered" id="list_pasien" style="overflow: scroll; max-height: 500px;">';
     $.each(response.data, function( i, v ) {
       var obj = v[0];
+      // Filter dokter jika dipilih
+      // if(dokter_filter && obj.kode_dokter != dokter_filter) return true; // Use return true to continue $.each
       html += '<li class="list-group-item" id="list_group_'+obj.no_mr+'">';
         html += '<address onclick="form_main('+"'pelayanan/Pl_pelayanan_ri/form_main/"+obj.kode_ri+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')" style="cursor: pointer;">';
-        // html += '<small style="font-weight: bold; font-size: 11px; cursor: pointer;" onclick="form_main('+"'pelayanan/Pl_pelayanan_ri/form_main/"+obj.kode_ri+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')">'+obj.no_mr+' - '+obj.nama_pasien+'</small>';
         html += '<b>'+obj.nama_pasien+'</b><br>';
         html += obj.no_mr+'/ '+obj.jk+' / '+obj.umur+' thn<br>';
         html += obj.kelas+'/ Kamar '+obj.kamar+' No. '+obj.no_kamar+'<br>';
@@ -191,12 +210,11 @@ function get_list_pasien(){
       html += '</li>';
     });
     html += '</ol>';
-
-
-
-
-
     $('#box_list_pasien').html(html);
+    // Set value dokter_filter jika belum ada
+    if(!$('#dokter_filter').length){
+      $('#box_list_pasien').prepend('<select id="dokter_filter" class="form-control" style="margin-bottom:4px;" onchange="get_list_pasien()"></select>');
+    }
   }); 
 
 }
@@ -254,10 +272,10 @@ function form_main(url, no_mr){
           <!-- profile Pasien -->
           <div class="col-md-2">
             <div class="box box-primary" id='box_list_pasien'></div><br>
-            <label class="label label-xs label-success">&nbsp;&nbsp;</label> LA (Lantai Atas)<br>
+            <!-- <label class="label label-xs label-success">&nbsp;&nbsp;</label> LA (Lantai Atas)<br>
             <label class="label label-xs label-danger">&nbsp;&nbsp;</label> LB (Lantai Bawah)<br>
             <label class="label label-xs label-primary">&nbsp;&nbsp;</label> VK (Ruang Bersalin dan Nifas)<br>
-            <label class="label label-xs label-inverse">&nbsp;&nbsp;</label> Lain-lain<br>
+            <label class="label label-xs label-inverse">&nbsp;&nbsp;</label> Lain-lain<br> -->
           </div>
 
           <!-- form pelayanan -->

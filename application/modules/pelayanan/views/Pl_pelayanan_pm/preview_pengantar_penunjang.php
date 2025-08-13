@@ -37,6 +37,9 @@ function hideAndPrint() {
             <th>No</th>
             <th>Tanggal Order</th>
             <th>Nama Pasien</th>
+            <?php if($_GET['kode_bagian'] == '050301'):?>
+              <th>Anamnesa & Diagnosa</th>
+            <?php endif;?>
             <th>Pemeriksaan</th>
             <th>Dr Pengirim</th>
             <th>Bagian Asal</th>

@@ -142,6 +142,9 @@ class Pl_pelayanan_ri_model extends CI_Model {
 	function get_list_data()
 	{
 		$this->_main_query();
+		if(isset($_GET['dokter']) && $_GET['dokter']!=''){
+			$this->db->where('ri_tc_rawatinap.dr_merawat', $_GET['dokter']);
+		}
 		$this->db->order_by('mt_master_pasien.nama_pasien', 'ASC');
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;

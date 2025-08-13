@@ -156,8 +156,13 @@ $('#pl_diagnosa').typeahead({
         <input type="hidden" class="form-control" id="kode_bagian_pm" name="kode_bagian_pm" value="<?php echo isset($sess_kode_bag)?$sess_kode_bag:0?>">
         <input type="hidden" class="form-control" id="id_pm_tc_penunjang" name="id_pm_tc_penunjang" value="<?php echo isset($id_pm_tc_penunjang)?$id_pm_tc_penunjang:0?>">
 
-
         <div class="form-group">
+        <label class="control-label col-sm-3" for="">Anamnesa</label>
+            <div class="col-sm-9">
+               <textarea type="text" class="form-control" id="pl_anamnesa" name="pl_anamnesa" style="height: 80px !important"><?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?></textarea>
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 3px">
             <label class="control-label col-sm-3" for="">Diagnosa (ICD10)</label>
             <div class="col-sm-9">
             <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">

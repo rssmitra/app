@@ -452,7 +452,7 @@ class Pl_pelayanan_pm extends MX_Controller {
 
             $row[] = '<div class="center">'.$status.'</div>';
 
-            $btn_cetak_pengantar = '<a href="#" onclick="PopupCenter('."'pelayanan/Pl_pelayanan_pm/preview_pengantar_penunjang/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bagian=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-success" style="width: 120px !important; margin-top: 3px">Cetak Pengantar</a>';
+            $btn_cetak_pengantar = '<a href="#" onclick="PopupCenter('."'pelayanan/Pl_pelayanan_pm/preview_pengantar_penunjang/".$row_list->no_kunjungan."?id_pm_tc_penunjang=".$row_list->id_pm_tc_penunjang."&type=PM&kode_bagian=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-success" style="width: 120px !important; margin-top: 3px">Cetak Pengantar</a>';
 
             if($row_list->kode_bagian_tujuan == '050101'){
                 $row[] = '<div class="center"><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/form_lab_detail/".$row_list->no_kunjungan."/".$row_list->id_pm_tc_penunjang."?type=PM&kode_bag=".$row_list->kode_bagian_tujuan."&kode_bag_asal=".$row_list->kode_bagian_asal."&no_mr=".$row_list->no_mr."&klas=".$row_list->kode_klas."'".', '."'change_form_pengantar_pm'".')" class="label label-primary" style="width: 120px !important;">Buat Pengantar Lab</a><br>'.$btn_cetak_pengantar.'</div>';
@@ -1304,6 +1304,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                 $dataexc['diagnosa'] = $this->regex->_genRegex($this->input->post('pl_diagnosa'),'RGXQSL');
                 $dataexc['xray_foto'] = $this->regex->_genRegex($this->input->post('xray_foto'),'RGXQSL');
                 $dataexc['kontra_indikasi'] = $this->regex->_genRegex($this->input->post('kontra_indikasi'),'RGXQSL');
+                $dataexc['anamnesa'] = $this->regex->_genRegex($this->input->post('pl_anamnesa'),'RGXQSL');
             }
             
             // print_r($dataexc);die;
@@ -1674,13 +1675,23 @@ class Pl_pelayanan_pm extends MX_Controller {
                 ? '<span style="font-weight: bold; color: green">sudah diproses</span>'
                 : '<span style="font-weight: bold; color: red">belum diproses</span>';
 
+                
+                // Prepare anamnesa and diagnosa only for kode_bagian 050301
+                $anamnesa = '';
+                $diagnosa = '';
+                if (isset($_GET['kode_bagian']) && $_GET['kode_bagian'] == '050301') {
+                    $anamnesa = ($row_list->anamnesa != '') ? '<br><b>Anamnesa :</b> <br>' . htmlspecialchars($row_list->anamnesa) . '<br>' : '';
+                    $diagnosa = ($row_list->diagnosa != '') ? '<br><b>Diagnosa :</b> <br>' . htmlspecialchars($row_list->diagnosa) : '';
+                }
+
                 $result_data[] = [
-                '<div class="center">' . $no . '</div>',
-                $this->tanggal->formatDateTime($row_list->created_date),
-                htmlspecialchars($row_list->no_mr) . '<br>' . htmlspecialchars($row_list->nama_pasien),
-                $html,
-                htmlspecialchars($row_list->dr_pengirim),
-                htmlspecialchars($row_list->bagian_asal),
+                    '<div class="center">' . $no . '</div>',
+                    $this->tanggal->formatDateTime($row_list->created_date),
+                    htmlspecialchars($row_list->no_mr) . '<br>' . htmlspecialchars($row_list->nama_pasien),
+                    $anamnesa . $diagnosa,
+                    $html,
+                    htmlspecialchars($row_list->dr_pengirim),
+                    htmlspecialchars($row_list->bagian_asal),
                 ];
             }
 

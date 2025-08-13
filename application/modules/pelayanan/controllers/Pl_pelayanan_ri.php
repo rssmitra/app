@@ -261,7 +261,7 @@ class Pl_pelayanan_ri extends MX_Controller {
             }
             // $row[] = '<li><span style="color:'.$color.'" onclick="getMenu('."'pelayanan/Pl_pelayanan_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</span></li>';
             $penjamin = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
-            $row[] = array('no_kunjungan' => $row_list->no_kunjungan, 'kode_ri' => $row_list->kode_ri, 'no_mr' => $row_list->no_mr, 'nama_pasien' => strtoupper($row_list->nama_pasien), 'color_txt' => $color, 'penjamin' => $penjamin, 'dokter' => $row_list->nama_pegawai, 'kelas' => $row_list->klas, 'kamar' => $row_list->nama_bagian, 'no_kamar' => $row_list->no_kamar, 'kode_perusahaan' => $row_list->kode_perusahaan, 'jk' => $row_list->jen_kelamin, 'umur' => $row_list->umur);
+            $row[] = array('no_kunjungan' => $row_list->no_kunjungan, 'kode_ri' => $row_list->kode_ri, 'no_mr' => $row_list->no_mr, 'nama_pasien' => strtoupper($row_list->nama_pasien), 'color_txt' => $color, 'penjamin' => $penjamin,'kode_dokter' => trim($row_list->dr_merawat), 'dokter' => $row_list->nama_pegawai, 'kelas' => $row_list->klas, 'kamar' => $row_list->nama_bagian, 'no_kamar' => $row_list->no_kamar, 'kode_perusahaan' => $row_list->kode_perusahaan, 'jk' => $row_list->jen_kelamin, 'umur' => $row_list->umur);
             $data[] = $row;
         }
 
@@ -518,6 +518,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
                 if($row_list->jenis_form != null){
                     $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
+                    // $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_form_rekam_medis('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a><br><div id="form_rekam_medis_special_case_'.$row_list->id.'"></div>';
                 }else{
                     $btn_monitoring = '';
                     if($row_list->tipe == 'RI'){
@@ -538,12 +539,14 @@ class Pl_pelayanan_ri extends MX_Controller {
                 }else{
                     $row[] = '<div class="center"></div>';
                 }
+
+                $row[] = $row_list->id;
+                $row[] = $row_list->flag;
+                $row[] = $row_list->jenis_form;
                
                 $data[] = $row;
             }
         }
-
-        
 
         $output = array("data" => $data);
         //output to json format

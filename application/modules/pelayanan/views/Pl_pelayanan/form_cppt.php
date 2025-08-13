@@ -202,20 +202,6 @@ function show_edit(myid, flag, no_kunjungan, reff_id){
     getMenuTabs('pelayanan/Pl_pelayanan/diagnosa_dr/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $kode_bagian;?>', 'tabs_form_pelayanan');
   }
 
-  // $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
-  //   // show data
-  //   $('#section_form_cppt').show('fast');
-  //   $('#section_history_cppt').hide('fast');
-  //   $('#cppt_id').val(response.id);
-  //   var subjective = response.subjective;
-  //   $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
-  //   var objective = response.objective;
-  //   $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
-  //   var assesment = response.assesment;
-  //   $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
-  //   var plan = response.planning;
-  //   $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
-  // }); 
 }
 
 function find_data_reload(result, base_url){
@@ -231,6 +217,31 @@ function reset_table(){
 
 function reload_table(){
  oTableCppt.ajax.reload(); //reload datatable ajax 
+}
+
+function show_form_rekam_medis(myid){
+    preventDefault();
+    $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
+        // show data
+        var obj = response.result;
+        $('#cppt_id').val(myid);
+        $('#jenis_form').val(obj.jenis_form);
+        // $('#anatomi_tagging_28').val(response.anatomi_tagging);
+        $('#form_rekam_medis_special_case_'+myid+'').html(obj.catatan_pengkajian);
+        $('#header_form').css('display', 'none');
+        $('#footer_form').css('display', 'none');
+        // set value input
+        var value_form = response.value_form;
+        console.log(value_form);
+        $.each(value_form, function(i, item) {
+            var text = item;
+            text = text.replace(/\+/g, ' ');
+            key = i.replace(/\+/g, ' ');
+            $('#'+key).val(text);
+        });
+        
+
+    }); 
 }
 
 </script>

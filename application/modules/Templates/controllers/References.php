@@ -1336,7 +1336,7 @@ class References extends MX_Controller {
         $query = "select a.kode_tarif, a.kode_tindakan, a.nama_tarif, b.kode_master_tarif_detail,b.kode_tarif,b.kode_klas,b.bill_rs, b.bill_dr1, b.bill_dr2, b.bill_dr3, b.kamar_tindakan, b.bhp, b.alat_rs, b.pendapatan_rs, b.revisi_ke, b.total, b.revisi_ke
 					from mt_master_tarif a
 					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
-					where  a.tingkatan=5 and (a.kode_bagian=".$_POST['kode_bag']." or a.kode_bagian=0) and nama_tarif like '%".$_POST['keyword']."%' and (b.kode_klas=".$_POST['kode_klas']." or b.kode_klas=0) 
+					where  a.tingkatan=5 and (a.kode_bagian='".$_POST['kode_bag']."') and nama_tarif like '%".$_POST['keyword']."%' and (b.kode_klas=".$_POST['kode_klas']." or b.kode_klas=0) 
 					group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, b.kode_master_tarif_detail,b.kode_tarif,b.kode_klas,b.bill_rs, b.bill_dr1, b.bill_dr2, b.bill_dr3, b.kamar_tindakan, b.bhp, b.alat_rs, b.pendapatan_rs, b.revisi_ke, b.total, b.revisi_ke
 					having b.revisi_ke = (SELECT MAX(t2.revisi_ke) FROM mt_master_tarif_detail t2 WHERE a.kode_tarif=t2.kode_tarif AND b.kode_klas=t2.kode_klas ) 
 					order by a.is_old asc,a.nama_tarif asc, b.revisi_ke desc";

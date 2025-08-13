@@ -11,7 +11,7 @@ jQuery(function($) {
         $(this).prev().focus();    
     });  
 
-    $('#dokter_dpjp').typeahead({
+    $('#43_dokter_sp').typeahead({
       source: function (query, result) {
           $.ajax({
               url: "templates/references/getAllDokter",
@@ -30,7 +30,7 @@ jQuery(function($) {
         var val_item=item.split(':')[0];
         var label_item=item.split(':')[1];
         console.log(val_item);
-        $('#dokter_dpjp').val(label_item);
+        $('#43_dokter_sp').val(label_item);
       }
     });
 

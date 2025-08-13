@@ -49,9 +49,9 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
 		$this->db->from('csm_reg_pasien');
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
 		$this->db->where("(csm_dokumen_klaim.no_sep is null AND LEN(csm_rp_no_sep) > 18)");
-        $this->db->where("csm_rp_tipe = 'RI' " );
+        // $this->db->where("csm_rp_tipe = 'RI' " );
         $this->db->where("csm_reg_pasien.csm_rp_kode_bagian !=", '031201');
-        $this->db->where("csm_reg_pasien.is_scheduler is null" );
+        // $this->db->where("csm_reg_pasien.is_scheduler is null" );
         // $this->db->where("DATEDIFF(day,csm_reg_pasien.csm_rp_tgl_keluar,GETDATE()) <= 4" );
         $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) =", $last_date);
 		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi=csm_reg_pasien.no_registrasi', 'LEFT');
