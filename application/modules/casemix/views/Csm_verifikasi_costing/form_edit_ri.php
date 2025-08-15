@@ -106,7 +106,7 @@ jQuery(function($) {
 $(document).ready(function(){
     
   // default rincian billing pasien RI
-    getBillingDetail($('#no_registrasi').val(),'RI','bill_kamar_perawatan');
+    // getBillingDetail($('#no_registrasi').val(),'RI','bill_kamar_perawatan');
 
     $('#form_Csm_billing_pasien').ajaxForm({
       beforeSend: function() {
@@ -121,9 +121,10 @@ $(document).ready(function(){
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
           //$('#page-area-content').load('casemix/Csm_billing_pasien');
+          getMenu('casemix/Csm_verifikasi_costing/editBilling/'+$('#no_registrasi_hidden').val()+'/'+$('#form_type').val()+'');
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }
         achtungHideLoader();
       }
     }); 

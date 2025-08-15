@@ -918,7 +918,7 @@ class Csm_billing_pasien_model extends CI_Model {
         //print_r($data->group);die;
         foreach ($data->group as $k => $val) {
             foreach ($val as $value_data) {
-                $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
+                $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2;
                 $resume_billing[] = $this->Csm_billing_pasien->resumeBillingRI($value_data);
             }        
         }

@@ -177,24 +177,26 @@ class Csm_billing_pasien extends MX_Controller {
 
                 $this->db->update('csm_reg_pasien', array('is_submitted' => 'Y') , array('no_registrasi' => $no_registrasi));
                 
-                // update diagnosa
-                $riwayat_diagnosa = array();
-                $riwayat_diagnosa['kode_icd_diagnosa'] = $_POST['diagnosa_akhir_hidden'];
-                $riwayat_diagnosa['diagnosa_akhir'] = $_POST['diagnosa_akhir'];
+               
 
                 if(isset($_POST['kode_riwayat_hidden']) AND !empty($_POST['kode_riwayat_hidden']) ){
+                     // update diagnosa
+                    $riwayat_diagnosa = array();
+                    $riwayat_diagnosa['kode_icd_diagnosa'] = $_POST['diagnosa_akhir_hidden'];
+                    $riwayat_diagnosa['diagnosa_akhir'] = $_POST['diagnosa_akhir'];
                     $this->db->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $_POST['kode_riwayat_hidden']) );
-                }else{
-                    $riwayat_diagnosa['no_registrasi'] = $no_registrasi;
-                    $riwayat_diagnosa['no_mr'] = $_POST['csm_rp_no_mr'];
-                    $riwayat_diagnosa['nama_pasien'] = $_POST['csm_rp_nama_pasien'];
-                    $riwayat_diagnosa['diagnosa_awal'] = $_POST['diagnosa_akhir'];
-                    $riwayat_diagnosa['dokter_pemeriksa'] = $_POST['csm_rp_nama_dokter'];
-                    $riwayat_diagnosa['tgl_periksa'] = $_POST['csm_rp_tgl_keluar'];
-                    $riwayat_diagnosa['kode_bagian'] = $_POST['poliklinik'];
-                    $riwayat_diagnosa['kategori_tindakan'] = 3;
-                    $this->db->insert('th_riwayat_pasien', $riwayat_diagnosa );
                 }
+                // else{
+                //     $riwayat_diagnosa['no_registrasi'] = $no_registrasi;
+                //     $riwayat_diagnosa['no_mr'] = $_POST['csm_rp_no_mr'];
+                //     $riwayat_diagnosa['nama_pasien'] = $_POST['csm_rp_nama_pasien'];
+                //     $riwayat_diagnosa['diagnosa_awal'] = $_POST['diagnosa_akhir'];
+                //     $riwayat_diagnosa['dokter_pemeriksa'] = $_POST['csm_rp_nama_dokter'];
+                //     $riwayat_diagnosa['tgl_periksa'] = $_POST['csm_rp_tgl_keluar'];
+                //     $riwayat_diagnosa['kode_bagian'] = $_POST['poliklinik'];
+                //     $riwayat_diagnosa['kategori_tindakan'] = 3;
+                //     $this->db->insert('th_riwayat_pasien', $riwayat_diagnosa );
+                // }
 
                 /*update to sirs*/
                 $this->Csm_billing_pasien->updateSirs($no_registrasi, $dataexc);
