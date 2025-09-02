@@ -75,6 +75,31 @@
   }
 </script>
 
+<script>
+// Fitur filter dokter pada accordion dengan select option menggunakan jQuery
+$(document).ready(function() {
+  $('#filterDokterSelect').on('change', function() {
+    var filter = $(this).val().toLowerCase();
+    var $panels = $('#accordion .panel-default');
+    // Tutup semua panel saat filter berubah
+    $panels.find('.panel-collapse').removeClass('in');
+    $panels.each(function() {
+      var dokter = ($(this).data('dokter') || '').toLowerCase();
+      if(filter === '' || dokter === filter) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
+    });
+    // Buka panel pertama yang tampil jika ada
+    var $visiblePanels = $panels.filter(':visible');
+    if($visiblePanels.length > 0) {
+      $visiblePanels.first().find('.panel-collapse').addClass('in');
+    }
+  });
+});
+</script>
+
 <style>
 hr {
     margin-top: 5px !important;
@@ -98,6 +123,23 @@ hr {
 }
 
 </style>
+<!-- filter dokter spesialis -->
+<p><b>Filter Dokter Spesialis</b></p>
+<select id="filterDokterSelect" class="form-control" style="margin-bottom:10px;max-width:300px;">
+  <option value="">-- Semua Dokter --</option>
+  <?php
+    $dokterList = array();
+    foreach($result as $val) {
+      $dokter = strtolower(trim($val->dokter_pemeriksa));
+      if($dokter && !in_array($dokter, $dokterList)) {
+        $dokterList[] = $dokter;
+      }
+    }
+    foreach($dokterList as $dokter) {
+      echo '<option value="'.$dokter.'">'.ucwords($dokter).'</option>';
+    }
+  ?>
+</select>
 
 <div id="accordion" class="accordion-style1 panel-group accordion-style2" style="position: relative; top: 0px; transition-property: top; transition-duration: 0.15s;">
   <?php 
@@ -135,7 +177,8 @@ hr {
         $html_file_rm .= 'Tidak ada file ditemukan';
       }
   ?>
-    <div class="panel panel-default">
+    <div class="panel panel-default" data-dokter="<?php echo strtolower(trim($value->dokter_pemeriksa)); ?>">
+
       <div class="panel-heading">
         <h4 class="panel-title">
           <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->kode_riwayat?>" style="line-height: 15px; font-weight: normal !important; font-size: 13px">

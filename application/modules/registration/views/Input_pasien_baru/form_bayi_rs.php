@@ -52,16 +52,12 @@
 
   $('#form_input_bayi').ajaxForm({      
 
-    beforeSend: function() {        
-
+    beforeSend: function() {     
       achtungShowFadeIn();      
       $("input[type=submit]").attr("disabled", "disabled");    
-
     },      
 
-    uploadProgress: function(event, position, total, percentComplete) {        
-
-    },      
+    uploadProgress: function(event, position, total, percentComplete) {},      
 
     complete: function(xhr) {             
 
@@ -74,11 +70,8 @@
         /*show action after success submit form*/
         //$("#page-area-content").load("registration/Reg_klinik?mr="+jsonResponse.no_mr+"&is_new=Yes");
         $('#data_ibu').hide('fast');
-        
         $('#noMrHidden').val(jsonResponse.no_mr); 
-
         var answer = confirm('Daftarkan Pasien?');
-
         if (answer){
           console.log('yes'); 
           $.achtung({message: 'Silahkan Isi Form Pendaftaran', timeout:5});       

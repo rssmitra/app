@@ -167,7 +167,7 @@ function cetak_kuitansi(){
         <label class="control-label col-md-2">Tanggal Transaksi</label>        
         <div class="col-md-2">
             <div class="input-group">
-                <input name="tgl_trans_kasir" id="tgl_trans_kasir"  class="form-control date-picker" type="text" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar):$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_masuk);?>">
+                <input name="tgl_trans_kasir" id="tgl_trans_kasir" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar):$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_masuk);?>">
                 <span class="input-group-addon">
                     <i class="ace-icon fa fa-calendar"></i>
                 </span>

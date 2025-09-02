@@ -536,16 +536,8 @@ class Input_pasien_baru extends MX_Controller {
 
             if(isset($_POST['bayi_kembar']) && $_POST['bayi_kembar'] == 1){
                 //print_r($dataexc);die;
-
-                if(!empty($bayi->row()->no_mr)){
-                    $dataexc['no_mr'] = $bayi->row()->no_mr;
-                    $this->db->update('mt_master_pasien', $dataexc, array('no_mr' => $bayi->row()->no_mr));
-                }else{
-                    $dataexc['no_mr'] = $mrID;
-                    $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
-                }
-
-                $this->Input_pasien_baru->update('ri_bayi_lahir', array('flag_lahir' => 1), array('id_bayi' => $this->input->post('id_bayi')));
+                $dataexc['no_mr'] = $mrID;
+                $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
 
                 if ($this->db->trans_status() === FALSE)
                 {

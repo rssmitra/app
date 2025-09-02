@@ -56,7 +56,11 @@
           <p>
             <span style="font-weight: bold;">DIAGNOSA AWAL :</span><br><?php echo $row_rm->diagnosa_awal; ?> <br><br>
             <span style="font-weight: bold;">ANAMNESA :</span><br><?php echo nl2br($row_rm->anamnesa); ?> <br><br>
-            <span style="font-weight: bold;">TINDAKAN/ PEMERIKSAAN :</span><br><?php echo nl2br($row_rm->pemeriksaan); ?> <?php echo ($row_rm->pengobatan != '')?', '.nl2br($row_rm->pengobatan):'-'?> <br><br>
+            <span style="font-weight: bold;">TINDAKAN/ PEMERIKSAAN :</span>
+            <br><?php echo nl2br($row_rm->pemeriksaan); ?> <?php echo ($row_rm->pengobatan != '')?', '.nl2br($row_rm->pengobatan):'-'?><br>
+            
+            
+            <br><br>
             <span style="font-weight: bold;">DIAGNOSA AKHIR :</span><br><?php echo $row_rm->diagnosa_akhir; ?> <br><br>
           </p>
           <?php endif; endforeach; ?>

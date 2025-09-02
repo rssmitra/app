@@ -439,7 +439,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     
                     $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
                     
-                    $row[] = '<a href="#" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
+                    $row[] = '<a href="#" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')">'.strtoupper($row_list->jenis_pengkajian).'</a><br>Dibuat oleh: '.$row_list->created_by.'<br>'.$this->tanggal->formatDateTime($row_list->created_date).'';
                     
                     $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
                     $desc = ($row_list->is_verified == 1) ? ''.$row_list->verified_by.'<br>'.$this->tanggal->formatDateTime($row_list->verified_date).'' : '' ;
@@ -517,7 +517,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 }
 
                 if($row_list->jenis_form != null){
-                    $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
+                    $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a><br>Dibuat oleh: '.$row_list->created_by.'<br>'.$this->tanggal->formatDateTime($row_list->created_date).'';
                     // $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_form_rekam_medis('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a><br><div id="form_rekam_medis_special_case_'.$row_list->id.'"></div>';
                 }else{
                     $btn_monitoring = '';

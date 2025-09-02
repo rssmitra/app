@@ -147,7 +147,7 @@
                           <thead>
                           <tr style="font-size: 16px; border-bottom: 1px solid black;">
                               <th width="30px">No</th>
-                              <th>Nama Pasien</th>
+                              <th>Nama</th>
                               <th class="center">Waktu</th>
                           </tr>
                           </thead>
@@ -183,7 +183,7 @@
                           <thead>
                           <tr style="font-size: 16px; border-bottom: 1px solid black;">
                               <th width="30px">No</th>
-                              <th>Nama Pasien</th>
+                              <th>Nama</th>
                               <th class="center">Waktu</th>
                           </tr>
                           </thead>
@@ -225,7 +225,7 @@
                           <thead>
                           <tr style="font-size: 16px; border-bottom: 1px solid black;">
                               <th width="30px">No</th>
-                              <th>Nama Pasien</th>
+                              <th>Nama</th>
                               <th class="center">Waktu</th>
                           </tr>
                           </thead>
@@ -262,7 +262,7 @@
                           <thead>
                           <tr style="font-size: 16px; border-bottom: 1px solid black;">
                               <th width="30px">No</th>
-                              <th>Nama Pasien</th>
+                              <th>Nama</th>
                               <th class="center">Waktu</th>
                           </tr>
                           </thead>
@@ -299,7 +299,7 @@
                           <thead>
                           <tr style="font-size: 16px; border-bottom: 1px solid black;">
                               <th width="30px">No</th>
-                              <th>Nama Pasien</th>
+                              <th>Nama</th>
                               <th class="center">Waktu</th>
                           </tr>
                           </thead>
@@ -328,7 +328,7 @@
                 <div class="col-sm-2">
                   <div class="widget-box">
                     <div class="widget-header widget-header-flat">
-                      <h4 class="widget-title center" style="text-align: center !important">REKAP ANTRIAN OBAT</h4>
+                      <h4 class="widget-title center" style="text-align: center !important">REKAP ANTRIAN</h4>
                     </div>
                     <div class="widget-body">
                       <div class="widget-main">
@@ -512,8 +512,6 @@
       $(document).ready( function(){
 
         // setInterval( function () {
-          
-
           // antrian farmasi
           $.getJSON("<?php echo site_url('display_antrian/reload_antrian_farmasi') ?>", '', function (data) {   
             
@@ -550,9 +548,7 @@
 
             
           });
-
         // }, 2000 );
-      
         setInterval("reload_page();",3000);
 
       });

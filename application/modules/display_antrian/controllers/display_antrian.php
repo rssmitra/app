@@ -91,10 +91,12 @@ class Display_antrian extends MX_Controller {
 
     public function reload_antrian_farmasi()
    {
-       # code...
-       $data = $this->display_antrian->get_antrian_farmasi();
+      
+
+       $data = $this->display_antrian->get_antrian_farmasi_original();
+       $resep = $this->Log_proses_resep_obat->get_data();
        $total = count($data);
-    //    echo '<pre>';print_r($data);die;
+       echo '<pre>';print_r($resep);die;
 
        echo json_encode(array('total' => $total,'result' => $data));
        //echo $nomor_loket;

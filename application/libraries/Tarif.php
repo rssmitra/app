@@ -24,7 +24,7 @@ final class Tarif extends AvObjects {
         $this->_prop["kode_bagian"]="";
 
         //$this->_prop["cito"]="";
-        $this->tax = 0.01; //11%
+        $this->tax = 0.11; //11%
 
     } // end of public function __construct()
 
@@ -232,26 +232,31 @@ final class Tarif extends AvObjects {
             $db->where('kode_profit', $kode_profit);
         }
         $profit = $db->get()->row();
+        $nilai_profit = 33.3/100;
         // print_r($profit);die;
-        if($profit->$select_profit != ''){
-            $nilai_profit = $profit->$select_profit;
-        }else{
-            $get_idp = $db->select('id_profit')->get_where('mt_rekap_stok', array('kode_brg' => $kode_brg) )->row();
-            if($get_idp->id_profit != ''){
-                $get_profit = $db->get_where('fr_mt_profit_margin', array('id_profit' => $get_idp->id_profit) )->row();
-                $nilai_profit = $get_profit->$select_profit;
-            }else{
-                $nilai_profit = 0;
-            }
-        }
+        // if($profit->$select_profit != ''){
+        //     $nilai_profit = $profit->$select_profit;
+        // }else{
+        //     $get_idp = $db->select('id_profit')->get_where('mt_rekap_stok', array('kode_brg' => $kode_brg) )->row();
+        //     if($get_idp->id_profit != ''){
+        //         $get_profit = $db->get_where('fr_mt_profit_margin', array('id_profit' => $get_idp->id_profit) )->row();
+        //         $nilai_profit = $get_profit->$select_profit;
+        //     }else{
+        //         $nilai_profit = 0;
+        //     }
+        // }
+        $hm = ($harga_beli * (1 + $nilai_profit));
+        $hj = $hm * (1 + $this->tax);
 
         $kenaikan_profit = ($nilai_profit * $this->tax) + 1;
-        $total_harga_jual = ceil($harga_beli * $kenaikan_profit * $jumlah);
-        // print_r($total_harga_jual);
-        // print_r($harga_beli);
-        // print_r($kenaikan_profit);
-        // print_r($nilai_profit);
-        // print_r($jumlah);die;
+        $total_harga_jual = $hj * $jumlah;
+        // print_r('harga_beli = '.$harga_beli);
+        // print_r('harga_margin = '.$hm);
+        // print_r('harga_jual = '.$hj);
+        // print_r('total_harga_jual = '.$total_harga_jual);
+        // print_r('kenaikan_profit = '.$kenaikan_profit);
+        // print_r('nilai_profit = '.$nilai_profit);
+        // print_r('jumlah = '.$jumlah);die;
         return $total_harga_jual;
 
     }

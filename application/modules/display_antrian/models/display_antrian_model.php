@@ -211,6 +211,17 @@ class Display_antrian_model extends CI_Model {
 		
 	}
 
+	public function get_antrian_farmasi_original(){
+		 # code...
+       $resep_diterima = $this->db->select('mt_master_pasien.nama_pasien, tgl_pesan as tgl_trans, fr_tc_far.kode_trans_far')->order_by('tgl_pesan', 'ASC')->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_pesan_resep.no_mr','left')->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_tc_pesan_resep.kode_pesan_resep','left')->get_where('fr_tc_pesan_resep', ['CAST(tgl_pesan as DATE) = ' => date('Y-m-d'), 'fr_tc_pesan_resep.kode_profit' => 2000])->result();
+
+        // echo '<pre>';print_r($resep);die;
+        $data['resep_diterima'] = $resep_diterima;
+		return $data;
+	}
+
+	
+
 	public function get_antrian_poli()
 	{
 		$this->db->select('pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, tc_kunjungan.no_mr, antrian_aktif, kode_poli_bpjs, pl_tc_poli.kode_dokter, tgl_keluar_poli, nama_pegawai as nama_dokter, pl_tc_poli.kode_bagian, tc_registrasi.kode_perusahaan');
