@@ -257,7 +257,7 @@ final class Tarif extends AvObjects {
         // print_r('kenaikan_profit = '.$kenaikan_profit);
         // print_r('nilai_profit = '.$nilai_profit);
         // print_r('jumlah = '.$jumlah);die;
-        return $total_harga_jual;
+        return (int)$total_harga_jual;
 
     }
 
