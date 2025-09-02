@@ -83,7 +83,7 @@ class Input_dt_so extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->satuan_kecil.'</div>';
             $row[] = '<div class="center" style="color: blue; font-size: 14px; font-weight: bold">'.$cutt_off_stock.'</div>';
             $row[] = '<div class="center" style="color: green; font-size: 14px; font-weight: bold">'.$row_list->jml_sat_kcl.'</div>';
-            $row[] = '<div class="center"><input type="text" name="stok_kartu" id="row_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center; background-color: #1f1fff61 ; font-weight: bold; font-color: #000000c4;" value="'.$row_list->stok_sekarang.'" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
+            $row[] = '<div class="center"><input type="text" name="stok_kartu" id="row_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center; background-color: #adff1f61 ; font-weight: bold; font-color: #000000c4;" value="'.$row_list->stok_sekarang.'" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
 
             $row[] = '<div class="center"><input type="text" name="stok_will_exp" id="row_will_exp_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center; background-color: #ffe00069 ; font-weight: bold; font-color: #000000c4;" value="'.$row_list->will_stok_exp.'" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
             
