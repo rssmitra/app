@@ -1340,7 +1340,7 @@ class References extends MX_Controller {
 					group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, b.kode_master_tarif_detail,b.kode_tarif,b.kode_klas,b.bill_rs, b.bill_dr1, b.bill_dr2, b.bill_dr3, b.kamar_tindakan, b.bhp, b.alat_rs, b.pendapatan_rs, b.revisi_ke, b.total, b.revisi_ke
 					having b.revisi_ke = (SELECT MAX(t2.revisi_ke) FROM mt_master_tarif_detail t2 WHERE a.kode_tarif=t2.kode_tarif AND b.kode_klas=t2.kode_klas ) 
 					order by a.is_old asc,a.nama_tarif asc, b.revisi_ke desc";
-					echo $query;exit;
+					// echo $query;exit;
         $exc = $this->db->query($query)->result();
 
 		$arrResult = [];
