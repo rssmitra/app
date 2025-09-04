@@ -84,6 +84,14 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		}else if((isset($_GET['is_icu']) AND $_GET['is_icu']=='N')){
 			$this->db->where("ri_tc_rawatinap.bag_pas NOT IN ('031001','032601', '032501') ");
 		}
+
+		if(( isset($_GET['kode_perusahaan']) AND $_GET['kode_perusahaan'] != '')){
+			$this->db->where("tc_registrasi.kode_perusahaan", $_GET['kode_perusahaan'] );
+		}
+
+		if(( isset($_GET['kode_dokter']) AND $_GET['kode_dokter'] != '')){
+			$this->db->where("ri_tc_rawatinap.dr_merawat", $_GET['kode_dokter'] );
+		}
         /*end parameter*/
 		/*check level user*/
 		//$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);

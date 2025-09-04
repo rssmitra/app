@@ -1030,55 +1030,6 @@ audio, canvas, progress, video {
 }
 </style>
 
-<!-- input type hidden -->
-<input type="hidden" name="jenis_form" id="jenis_form" value="<?php echo isset($form_rm->jenis_form)?$form_rm->jenis_form:''?>">
-<input type="hidden" name="cppt_id" id="cppt_id" value="<?php echo isset($form_rm->id)?$form_rm->id:''?>">
-
-<audio id="container" autoplay=""></audio>
-
-<!-- <span>Waktu Pelayanan</span><br>
-<div class="pull-left" style="font-size: 20px; font-weight: bold"> 
-    <span id="minutes">00</span> : <span id="second">00</span> : <span id="centiSecond">00</span>
-</div> -->
-<div class="pull-right">
-    <!-- <button type="button" class="btn btn-xs btn-inverse" id="startCount" onclick="startStopWatch()">Start <i class="fa fa-play"></i></button>
-    <button type="button" class="btn btn-xs btn-inverse" id="pauseCount" onclick="pauseStopWatch()">Stop <i class="fa fa-pause"></i></button> -->
-    <button type="button" class="btn btn-xs btn-success" onclick="speak()" id="callPatientPoli">Call <i class="fa fa-bullhorn bigger-120"></i></button>
-</div>
-<br>
-
-<div class="hr dotted"></div>
-
-<div class="widget-box transparent ui-sortable-handle collapsed" id="widget-box-12" style="display: block">
-    <div class="widget-header">
-        <span style="font-style: italic; font-size: 14px" class="widget-title lighter">Pemanggilan Pasien</h4>
-        <div class="widget-toolbar no-border">
-            <a href="#" data-action="collapse">
-                <i class="ace-icon fa fa-chevron-down"></i>
-            </a>
-        </div>
-    </div>
-
-    <div class="widget-body" style="display: none;">
-        <form style="padding: 10px">
-            <label>Text to speech</label>
-            <input type="text" class="txt" style="width: 100%" value="<?php echo $txt_call_patient?>">
-            <div class="col-md-6 no-padding">
-                <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
-                <div class="rate-value">1</div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="col-md-6">
-                <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
-                <div class="pitch-value">1</div>
-                <div class="clearfix"></div>
-            </div>
-            <label>Language</label><br>
-            <select id="tts_language" style="width: 100%"></select>
-        </form>
-    </div>
-</div>
-
 <div class="widget-box transparent ui-sortable-handle collapsed" id="widget-box-12" style="display: block">
     <div class="widget-header">
         <span style="font-style: italic; font-size: 14px" class="widget-title lighter">Pengkajian Awal Keperawatan Pasien Rawat Jalan</h4>
@@ -1109,7 +1060,7 @@ audio, canvas, progress, video {
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Subjective)</span>
 <div style="margin-top: 6px">
     <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> <span style="color:red">* </span> <br><span style="font-size: 11px; font-style: italic">(Masukan anamnesa minimal 8 karakter)</span> </label>
-    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important" id="pl_anamnesa"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
+    <?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?>
     <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
 <br>
@@ -1148,7 +1099,7 @@ audio, canvas, progress, video {
     </table>
 
     <label for="form-field-8"> <b>Pemeriksaan Fisik</b><br><span style="font-size: 11px; font-style: italic">(Mohon dijelaskan kondisi fisik pasien)</span></label>
-    <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
+    <?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?>
     <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
     
     <label for="form-field-8">
@@ -1221,13 +1172,12 @@ audio, canvas, progress, video {
 
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Diagnosa Primer(ICD10)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD10)</i></label>
-    <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
+    <?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>
     <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
 </div>
 
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Diagnosa Sekunder</b> <br><i style="font-size: 11px">(Klik <b>"enter"</b> untuk menambahkan Diagnosa Sekunder dan dapat diisi lebih dari satu )</i></label>
-    <input type="text" class="form-control" name="pl_diagnosa_sekunder" id="pl_diagnosa_sekunder" placeholder="Masukan keyword ICD 10" value="">
     <div id="pl_diagnosa_sekunder_hidden_txt" style="padding: 2px; line-height: 23px; border: 1px solid #d5d5d5; min-height: 25px; margin-top: 2px">
         <?php
             $arr_text = isset($riwayat->diagnosa_sekunder) ? explode('|',$riwayat->diagnosa_sekunder) : [];
@@ -1253,7 +1203,7 @@ audio, canvas, progress, video {
 </div>
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Prosedur/ Tindakan(ICD9)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD9)</i></label>
-    <input type="text" class="form-control" name="pl_procedure" id="pl_procedure" placeholder="Masukan keyword ICD 9" value="<?php echo isset($riwayat->text_icd9)?$riwayat->text_icd9:' Other consultation'?>">
+    <?php echo isset($riwayat->text_icd9)?$riwayat->text_icd9:' Other consultation'?>
     <input type="hidden" class="form-control" name="pl_procedure_hidden" id="pl_procedure_hidden" value="<?php echo isset($riwayat->kode_icd9)?$riwayat->kode_icd9:'89.08'?>">
 </div>
 
@@ -1261,7 +1211,7 @@ audio, canvas, progress, video {
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Planning)</span>
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br><i style="font-size: 11px">(Mohon dijelaskan Rencana Asuhan Pasien dan Tindak Lanjutnya)</i></label>
-    <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
+    <?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?>
 </div>
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br><i style="font-size: 11px">(Secara default untuk pasien BPJS kontrol kembali setelah 31 hari)</i></label><br>
@@ -1269,33 +1219,19 @@ audio, canvas, progress, video {
 </div>
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Catatan Kontrol</b></label>
-    <textarea name="pl_catatan_kontrol" id="pl_catatan_kontrol" class="form-control" style="height: 70px !important" placeholder="ex. Mohon membawa hasil LAB saat kontrol kembali"><?php echo isset($riwayat->catatan_kontrol_kembali)?$this->master->br2nl($riwayat->catatan_kontrol_kembali):''?></textarea>
+    <?php echo isset($riwayat->catatan_kontrol_kembali)?$this->master->br2nl($riwayat->catatan_kontrol_kembali):'-'?>
 </div>
 <br>
 
-
 <p><b><i class="fa fa-stethoscope bigger-120"></i> INFORMASI PASIEN PULANG </b></p>
-<div class="form-group">
-    <label class="control-label col-sm-3" for="">Cara Keluar Pasien</label>
-    <div class="col-sm-4">
-        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), ($value->cara_keluar_pasien) ? $value->cara_keluar_pasien : 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
-    </div>
-</div>
-<div class="form-group">
-    <label class="control-label col-sm-3" for="">Pasca Pulang</label>
-    <div class="col-sm-4">
-        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), ($riwayat->pasca_pulang) ? $riwayat->pasca_pulang : 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
-    </div>
-</div>
-
-<div class="form-group" style="padding-top: 10px">
-    <div class="col-sm-12 no-padding">
-        <?php if(isset($_GET['form']) && $_GET['form'] == 'billing_entry') : ?>
-            <div class="alert alert-danger"><strong>Peringatan!</strong><br>Session anda bukan sebagai dokter, anda tidak dapat mengubah SOAP</div>
-       <?php else:?>
-       <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> <?php echo ($this->session->userdata('flag_form_pelayanan')) ?  ($this->session->userdata('flag_form_pelayanan') == 'perawat') ? 'Simpan Data' : 'Simpan Data' : 'Simpan Data'?> </button>
-       <?php endif;?>
-    </div>
-</div>
-
+<label>Cara Keluar Pasien : </label><br>
+    <i class="fa fa-arrow-right"></i> <?php echo $value->cara_keluar_pasien?>
+<br>
+<br>
+<label>Pasca Pulang : </label><br>
+    <i class="fa fa-arrow-right"></i> <?php echo $riwayat->pasca_pulang?>
+<br>
+<br>
+<br>
+<br>
 <script src="<?php echo base_url()?>assets/js/custom/counter_poli.js"></script>

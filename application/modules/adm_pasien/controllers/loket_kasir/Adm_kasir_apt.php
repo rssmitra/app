@@ -70,11 +70,11 @@ class Adm_kasir_apt extends MX_Controller {
             //     $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
             // }
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_bayar);
-            if( $total > $row_list->bill_kasir ){
+            if( $row_list->bill_rs == $row_list->bill_kasir ){
                 // $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'billing/Billing/viewDetailBillingKasirApt/".$row_list->kode_trans_far."/RJ?flag=umum'".')"><i class="fa fa-money"></i> Bayar</a></div>';
-                $row[] = '<div class="left"><a href="#" style="color: red; font-weight: bold"><i class="fa fa-warning bigger-120 orange"></i> '.number_format($total).',-</a></div>';
-            }else{
                 $row[] = '<div class="left"><i class="fa fa-check bigger-120 green"></i> <span style="color: green; font-weight: bold">'.number_format($total).',-</span> </div>';
+            }else{
+                $row[] = '<div class="left"><a href="#" style="color: red; font-weight: bold"><i class="fa fa-warning bigger-120 orange"></i> '.number_format($total).',-</a></div>';
             }
 
             $data[] = $row;

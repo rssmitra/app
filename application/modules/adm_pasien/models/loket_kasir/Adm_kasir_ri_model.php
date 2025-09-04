@@ -79,6 +79,14 @@ class Adm_kasir_ri_model extends CI_Model {
 			$this->db->where("ri_tc_rawatinap.tgl_masuk > '".$date2."' ");
 		} 
 
+		if(( isset($_GET['kode_perusahaan']) AND $_GET['kode_perusahaan'] != '')){
+			$this->db->where("tc_registrasi.kode_perusahaan", $_GET['kode_perusahaan'] );
+		}
+
+		if(( isset($_GET['kode_dokter']) AND $_GET['kode_dokter'] != '')){
+			$this->db->where("ri_tc_rawatinap.dr_merawat", $_GET['kode_dokter'] );
+		}
+
 		// if((isset($_GET['is_icu']) AND $_GET['is_icu']=='Y')){
 		// 	$this->db->where("ri_tc_rawatinap.bag_pas = '031001' ");
 		// }else if((isset($_GET['is_icu']) AND $_GET['is_icu']=='N')){

@@ -204,6 +204,23 @@ function show_edit(myid, flag, no_kunjungan, reff_id){
 
 }
 
+function view_data_soap(myid, flag, no_kunjungan, reff_id){
+  preventDefault();
+  if(flag == 'RJ'){
+    $('#tab_menu_erm_dokter li.active').removeClass('active');
+    $('#li_soap').addClass('active');
+    $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processUpdateDiagnosaDr');
+    show_modal('pelayanan/Pl_pelayanan/diagnosa_dr_view_only/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $kode_bagian;?>', 'SOAP DOKTER');
+  }
+
+}
+
+function print_resume(no_registrasi){
+  preventDefault();
+  show_modal('registration/reg_pasien/view_detail_resume_medis/'+no_registrasi, 'RESUME MEDIS PASIEN');
+
+}
+
 function find_data_reload(result, base_url){
   var data = result.data;    
   oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&"+data).load();
@@ -447,8 +464,9 @@ function show_form_rekam_medis(myid){
     </div> -->
     <!-- <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN <br>TERINTEGRASI (CPPT)</b></span></center><br> -->
     <div class="col-md-12">
-        <p style="text-align: center; margin-top: -10px"><b><span style="font-size: 30px;font-family: 'Glyphicons Halflings';">C P P T</span> <br>(<i>Catatan Perkembangan Pasien Terintegrasi</i>) </b></p>
+        <p style="text-align: center; margin-top: 10px"><b><span style="font-size: 20px;">Riwayat Catatan Medis</span> <br>(<i>Catatan Perkembangan Pasien Terintegrasi</i>) </b></p>
     </div>
+    <br>
 
       <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 

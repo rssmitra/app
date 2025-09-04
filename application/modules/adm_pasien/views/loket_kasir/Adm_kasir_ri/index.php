@@ -151,6 +151,21 @@ function rollback(no_registrasi, no_kunjungan){
 
 }
 
+if(!ace.vars['touch']) {
+      $('.chosen-select').chosen({allow_single_deselect:true}); 
+  //resize the chosen on window resize
+
+  $(window)
+  .off('resize.chosen')
+  .on('resize.chosen', function() {
+    $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': $this.parent().width()});
+    })
+  }).trigger('resize.chosen');
+
+}
+
 </script>
 <div class="row">
   <div class="col-xs-12">
@@ -195,15 +210,6 @@ function rollback(no_registrasi, no_kunjungan){
           <div class="col-md-2">
             <input type="text" class="form-control" name="keyword" id="keyword_form">
           </div>
-
-          <label class="control-label col-md-1">Status</label>
-          <div class="col-md-2">
-              <select name="status_ranap" id="status_ranap">
-                <option value="" selected>- Silahkan Pilih -</option>
-                <option value="masih dirawat">Masih dirawat</option>
-                <option value="sudah pulang">Sudah Pulang</option>
-              </select>
-          </div>
       </div>
       <div class="form-group">
         <label class="control-label col-md-1">Tanggal</label>
@@ -223,7 +229,30 @@ function rollback(no_registrasi, no_kunjungan){
               </span>
             </div>
           </div>
-          <div class="col-md-4 no-padding">
+          <label class="control-label col-md-1">Status</label>
+          <div class="col-md-2">
+              <select name="status_ranap" id="status_ranap">
+                <option value="" selected>- Silahkan Pilih -</option>
+                <option value="masih dirawat">Masih dirawat</option>
+                <option value="sudah pulang">Sudah Pulang</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="form-group">
+          <label class="control-label col-md-1">Penjamin</label>
+          <div class="col-md-3">
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array() ), '' , 'kode_perusahaan', 'kode_perusahaan', 'chosen-select form-control', '', '') ?>
+          </div>
+          <label class="control-label col-md-1">Dokter</label>
+          <div class="col-md-4">
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'kode_dokter', 'kode_dokter', 'chosen-select form-control', '', '') ?>
+          </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-1">&nbsp;</label>
+          <div class="col-md-4" style="margin-left:6px">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Search
