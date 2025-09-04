@@ -552,7 +552,7 @@ class Input_pasien_baru extends MX_Controller {
             }else {
                 if(empty($bayi->row())){
                     $dataexc['no_mr'] = $mrID;
-                    // $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
+                    $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
                     if ($this->db->trans_status() === FALSE)
                     {
                         $this->db->trans_rollback();
