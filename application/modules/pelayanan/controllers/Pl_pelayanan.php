@@ -258,12 +258,60 @@ class Pl_pelayanan extends MX_Controller {
         // get form rm untuk layout erm poli mata
         $data['form_rm'] = $this->db->order_by('id','DESC')->where("(jenis_form is not null and flag='cppt')")->get_where('view_cppt',['no_kunjungan' => $no_kunjungan])->row();
         // echo '<pre>'; print_r($data);die;
+
+        if($data['value']->kode_dokter != $this->session->userdata('sess_kode_dokter')){
+            echo "Tidak ada akses untuk mengedit diagnosa dokter ".$data['value']->nama_pegawai." !"; exit;
+        }
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
         $this->load->view('Pl_pelayanan/form_diagnosa_dr', $data);
+    }
+
+    public function diagnosa_dr_view_only($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id_pl_tc_poli*/
+        $data['value'] = $this->Pl_pelayanan->get_by_id($id); 
+        
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+        /*mr*/
+        /*type*/
+        if(isset($data['value']->flag_ri) AND $data['value']->flag_ri==1){
+            $kode_klas = $data['value']->kelas_ri;
+        }else{
+            $kode_klas = 16;
+        }
+
+        $data['type'] = $_GET['type'];
+        if(isset($_GET['cito'])) $data['cito'] = $_GET['cito'];
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['id_pl_tc_poli'] = $id;
+        $data['status_pulang'] = (empty($data['value']->tgl_keluar_poli))?0:1;
+        $data['kode_klas'] = $kode_klas;
+        $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
+        
+        // txt_call_patient
+        $data['txt_call_patient'] = $this->master->get_txt_call_patient(['jk' => $data['value']->jen_kelamin, 'title' => $data['value']->title, 'nama_pasien' => $data['value']->nama_pasien, 'poli' => $data['value']->short_name]);
+        $anatomi_tagging = isset($data['riwayat']->anatomi_tagging)?json_decode($data['riwayat']->anatomi_tagging):'';
+        $data['anatomi_tagging'] = $anatomi_tagging;
+        // get form rm untuk layout erm poli mata
+        $data['form_rm'] = $this->db->order_by('id','DESC')->where("(jenis_form is not null and flag='cppt')")->get_where('view_cppt',['no_kunjungan' => $no_kunjungan])->row();
+        // echo '<pre>'; print_r($data);die;
+
+        if($data['value']->kode_dokter != $this->session->userdata('sess_kode_dokter')){
+            echo "Tidak ada akses untuk mengedit diagnosa dokter ".$data['value']->nama_pegawai." !"; exit;
+        }
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Pl_pelayanan/form_diagnosa_dr_view_only', $data);
     }
 
     public function diagnosa_dr_edit_from_cppt($id='', $no_kunjungan='')

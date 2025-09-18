@@ -32,6 +32,7 @@ class Display_antrian extends MX_Controller {
         // echo '<pre>';print_r($resep);die;
         $data['resep_diterima'] = $resep_diterima;
         $data['resep'] = $resep;
+        $data['text_hide'] = ['NY.','AN.','BY.', ', NY.',', AN.', ', TN.','TN.', ',NY'];
 
         $this->load->view('display_antrian/index_farmasi', $data);
     }
@@ -96,7 +97,7 @@ class Display_antrian extends MX_Controller {
        $data = $this->display_antrian->get_antrian_farmasi_original();
        $resep = $this->Log_proses_resep_obat->get_data();
        $total = count($data);
-       echo '<pre>';print_r($resep);die;
+    //    echo '<pre>';print_r($resep);die;
 
        echo json_encode(array('total' => $total,'result' => $data));
        //echo $nomor_loket;

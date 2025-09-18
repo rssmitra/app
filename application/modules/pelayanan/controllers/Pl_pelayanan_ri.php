@@ -424,6 +424,7 @@ class Pl_pelayanan_ri extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pl_pelayanan_ri->get_datatables_cppt($_GET['no_mr']);
+        // echo "<pre>";print_r($this->session->all_userdata());
         // echo "<pre>";print_r($list);die;
         $data = array();
         $no=0;
@@ -447,6 +448,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->id.', this.value)" '.$checked.' ><span class="lbl"></span><br><span id="verif_id_'.$row_list->id.'">'.$desc.'</span></div>';
                     
                     $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.','."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+
                     $data[] = $row;
                 }
             }
@@ -534,7 +536,13 @@ class Pl_pelayanan_ri extends MX_Controller {
                     if($row_list->tipe == 'RI'){
                         $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                     }else{
-                        $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+                        
+                        $row[] = '<div class="center">
+                        <a href="#" class="btn btn-xs btn-primary" onclick="view_data_soap('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')" style="width: 100% !important"><i class="fa fa-search"></i> View </a><br>
+                        <a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')" style="width: 100% !important; margin-top: 3px"><i class="fa fa-pencil"></i> Edit </a><br>
+                        <a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger" style="width: 100% !important; margin-top: 3px"><i class="fa fa-times-circle"></i> Hapus</a><br>
+                        <a href="#" class="btn btn-xs btn-inverse" onclick="print_resume('.$row_list->no_registrasi.')" style="width: 100% !important; margin-top: 3px"><i class="fa fa-print"></i> Print Resume </a>
+                        </div>';
                     }
                 }else{
                     $row[] = '<div class="center"></div>';
@@ -1166,6 +1174,15 @@ class Pl_pelayanan_ri extends MX_Controller {
         if($id!=null){
             $table = ($_POST['flag'] == 'resume')?'th_riwayat_pasien':'th_cppt';
             $kode = ($_POST['flag'] == 'resume')?'kode_riwayat':'cppt_id';
+            // get data
+            $data = $this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan = '.$table.'.no_kunjungan','left')->get_where($table, [$kode => $id])->row();
+            
+            // cek jika user dokter tidak boleh menghapus data
+            if( $data->kode_dokter != '' AND $data->kode_dokter != $this->session->userdata('sess_kode_dokter') ){
+                echo json_encode(array('status' => 301, 'message' => 'Anda tidak memiliki akses untuk menghapus data'));
+                exit;
+            }
+            
             if($this->db->where($kode, $id)->delete($table)){
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
             }else{

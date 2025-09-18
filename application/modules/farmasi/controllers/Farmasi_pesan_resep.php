@@ -243,7 +243,6 @@ class Farmasi_pesan_resep extends MX_Controller {
                 /*save logs*/
                 $this->logs->save('fr_tc_pesan_resep', $kode_pesan_resep, 'update record on '.$this->title.' module', json_encode($dataexc),'kode_pesan_resep');
                 
-                
             }else{
 
                 // log

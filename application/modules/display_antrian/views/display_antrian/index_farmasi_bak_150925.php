@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -37,7 +38,7 @@
         background-color: white;
         position: relative;
         margin: 0;
-        padding: 0px 10px 10px !important;
+        padding: 0px 20px 24px;
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -96,43 +97,6 @@
     }
     
 
-    /* Wrapper untuk scroll vertikal pada tabel antrian */
-    .scroll-table-wrapper {
-      height: 55vh;
-      min-height: 200px;
-      max-height: calc(100vh - 260px);
-      overflow: hidden;
-      margin-bottom: 0;
-      background: transparent;
-      position: relative;
-    }
-    .scroll-table-inner {
-      height: 100%;
-      max-height: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      background: transparent;
-    }
-    .scroll-table-inner table {
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-    .scroll-table-inner thead th {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: #00669F !important;
-      color: #fff !important;
-      box-shadow: 0 2px 2px rgba(0,0,0,0.04);
-      padding: 5px
-    }
-    .table {
-      width: 100%;
-      margin-bottom: 0;
-      table-layout: auto;
-      background: #fff;
-    }
   </style>
 
   <body class="no-skin">
@@ -146,7 +110,7 @@
 
         <div class="col-md-12" style="padding: 10px">
             <div style="float: left; margin-left: 20px; margin-top: 10px">
-              <img alt="" src="<?php echo base_url().COMP_ICON_INSANI?>" width="200px">
+              <img alt="" src="<?php echo base_url().COMP_ICON_INSANI?>" width="300px">
             </div>
             <div style="float: right; margin-top: 10px; margin-right: 10px">
               <span class="title-text"><img alt="" src="<?php echo base_url().COMP_ICON_BY_INSANI?>" width="150"></span>
@@ -179,13 +143,12 @@
 
                     <div class="widget-body">
                       <div class="widget-main">
-                        <div class="scroll-table-wrapper"><div class="scroll-table-inner" id="scroll-diterima">
                         <table width="100%" style="margin-bottom: 0;">
                           <thead>
                             <tr style="font-size: 1.8em; border-bottom: 1px solid black;">
                               <th width="40px">No</th>
                               <th>Nama Pasien</th>
-                              <th class="center"><i class="fa fa-clock-o"></i></th>
+                              <th class="center">Waktu</th>
                             </tr>
                           </thead>
                           <tbody id="resep-diterima-tbody">
@@ -199,33 +162,60 @@
                             ?>
                             <tr style="font-size: 1.8em; border-bottom: 1px solid grey;">
                               <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
-                              <td style="vertical-align: top">
-                              <?php
-                              $nama = str_replace($text_hide,'', $row->nama_pasien);
-                              $nama = trim(preg_replace('/\s+/', ' ', $nama));
-                              $parts = explode(' ', $nama);
-                              if(count($parts) <= 2) {
-                                echo strtoupper(implode(' ', $parts));
-                              } else {
-                                $output = array_slice($parts, 0, 2);
-                                for($i=2; $i<count($parts); $i++) {
-                                  $output[] = strtoupper(substr($parts[$i],0,1)).'';
-                                }
-                                echo strtoupper(implode(' ', $output));
-                              }
-                              ?>
-                              </td>
+                              <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
                               <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
                             </tr>
                             <?php endif; endforeach;?>
                           </tbody>
-                        </table></div></div>
+                        </table>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="col-sm-3 no-padding">
+                <!-- <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">PENYEDIAAN OBAT</h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <table width="100%">
+                          <thead>
+                          <tr style="font-size: 1.8em; border-bottom: 1px solid black;">
+                              <th width="40px">No</th>
+                              <th>Nama Pasien</th>
+                              <th class="center">Waktu</th>
+                          </tr>
+                          </thead>
+                          <?php 
+                            $no=0; 
+                            $arr_penyediaan_obat = [];
+                            foreach($resep as $row) : 
+                              if($row->jenis_resep == 'racikan'){
+                                $logtime = $row->log_time_3;
+                              }else{
+                                $logtime = $row->log_time_4;
+                              }
+                              if($row->log_time_2 != null && $logtime == null) : 
+                                $no++;
+                                $arr_penyediaan_obat[] = $row;
+                          ?>
+                          <tr style="font-size: 1.8em; border-bottom: 1px solid grey;">
+                            <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
+                            <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
+                          </tr>
+                          <?php endif; 
+                        endforeach;?>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="col-sm-3">
                   <div class="widget-box">
                     <div class="widget-header widget-header-flat">
                       <h4 class="widget-title center" style="text-align: center !important">PROSES RACIKAN</h4>
@@ -233,13 +223,12 @@
 
                     <div class="widget-body">
                       <div class="widget-main">
-                        <div class="scroll-table-wrapper"><div class="scroll-table-inner" id="scroll-racikan">
                         <table width="100%">
                           <thead>
                           <tr style="font-size: 1.8em; border-bottom: 1px solid black;">
                               <th width="40px">No</th>
                               <th>Nama Pasien</th>
-                              <th class="center"><i class="fa fa-clock-o"></i></th>
+                              <th class="center">Waktu</th>
                           </tr>
                           </thead>
                           <?php 
@@ -252,26 +241,11 @@
                           ?>
                           <tr style="font-size: 1.8em; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
-                            <td style="vertical-align: top">
-                              <?php
-                              $nama = str_replace($text_hide,'', $row->nama_pasien);
-                              $nama = trim(preg_replace('/\s+/', ' ', $nama));
-                              $parts = explode(' ', $nama);
-                              if(count($parts) <= 2) {
-                                echo strtoupper(implode(' ', $parts));
-                              } else {
-                                $output = array_slice($parts, 0, 2);
-                                for($i=2; $i<count($parts); $i++) {
-                                  $output[] = strtoupper(substr($parts[$i],0,1)).'';
-                                }
-                                echo strtoupper(implode(' ', $output));
-                              }
-                              ?>
-                            </td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
                             <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
                           </tr>
                           <?php endif; endforeach;?>
-                        </table></div></div>
+                        </table>
                         
                       </div>
                     </div>
@@ -286,13 +260,12 @@
 
                     <div class="widget-body">
                       <div class="widget-main">
-                        <div class="scroll-table-wrapper"><div class="scroll-table-inner" id="scroll-etiket">
                         <table width="100%">
                           <thead>
                           <tr style="font-size: 1.8em; border-bottom: 1px solid black;">
                               <th width="40px">No</th>
                               <th>Nama Pasien</th>
-                              <th class="center"><i class="fa fa-clock-o"></i></th>
+                              <th class="center">Waktu</th>
                           </tr>
                           </thead>
                           <?php 
@@ -305,33 +278,18 @@
                           ?>
                           <tr style="font-size: 1.8em; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
-                            <td style="vertical-align: top">
-                              <?php
-                              $nama = str_replace($text_hide,'', $row->nama_pasien);
-                              $nama = trim(preg_replace('/\s+/', ' ', $nama));
-                              $parts = explode(' ', $nama);
-                              if(count($parts) <= 2) {
-                                echo strtoupper(implode(' ', $parts));
-                              } else {
-                                $output = array_slice($parts, 0, 2);
-                                for($i=2; $i<count($parts); $i++) {
-                                  $output[] = strtoupper(substr($parts[$i],0,1)).'';
-                                }
-                                echo strtoupper(implode(' ', $output));
-                              }
-                              ?>
-                            </td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
                             <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
                           </tr>
                           <?php endif; endforeach;?>
-                        </table></div></div>
+                        </table>
                         
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="col-sm-3" style="padding-left: 0px !important; padding-right: 10px !important">
+                <div class="col-sm-3">
                   <div class="widget-box">
                     <div class="widget-header widget-header-flat">
                       <h4 class="widget-title center" style="text-align: center !important">SIAP DIAMBIL</h4>
@@ -339,13 +297,12 @@
 
                     <div class="widget-body">
                       <div class="widget-main">
-                        <div class="scroll-table-wrapper"><div class="scroll-table-inner" id="scroll-siapdiambil">
                         <table width="100%">
                           <thead>
                           <tr style="font-size: 1.8em; border-bottom: 1px solid black;">
                               <th width="40px">No</th>
                               <th>Nama Pasien</th>
-                              <th class="center"><i class="fa fa-clock-o"></i></th>
+                              <th class="center">Waktu</th>
                           </tr>
                           </thead>
                           <?php 
@@ -353,22 +310,106 @@
                             $arr_siap_diambil = [];
                             foreach($resep as $row) : 
                               if($row->log_time_5 != null && $row->log_time_6 == null) : 
-                                if($no <= 30) :
                                 $no++;
                                 $arr_siap_diambil[] = $row;
                           ?>
                           <tr style="font-size: 1.8em; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
-                            <td style="vertical-align: top"><?php echo strtoupper(str_replace($text_hide,'', $row->nama_pasien))?></td>
+                            <td style="vertical-align: top"><?php echo strtoupper($row->nama_pasien)?></td>
                             <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
                           </tr>
-                          <?php endif; endif; endforeach;?>
-                        </table></div></div>
+                          <?php endif; endforeach;?>
+                        </table>
                         
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <!-- <div class="col-sm-2">
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat">
+                      <h4 class="widget-title center" style="text-align: center !important">REKAP ANTRIAN</h4>
+                    </div>
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <?php
+                          // Rekap antrian farmasi: total resep selesai dan rata-rata waktu tunggu
+                          $total_selesai = 0;
+                          $total_detik = 0;
+                          if (isset($resep) && is_array($resep)) {
+                            foreach($resep as $row) {
+                              if($row->log_time_6 != null && $row->log_time_1 != null) {
+                                $total_selesai++;
+                                $start = strtotime($row->log_time_1);
+                                $end = strtotime($row->log_time_6);
+                                $total_detik += ($end - $start);
+                              }
+                            }
+                          }
+                          $rata2 = '-';
+                          if($total_selesai > 0 && $total_detik > 0) {
+                            $avg = $total_detik / $total_selesai;
+                            $jam = floor($avg / 3600);
+                            $menit = floor(($avg % 3600) / 60);
+                            $detik = $avg % 60;
+                            $rata2 = sprintf('%02d:%02d:%02d', $jam, $menit, $detik);
+                          }
+                        ?>
+                        
+                        <table style="width:100%; font-size:15px;">
+                          <tr>
+                            <td>Resep Masuk/Diterima</td>
+                          </tr>
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_resep_diterima); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Proses Penyediaan Obat</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_penyediaan_obat); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Proses Racikan</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_racikan); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Proses Etiket</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_etiket); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Siap Diambil</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo count($arr_siap_diambil); ?></b></td>
+                          </tr>
+
+                          <tr>
+                            <td>Rata-rata waktu tunggu obat</td>
+                          </tr>
+
+                          <tr>
+                            <td style="text-align:left; font-size: 24px"><b><?php echo $rata2; ?></b></td>
+                          </tr>
+
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
 
               </div>
               
@@ -386,6 +427,33 @@
               <span class="white bolder">RS Setia Mitra</span>
               | <i>Smart Hospital System 4.0 </i> &copy; 2018-<?php echo date('Y')?>
             </span>
+            <span style="font-size: 1.5em; font-weight: bold; text-align: right;">
+              <?php
+                // Hitung rata-rata waktu tunggu obat
+                $total_selesai = 0;
+                $total_detik = 0;
+                if (isset($resep) && is_array($resep)) {
+                  foreach($resep as $row) {
+                    if($row->log_time_6 != null && $row->log_time_1 != null) {
+                      $total_selesai++;
+                      $start = strtotime($row->log_time_1);
+                      $end = strtotime($row->log_time_6);
+                      $total_detik += ($end - $start);
+                    }
+                  }
+                }
+                $rata2 = '-';
+                if($total_selesai > 0 && $total_detik > 0) {
+                  $avg = $total_detik / $total_selesai;
+                  $jam = floor($avg / 3600);
+                  $menit = floor(($avg % 3600) / 60);
+                  $detik = $avg % 60;
+                  $rata2 = sprintf('%02d:%02d:%02d', $jam, $menit, $detik);
+                }
+              ?>
+              Rata-rata waktu tunggu obat: <span style="color: #ffd700;"><?php echo $rata2; ?></span>
+            </span>
+          </div>
         </div>
       </div>
       <style>
@@ -464,101 +532,57 @@
     <!-- farmnasi -->
     <script>
       $(document).ready( function(){
-        // Auto scroll vertikal berjalan untuk setiap tabel
 
-        // Scroll berjalan vertikal untuk setiap tabel
-        // Scroll berjalan vertikal untuk setiap tabel, reload page setelah 1 siklus scroll penuh (bawah-atas)
-        function autoScrollTable(id, onFullCycle) {
-          var el = document.getElementById(id);
-          if (!el) return;
-          var direction = 1;
-          var scrollStep = 1;
-          var scrollDelay = 30;
-          var scrollInterval;
-          var hasCycled = false;
-          function scrollFn() {
-            if (el.scrollHeight <= el.clientHeight) return;
-            if (direction === 1) {
-              if (el.scrollTop + el.clientHeight < el.scrollHeight - 1) {
-                el.scrollTop += scrollStep;
-              } else {
-                direction = -1;
-                setTimeout(scrollFn, 1000); // jeda di bawah
-                return;
-              }
-            } else {
-              if (el.scrollTop > 0) {
-                el.scrollTop -= scrollStep;
-              } else {
-                direction = 1;
-                if (!hasCycled) {
-                  hasCycled = true;
-                  if (typeof onFullCycle === 'function') onFullCycle();
-                }
-                setTimeout(scrollFn, 1000); // jeda di atas
-                return;
-              }
-            }
-            scrollInterval = setTimeout(scrollFn, scrollDelay);
-          }
-          scrollFn();
-          // Simpan interval agar bisa direset jika reload data
-          return function stopScroll() { clearTimeout(scrollInterval); };
-        }
+        // setInterval( function () {
+          // antrian farmasi
+          $.getJSON("<?php echo site_url('display_antrian/reload_antrian_farmasi') ?>", '', function (data) {   
+            
+            // console.log(data.result);
+            $.each(data.result, function (key, val) { 
+              // console.log(val);
+              $.each(val, function (keys, vals) {  
+                console.log(key);
+                $('#table_'+key+'_'+keys+' tbody').remove();
+                var length = vals.length;
+                $.each(vals, function (k, v) {  
+                  // console.log(k);
+                  // console.log(v);
+                  if(k < 2){
+                    var prefix = (v.kode_perusahaan == 120)?'B':'A';
+                    var lgth_no_antrian = v.no_antrian.toString();
+                    // console.log(lgth_no_antrian);
+                    var no_antrian = (lgth_no_antrian.length == 1) ? '0'+v.no_antrian : v.no_antrian;
+                    var icon = (k == 0) ? '<span style="float: right !important"><i class="fa fa-circle green"></i></span>' : '' ;
+                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">'+prefix+' '+no_antrian+' &nbsp;&nbsp;</span></td><td><span>'+v.nama_pasien.substr(0,15)+'</span>'+icon+'</td></tr>').appendTo($('#table_'+v.kode_farmasi_bpjs+'_'+v.kode_dokter+''));
+                  }
 
-        // Jalankan scroll untuk semua tabel, reload page setelah salah satu tabel selesai 1 siklus scroll
-        var stopScrollers = [];
-        var hasReloaded = false;
-        function onAnyTableFullCycle() {
-          if (!hasReloaded) {
-            hasReloaded = true;
-            reload_page();
-          }
-        }
-        function startAllScrollers() {
-          stopAllScrollers();
-          hasReloaded = false;
-          stopScrollers = [
-            autoScrollTable('scroll-diterima', onAnyTableFullCycle),
-            autoScrollTable('scroll-racikan', onAnyTableFullCycle),
-            autoScrollTable('scroll-etiket', onAnyTableFullCycle),
-            autoScrollTable('scroll-siapdiambil', onAnyTableFullCycle)
-          ];
-        }
-        function stopAllScrollers() {
-          stopScrollers.forEach(function(stop){ if(typeof stop === 'function') stop(); });
-          stopScrollers = [];
-        }
-        startAllScrollers();
+                  if(length == 1){
+                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">X 00 &nbsp;&nbsp;</span></td><td>-</td></tr>').appendTo($('#table_'+v.kode_farmasi_bpjs+'_'+v.kode_dokter+''));
+                  }
+                  
+                })
 
-        // antrian farmasi reload
-        $.getJSON("<?php echo site_url('display_antrian/reload_antrian_farmasi') ?>", '', function (data) {   
-          $.each(data.result, function (key, val) { 
-            $.each(val, function (keys, vals) {  
-              $('#table_'+key+'_'+keys+' tbody').remove();
-              var length = vals.length;
-              $.each(vals, function (k, v) {  
-                if(k < 2){
-                  var prefix = (v.kode_perusahaan == 120)?'B':'A';
-                  var lgth_no_antrian = v.no_antrian.toString();
-                  var no_antrian = (lgth_no_antrian.length == 1) ? '0'+v.no_antrian : v.no_antrian;
-                  var icon = (k == 0) ? '<span style="float: right !important"><i class="fa fa-circle green"></i></span>' : '' ;
-                  $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">'+prefix+' '+no_antrian+' &nbsp;&nbsp;</span></td><td><span>'+v.nama_pasien.substr(0,15)+'</span>'+icon+'</td></tr>').appendTo($('#table_'+v.kode_farmasi_bpjs+'_'+v.kode_dokter+''));
-                }
-                if(length == 1){
-                  $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">X 00 &nbsp;&nbsp;</span></td><td>-</td></tr>').appendTo($('#table_'+v.kode_farmasi_bpjs+'_'+v.kode_dokter+''));
-                }
+                
+
               })
+              
             })
-          })
-          // Restart auto scroll setelah reload data
-          setTimeout(startAllScrollers, 500);
-        });
-  // Hapus interval reload_page otomatis, reload hanya setelah scroll selesai
+
+            
+          });
+        // }, 2000 );
+        setInterval("reload_page();",3000);
+
       });
+      
+
       function reload_page(){
+
+        // $('#refresh').load(location.href + ' #time');
         location.reload(location.href);
+
       }
+
     </script>
 
     

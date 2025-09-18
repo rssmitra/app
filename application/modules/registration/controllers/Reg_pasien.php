@@ -573,7 +573,7 @@ class Reg_pasien extends MX_Controller {
 
         $data['umur'] = $umur;
 
-        echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data);die;
 
         $this->load->view('Reg_pasien/view_resume_medis', $data);
     

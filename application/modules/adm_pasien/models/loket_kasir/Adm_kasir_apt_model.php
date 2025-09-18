@@ -28,7 +28,6 @@ class Adm_kasir_apt_model extends CI_Model {
 
 		if ( isset($_GET['search_by']) ) {
 			
-			
 			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
 				$this->db->like('a.'.$_GET['search_by'], $_GET['keyword']);		
 			}

@@ -155,6 +155,21 @@ function rollback(no_registrasi, no_kunjungan){
 
 }
 
+if(!ace.vars['touch']) {
+        $('.chosen-select').chosen({allow_single_deselect:true}); 
+    //resize the chosen on window resize
+
+    $(window)
+    .off('resize.chosen')
+    .on('resize.chosen', function() {
+      $('.chosen-select').each(function() {
+          var $this = $(this);
+          $this.next().css({'width': $this.parent().width()});
+      })
+    }).trigger('resize.chosen');
+
+  }
+
 </script>
 <div class="row">
   <div class="col-xs-12">
@@ -186,7 +201,7 @@ function rollback(no_registrasi, no_kunjungan){
       <input type="hidden" name="is_icu" value="<?php echo $is_icu ?>" id="is_icu">
       <div class="form-group">
           <label class="control-label col-md-2">Pencarian berdasarkan</label>
-          <div class="col-md-2" style="margin-left:-2%">
+          <div class="col-md-2">
             <select name="search_by" id="search_by" class="form-control">
               <option value="">-Silahkan Pilih-</option>
               <option value="no_mr" selected>No MR</option>
@@ -195,7 +210,7 @@ function rollback(no_registrasi, no_kunjungan){
           </div>
 
           <label class="control-label col-md-1">Keyword</label>
-          <div class="col-md-2" style="margin-left:-2%">
+          <div class="col-md-2">
             <input type="text" class="form-control" name="keyword" id="keyword_form">
           </div>
 
@@ -209,7 +224,27 @@ function rollback(no_registrasi, no_kunjungan){
               </select>
           </div>
 
-          <div class="col-md-4" style="margin-left:-3.8%">
+      </div>
+
+      <div class="form-group">
+          <label class="control-label col-md-2">Pilih Penjamin</label>
+          <div class="col-md-3">
+            <select name="penjamin" id="penjamin" class="form-control">
+                <option value="" selected>- Semua -</option>
+                <option value="120">BPJS Kesehatan</option>
+                <option value="229">BPJS Ketenagakerjaan</option>
+                <option value="1">Asuransi</option>
+                <option value="0">Umum</option>
+              </select>
+          </div>
+          <label class="control-label col-md-1">Dokter</label>
+          <div class="col-md-4">
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'kode_dokter', 'kode_dokter', 'chosen-select form-control', '', '') ?>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-2">&nbsp;</label>
+          <div class="col-md-4" style="margin-left:6px">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Search
@@ -219,7 +254,6 @@ function rollback(no_registrasi, no_kunjungan){
               Reset
             </a>
           </div>
-
       </div>
      
     <hr class="separator">

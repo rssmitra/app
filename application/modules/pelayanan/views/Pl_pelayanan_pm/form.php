@@ -789,13 +789,13 @@ function perjanjian_pasien_pm(){
                   </a>
                 </li>
 
-                <?php if($status=='belum_isi_hasil'): ?>
+                <?php //if($status=='belum_isi_hasil'): ?>
                   <li>
                     <a data-toggle="tab" data-id="<?php echo $id?>?mr=<?php echo isset($value)?$value->no_mr:0; echo ($value->flag_mcu==1)?'&is_mcu=2':'' ?>" data-url="pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo $value->no_kunjungan?>/<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" id="tabs_isi_hasil" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                       Pengisian Hasil Pemeriksaan
                     </a>
                   </li>
-                <?php endif ?>
+                <?php //endif ?>
 
                   <li>
                     <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/<?php echo $type_asal ?>" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >

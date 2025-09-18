@@ -261,7 +261,7 @@
               <div class="col-md-2">
                 <label class="inline" style="margin-top: 4px;">
                   <input type="checkbox" class="ace" name="bayi_kembar" id="bayi_kembar" value="1">
-                  <span class="lbl"> Bayi Lahir Kembar</span>
+                  <span class="lbl"> Bayi Lahir Kembar/ Anak ke 2 dst </span>
                 </label>
               </div>
 
@@ -295,9 +295,7 @@
               </div>
 
             </div>
-
-
-                    
+     
           </div>
           <br>
 
