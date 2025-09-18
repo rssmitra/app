@@ -245,6 +245,7 @@ final class Tarif extends AvObjects {
         //         $nilai_profit = 0;
         //     }
         // }
+
         $hm = ($harga_beli * (1 + $nilai_profit));
         $hj = $hm * (1 + $this->tax);
 

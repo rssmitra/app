@@ -600,8 +600,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                 'status_isihasil' => 1,
                 'catatan_hasil' => $txt_nl2br
             );
-            $this->Pl_pelayanan_pm->update('pm_tc_penunjang',$pm_tc_penunjang, array('kode_penunjang' => $this->input->post('kode_penunjang')));
-
+            // $this->Pl_pelayanan_pm->update('pm_tc_penunjang',$pm_tc_penunjang, array('kode_penunjang' => $this->input->post('kode_penunjang')));
             /*insert pm_tc_hasilpenunjang*/
             foreach($_POST['kode_mt_hasilpm'] as $key=>$row_dt){
 
@@ -621,6 +620,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                     'hasil' => $hasil,
                     'keterangan' => $keterangan,
                 );
+                // echo '<pre>';print_r($dataexc);die;
 
                 if($kode_trans_pelayanan!=''){
                     $cek_mcu = $this->db->get_where('tc_trans_pelayanan_paket_mcu',array('kode_trans_pelayanan_paket_mcu' => $kode_trans_pelayanan))->row();
