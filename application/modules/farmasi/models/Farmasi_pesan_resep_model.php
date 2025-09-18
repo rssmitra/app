@@ -105,7 +105,7 @@ class Farmasi_pesan_resep_model extends CI_Model {
 		$this->db->order_by(''.$this->table.'.kode_pesan_resep','ASC');		
 		
 		$query = $this->db->get();
-		print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 		
 	}
