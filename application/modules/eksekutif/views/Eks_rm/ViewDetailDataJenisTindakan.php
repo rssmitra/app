@@ -14,7 +14,7 @@
           <th>Alkes</th>
           <th>Alat RS</th>
           <th>Administrasi</th>
-          <th>Pendapatan RS</th>
+          <th>Biaya Utilitas</th>
           <th>Total (Rp.)</th>
         </tr>
         <?php 

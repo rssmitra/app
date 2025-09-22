@@ -78,6 +78,10 @@
       color: white !important;
     }
 
+    table tbody{
+      color: white !important;
+    }
+
     .widget-main{
       padding: 0px !important
     }
@@ -136,37 +140,67 @@
   </style>
 
   <body class="no-skin">
+    <!-- STAMP LABEL -->
+    <div class="uji-coba-stamp">Sedang Uji Coba</div>
+    <style>
+      .uji-coba-stamp {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 20000;
+        background: rgba(255, 0, 0, 0.85);
+        color: #fff;
+        font-size: 2.2em;
+        font-weight: bold;
+        padding: 12px 32px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(255,0,0,0.18);
+        letter-spacing: 2px;
+        transform: rotate(8deg);
+        opacity: 0.92;
+        pointer-events: none;
+        user-select: none;
+      }
+      @media (max-width: 600px) {
+        .uji-coba-stamp {
+          font-size: 1.2em;
+          padding: 6px 14px;
+          top: 10px;
+          right: 10px;
+        }
+      }
+    </style>
   
-    <div class="main-container ace-save-state" id="main-container" style="min-height: 100vh; display: flex; flex-direction: column;">
+    <div class="main-container ace-save-state" id="main-container" style="min-height: 100vh; display: flex; flex-direction: column; background: black">
       <script type="text/javascript">
         try{ace.settings.loadState('main-container')}catch(e){}
       </script>
 
-      <div class="main-content" style="flex: 1 1 auto; overflow-y: auto;">
+      <div class="main-content" style="flex: 1 1 auto; overflow-y: auto; background: black">
 
-        <div class="col-md-12" style="padding: 10px">
+        <!-- <div class="col-md-12" style="padding: 10px">
             <div style="float: left; margin-left: 20px; margin-top: 10px">
               <img alt="" src="<?php echo base_url().COMP_ICON_INSANI?>" width="200px">
             </div>
             <div style="float: right; margin-top: 10px; margin-right: 10px">
               <span class="title-text"><img alt="" src="<?php echo base_url().COMP_ICON_BY_INSANI?>" width="150"></span>
             </div>
-        </div>
+        </div> -->
 
         
 
         <div class="col-md-12 header-fixed" style="background: #00669F; color: white; padding: 5px; border-top-left-radius: 15px; border-top-right-radius: 15px; position: sticky; top: 0; z-index: 1000;">
-          <div style="font-size: 25px; font-weight: bold; float: left; padding-left: 20px">Antrian Resep Obat</div>
-          <div style="text-align: right; font-size: 20px; margin-top: 3px; float: right; margin-right: 20px" >
+          <div style="font-size: 30px; font-weight: bold; float: left; padding-left: 20px">ANTRIAN RESEP OBAT</div>
+          <div style="text-align: right; font-size: 25px; margin-top: 3px; float: right; margin-right: 20px" >
             <i class="fa fa-calendar"></i> <?php date_default_timezone_set("Asia/Jakarta"); echo date('l, d F Y') ?> &nbsp; <i class="fa fa-clock-o"></i>  
             <span id="refresh">&nbsp;
                 <span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></span> WIB
           </div>
         </div>
 
-        <div class="main-content-inner">
-          <div class="page-content">
-            <div id="page-area-content" >
+        <div class="main-content-inner" style="background: black">
+          <div class="page-content" style="background: black">
+            <div id="page-area-content" style="background: black">
               <!-- section antrian farmasi -->
               <div id="section_antrian_farmasi" class="row" style="margin-top: 10px">
                 
@@ -222,10 +256,9 @@
                         </table></div></div>
                       </div>
                     </div>
-                    <center>
-                    <!-- <b style="font-size: 18px">Total Resep Diterima : </b> -->
-                    <span style="font-size: 5em"><?php echo count($arr_resep_diterima)?></span>
-                    </center>
+                    <div style="width: 100%; text-align: center; margin-bottom: 10px; background: #0765a1; margin-top: 10px;">
+                    <span style="color: white; font-size: 20px">TOTAL RESEP DITERIMA</span><br><span style="font-size: 5em; color: white; font-weight: bold"><?php echo count($arr_resep_diterima)?></span>
+                    </div>
                   </div>
                 </div>
 
@@ -279,10 +312,9 @@
                         
                       </div>
                     </div>
-                    <center>
-                    <!-- <b style="font-size: 18px">Total Proses Racikan : </b> -->
-                    <span style="font-size: 5em"><?php echo count($arr_racikan)?></span>
-                    </center>
+                    <div style="width: 100%; text-align: center; margin-bottom: 10px; background: #0765a1; margin-top: 10px;">
+                    <span style="color: white; font-size: 20px">TOTAL RESEP RACIKAN</span><br><span style="font-size: 5em; color: white; font-weight: bold"><?php echo count($arr_racikan)?></span>
+                    </div>
                     
                   </div>
                 </div>
@@ -337,10 +369,9 @@
                         
                       </div>
                     </div>
-                    <center>
-                    <!-- <b style="font-size: 18px">Total Proses Etiket : </b> -->
-                    <span style="font-size: 5em"><?php echo count($arr_etiket)?></span>
-                    </center>
+                    <div style="width: 100%; text-align: center; margin-bottom: 10px; background: #0765a1; margin-top: 10px;">
+                    <span style="color: white; font-size: 20px">TOTAL PROSES ETIKET</span><br><span style="font-size: 5em; color: white; font-weight: bold"><?php echo count($arr_etiket)?></span>
+                    </div>
 
                   </div>
                 </div>
@@ -381,10 +412,9 @@
                         
                       </div>
                     </div>
-                    <center>
-                    <!-- <b style="font-size: 18px">Total Siap Diambil : </b> -->
-                    <span style="font-size: 5em"><?php echo count($arr_siap_diambil)?></span>
-                    </center>
+                    <div style="width: 100%; text-align: center; margin-bottom: 10px; background: #0765a1; margin-top: 10px;">
+                    <span style="color: white; font-size: 20px">TOTAL RESEP SIAP DIAMBIL</span><br><span style="font-size: 5em; color: white; font-weight: bold"><?php echo count($arr_siap_diambil)?></span>
+                    </div>
                   </div>
                 </div>
 
@@ -397,9 +427,9 @@
 
       </div><!-- /.main-content -->
       
-      <div class="footer footer-fixed">
-        <div class="footer-inner" style="background: #0765a1; color: white; width: 100vw;">
-          <div class="footer-content" style="background: #0765a1; color: white; display: flex; justify-content: space-between; align-items: center; width: 100vw; padding: 0 2vw; min-height: 60px;">
+      <div class="footer footer-fixed" style="background: black">
+        <div class="footer-inner" style="background: #0765a1; color: white; width: 100vw; ">
+          <div class="footer-content" style="background: #0765a1; color: white; display: flex; justify-content: space-between; align-items: center; width: 100vw; padding: 0 2vw; min-height: 60px; border-top-left-radius: 15px; border-top-right-radius: 15px;">
             <span class="bigger-120" style="font-size: 2.2em !important; font-weight: bold;">
               <span class="white bolder">RS Setia Mitra</span>
               | <i>Smart Hospital System 4.0 </i> &copy; 2018-<?php echo date('Y')?>
@@ -417,11 +447,14 @@
                       $total_selesai++;
                       $start = strtotime($row->log_time_1);
                       $end = strtotime($row->log_time_6);
-                      $total_detik += ($end - $start);
+                      $row_total_detik = ($end - $start);
+                      $total_detik += ($row_total_detik > 3600) ? 3600 : $row_total_detik; // maksimal 1 jam (3600 detik)
                     }
                   }
                 }
                 $rata2 = '-';
+                // echo $total_selesai.' resep selesai, '.$total_detik.' detik total';
+
                 if($total_selesai > 0 && $total_detik > 0) {
                   $avg = $total_detik / $total_selesai;
                   $jam = floor($avg / 3600);

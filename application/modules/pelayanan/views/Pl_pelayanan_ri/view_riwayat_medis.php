@@ -2,6 +2,66 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
 
 <script type="text/javascript">
+function openSlidePanel(html) {
+  preventDefault();
+  document.getElementById('slidePanelContent').innerHTML = html;
+  document.getElementById('slidePanel').classList.add('open');
+  document.getElementById('slidePanelBg').classList.add('active');
+}
+function closeSlidePanel() {
+  document.getElementById('slidePanel').classList.remove('open');
+  document.getElementById('slidePanelBg').classList.remove('active');
+}
+// Optional: close panel if background clicked
+document.getElementById('slidePanelBg').onclick = closeSlidePanel;
+</script>
+
+<style>
+.slide-panel {
+  position: fixed;
+  top: 0;
+  right: -500px;
+  width: 400px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+  z-index: 9999;
+  transition: right 0.4s cubic-bezier(.4,0,.2,1);
+  overflow-y: auto;
+  padding: 24px 20px 20px 20px;
+}
+.slide-panel.open {
+  right: 0;
+}
+.slide-panel .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 2em;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10001;
+}
+.slide-panel-content {
+  margin-top: 40px;
+}
+.slide-panel-bg {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 9998;
+}
+.slide-panel-bg.active {
+  display: block;
+}
+</style>
+
+
+<script>
+
 
 jQuery(function($) {  
 
@@ -227,10 +287,42 @@ function reload_table(){
  oTableCppt.ajax.reload(); //reload datatable ajax 
 }
 
+function view_data_soap(myid, flag, no_kunjungan, reff_id){
+  preventDefault();
+  if(flag == 'RJ'){
+
+    $.getJSON('pelayanan/Pl_pelayanan/diagnosa_dr_view_only/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $kode_bagian;?>&response=json', '' , function (response) {    
+      console.log(response);
+      openSlidePanel(response.html);
+    }); 
+
+    // $('#tab_menu_erm_dokter li.active').removeClass('active');
+    // $('#li_soap').addClass('active');
+    // $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processUpdateDiagnosaDr');
+
+    // show_modal('pelayanan/Pl_pelayanan/diagnosa_dr_view_only/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $kode_bagian;?>', 'SOAP DOKTER');
+  }
+
+}
+
+function print_resume(no_registrasi){
+  preventDefault();
+  show_modal('registration/reg_pasien/view_detail_resume_medis/'+no_registrasi, 'RESUME MEDIS PASIEN');
+
+}
+
 </script>
 
+
+<div class="slide-panel-bg" id="slidePanelBg"></div>
+<div class="slide-panel" id="slidePanel">
+  <button class="close-btn" type="button" onclick="closeSlidePanel()">&times;</button>
+  <div class="slide-panel-content" id="slidePanelContent">
+    <!-- Konten detail akan dimuat di sini -->
+  </div>
+</div>
+
 <div class="row">
-  
   <div class="col-md-12" id="section_form_cppt" style="display: none">
 
     <div class="center"><span style="font-size: 14px"><b>FORM CPPT</b></span><br><small>(Dilengkapi setelah PPA melakukan Assesment)</small></div>
@@ -379,10 +471,10 @@ function reload_table(){
                 <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
                 Reset
               </a>
-              <!-- <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
+              <a href="#" id="btn_export_pdf_cpptxx" onclick="openSlidePanel('OK')" class="btn btn-xs btn-danger">
                 <i class="fa fa-file-pdf-o bigger-110"></i>
                 Export PDF
-              </a> -->
+              </a>
             </div>
 
         </div>

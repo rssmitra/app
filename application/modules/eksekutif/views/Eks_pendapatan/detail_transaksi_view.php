@@ -11,7 +11,7 @@
         <th class="center">Alat RS</th>
         <th class="center">Kamar Tindakan</th>
         <th class="center">Administrasi</th>
-        <th class="center">Pendapatan RS</th>
+        <th class="center">Biaya Utilitas</th>
         <th class="center">Total (Rp)</th>
     </tr>
   </thead>

@@ -70,7 +70,7 @@
       <td align="right"><span style="font-size: 11px;">Lab</span><br><h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><?php echo number_format(array_sum($arr_bill_lab))?></h3></td>
       <td align="right"><span style="font-size: 11px;">Rad</span><br><h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><?php echo number_format(array_sum($arr_bill_rad))?></h3></td>
       <td align="right"><span style="font-size: 11px;">Adm</span><br><h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><?php echo number_format(array_sum($arr_bill_adm))?></h3></td>
-      <td align="right"><span style="font-size: 11px;">Profit RS</span><br><h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><?php echo number_format(array_sum($arr_total_profit))?></h3></td>
+      <td align="right"><span style="font-size: 11px;">Biaya Utilitas</span><br><h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><?php echo number_format(array_sum($arr_total_profit))?></h3></td>
       <td align="right"><span style="font-size: 11px;">Total</span><br><h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><?php echo number_format(array_sum($arr_total_bill))?></h3></td>
     </tr>
   </tbody>
@@ -98,7 +98,7 @@
       <th width="80px">Lab</th>
       <th width="80px">Rad</th>
       <th width="80px">Adm</th>
-      <th width="80px">Profit RS</th>
+      <th width="80px">Biaya Utilitas</th>
       <th width="80px">Total</th>
     </tr>
   </thead>

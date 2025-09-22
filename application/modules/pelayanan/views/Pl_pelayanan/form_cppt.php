@@ -50,7 +50,7 @@ $(document).ready(function() {
       "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>",
+          "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&module=RJ",
           "type": "POST"
       },
 
@@ -72,7 +72,7 @@ $(document).ready(function() {
               $('#section_form_cppt').hide('fast');
               $('#section_history_cppt').show('fast');
 
-              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>').load();
+              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&module=RJ').load();
               // reset form
               $('#cppt_id').val('');
               $('#subjective').val('');
@@ -146,7 +146,7 @@ function delete_cppt(myid, flag){
           var jsonResponse = JSON.parse(data);
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
-            oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>').load();
+            oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&module=RJ').load();
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
@@ -223,12 +223,12 @@ function print_resume(no_registrasi){
 
 function find_data_reload(result, base_url){
   var data = result.data;    
-  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&"+data).load();
+  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&module=RJ&"+data).load();
   // $("html, body").animate({ scrollTop: "400px" });
 }
 
 function reset_table(){
-  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>").load();
+  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&module=RJ").load();
   // $("html, body").animate({ scrollTop: "400px" });
 }
 

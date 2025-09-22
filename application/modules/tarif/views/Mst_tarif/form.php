@@ -238,7 +238,7 @@ function changeTotal(){
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">Pendapatan RS</label>
+            <label class="control-label col-sm-2" for="">Biaya Utilitas</label>
             <div class="col-sm-2">
                 <input type="text" onchange="changeTotal()" class="form-control format_number" name="pendapatan_rs" value="<?php echo isset($value->pendapatan_rs)?$value->pendapatan_rs:''?>">
             </div>

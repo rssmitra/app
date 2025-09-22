@@ -681,7 +681,7 @@ function tambah_file()
               <th>Dokter</th>
               <th style="width:100px">BHP</th>
               <th style="width:100px">Alat RS</th>
-              <th style="width:100px">Pendapatan RS</th>
+              <th style="width:100px">Biaya Utilitas</th>
               <th style="width:100px">Total Tarif</th>
             </tr>
           </thead>

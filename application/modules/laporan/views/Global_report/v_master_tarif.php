@@ -44,7 +44,7 @@
           <td>Kamar Tindakan</td>
           <td>Alkes/Alat RS</td>
           <td>Administrasi</td>
-          <td>Pendapatan RS</td>
+          <td>Biaya Utilitas</td>
           <td>Total</td>
         <?php endforeach; ?>
         </tr>

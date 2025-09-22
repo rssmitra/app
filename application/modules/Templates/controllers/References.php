@@ -2384,7 +2384,7 @@ class References extends MX_Controller {
 		echo json_encode( array('html' => $html) );
 	}
 
-	public function get_riwayat_pm($mr){
+	public function get_riwayat_pm($mr, $return = ''){
 		
 		$year = date('Y') - 1;
 		$no_mr = (string)$mr;
@@ -2444,9 +2444,13 @@ class References extends MX_Controller {
 
 		// echo '<pre>';print_r($data);die;
 		
-		$html = $this->load->view('Templates/templates/view_riwayat_pm_sidebar', $data, true);
+		if($return == 'html'){
+			return $this->load->view('Templates/templates/view_riwayat_pm_sidebar', $data, true);
+		}else{
+			$html = $this->load->view('Templates/templates/view_riwayat_pm_sidebar', $data, true);
+			echo json_encode( array('html' => $html) );
+		}
 		
-		echo json_encode( array('html' => $html) );
 	}
 
 	public function getPegawaiAktif()
