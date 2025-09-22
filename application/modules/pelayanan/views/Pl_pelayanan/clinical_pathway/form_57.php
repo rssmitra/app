@@ -139,7 +139,7 @@ jQuery(function($) {
 
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
-<div style="text-align: center; font-size: 18px;"><b>DIAGNOSA KEPERAWATAN: NYERI AKUT</b></div>
+<div style="text-align: center; font-size: 18px;"><b>DIAGNOSIS KEPERAWATAN: NYERI AKUT</b></div>
 <br>
 
 <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
@@ -476,7 +476,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>1</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>1</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <div style="margin-top: 5px;"><b>Observasi</b></div>
                 <div class="checkbox">
@@ -539,7 +539,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>2</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>2</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <b>Terapeutik</b>
                 <div class="checkbox">
@@ -572,7 +572,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>3</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>3</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <b>Edukasi</b>
                 <div class="checkbox">
@@ -611,7 +611,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>4</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>4</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <b>Kolaborasi</b>
                 <div class="checkbox">
@@ -636,7 +636,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>1</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>1</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <div style="margin-top: 5px;"><b>Observasi</b></div>
                 <div class="checkbox">
@@ -675,7 +675,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>2</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>2</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <b>Terapeutik</b>
                 <div class="checkbox">
@@ -708,7 +708,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>3</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>3</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <b>Edukasi</b>
                 <div class="checkbox">
@@ -723,7 +723,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; vertical-align: top;"><b>4</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align:center;"><b>4</b></td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <b>Kolaborasi</b>
                 <div class="checkbox">
@@ -740,27 +740,30 @@ jQuery(function($) {
     </tbody>
 </table>
 
-<br>
-<table class="table" style="width: 100%;">
+<table class="table" style="width: 100%; border:1px solid #000; border-collapse:collapse;">
   <tbody>
     <tr>
-      <!-- Kolom Perawat -->
-      <td style="width: 34%; text-align: center;">
+      <!-- Kolom 1 untuk TTD -->
+      <td style="width:33%; text-align:center;">
         Nama/Paraf
         <br><br>
-        <span class="ttd-btn" data-role="perawat" id="ttd_perawat" style="cursor: pointer;">
+        <span class="ttd-btn" data-role="petugas" id="ttd_petugas" style="cursor: pointer;">
           <i class="fa fa-pencil blue"></i>
         </span>
         <br>
-        <img id="img_ttd_perawat" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
+        <img id="img_ttd_petugas" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" name="form_57[ttd_paraf_perawat]" id="ttd_paraf_perawat" placeholder="Paraf / Nama jelas" style="width: 150px;">
-        <br>
-        (Tanda Tangan dan Nama Jelas)
+        <input type="text" class="input_type" name="form_57[nama_petugas]" id="nama_petugas" placeholder="Nama Jelas" style="width:33%; text-align:center;">
+      </td>
+
+      <!-- Kolom 2 -->
+      <td colspan="2">
       </td>
     </tr>
   </tbody>
 </table>
+
+
 
 </div>
 

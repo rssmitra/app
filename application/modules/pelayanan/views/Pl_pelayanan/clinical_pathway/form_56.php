@@ -142,62 +142,95 @@ jQuery(function($) {
 <div style="text-align: center; font-size: 18px;"><b>PERSETUJUAN UMUM PELAYANAN KESEHATAN (GENERAL CONSENT FOR TREATMENT)</b></div>
 
 <br>
+<style>
+  .form-section {
+    margin-bottom: 16px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .form-row label {
+    /* font-weight: normal; default */
+    padding-right: 10px;
+  }
+  .form-row input {
+    width: 100%;
+    padding: 4px;
+    box-sizing: border-box;
+  }
+</style>
+
 <div style="text-align: left;">
   <p>Yang bertanda tangan dibawah ini:</p>
-<table class="table" style="width: 100%;">
-  <tbody>
-    <tr>
-      <td style="width: 25%;">Nama</td>
-      <td style="width: 75%;"><input type="text" class="input_type" name="form_56[nama]" id="nama" onchange="fillthis('nama')" style="width: 100%;"></td>
-    </tr>
-    <tr>
-      <td>Tempat/Tanggal lahir / Umur</td>
-      <td><input type="text" class="input_type" name="form_56[ttl_umur]" id="ttl_umur" onchange="fillthis('ttl_umur')" style="width: 100%;"></td>
-    </tr>
-    <tr>
-      <td>Alamat</td>
-      <td><input type="text" class="input_type" name="form_56[alamat]" id="alamat" onchange="fillthis('alamat')" style="width: 100%;"></td>
-    </tr>
-    <tr>
-      <td>No. Telp/Hp</td>
-      <td><input type="text" class="input_type" name="form_56[no_telp]" id="no_telp" onchange="fillthis('no_telp')" style="width: 100%;"></td>
-    </tr>
-    <tr>
-      <td>No. Identitas KTP/SIM</td>
-      <td><input type="text" class="input_type" name="form_56[no_identitas]" id="no_identitas" onchange="fillthis('no_identitas')" style="width: 100%;"></td>
-    </tr>
-  </tbody>
-</table>
-<br>
-<p>Dengan bertindak atas nama: (diri sendiri / suami / istri / anak / ibu / ayah / saudara*) dari:</p>
-<table class="table" style="width: 100%;">
-  <tbody>
-    <tr>
-      <td style="width: 25%;">Nama</td>
-      <td style="width: 75%;">
-        <input type="text" class="input_type" name="form_56[nama_pasien]" id="nama_pasien" onchange="fillthis('nama_pasien')" value="<?php $nama_pasien = isset($data_pasien->nama_pasien)?$data_pasien->nama_pasien:''; echo isset($value_form['nama_pasien'])?$value_form['nama_pasien']:$nama_pasien?>" style="width: 100%;">
-      </td>
-    </tr>
-    <tr>
-      <td>Tempat/Tanggal lahir</td>
-      <td>
-        <input type="text" class="input_type" name="form_56[ttl_pasien]" id="ttl_pasien" onchange="fillthis('ttl_pasien')" value="<?php $ttl_pasien = (isset($data_pasien->dob_pasien) ? $data_pasien->dob_pasien . ', ' : '') . (isset($data_pasien->tgl_lhr_pasien) ? $this->tanggal->formatDateShort($data_pasien->tgl_lhr_pasien) : ''); echo isset($value_form['ttl_pasien'])?$value_form['ttl_pasien']:$ttl_pasien?>" style="width: 100%;">
-      </td>
-    </tr>
-    <tr>
-        <td>Umur</td>
-        <td>
-        <input type="text" class="input_type" name="form_56[umur_pasien]" id="umur_pasien" onchange="fillthis('umur_pasien')" value="<?php $umur = isset($data_pasien->umur) ? $data_pasien->umur : ''; echo isset($value_form['umur_pasien']) ? $value_form['umur_pasien'] . ' tahun' : $umur . ' tahun'; ?>" style="width: 100%;">
-        </td>
-    </tr>
-    <tr>
-      <td>No. RM</td>
-      <td>
-        <input type="text" class="input_type" name="form_56[no_rm]" id="no_rm" onchange="fillthis('no_rm')" value="<?php $no_mr = isset($data_pasien->no_mr)?$data_pasien->no_mr:''; echo isset($value_form['no_rm'])?$value_form['no_rm']:$no_mr?>" style="width: 100%;">
-      </td>
-    </tr>
-  </tbody>
-</table>
+
+  <div class="form-section">
+    <div class="form-row">
+      <label for="nama">Nama</label>
+      <input type="text" class="input_type" name="form_56[nama]" id="nama"
+             onchange="fillthis('nama')">
+    </div>
+
+    <div class="form-row">
+      <label for="ttl_umur">Tempat/Tanggal lahir / Umur</label>
+      <input type="text" class="input_type" name="form_56[ttl_umur]" id="ttl_umur"
+             onchange="fillthis('ttl_umur')">
+    </div>
+
+    <div class="form-row">
+      <label for="alamat">Alamat</label>
+      <input type="text" class="input_type" name="form_56[alamat]" id="alamat"
+             onchange="fillthis('alamat')">
+    </div>
+
+    <div class="form-row">
+      <label for="no_telp">No. Telp/Hp</label>
+      <input type="text" class="input_type" name="form_56[no_telp]" id="no_telp"
+             onchange="fillthis('no_telp')">
+    </div>
+
+    <div class="form-row">
+      <label for="no_identitas">No. Identitas KTP/SIM</label>
+      <input type="text" class="input_type" name="form_56[no_identitas]" id="no_identitas"
+             onchange="fillthis('no_identitas')">
+    </div>
+  </div>
+
+  <p>Dengan bertindak atas nama: (diri sendiri / suami / istri / anak / ibu / ayah / saudara*) dari:</p>
+
+  <div class="form-section">
+    <div class="form-row">
+      <label for="nama_pasien">Nama</label>
+      <input type="text" class="input_type" name="form_56[nama_pasien]" id="nama_pasien"
+             onchange="fillthis('nama_pasien')"
+             value="<?php $nama_pasien = isset($data_pasien->nama_pasien)?$data_pasien->nama_pasien:''; echo isset($value_form['nama_pasien'])?$value_form['nama_pasien']:$nama_pasien?>">
+    </div>
+
+    <div class="form-row">
+      <label for="ttl_pasien">Tempat/Tanggal lahir</label>
+      <input type="text" class="input_type" name="form_56[ttl_pasien]" id="ttl_pasien"
+             onchange="fillthis('ttl_pasien')"
+             value="<?php $ttl_pasien = (isset($data_pasien->dob_pasien) ? $data_pasien->dob_pasien . ', ' : '') . (isset($data_pasien->tgl_lhr_pasien) ? $this->tanggal->formatDateShort($data_pasien->tgl_lhr_pasien) : ''); echo isset($value_form['ttl_pasien'])?$value_form['ttl_pasien']:$ttl_pasien?>">
+    </div>
+
+    <div class="form-row">
+      <label for="umur_pasien">Umur</label>
+      <input type="text" class="input_type" name="form_56[umur_pasien]" id="umur_pasien"
+             onchange="fillthis('umur_pasien')"
+             value="<?php $umur = isset($data_pasien->umur) ? $data_pasien->umur : ''; echo isset($value_form['umur_pasien']) ? $value_form['umur_pasien'] . ' tahun' : $umur . ' tahun'; ?>">
+    </div>
+
+    <div class="form-row">
+      <label for="no_rm">No. RM</label>
+      <input type="text" class="input_type" name="form_56[no_rm]" id="no_rm"
+             onchange="fillthis('no_rm')"
+             value="<?php $no_mr = isset($data_pasien->no_mr)?$data_pasien->no_mr:''; echo isset($value_form['no_rm'])?$value_form['no_rm']:$no_mr?>">
+    </div>
+  </div>
+</div>
+
 <p>Untuk memberikan persetujuan tentang</p>
   <ol>
 <li>
@@ -205,15 +238,15 @@ jQuery(function($) {
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
       <td style="vertical-align: top; padding: 0;">a.</td>
-      <td style="padding: 0;"> Saya menyetujui untuk perawatan dan pengobatan di RS. Setia Mitra sebagai pasien rawat jalan atau rawat inap tergantung kepada kebutuhan medis. Pengobatan dapat meliputi pemeriksaan x-ray/radiologi, tes laboratorium, perawatan dan prosedur seperti cairan infus atau suntikan dan evaluasi (contohnya wawancara dan pemeriksaan fisik).</td>
+      <td style="text-align: justify; padding: 5px;"> Saya menyetujui untuk perawatan dan pengobatan di RS. Setia Mitra sebagai pasien rawat jalan atau rawat inap tergantung kepada kebutuhan medis. Pengobatan dapat meliputi pemeriksaan x-ray/radiologi, tes laboratorium, perawatan dan prosedur seperti cairan infus atau suntikan dan evaluasi (contohnya wawancara dan pemeriksaan fisik).</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">b.</td>
-      <td style="padding: 0;"> Persetujuan yang saya berikan tidak termasuk persetujuan untuk prosedur / tindakan invasif (misalnya, operasi) atau tindakan yang mempunyai resiko tinggi.</td>
+      <td style="text-align: justify; padding: 5px;"> Persetujuan yang saya berikan tidak termasuk persetujuan untuk prosedur / tindakan invasif (misalnya, operasi) atau tindakan yang mempunyai resiko tinggi.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">c.</td>
-      <td style="padding: 0;"> Jika saya memutuskan untuk menghentikan perawatan medis untuk diri saya sendiri, saya memahami dan menyadari bahwa RS. Setia Mitra atau dokter tidak bertanggung jawab atas hasil yang merugikan saya.</td>
+      <td style="text-align: justify; padding: 5px;"> Jika saya memutuskan untuk menghentikan perawatan medis untuk diri saya sendiri, saya memahami dan menyadari bahwa RS. Setia Mitra atau dokter tidak bertanggung jawab atas hasil yang merugikan saya.</td>
     </tr>
   </table>
 </li>
@@ -222,11 +255,11 @@ jQuery(function($) {
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
       <td style="vertical-align: top; padding: 0;">a.</td>
-      <td style="padding: 0;">Saya memiliki hak untuk mengambil bagian dalam keputusan mengenai penyakit saya dan dalam hal perawatan medis dan rencana pengobatan.</td>
+      <td style="text-align: justify; padding: 5px;">Saya memiliki hak untuk mengambil bagian dalam keputusan mengenai penyakit saya dan dalam hal perawatan medis dan rencana pengobatan.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">b.</td>
-      <td style="padding: 0;">Saya telah mendapat informasi tentang "hak dan kewajiban pasien dan keluarga" di RS. Setia Mitra melalui lembar hak dan kewajiban pasien dan keluarga dan banner yang disediakan oleh petugas.</td>
+      <td style="text-align: justify; padding: 5px;">Saya telah mendapat informasi tentang "hak dan kewajiban pasien dan keluarga" di RS. Setia Mitra melalui lembar hak dan kewajiban pasien dan keluarga dan banner yang disediakan oleh petugas.</td>
     </tr>
   </table>
 </li>
@@ -235,19 +268,19 @@ jQuery(function($) {
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
       <td style="vertical-align: top; padding: 0; width: 2%;">a.</td>
-      <td style="padding: 0;">Saya memahami informasi yang ada di dalam diri saya, termasuk diagnosis hasil laboratorium dan hasil tes diagnostic yang akan digunakan untuk perawatan medis dan RS. Setia Mitra akan menjamin kerahasiaannya.</td>
+      <td style="text-align: justify; padding: 5px;">Saya memahami informasi yang ada di dalam diri saya, termasuk diagnosis hasil laboratorium dan hasil tes diagnostic yang akan digunakan untuk perawatan medis dan RS. Setia Mitra akan menjamin kerahasiaannya.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">b.</td>
-      <td style="padding: 0;">Saya memberi wewenang kepada RS. Setia Mitra untuk memberikan informasi tentang diagnosis pelayanan dan pengobatan bila diperlukan untuk memproses klaim asuransi / BPJS / perusahaan dan atau lembaga pemerintahan.</td>
+      <td style="text-align: justify; padding: 5px;">Saya memberi wewenang kepada RS. Setia Mitra untuk memberikan informasi tentang diagnosis pelayanan dan pengobatan bila diperlukan untuk memproses klaim asuransi / BPJS / perusahaan dan atau lembaga pemerintahan.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">c.</td>
-      <td style="padding: 0;">Saya memberi wewenang kepada RS. Setia Mitra untuk memberikan informasi yang berkaitan dengan diri saya (termasuk: diagnosis, hasil pelayanan dan pengobatan) kepada anggota keluarga terdekat (suami/istri/ayah/ibu kandung, saudara kandung atau pengampunya), kecuali (sebutkan nama bila permintaan khusus yang tidak di ijinkan) yaitu:</td>
+      <td style="text-align: justify; padding: 5px;">Saya memberi wewenang kepada RS. Setia Mitra untuk memberikan informasi yang berkaitan dengan diri saya (termasuk: diagnosis, hasil pelayanan dan pengobatan) kepada anggota keluarga terdekat (suami/istri/ayah/ibu kandung, saudara kandung atau pengampunya), kecuali (sebutkan nama bila permintaan khusus yang tidak di ijinkan) yaitu:</td>
     </tr>
     <tr>
-      <td style="padding: 0;"></td>
-      <td style="padding: 0;">
+      <td style="text-align: justify; padding: 5px;"></td>
+      <td style="text-align: justify; padding: 5px;">
         <ol style="margin-top: 0; padding-left: 20px;">
           <li><input type="text" name="form_56[pengecualian_info_1]" id="pengecualian_info_1" onchange="fillthis('pengecualian_info_1')" style="width: 100%; border-top: none; border-left: none; border-right: none;"></li>
           <li><input type="text" name="form_56[pengecualian_info_2]" id="pengecualian_info_2" onchange="fillthis('pengecualian_info_2')" style="width: 100%; border-top: none; border-left: none; border-right: none;"></li>
@@ -261,15 +294,15 @@ jQuery(function($) {
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
       <td style="vertical-align: top; padding: 0; width: 2%;">a.</td>
-      <td style="padding: 0;">Saya memahami informasi yang ada di dalam diri saya, termasuk diagnosis hasil laboratorium dan hasil tes diagnostic yang akan digunakan untuk perawatan medis dan RS. Setia Mitra akan menjamin kerahasiaannya.</td>
+      <td style="text-align: justify; padding: 5px;">Saya memahami informasi yang ada di dalam diri saya, termasuk diagnosis hasil laboratorium dan hasil tes diagnostic yang akan digunakan untuk perawatan medis dan RS. Setia Mitra akan menjamin kerahasiaannya.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">b.</td>
-      <td style="padding: 0;">Saya <b>(menginginkan / tidak menginginkan*)</b> RS. Setia Mitra memberikan akses kepada anggota keluarga terdekat (suami / istri, ayah / ibu kandung, anak kandung, saudara kandung, atau pengampunya), dan handaitauladan serta orang-orang yang akan membesuk saya. Kecuali (sebutkan nama bila ada permintaan khusus yang tidak di ijinkan) yaitu:</td>
+      <td style="text-align: justify; padding: 5px;">Saya <b>(menginginkan / tidak menginginkan*)</b> RS. Setia Mitra memberikan akses kepada anggota keluarga terdekat (suami / istri, ayah / ibu kandung, anak kandung, saudara kandung, atau pengampunya), dan handaitauladan serta orang-orang yang akan membesuk saya. Kecuali (sebutkan nama bila ada permintaan khusus yang tidak di ijinkan) yaitu:</td>
     </tr>
     <tr>
-      <td style="padding: 0;"></td>
-      <td style="padding: 0;">
+      <td style="text-align: justify; padding: 5px;"></td>
+      <td style="text-align: justify; padding: 5px;">
         <ol style="margin-top: 0; padding-left: 20px;">
           <li><input type="text" name="form_56[pengecualian_privasi_1]" id="pengecualian_privasi_1" onchange="fillthis('pengecualian_privasi_1')" style="width: 100%; border-top: none; border-left: none; border-right: none;"></li>
           <li><input type="text" name="form_56[pengecualian_privasi_2]" id="pengecualian_privasi_2" onchange="fillthis('pengecualian_privasi_2')" style="width: 100%; border-top: none; border-left: none; border-right: none;"></li>
@@ -295,19 +328,19 @@ jQuery(function($) {
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
       <td style="vertical-align: top; padding: 0; width: 2%;">a.</td>
-      <td style="padding: 0;">Saya telah menerima informasi tentang peraturan yang diberlakukan oleh RS. Setia Mitra dan saya beserta keluarga besedia untuk mematuhi termasuk akan mematuhi jam berkunjung pasien sesuai dengan di RS. Setia Mitra.</td>
+      <td style="text-align: justify; padding: 5px;">Saya telah menerima informasi tentang peraturan yang diberlakukan oleh RS. Setia Mitra dan saya beserta keluarga besedia untuk mematuhi termasuk akan mematuhi jam berkunjung pasien sesuai dengan di RS. Setia Mitra.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">b.</td>
-      <td style="padding: 0;">Anggota keluarga saya yang menunggu saya bersedia untuk selalu memakai tanda pengenal khusus yang diberikan oleh RS, Setia Mitra dan demi keamanan seluruh pasien setiap keluarga dan siapapun yang akan mengunjungi saya di luar jam berkunjung bersedia untuk diminta/diperiksa identitasnya.</td>
+      <td style="text-align: justify; padding: 5px;">Anggota keluarga saya yang menunggu saya bersedia untuk selalu memakai tanda pengenal khusus yang diberikan oleh RS, Setia Mitra dan demi keamanan seluruh pasien setiap keluarga dan siapapun yang akan mengunjungi saya di luar jam berkunjung bersedia untuk diminta/diperiksa identitasnya.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">c.</td>
-      <td style="padding: 0;">Selama di rawat inap boleh ditunggu oleh 1 anggota keluarga.</td>
+      <td style="text-align: justify; padding: 5px;">Selama di rawat inap boleh ditunggu oleh 1 anggota keluarga.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">d.</td>
-      <td style="padding: 0;">Kartu tunggu dikembalikan saat pasien akan pulang, telah menyelesaikan administrasi. Bila kartu tunggu hilang bersedia membayar denda Rp. 50.000.</td>
+      <td style="text-align: justify; padding: 5px;">Kartu tunggu dikembalikan saat pasien akan pulang, telah menyelesaikan administrasi. Bila kartu tunggu hilang bersedia membayar denda Rp. 50.000.</td>
     </tr>
   </table>
 </li>
@@ -316,35 +349,62 @@ jQuery(function($) {
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
       <td style="vertical-align: top; padding: 0; width: 2%;">a.</td>
-      <td style="padding: 0;">Saya telah memahami tentang informasi biaya pengobatan atau biaya tindakan yang dijelaskan oleh petugas RS. Setia Mitra.</td>
+      <td style="text-align: justify; padding: 5px;">Saya telah memahami tentang informasi biaya pengobatan atau biaya tindakan yang dijelaskan oleh petugas RS. Setia Mitra.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">b.</td>
-      <td style="padding: 0;">
-        <p>Saya menyatakan dirawat diruang kelas: <input type="text" name="form_56[kelas_ruang]" id="kelas_ruang" onchange="fillthis('kelas_ruang')" style="width: 50px;">, sesuai hak dan atau plafon, menggunakan pembayaran:</p>
-        <table style="border-collapse: collapse; border: none;">
-          <tr>
-            <td style="padding-right: 5px;"><input type="checkbox" name="form_56[pembayaran_umum]" id="pembayaran_umum" onclick="checkthis('pembayaran_umum')"></td>
-            <td>UMUM</td>
-          </tr>
-          <tr>
-            <td style="padding-right: 5px;"><input type="checkbox" name="form_56[pembayaran_asuransi]" id="pembayaran_asuransi" onclick="checkthis('pembayaran_asuransi')"></td>
-            <td>ASURANSI</td>
-          </tr>
-          <tr>
-            <td style="padding-right: 5px;"><input type="checkbox" name="form_56[pembayaran_bpjs]" id="pembayaran_bpjs" onclick="checkthis('pembayaran_bpjs')"></td>
-            <td>BPJS</td>
-          </tr>
-          <tr>
-            <td style="padding-right: 5px;"><input type="checkbox" name="form_56[pembayaran_lain]" id="pembayaran_lain" onclick="checkthis('pembayaran_lain')"></td>
-            <td>JAMINAN LAIN,<input type="text" name="form_56[jaminan_lain]" id="jaminan_lain" onchange="fillthis('jaminan_lain')" style="border-top: none; border-left: none; border-right: none; width: 100px;"></td>
-          </tr>
-        </table>
+      <td style="text-align: justify; padding: 5px;">
+        <p>Saya menyatakan dirawat diruang kelas: <input type="text" name="form_56[kelas_ruang]" id="kelas_ruang" onchange="fillthis('kelas_ruang')" class="input_type" style="width: 50px;">, sesuai hak dan atau plafon, menggunakan pembayaran:</p>
+        <div class="checkbox">
+  <label>
+    <input type="checkbox" class="ace"
+           name="form_56[pembayaran_umum]"
+           id="pembayaran_umum"
+           onclick="checkthis('pembayaran_umum')">
+    <span class="lbl"> UMUM</span>
+  </label>
+</div>
+
+<div class="checkbox">
+  <label>
+    <input type="checkbox" class="ace"
+           name="form_56[pembayaran_asuransi]"
+           id="pembayaran_asuransi"
+           onclick="checkthis('pembayaran_asuransi')">
+    <span class="lbl"> ASURANSI</span>
+  </label>
+</div>
+
+<div class="checkbox">
+  <label>
+    <input type="checkbox" class="ace"
+           name="form_56[pembayaran_bpjs]"
+           id="pembayaran_bpjs"
+           onclick="checkthis('pembayaran_bpjs')">
+    <span class="lbl"> BPJS</span>
+  </label>
+</div>
+
+<div class="checkbox">
+  <label>
+    <input type="checkbox" class="ace"
+           name="form_56[pembayaran_lain]"
+           id="pembayaran_lain"
+           onclick="checkthis('pembayaran_lain')">
+    <span class="lbl">
+      JAMINAN LAIN,
+      <input type="text" name="form_56[jaminan_lain]"
+             id="jaminan_lain"
+             onchange="fillthis('jaminan_lain')"
+             style="border-top:none;border-left:none;border-right:none;width:100px;">
+    </span>
+  </label>
+</div>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">c.</td>
-      <td style="padding: 0;">Dan saya atau pasien setuju membayar seluruh tagihan RS. Setia Mitra, apabila ternyata diagnosis akhir merupakan pengecualian pertanggungan jaminan pembayaran.</td>
+      <td style="text-align: justify; padding: 5px;">Dan saya atau pasien setuju membayar seluruh tagihan RS. Setia Mitra, apabila ternyata diagnosis akhir merupakan pengecualian pertanggungan jaminan pembayaran.</td>
     </tr>
   </table>
 </li>
@@ -352,10 +412,10 @@ jQuery(function($) {
   <b>PERAWATAN DAN DPJP (DOKTER PENANGGUNG JAWAB PELAYANAN)</b>
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
-      <td style="vertical-align: top; padding: 0;">Saya setuju untuk dirawat di ruang: <input type="text" name="form_56[ruang_rawat]" id="ruang_rawat" onchange="fillthis('ruang_rawat')" style="width: 70px;"> kelas: <input type="text" name="form_56[kelas_rawat]" id="kelas_rawat" onchange="fillthis('kelas_rawat')" style="width: 70px;"></td>
+      <td style="vertical-align: top; padding: 0;">Saya setuju untuk dirawat di ruang: <input type="text" name="form_56[ruang_rawat]" id="ruang_rawat" class="input_type" onchange="fillthis('ruang_rawat')" style="width: 70px;"> kelas: <input type="text" name="form_56[kelas_rawat]" id="kelas_rawat" class="input_type" onchange="fillthis('kelas_rawat')" style="width: 70px;"></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; padding: 0;">DPJP (Dokter Penanggung Jawab Pelayanan): <input type="text" name="form_56[dpjp]" id="dpjp" onchange="fillthis('dpjp')" style="width: 50%;"></td>
+      <td style="vertical-align: top; padding: 0;">DPJP (Dokter Penanggung Jawab Pelayanan): <input type="text" name="form_56[dpjp]" id="dpjp" class="input_type" onchange="fillthis('dpjp')" style="width: 50%;"></td>
     </tr>
   </table>
 </li>
@@ -364,31 +424,31 @@ jQuery(function($) {
   <table style="width: 100%; border-collapse: collapse; border: none;">
     <tr>
       <td style="vertical-align: top; padding: 0; width: 2%;">a.</td>
-      <td style="padding: 0;">Selama perawatan IGD covid pasien tidak didampingi oleh keluarga dan pasien tidak diperbolehkan membawa barang-barang berharga.</td>
+      <td style="text-align: justify; padding: 5px;">Selama perawatan IGD covid pasien tidak didampingi oleh keluarga dan pasien tidak diperbolehkan membawa barang-barang berharga.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">b.</td>
-      <td style="padding: 0;">Pasien dalam kondisi baik wajib membawa handphone untuk komunikasi dengan perawat dan keluarga di rumah.</td>
+      <td style="text-align: justify; padding: 5px;">Pasien dalam kondisi baik wajib membawa handphone untuk komunikasi dengan perawat dan keluarga di rumah.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">c.</td>
-      <td style="padding: 0;">Penanggung jawab pasien wajib memberika nomor telepon dan alamat, minimal dua nomor yang dapat dihubungi oleh petugas Rumah Sakit. Segala bentuk komunikasi terkait kondisi pasien akan di informasikan kepada pihak keluarga (keluarga inti atau penanggung jawab) setiap hari. </td>
+      <td style="text-align: justify; padding: 5px;">Penanggung jawab pasien wajib memberika nomor telepon dan alamat, minimal dua nomor yang dapat dihubungi oleh petugas Rumah Sakit. Segala bentuk komunikasi terkait kondisi pasien akan di informasikan kepada pihak keluarga (keluarga inti atau penanggung jawab) setiap hari. </td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">d.</td>
-      <td style="padding: 0;">Diruang perawatan, pasien tidak di perbolehkan keluar ruangan rawat inap.</td>
+      <td style="text-align: justify; padding: 5px;">Diruang perawatan, pasien tidak di perbolehkan keluar ruangan rawat inap.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">e.</td>
-      <td style="padding: 0;">Waktu jam kunjung atau besuk di tiadakan.</td>
+      <td style="text-align: justify; padding: 5px;">Waktu jam kunjung atau besuk di tiadakan.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">f.</td>
-      <td style="padding: 0;">Pasien dewasa tidak dapat di tunggu oleh keluarga.</td>
+      <td style="text-align: justify; padding: 5px;">Pasien dewasa tidak dapat di tunggu oleh keluarga.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 0;">g.</td>
-      <td style="padding: 0;">Pasien anak hanya diperbolehkan 1 orang penunggu, yang memahami dan bersedia mendampingi anak selama masa perawatan, serta tidak akan menuntut RS bila tertular penyakit covid. </td>
+      <td style="text-align: justify; padding: 5px;">Pasien anak hanya diperbolehkan 1 orang penunggu, yang memahami dan bersedia mendampingi anak selama masa perawatan, serta tidak akan menuntut RS bila tertular penyakit covid. </td>
     </tr>
   </table>
 </li>
@@ -415,7 +475,7 @@ jQuery(function($) {
         <br>
         <img id="img_ttd_saksi" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" name="form_56[nama_saksi]" id="nama_saksi" placeholder="Nama jelas" style="width: 150px;">
+        <input type="text" name="form_56[nama_saksi]" id="nama_saksi" class="input_type" placeholder="Nama jelas" style="width:150px; text-align:center;">
         <br>
         (Tanda Tangan dan Nama Jelas)
       </td>
@@ -431,7 +491,7 @@ jQuery(function($) {
         <br>
         <img id="img_ttd_petugas" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" name="form_56[nama_petugas]" id="nama_petugas" placeholder="Nama jelas" style="width: 150px;">
+        <input type="text" name="form_56[nama_petugas]" id="nama_petugas" class="input_type" placeholder="Nama jelas" style="width: 150px; text-align:center;">
         <br>
         (Tanda Tangan dan Nama Jelas)
       </td>
@@ -439,7 +499,7 @@ jQuery(function($) {
       <!-- Kolom Pasien -->
       <td style="width: 34%; text-align: center;">
         Jakarta, 
-        <input type="text" name="form_56[tanggal_ttd_pasien]" id="tanggal_ttd_pasien" onchange="fillthis('tanggal_ttd_pasien')" style="width: 100px;">
+        <input type="text" name="form_56[tanggal_ttd_pasien]" id="tanggal_ttd_pasien" class="input_type" onchange="fillthis('tanggal_ttd_pasien')" style="width: 100px;">
         <br><br>
         Yang menyatakan
         <br><br>
@@ -449,21 +509,19 @@ jQuery(function($) {
         <br>
         <img id="img_ttd_pasien" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" name="form_56[ttd_nama_pasien]" id="ttd_nama_pasien" placeholder="Nama jelas" style="width: 150px;">
+        <input type="text" name="form_56[ttd_nama_pasien]" id="ttd_nama_pasien" class="input_type" placeholder="Nama jelas" style="width: 150px; text-align:center;">
         <br>
         (Tanda Tangan dan Nama Jelas)
       </td>
     </tr>
   </tbody>
 </table>
-
+<br><br>
 </div>
 <hr>
 
-<hr>
-
-<div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5;">
-  <div style="text-align: center; font-weight: bold; font-size: 16px;">HAK DAN TANGGUNG JAWAB PASIEN</div>
+<div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5;">
+  <div style="text-align: center; font-weight: bold; font-size: 12px;">HAK DAN TANGGUNG JAWAB PASIEN</div>
   <br>
   <div style="font-weight: bold;">A. Hak Pasien dan Keluarga</div>
   <ol style="padding-left: 20px;">
