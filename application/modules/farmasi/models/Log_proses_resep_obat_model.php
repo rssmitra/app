@@ -22,9 +22,6 @@ class Log_proses_resep_obat_model extends CI_Model {
 		$this->db->join('fr_tc_pesan_resep','fr_tc_pesan_resep.kode_pesan_resep=fr_tc_far.kode_pesan_resep','left');
 		$this->db->where('status_terima NOT IN (1,2)');
 		$this->db->where('flag_trans', 'RJ');
-		// $this->db->where('e_resep', 1);
-		$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
-		// $this->db->where('log_time_6 is null');
 
 	}
 
@@ -32,7 +29,11 @@ class Log_proses_resep_obat_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-
+		if(isset($_GET['tanggal'])){
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".$_GET['tanggal']."'".'');
+		}else{
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
+		}
 		$i = 0;
 	
 		foreach ($this->column as $item) 
@@ -57,7 +58,13 @@ class Log_proses_resep_obat_model extends CI_Model {
 	function get_data()
 	{
 		$this->_main_query();
+		if(isset($_GET['tanggal'])){
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".$_GET['tanggal']."'".'');
+		}else{
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
+		}
 		$this->db->order_by('tgl_trans', 'ASC');
+		// print_r($this->db->last_query());die;
 		$query = $this->db->get();
 		return $query->result();
 	}

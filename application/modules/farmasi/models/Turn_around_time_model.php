@@ -23,7 +23,6 @@ class Turn_around_time_model extends CI_Model {
 		$this->db->where('status_terima NOT IN (1,2)');
 		$this->db->where('flag_trans', 'RJ');
 		// $this->db->where('e_resep', 1);
-		$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
 		$this->db->where('log_time_6 is not null');
 
 	}
@@ -32,6 +31,13 @@ class Turn_around_time_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+
+		if(isset($_GET['tanggal'])){
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".$_GET['tanggal']."'".'');
+		}else{
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
+		}
+
 
 		$i = 0;
 	

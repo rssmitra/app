@@ -1467,7 +1467,7 @@ class References extends MX_Controller {
 				$html .= '<th>Kamar Tindakan</th>';
 				$html .= '<th>BHP</th>';
 				$html .= '<th>Alkes/Alat RS</th>';
-				$html .= '<th>Pendapatan RS</th>';
+				$html .= '<th>Biaya Utilitas</th>';
 				$html .= '<th>Total Tarif</th>';
 				$html .= '<th>Revisi ke-</th>';
 				$html .= '</tr>';
