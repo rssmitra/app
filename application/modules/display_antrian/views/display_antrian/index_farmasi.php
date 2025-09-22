@@ -173,8 +173,8 @@
                 <!-- CONTENT HERE -->
                 <div class="col-sm-3">
                   <div class="widget-box">
-                    <div class="widget-header widget-header-flat">
-                      <h4 class="widget-title center" style="text-align: center !important">RESEP DITERIMA</h4>
+                    <div class="widget-header widget-header-flat" style="padding: 10px">
+                      <span class="widget-title center" style="text-align: center !important; font-size: 3em">RESEP DITERIMA</span>
                     </div>
 
                     <div class="widget-body">
@@ -222,13 +222,17 @@
                         </table></div></div>
                       </div>
                     </div>
+                    <center>
+                    <!-- <b style="font-size: 18px">Total Resep Diterima : </b> -->
+                    <span style="font-size: 5em"><?php echo count($arr_resep_diterima)?></span>
+                    </center>
                   </div>
                 </div>
 
                 <div class="col-sm-3 no-padding">
                   <div class="widget-box">
-                    <div class="widget-header widget-header-flat">
-                      <h4 class="widget-title center" style="text-align: center !important">PROSES RACIKAN</h4>
+                    <div class="widget-header widget-header-flat" style="padding: 10px">
+                      <h4 class="widget-title center" style="text-align: center !important; font-size: 3em">PROSES RACIKAN</h4>
                     </div>
 
                     <div class="widget-body">
@@ -275,13 +279,18 @@
                         
                       </div>
                     </div>
+                    <center>
+                    <!-- <b style="font-size: 18px">Total Proses Racikan : </b> -->
+                    <span style="font-size: 5em"><?php echo count($arr_racikan)?></span>
+                    </center>
+                    
                   </div>
                 </div>
 
                 <div class="col-sm-3">
                   <div class="widget-box">
-                    <div class="widget-header widget-header-flat">
-                      <h4 class="widget-title center" style="text-align: center !important">PROSES ETIKET</h4>
+                    <div class="widget-header widget-header-flat" style="padding: 10px">
+                      <h4 class="widget-title center" style="text-align: center !important; font-size: 3em">PROSES ETIKET</h4>
                     </div>
 
                     <div class="widget-body">
@@ -328,13 +337,18 @@
                         
                       </div>
                     </div>
+                    <center>
+                    <!-- <b style="font-size: 18px">Total Proses Etiket : </b> -->
+                    <span style="font-size: 5em"><?php echo count($arr_etiket)?></span>
+                    </center>
+
                   </div>
                 </div>
 
                 <div class="col-sm-3" style="padding-left: 0px !important; padding-right: 10px !important">
                   <div class="widget-box">
-                    <div class="widget-header widget-header-flat">
-                      <h4 class="widget-title center" style="text-align: center !important">SIAP DIAMBIL</h4>
+                    <div class="widget-header widget-header-flat" style="padding: 10px">
+                      <h4 class="widget-title center" style="text-align: center !important; font-size: 3em">SIAP DIAMBIL</h4>
                     </div>
 
                     <div class="widget-body">
@@ -367,6 +381,10 @@
                         
                       </div>
                     </div>
+                    <center>
+                    <!-- <b style="font-size: 18px">Total Siap Diambil : </b> -->
+                    <span style="font-size: 5em"><?php echo count($arr_siap_diambil)?></span>
+                    </center>
                   </div>
                 </div>
 
@@ -382,9 +400,38 @@
       <div class="footer footer-fixed">
         <div class="footer-inner" style="background: #0765a1; color: white; width: 100vw;">
           <div class="footer-content" style="background: #0765a1; color: white; display: flex; justify-content: space-between; align-items: center; width: 100vw; padding: 0 2vw; min-height: 60px;">
-            <span class="bigger-120" style="font-size: 1.8em; font-weight: bold;">
+            <span class="bigger-120" style="font-size: 2.2em !important; font-weight: bold;">
               <span class="white bolder">RS Setia Mitra</span>
               | <i>Smart Hospital System 4.0 </i> &copy; 2018-<?php echo date('Y')?>
+            </span>
+
+            <span class="pull-right bigger-120" style="font-size: 2em; font-weight: bold;">
+              <i>Rata-rata Waktu Tunggu Obat : </i> 
+              <?php
+                // Hitung rata-rata waktu tunggu obat
+                $total_selesai = 0;
+                $total_detik = 0;
+                if (isset($resep) && is_array($resep)) {
+                  foreach($resep as $row) {
+                    if($row->log_time_6 != null && $row->log_time_1 != null) {
+                      $total_selesai++;
+                      $start = strtotime($row->log_time_1);
+                      $end = strtotime($row->log_time_6);
+                      $total_detik += ($end - $start);
+                    }
+                  }
+                }
+                $rata2 = '-';
+                if($total_selesai > 0 && $total_detik > 0) {
+                  $avg = $total_detik / $total_selesai;
+                  $jam = floor($avg / 3600);
+                  $menit = floor(($avg % 3600) / 60);
+                  $detik = $avg % 60;
+                  $rata2 = sprintf('%02d:%02d:%02d', $jam, $menit, $detik);
+                }
+              ?>
+              <br>
+              <span id="avg-waktu-tunggu" style="font-size: 3em; font-weight: bold; color: #ffeb3b"><?php echo $rata2; ?></span>
             </span>
         </div>
       </div>
@@ -552,7 +599,7 @@
             })
           })
           // Restart auto scroll setelah reload data
-          setTimeout(startAllScrollers, 500);
+          setTimeout(startAllScrollers, 300);
         });
   // Hapus interval reload_page otomatis, reload hanya setelah scroll selesai
       });

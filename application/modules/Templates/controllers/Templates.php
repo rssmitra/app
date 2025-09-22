@@ -1150,7 +1150,7 @@ class Templates extends MX_Controller {
 
         $html .= '<tr>';
         $html .= '<td>5</td>';
-        $html .= '<td>Pendapatan RS</td>';
+        $html .= '<td>Biaya Utilitas</td>';
         $html .= '<td align="right">'.number_format($data->pendapatan_rs).'</td>';
         $html .= '</tr>';
 
