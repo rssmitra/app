@@ -242,7 +242,13 @@ if(!ace.vars['touch']) {
       <div class="form-group">
           <label class="control-label col-md-1">Penjamin</label>
           <div class="col-md-3">
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array() ), '' , 'kode_perusahaan', 'kode_perusahaan', 'chosen-select form-control', '', '') ?>
+            <select name="penjamin" id="penjamin" class="form-control">
+                <option value="" selected>- Semua -</option>
+                <option value="120">BPJS Kesehatan</option>
+                <option value="229">BPJS Ketenagakerjaan</option>
+                <option value="1">Asuransi</option>
+                <option value="0">Umum</option>
+              </select>
           </div>
           <label class="control-label col-md-1">Dokter</label>
           <div class="col-md-4">
