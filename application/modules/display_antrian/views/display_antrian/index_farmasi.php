@@ -95,7 +95,7 @@
     }
 
     .widget-body{
-      background: #00669f2b;
+      background: #006a9f82;
       color: black;
     }
     
@@ -404,7 +404,22 @@
                           ?>
                           <tr style="font-size: 1.8em; border-bottom: 1px solid grey;">
                             <td style="vertical-align: top"><?php echo strtoupper($no)?></td>
-                            <td style="vertical-align: top"><?php echo strtoupper(str_replace($text_hide,'', $row->nama_pasien))?></td>
+                            <td style="vertical-align: top">
+                              <?php
+                                $nama = str_replace($text_hide,'', $row->nama_pasien);
+                                $nama = trim(preg_replace('/\s+/', ' ', $nama));
+                                $parts = explode(' ', $nama);
+                                if(count($parts) <= 2) {
+                                  echo strtoupper(implode(' ', $parts));
+                                } else {
+                                  $output = array_slice($parts, 0, 2);
+                                  for($i=2; $i<count($parts); $i++) {
+                                    $output[] = strtoupper(substr($parts[$i],0,1)).'';
+                                  }
+                                  echo strtoupper(implode(' ', $output));
+                                }
+                              ?>
+                            </td>
                             <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
                           </tr>
                           <?php endif; endif; endforeach;?>
@@ -443,10 +458,10 @@
                 $total_detik = 0;
                 if (isset($resep) && is_array($resep)) {
                   foreach($resep as $row) {
-                    if($row->log_time_6 != null && $row->log_time_1 != null) {
+                    if($row->log_time_5 != null && $row->log_time_1 != null) {
                       $total_selesai++;
                       $start = strtotime($row->log_time_1);
-                      $end = strtotime($row->log_time_6);
+                      $end = strtotime($row->log_time_5);
                       $row_total_detik = ($end - $start);
                       $total_detik += ($row_total_detik > 3600) ? 3600 : $row_total_detik; // maksimal 1 jam (3600 detik)
                     }
@@ -550,14 +565,15 @@
         // Scroll berjalan vertikal untuk setiap tabel, reload page setelah 1 siklus scroll penuh (bawah-atas)
         function autoScrollTable(id, onFullCycle) {
           var el = document.getElementById(id);
-          if (!el) return;
+          if (!el) return false;
           var direction = 1;
           var scrollStep = 1;
           var scrollDelay = 30;
           var scrollInterval;
           var hasCycled = false;
+          var hasScrollable = (el.scrollHeight > el.clientHeight + 1);
           function scrollFn() {
-            if (el.scrollHeight <= el.clientHeight) return;
+            if (!hasScrollable) return;
             if (direction === 1) {
               if (el.scrollTop + el.clientHeight < el.scrollHeight - 1) {
                 el.scrollTop += scrollStep;
@@ -583,7 +599,7 @@
           }
           scrollFn();
           // Simpan interval agar bisa direset jika reload data
-          return function stopScroll() { clearTimeout(scrollInterval); };
+          return hasScrollable ? function stopScroll() { clearTimeout(scrollInterval); } : false;
         }
 
         // Jalankan scroll untuk semua tabel, reload page setelah salah satu tabel selesai 1 siklus scroll
@@ -595,15 +611,21 @@
             reload_page();
           }
         }
+        var reloadTimeout = null;
         function startAllScrollers() {
           stopAllScrollers();
           hasReloaded = false;
+          if (reloadTimeout) { clearTimeout(reloadTimeout); reloadTimeout = null; }
           stopScrollers = [
             autoScrollTable('scroll-diterima', onAnyTableFullCycle),
             autoScrollTable('scroll-racikan', onAnyTableFullCycle),
             autoScrollTable('scroll-etiket', onAnyTableFullCycle),
             autoScrollTable('scroll-siapdiambil', onAnyTableFullCycle)
           ];
+          // Jika semua tabel tidak scrollable, reload otomatis 1 menit
+          if (stopScrollers.every(function(s){return s===false;})) {
+            reloadTimeout = setTimeout(reload_page, 30000);
+          }
         }
         function stopAllScrollers() {
           stopScrollers.forEach(function(stop){ if(typeof stop === 'function') stop(); });
