@@ -123,7 +123,7 @@ class Mst_tarif extends MX_Controller {
                 $html .= '<th>Alat RS</th>';
                 $html .= '<th>BHP</th>';
                 $html .= '<th>Adm</th>';
-                $html .= '<th>Pendapatan RS</th>';
+                $html .= '<th>Biaya Utilitas</th>';
                 $html .= '<th>Biaya Lainnya</th>';
                 $html .= '<th>Total</th>';
                 $html .= '<th>Status</th>';
@@ -237,7 +237,7 @@ class Mst_tarif extends MX_Controller {
             $val->set_rules('alat_rs', 'Alat RS', 'trim');
             $val->set_rules('alkes', 'Alkes', 'trim');
             $val->set_rules('adm', 'Administrasi', 'trim');
-            $val->set_rules('pendapatan_rs', 'Pendapatan RS', 'trim');
+            $val->set_rules('pendapatan_rs', 'Biaya Utilitas', 'trim');
             $val->set_rules('total', 'Total', 'trim|required');
         }
         

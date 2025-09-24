@@ -318,7 +318,7 @@
           <div class="page-content" style="min-height: 700px !important">
             <!-- #section:settings.box -->
 
-            <!-- <div class="ace-settings-container" id="ace-settings-container" style="position: fixed">
+            <div class="ace-settings-container" id="ace-settings-container" style="position: fixed">
               <div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
                 <i class="ace-icon fa fa-cog bigger-130"></i>
               </div>
@@ -339,7 +339,7 @@
 
                 </div>
               </div>
-            </div> -->
+            </div>
             
             <!-- /section:settings.box -->
                 <!-- PAGE CONTENT BEGINS -->

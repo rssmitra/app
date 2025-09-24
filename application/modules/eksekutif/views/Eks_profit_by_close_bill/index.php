@@ -341,7 +341,7 @@
             <li>Tipe <b>"UNBILL"</b> berarti pasien belum dilakukan <i>closing billing</i> oleh petugas kasir atau ada rincian billing yang belum di<i>closing</i></li>
             <li>Tipe <b>"PB"</b> (Pembelian Bebas) yaitu pasien rawat jalan yang melakukan pembelian obat di apotik dengan resep luar</li>
             <li>Tipe <b>"PRB"</b> (Pasien Rujuk Balik) yaitu Resep Pasien Rujuk Balik (PRB) yang diklaim oleh farmasi setiap bulannya</li>
-            <li>Billing Apotik diluar dari Billing Resep PRB dan sudah dikurangi margin 33% dari total billing apotik dan margin 33% dimasukan kedalam Profit RS</li>
+            <li>Billing Apotik diluar dari Billing Resep PRB dan sudah dikurangi margin 33% dari total billing apotik dan margin 33% dimasukan kedalam Biaya Utilitas</li>
             <li>Harga Satuan pada Resep PRB masih menggunakan Harga Satuan Penjualan pada Sistem</li>
           </ul>
         </p>
@@ -731,7 +731,7 @@
                 <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_alat_rs">0</span>,-</h3>
               </td>
               <td align="right" style="font-size: 11px; width: 10%">
-                Profit RS<br>
+                Biaya Utilitas<br>
                 <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_profit">0</span>,-</h3>
               </td>
               <td align="right" style="font-size: 11px; width: 10%">

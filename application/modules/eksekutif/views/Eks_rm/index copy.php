@@ -166,7 +166,7 @@
 
           <div class="col-xs-10">
             <span style="font-size: 16px; font-weight: bold">DASHBOARD EKSEKUTIF</span><br>
-            Laporan Kunjungan Pasien dan Pendapatan RS berdasarkan Kunjungan Pasien
+            Laporan Kunjungan Pasien dan Biaya Utilitas berdasarkan Kunjungan Pasien
             <div class="clearfix"></div>
 
             <br>

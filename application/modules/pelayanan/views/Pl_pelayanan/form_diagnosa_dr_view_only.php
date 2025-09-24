@@ -1048,18 +1048,15 @@ audio, canvas, progress, video {
 </div>
 
 
-<div class="col-md-4 no-padding" style="margin-top: 14px">
-    <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
+<div class="col-md-12" style="margin-top: 14px; margin-bottom: 20px">
+    <span style="font-weight: bold; font-size: 16px"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
     <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : $this->tanggal->formatDateTimeFormDmy($value->tgl_jam_poli)?></span> <br>
 </div>
-<div class="col-md-8">
-    <p style="text-align: right; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
-</div>
 
-
-<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Subjective)</span>
+<hr>
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px; margin-top: 20px">(Subjective)</span>
 <div style="margin-top: 6px">
-    <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> <span style="color:red">* </span> <br><span style="font-size: 11px; font-style: italic">(Masukan anamnesa minimal 8 karakter)</span> </label>
+    <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> <span style="color:red">* </span> </label> <br>
     <?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?>
     <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
@@ -1068,7 +1065,7 @@ audio, canvas, progress, video {
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Objective)</span>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8"> <i><b>Vital Sign</b></i><br><span style="font-size: 11px; font-style: italic">(Masukan tanda-tanda vital)</span></label>
+    <label for="form-field-8"> <i><b>Vital Sign</b></i><br></label>
     <table class="table">
         <tr style="font-size: 11px; background: beige;">
             <th>Tinggi Badan (Cm)</th>
@@ -1098,9 +1095,10 @@ audio, canvas, progress, video {
         </tbody>
     </table>
 
-    <label for="form-field-8"> <b>Pemeriksaan Fisik</b><br><span style="font-size: 11px; font-style: italic">(Mohon dijelaskan kondisi fisik pasien)</span></label>
+    <label for="form-field-8"> <b>Pemeriksaan Fisik</b><br></label><br>
     <?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?>
     <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
+    <br>
     
     <label for="form-field-8">
         <label><input type="checkbox" class="ace" name="checklist_status_lokaslis" id="checklist_status_lokaslis" <?php echo($riwayat->anatomi_tagging != null)?'checked':''?> ><span class="lbl"> <b>Status Lokalis</b></span></label>
@@ -1171,13 +1169,13 @@ audio, canvas, progress, video {
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px; ">(Assesment)</span>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8"><b>Diagnosa Primer(ICD10)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD10)</i></label>
+    <label for="form-field-8"><b>Diagnosa Primer(ICD10)</b> <span style="color:red">* </span><br></label><br>
     <?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>
     <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
 </div>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8"><b>Diagnosa Sekunder</b> <br><i style="font-size: 11px">(Klik <b>"enter"</b> untuk menambahkan Diagnosa Sekunder dan dapat diisi lebih dari satu )</i></label>
+    <label for="form-field-8"><b>Diagnosa Sekunder</b> <br></label>
     <div id="pl_diagnosa_sekunder_hidden_txt" style="padding: 2px; line-height: 23px; border: 1px solid #d5d5d5; min-height: 25px; margin-top: 2px">
         <?php
             $arr_text = isset($riwayat->diagnosa_sekunder) ? explode('|',$riwayat->diagnosa_sekunder) : [];
@@ -1202,7 +1200,7 @@ audio, canvas, progress, video {
     <input type="hidden" class="form-control" name="konten_diagnosa_sekunder" id="konten_diagnosa_sekunder" value="<?php echo isset($riwayat->diagnosa_sekunder)?$riwayat->diagnosa_sekunder:''?>">
 </div>
 <div style="margin-top: 6px">
-    <label for="form-field-8"><b>Prosedur/ Tindakan(ICD9)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD9)</i></label>
+    <label for="form-field-8"><b>Prosedur/ Tindakan(ICD9)</b> <span style="color:red">* </span></label><br>
     <?php echo isset($riwayat->text_icd9)?$riwayat->text_icd9:' Other consultation'?>
     <input type="hidden" class="form-control" name="pl_procedure_hidden" id="pl_procedure_hidden" value="<?php echo isset($riwayat->kode_icd9)?$riwayat->kode_icd9:'89.08'?>">
 </div>
@@ -1210,20 +1208,20 @@ audio, canvas, progress, video {
 <br>
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Planning)</span>
 <div style="margin-top: 6px">
-    <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br><i style="font-size: 11px">(Mohon dijelaskan Rencana Asuhan Pasien dan Tindak Lanjutnya)</i></label>
+    <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br></label><br>
     <?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?>
 </div>
 <div style="margin-top: 6px">
-    <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br><i style="font-size: 11px">(Secara default untuk pasien BPJS kontrol kembali setelah 31 hari)</i></label><br>
-    <input type="text" class="date-picker" data-date-format="yyyy-mm-dd" name="pl_tgl_kontrol_kembali" id="pl_tgl_kontrol_kembali" class="form-control" style="width: 100% !important" placeholder="ex: <?php echo date('Y-m-d')?>" value="<?php $next_date = date('Y-m-d', strtotime("+31 days")); echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:$next_date?>">
+    <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br></label><br>
+    <?php $next_date = date('d/m/Y', strtotime("+31 days")); echo isset($riwayat->tgl_kontrol_kembali)?$this->tanggal->formatDate($riwayat->tgl_kontrol_kembali):$next_date?>
 </div>
 <div style="margin-top: 6px">
-    <label for="form-field-8"><b>Catatan Kontrol</b></label>
-    <?php echo isset($riwayat->catatan_kontrol_kembali)?$this->master->br2nl($riwayat->catatan_kontrol_kembali):'-'?>
+    <label for="form-field-8"><b>Catatan Kontrol</b></label><br>
+    <?php echo isset($riwayat->catatan_kontrol_kembali)?$this->master->br2nl($riwayat->catatan_kontrol_kembali):'Tidak ada catatan'?>
 </div>
 <br>
 
-<p><b><i class="fa fa-stethoscope bigger-120"></i> INFORMASI PASIEN PULANG </b></p>
+<label for="form-field-8"><b>Informasi Pasien Pulang </b></label>
 <label>Cara Keluar Pasien : </label><br>
     <i class="fa fa-arrow-right"></i> <?php echo $value->cara_keluar_pasien?>
 <br>
@@ -1231,7 +1229,61 @@ audio, canvas, progress, video {
 <label>Pasca Pulang : </label><br>
     <i class="fa fa-arrow-right"></i> <?php echo $riwayat->pasca_pulang?>
 <br>
+
 <br>
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Resep Dokter)</span>
+<div style="margin-top: 6px">
+    <?php
+        $eresep_result = isset($eresep[$value->no_registrasi][$value->no_kunjungan])?$eresep[$value->no_registrasi][$value->no_kunjungan]:array();
+        // echo "<pre>"; print_r($eresep_result);die;
+        $html = '';
+        foreach($eresep_result as $key_er=>$val_er){
+        $html .= '<small>Tanggal resep. <i>('.$this->tanggal->formatDateTime($val_er[0]->created_date).')</i></small>';
+        $html .= '<br>';
+        $html .= '<table class="table" id="dt_add_resep_obat">
+            <thead>
+            <tr>
+                <th width="30px">No</th>
+                <th>Nama Obat</th>
+            </tr>
+            </thead>
+            <tbody style="background: white">';
+            $no = 0;
+            
+            foreach ($val_er as $ker => $ver) {
+            
+            $no++;
+            // get child racikan
+            $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
+            $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+            $html .= '<tr>';
+            $html .= '<td align="center" valign="top">'.$no.'</td>';
+            $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'<br>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.' '.$ver->aturan_pakai.'<br>Qty. '.$ver->jml_pesan.' '.$ver->satuan_obat.'<br>'.$ver->keterangan.'</td>';
+            $html .= '</tr>';
+
+            }
+            // $html .= '<tr><td colspan="2" align="center"><a href="#" class="btn btn-xs btn-primary" onclick="resepkan_ulang('.$ver->kode_pesan_resep.')">Resepkan Kembali</a></td></tr>';
+
+            $html .= '</tbody></table>';
+        }
+        echo $html;
+    ?>
+</div>
+
 <br>
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(File Pengkajian Pasien)</span><br>
+<label for="form-field-8"><b>File Pengkajian Pasien per Periode Kunjungan </b></label><br>
+<?php echo $html_file; ?>
 <br>
-<script src="<?php echo base_url()?>assets/js/custom/counter_poli.js"></script>
+
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(File Upload)</span><br>
+<label for="form-field-8"><b>File Rekam Medis yang di upload per Periode Kunjungan </b></label><br>
+<?php echo $html_file_rm; ?>
+
+<br>
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Pemeriksaan Penunjang)</span>
+<div style="margin-top: 6px">
+    <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br></label><br>
+    
+</div>
+

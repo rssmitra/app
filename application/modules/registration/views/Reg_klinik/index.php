@@ -2000,6 +2000,10 @@ function uploadSnapshot() {
                 <a data-toggle="tab" id="tabs_riwayat_kunjungan_online_id" href="#" data-id="0" data-url="registration/reg_pasien/riwayat_kunjungan_online" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-globe"></i><span class="menu-text"> Update SEP </span></a><b class="arrow"></b>
               </li>
 
+              <li class="hover">
+                <a data-toggle="tab" id="tabs_riwayat_kunjungan_online_id" href="#" data-id="0" data-url="registration/reg_pasien/riwayat_kunjungan_online" onclick="getMenu('registration/Reg_klinik')"><i class="menu-icon fa fa-refresh"></i><span class="menu-text"> Refresh Page </span></a><b class="arrow"></b>
+              </li>
+
             </ul>
           </div>
         </div>

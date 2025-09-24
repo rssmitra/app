@@ -147,7 +147,7 @@ if(isset($_GET['print'])) :
             <th style="color:black; width: 150px">Jenis</th>
             <th style="color:black; width: 200px">Unit</th>
             <th style="color:black; width: 100px">Jasa Dokter</th>
-            <th style="color:black; width: 100px">Profit RS</th>
+            <th style="color:black; width: 100px">Biaya Utilitas</th>
             <th style="color:black; width: 100px">Subtotal</th>
           </thead>
           <tbody>

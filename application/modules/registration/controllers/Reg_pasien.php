@@ -155,6 +155,7 @@ class Reg_pasien extends MX_Controller {
 
         $atts = array('width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
             );
+        $btn_input_general_consent = '';
 
         foreach ($list as $row_list) {
             
@@ -184,6 +185,10 @@ class Reg_pasien extends MX_Controller {
                 /*get data from trans_pelayanan*/
                 $dt_trans_mcu = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $row_list->no_registrasi, 'no_kunjungan' => $row_list->no_kunjungan) )->row();
                 $btn_print_out_checklist_mcu = '<li><a href="#" onclick="PopupCenter('."'registration/Reg_mcu/print_checklist_mcu?kode_tarif=".$dt_trans_mcu->kode_tarif."&nama=".$dt_trans_mcu->nama_pasien_layan."&no_mr=".$dt_trans_mcu->no_mr."&no_reg=".$row_list->no_registrasi."'".', '."'FORM CHEKLIST MCU'".', 850, 500)">Cetak Form Cheklist MCU</a></li>';
+            }
+
+            if( substr($row_list->kode_bagian_tujuan, 0,2) == '03' ){
+                $btn_input_general_consent = '<li><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/catatan_lainnya/".$row_list->no_registrasi."/".$row_list->no_kunjungan."?type=Ranap&no_mr=".$row_list->no_mr."&form_no=56'".', '."'div_load_after_selected_pasien'".')">General Consent</a></li>';
             }
 
             $btn_perjanjian = ( $subs_kode_bag == '01') ? '<li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian_tujuan."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=".$row_list->no_sep."'".')">Surat Kontrol Pasien</a></li>' : '';
@@ -223,6 +228,7 @@ class Reg_pasien extends MX_Controller {
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_edit_dokter/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".' ,'."'UBAH DOKTER PEMERIKSA'".')">Ubah Dokter Pemeriksa</a></li>
                             '.$btn_view_hasil_pm.'
                             '.$btn_print_out_checklist_mcu.'
+                            '.$btn_input_general_consent.'
                             '.$btn_cetak_sep.'
                             <li><a href="#" onclick="PopupCenter('."'registration/Reg_klinik/print_bukti_pendaftaran_pasien_small?nama=".$row_list->nama_pasien."&no_mr=".$row_list->no_mr."&no_reg=".$row_list->no_registrasi."&poli=".$row_list->nama_bagian."&dokter=".$row_list->nama_pegawai."&nasabah=".$penjamin."'".', '."'FORM BUKTI PENDAFTARAN PASIEN'".', 950, 550)">Cetak Bukti Pendaftaran</a></li>
                             <li class="divider"></li>

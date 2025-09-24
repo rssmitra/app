@@ -179,7 +179,7 @@ function changeTotal(){
             <th>Kamar Operasi</th>
             <th>BHP</th>
             <th>Alat Medis</th>
-            <th>Profit RS</th>
+            <th>Biaya Utilitas</th>
             <th>Total Tarif</th>
           </thead>
           <tbody>

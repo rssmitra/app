@@ -526,7 +526,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                     if($row_list->tipe == 'RI'){
                         $btn_monitoring = '<a href="#" class="btn btn-xs btn-primary" onclick="show_modal('."'pelayanan/Pl_pelayanan_ri/observasi_harian_keperawatan_view_only/".$row_list->reff_id."/".$row_list->no_kunjungan."?type=Ranap&kode_bag=".$row_list->kode_bagian_tujuan."&tipe_monitoring=UMUM'".', '."'Monitoring Observasi Keperawatan Harian Pasien'".')"><i class="fa fa-folder"></i> Monitoring Observasi Keperawatan Harian Pasien</a>';
                     }
-                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br><br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br><br>'.$btn_monitoring.'';
+                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>'.$btn_monitoring.'<br>
+                    <a href="#" onclick="openSlidePanel('."'OK'".')">e-Resep</a>';
                 }
     
                 $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
@@ -536,11 +537,18 @@ class Pl_pelayanan_ri extends MX_Controller {
                     if($row_list->tipe == 'RI'){
                         $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                     }else{
+                        $btn_edit = '';
+                        $btn_hapus = '';
+
+                        if(isset($_GET['module']) && $_GET['module'] == 'RJ'){
+                            $btn_edit = '<a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')" style="width: 100% !important; margin-top: 3px"><i class="fa fa-pencil"></i> Edit </a><br>';
+                            $btn_hapus = '<a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger" style="width: 100% !important; margin-top: 3px"><i class="fa fa-times-circle"></i> Hapus</a><br>';
+                        }
                         
+
                         $row[] = '<div class="center">
-                        <a href="#" class="btn btn-xs btn-primary" onclick="view_data_soap('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')" style="width: 100% !important"><i class="fa fa-search"></i> View </a><br>
-                        <a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')" style="width: 100% !important; margin-top: 3px"><i class="fa fa-pencil"></i> Edit </a><br>
-                        <a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger" style="width: 100% !important; margin-top: 3px"><i class="fa fa-times-circle"></i> Hapus</a><br>
+                        <a href="#" class="btn btn-xs btn-primary" onclick="view_data_soap('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')" style="width: 100% !important"><i class="fa fa-search"></i> View </a>
+                        <br>'.$btn_edit.''.$btn_hapus.'
                         <a href="#" class="btn btn-xs btn-inverse" onclick="print_resume('.$row_list->no_registrasi.')" style="width: 100% !important; margin-top: 3px"><i class="fa fa-print"></i> Print Resume </a>
                         </div>';
                     }

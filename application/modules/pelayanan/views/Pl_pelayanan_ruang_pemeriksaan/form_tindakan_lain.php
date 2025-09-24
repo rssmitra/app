@@ -179,7 +179,7 @@ function sumClassBilling(classname){
                 <tr style="background-color:#428bca; color: white">
                     <th>BHP</th>
                     <th>Alat RS</th>
-                    <th>Pendapatan RS</th>
+                    <th>Biaya Utilitas</th>
                     <th>Kamar Tindakan</th>
                     <th>Total = Bill RS</th>
                 </tr>

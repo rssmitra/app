@@ -33,6 +33,9 @@ class Pl_pelayanan extends MX_Controller {
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
         $this->load->module('casemix/Csm_billing_pasien');
         $this->cbpModule = new Csm_billing_pasien;
+
+        $this->load->module('Templates/References');
+        $this->References = new References;
     }
 
     public function index() { 
@@ -303,15 +306,51 @@ class Pl_pelayanan extends MX_Controller {
         $data['form_rm'] = $this->db->order_by('id','DESC')->where("(jenis_form is not null and flag='cppt')")->get_where('view_cppt',['no_kunjungan' => $no_kunjungan])->row();
         // echo '<pre>'; print_r($data);die;
 
-        if($data['value']->kode_dokter != $this->session->userdata('sess_kode_dokter')){
-            echo "Tidak ada akses untuk mengedit diagnosa dokter ".$data['value']->nama_pegawai." !"; exit;
-        }
+        // if($data['value']->kode_dokter != $this->session->userdata('sess_kode_dokter')){
+        //     echo "Tidak ada akses untuk mengedit diagnosa dokter ".$data['value']->nama_pegawai." !"; exit;
+        // }
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+
+        // eresep
+		$eresep = $this->db->get_where('fr_tc_pesan_resep_detail', ['no_mr' => $data['no_mr'], 'parent' => '0'])->result();
+        $getDataResep = [];
+		foreach ($eresep as $key_resep => $value_resep) {
+			$getDataResep[$value_resep->no_registrasi][$value_resep->no_kunjungan][$value_resep->kode_pesan_resep][] = $value_resep;
+		}
+        $data['eresep'] = $getDataResep;
+
+        // file emr pasien
+		$emr = $this->db->select('csm_dokumen_export.*, tc_kunjungan.no_mr, tc_kunjungan.no_kunjungan')->join('tc_kunjungan', 'tc_kunjungan.no_registrasi=csm_dokumen_export.no_registrasi', 'left')->get_where('csm_dokumen_export', array('tc_kunjungan.no_mr' => $data['no_mr']))->result();
+		$getDataFile = [];
+		foreach ($emr as $key_file => $val_file) {
+			$getDataFile[$val_file->no_registrasi][$val_file->no_kunjungan][] = $val_file;
+		}
+        $data['file'] = $getDataFile;
+		
+		// form pengkajian pasien / form rekam medis
+		$file_pengkajian = $this->db->get_where('view_cppt', array('view_cppt.no_mr' => $data['no_mr'], 'jenis_form !=' => 0))->result();
+		$getDataFilePengkajian = [];
+		foreach ($file_pengkajian as $key_file_pkj => $val_file_pkj) {
+			$getDataFilePengkajian[$val_file_pkj->no_registrasi][$val_file_pkj->no_kunjungan][] = $val_file_pkj;
+		}
+        $data['file_pkj'] = $getDataFilePengkajian;
+
+        // hasil penunjang
+        $html_penunjang = $this->References->get_riwayat_pm($data['no_mr'], 'html');
+
         /*load form view*/
-        $this->load->view('Pl_pelayanan/form_diagnosa_dr_view_only', $data);
+        if(isset($_GET['response']) AND $_GET['response'] == 'json'){
+            $html = $this->load->view('Pl_pelayanan/form_diagnosa_dr_view_only', $data, true);
+            $html .= '<hr>';
+            $html .= $html_penunjang;
+            echo json_encode( array('html' => $html) ); exit;
+        }else{
+            $this->load->view('Pl_pelayanan/form_diagnosa_dr_view_only', $data);
+        }
+        
     }
 
     public function diagnosa_dr_edit_from_cppt($id='', $no_kunjungan='')
@@ -1131,8 +1170,10 @@ class Pl_pelayanan extends MX_Controller {
                 $dataexc["bill_rs"] = (isset($_POST['bill_rs']))?(int)$_POST['bill_rs']:0;
                 $dataexc["bill_dr1"] = (isset($_POST['bill_dr1']))?(int)$_POST['bill_dr1']:NULL;
                 $dataexc["bill_dr2"] = (isset($_POST['bill_dr2']))?(int)$_POST['bill_dr2']:NULL;
-                $dataexc['kode_dokter1'] = $_POST['pl_kode_dokter_hidden'][0];
-                $dataexc['kode_dokter2'] = isset($_POST['pl_kode_dokter_hidden'][1])?$_POST['pl_kode_dokter_hidden'][1]:0;
+                $kode_dokter1 = ($dataexc["bill_dr1"] > 0) ? $_POST['pl_kode_dokter_hidden'][0] : NULL;
+                $kode_dokter2 = ($dataexc["bill_dr2"] > 0) ? $_POST['pl_kode_dokter_hidden'][1] : NULL;
+                $dataexc['kode_dokter1'] = $kode_dokter1;
+                $dataexc['kode_dokter2'] = $kode_dokter2;
                 $dataexc["tindakan_luar"] = 1;
 
                 $this->Pl_pelayanan->save('tc_trans_pelayanan', $dataexc);
@@ -1146,9 +1187,11 @@ class Pl_pelayanan extends MX_Controller {
                 $dataexc["bill_rs"] = (isset($_POST['bill_rs']))?(int)$_POST['bill_rs']:0;
                 $dataexc["bill_dr1"] = (isset($_POST['bill_dr1']))?(int)$_POST['bill_dr1']:NULL;
                 $dataexc["bill_dr2"] = (isset($_POST['bill_dr2']))?(int)$_POST['bill_dr2']:NULL;
+                $kode_dokter1 = ($dataexc["bill_dr1"] > 0) ? $_POST['pl_kode_dokter_hidden'][0] : NULL;
+                $kode_dokter2 = ($dataexc["bill_dr2"] > 0) ? $_POST['pl_kode_dokter_hidden'][1] : NULL;
+                $dataexc['kode_dokter1'] = $kode_dokter1;
+                $dataexc['kode_dokter2'] = $kode_dokter2;
                 $dataexc["kamar_tindakan"] = (isset($_POST['kamar_tindakan']))?(int)$_POST['kamar_tindakan']:NULL;
-                $dataexc['kode_dokter1'] = $_POST['pl_kode_dokter_hidden'][0];
-                $dataexc['kode_dokter2'] = isset($_POST['pl_kode_dokter_hidden'][1])?$_POST['pl_kode_dokter_hidden'][1]:0;
 
                 $this->Pl_pelayanan->save('tc_trans_pelayanan', $dataexc);
 
