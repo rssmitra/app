@@ -136,7 +136,7 @@ jQuery(function($) {
 <?php echo $header; ?>
 <hr>
 <br>
-
+<!-- <p>edited by amelia yahya 25 september 2025</p> -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
 <div style="text-align: center; font-size: 18px;"><b>DIAGNOSIS KEPERAWATAN: NYERI AKUT</b></div>
@@ -148,14 +148,15 @@ jQuery(function($) {
         <td style="border: 1px solid black; padding: 5px; vertical-align: top;" colspan="2">Definisi : Pengalaman sensorik atau emosional yang berkaitan dengan kerusakan jaringan aktual atau fungsional, dengan onset mendadak atau lambat dan berintensitas ringan hingga berat yang berlangsung kurang dari 3 bulan
         </td>
      </tr>
-        <tr>
+        <!-- <tr>
             <th style="border: 1px solid black; padding: 5px;">PENYEBAB/Berhubungan dengan:</th>
             <th style="border: 1px solid black; padding: 5px;">Setelah dilakukan intervensi selama <input type="text" class="input_type" name="form_57[ket_intervensi_selama]" id="ket_intervensi_selama" onchange="fillthis('ket_intervensi_selama')" style="width:10%;">, maka tingkat nyeri menurun (L.08066), dengan kriteria hasil:</th>
-        </tr>
+        </tr> -->
     </thead>
     <tbody>
         <tr>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
+                <b>PENYEBAB/Berhubungan dengan:</b><br><br>
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" class="ace" name="form_57[penyebab][]" id="penyebab_fisiologis" onclick="checkthis('penyebab_fisiologis')" value="Agen pencedera fisiologis">
@@ -177,6 +178,7 @@ jQuery(function($) {
             </td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
                 <div style="display: flex; flex-wrap: wrap;">
+                    <b>Setelah dilakukan intervensi selama <input type="text" class="input_type" name="form_57[ket_intervensi_selama]" id="ket_intervensi_selama" onchange="fillthis('ket_intervensi_selama')" style="width:10%;">, maka tingkat nyeri menurun (L.08066), dengan kriteria hasil:</b><br><br>
                     <div style="width: 50%;">
                         <div class="checkbox">
                             <label>
@@ -383,14 +385,14 @@ jQuery(function($) {
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" class="ace" name="form_57[gejala_mayor_objektif][]" id="gejala_mayor_sulit_tidur" onclick="checkthis('gejala_mayor_sulit_tidur')" value="Sulit tidur">
-                                <span class="lbl"> Sulit tidur</span>
+                                <input type="checkbox" class="ace" name="form_57[gejala_mayor_objektif][]" id="gejala_mayor_frekuensi" onclick="checkthis('gejala_mayor_frekuensi')" value="Frekuensi nadi menurun">
+                                <span class="lbl"> Frekuensi nadi menurun</span>
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" class="ace" name="form_57[gejala_mayor_objektif][]" id="gejala_mayor_frekuensi" onclick="checkthis('gejala_mayor_frekuensi')" value="Frekuensi nadi menurun">
-                                <span class="lbl"> Frekuensi nadi menurun</span>
+                                <input type="checkbox" class="ace" name="form_57[gejala_mayor_objektif][]" id="gejala_mayor_sulit_tidur" onclick="checkthis('gejala_mayor_sulit_tidur')" value="Sulit tidur">
+                                <span class="lbl"> Sulit tidur</span>
                             </label>
                         </div>
                     </div>
@@ -460,14 +462,14 @@ jQuery(function($) {
 <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
     <thead>
         <tr style="background-color: #d3d3d3;">
-            <th style="width: 5%; border: 1px solid black; padding: 5px;">NO.</th>
-            <th style="width: 95%; border: 1px solid black; padding: 5px;">INTERVENSI KEPERAWATAN UTAMA</th>
+            <th style="width: 5%; border: 1px solid black; padding: 5px; text-align:center;">NO.</th>
+            <th style="width: 95%; border: 1px solid black; padding: 5px; text-align:center;">INTERVENSI KEPERAWATAN UTAMA</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td colspan="2" style="border: 1px solid black; padding: 5px;">
-                <b>Manajemen nyeri</b> <i>(Mengidentifikasi dan mengelola ensorik atau emosional yang terkait dengan kerusakan jaringan atau fungsional dengan onset mendadak atau lambat dan berintensitas ringan hingga berat dan konstan)</i> (1.08238)
+                <b>Manajemen nyeri</b> <i>(Mengidentifikasi dan mengelola ensorik atau emosional yang terkait dengan kerusakan jaringan atau fungsional dengan onset mendadak atau lambat dan berintensitas ringan hingga berat dan konstan)</i> (I.08238)
             </td>
         </tr>
         <tr>
@@ -534,7 +536,7 @@ jQuery(function($) {
                     </label>
                 </div>
                 <div style="margin-top: 5px;">
-                <input type="text" class="input_type" name="form_57[ket_tambahan_manajemen_nyeri_observasi]" id="ket_tambahan_manajemen_nyeri_observasi" onchange="fillthis('ket_tambahan_manajemen_nyeri_observasi')" style="width:100%;"> 
+                    <input type="text" class="input_type" name="form_57[ket_tambahan_manajemen_nyeri_observasi]" id="ket_tambahan_manajemen_nyeri_observasi" onchange="fillthis('ket_tambahan_manajemen_nyeri_observasi')" style="width:100%;"> 
                 </div>
             </td>
         </tr>

@@ -140,7 +140,7 @@ jQuery(function($) {
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
 <div style="text-align: center; font-size: 18px;"><b>RIWAYAT PENYAKIT PASIEN KASUS BAYI BARU LAHIR 1</b></div>
-
+<!-- <p>edited by amelia yahya 25 september 2025</p> -->
 <br>
 <style>
   .form-container {

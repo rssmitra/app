@@ -138,7 +138,7 @@ jQuery(function($) {
 <br>
 
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
-
+<!-- <p>edited by amelia yahya 25 september 2025</p> -->
 <div style="text-align: center; font-size: 18px;"><b>DIAGNOSIS KEPERAWATAN: PENURUNAN CURAH JANTUNG</b></div>
 <br>
 
@@ -148,14 +148,15 @@ jQuery(function($) {
         <td style="border: 1px solid black; padding: 5px; vertical-align: top;" colspan="2">Definisi : Ketidakadekuatan jantung memompa darah untuk memenuhi kebutuhan metabolisme tubuh.
         </td>
      </tr>
-        <tr>
+        <!-- <tr>
             <th style="border: 1px solid black; padding: 5px;">PENYEBAB/Berhubungan dengan:</th>
             <th style="border: 1px solid black; padding: 5px;">Setelah dilakukan intervensi selama <input type="text" class="input_type" name="form_58[ket_intervensi_selama]" id="ket_intervensi_selama" onchange="fillthis('ket_intervensi_selama')" style="width:10%;"> maka Curah jantung meningkat (L. 02008), dengan kriteria hasil:</th>
-        </tr>
+        </tr> -->
     </thead>
     <tbody>
         <tr>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
+                <b>PENYEBAB/Berhubungan dengan:</b><br>
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" class="ace" name="form_58[penyebab][]" id="penyebab_perubahan_irama_jantung" onclick="checkthis('penyebab_perubahan_irama_jantung')" value="Perubahan irama jantung">
@@ -188,6 +189,7 @@ jQuery(function($) {
                 </div>
             </td>
             <td style="border: 1px solid black; padding: 5px; vertical-align: top;">
+                <b>Setelah dilakukan intervensi selama <input type="text" class="input_type" name="form_58[ket_intervensi_selama]" id="ket_intervensi_selama" onchange="fillthis('ket_intervensi_selama')" style="width:10%;"> maka Curah jantung meningkat (L. 02008), dengan kriteria hasil:</b><br>
                 <div style="display: flex; flex-wrap: wrap;">
                     <div style="width: 50%;">
                         <div class="checkbox">
@@ -643,7 +645,7 @@ jQuery(function($) {
         </tr>
         <tr>
             <td colspan="2" style="border: 1px solid black; padding: 5px;">
-                <b>Perawatan Jantung Akut</b> <i>(Mengidentifikasi dan mengelola pasien yang baru mengalami episode ketidakseimbangan antara ketersediaan dan kebutuhan oksigen miokard)</i> (I.02076)
+                <b>Perawatan Jantung Akut</b> <i>(Mengidentifikasi dan mengelola pasien yang baru mengalami episode ketidakseimbangan antara ketersediaan dan kebutuhan oksigen miokard)</i> <b>(I.02076)</b>
             </td>
         </tr>
         <tr>
@@ -807,6 +809,24 @@ jQuery(function($) {
                     <label>
                         <input type="checkbox" class="ace" name="form_58[perawatan_jantung_akut][kolaborasi][]" id="pja_kolaborasi_inotropik" onclick="checkthis('pja_kolaborasi_inotropik')" value="Kolaborasi pemberian inotropik jika perlu">
                         <span class="lbl"> Kolaborasi pemberian inotropik jika perlu</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" class="ace" name="form_58[perawatan_jantung_akut][kolaborasi][]" id="pja_kolaborasi_manufer" onclick="checkthis('pja_kolaborasi_manufer')" value="Kolaborasi pemberian obat untuk mencegah manufer valsava (mis: pelunak, tinja, antiemetik)">
+                        <span class="lbl"> Kolaborasi pemberian obat untuk mencegah manufer valsava (mis: pelunak, tinja, antiemetik)</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" class="ace" name="form_58[perawatan_jantung_akut][kolaborasi][]" id="pja_kolaborasi_trombus" onclick="checkthis('pja_kolaborasi_trombus')" value="Kolaborasi pencegahan trombus dengan antikoagulan jika perlu">
+                        <span class="lbl"> Kolaborasi pencegahan trombus dengan antikoagulan jika perlu</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" class="ace" name="form_58[perawatan_jantung_akut][kolaborasi][]" id="pja_kolaborasi_xray" onclick="checkthis('pja_kolaborasi_xray')" value="Kolaborasi pemeriksaan X-ray dada jika perlu">
+                        <span class="lbl"> Kolaborasi pemeriksaan X-ray dada jika perlu</span>
                     </label>
                 </div>
                 <div style="margin-top: 5px;">

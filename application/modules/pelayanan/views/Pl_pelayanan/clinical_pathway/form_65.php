@@ -138,7 +138,7 @@ jQuery(function($) {
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
 <div style="text-align: center; font-size: 18px;"><b>RIWAYAT PENYAKIT PASIEN KASUS BAYI BARU LAHIR 2</b></div>
-
+<!-- <p>edited by amelia yahya 25 september 2025</p> -->
 <br>
 <style>
 .form-container {
@@ -167,8 +167,14 @@ jQuery(function($) {
   width: 250px;
   box-sizing: border-box;
 }
+td {
+  padding: 6px 0px;  /* atas-bawah 6px, kiri-kanan 4px */
+  vertical-align: top;
+}
 </style>
-
+<br>
+<div style="text-align: center; font-size: 14px;"><b>DIISI OLEH DOKTER YANG MERAWAT</b></div>
+<br><br>
 <div class="form-container">
   <!-- Kolom Kiri -->
   <div class="form-column">
@@ -189,10 +195,10 @@ jQuery(function($) {
 
       <div class="form-row">
         <label>Berat Badan Lahir</label>
-        : <input type="text" class="input_type" name="form_65[berat_badan_lahir]" id="berat_badan_lahir" onchange="fillthis('berat_badan_lahir')" style="width: 20px;">
-        gr, <label style="margin-left: 5px;">Panjang Badan</label>
-        <input type="text" class="input_type" name="form_65[panjang_badan]" id="panjang_badan" onchange="fillthis('panjang_badan')" style="width: 20px;"> cm
-        <label style="margin-left: 5px;"></label>
+        : <input type="text" class="input_type" name="form_65[berat_badan_lahir]" id="berat_badan_lahir" onchange="fillthis('berat_badan_lahir')" style="width: 30px;">
+        gr, <label style="margin-left: 0px;"></label>
+        Panjang Badan <input type="text" class="input_type" name="form_65[panjang_badan]" id="panjang_badan" onchange="fillthis('panjang_badan')" style="width: 35px;"> cm
+        <label style="margin-left: 0px;"></label>
       </div>
       <div class="form-row">
         <label>Nilai apgar</label>
@@ -263,96 +269,98 @@ jQuery(function($) {
 
   <!-- Kolom Kanan -->
   <div class="form-column">
-    <!-- <p><b>ABDOMEN</b></p>  -->
-    <div class="form-section">
-       <div class="form-row">
-        <label><b>ABDOMEN</b></label>
-        <label>
-        </label><label>MECONIUM</label>
-      </div>
-      <div class="form-row">
-        <label>Hepar</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[hepar]" id="hepar" onchange="fillthis('hepar')">
-        </label> <label>24 jam</label>
-      </div>
-      <div class="form-row">
-        <label>Lien</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[lien]" id="lien" onchange="fillthis('lien')">
-        </label> <label>24 jam</label>
-      </div>
-      <div class="form-row">
-        <label>Kelainan Umbilicus</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[kelainan_umbilicus]" id="kelainan_umbilicus" onchange="fillthis('kelainan_umbilicus')">
-        </label> <label>Kelainan</label>
-      </div>
-    </div>
 
-    <!-- <p><b>GENETALIA</b></p> -->
-    <div class="form-section">
-      <div class="form-section">
-       <div class="form-row">
-        <label><b>GENETALIA</b></label>
-        <label>
-        </label><label>MIKSI</label>
-      </div>
-      <div class="form-row">
-        <label>Desensus Testikulorum</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[desensus_testikulorum]" id="desensus_testikulorum" onchange="fillthis('desensus_testikulorum')">
-        </label> <label>sudah</label>
-      </div>
-      <div class="form-row">
-        <label>Keadaan Labia Minor</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[labia_minor]" id="labia_minor" onchange="fillthis('labia_minor')">
-        </label> <label>belum</label>
-      </div>
-      <div class="form-row">
-        <label>Kelainan</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[kelainan_genetalia]" id="kelainan_genetalia" onchange="fillthis('kelainan_genetalia')">
-        </label>
-      </div>
-      <div class="form-row">
-        <label>ANUS (Normal/Kelainan)</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[anus]" id="anus" onchange="fillthis('anus')">
-        </label>
-      </div>
-    </div>  
-      <!-- --  
-      <div class="form-row">
-        <label><b>GENETALIA</b></label>
-        <label>
-      </label><label>MIKSI</label>
-      </div>
-      <div class="form-row">
-        <label>Desensus Testikulorum</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[desensus_testikulorum]" id="desensus_testikulorum" onchange="fillthis('desensus_testikulorum')">
-        </label> <label>sudah</label>
-      </div>
-      <div class="form-row">
-        <label>Keadaan Labia Minor</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[labia_minor]" id="labia_minor" onchange="fillthis('labia_minor')">
-        </label> <label>belum</label>
-      </div>
-      <div class="form-row">
-        <label>Kelainan</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[kelainan_genetalia]" id="kelainan_genetalia" onchange="fillthis('kelainan_genetalia')">
-        </label>
-      </div>
-      <div class="form-row">
-        <label>ANUS (Normal/Kelainan)</label>
-        <label>:
-          <input type="text" class="input_type" name="form_65[anus]" id="anus" onchange="fillthis('anus')">
-        </label>
-      </div> -->
+
+
+<div class="form-section">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="6" style="font-size: 13px; line-height: 1.6; border-collapse: collapse;">
+  <tr>
+    <td colspan="3" width="65%" valign="top"><b>ABDOMEN</b></td>
+    <td colspan="2" width="35%" valign="top"><b>MECONIUM</b></td>
+  </tr>
+  <tr>
+    <!-- ABDOMEN kiri -->
+    <td width="20%">Hepar</td>
+    <td width="5%" align="right">:</td>
+    <td width="25%">
+      <input type="text" class="input_type" name="form_65[hepar]" id="hepar" onchange="fillthis('hepar')">
+    </td>
+    <!-- MECONIUM kanan -->
+    <td width="5%" align="right"></td>
+    <td>
+      <label><input type="checkbox" class="ace" name="form_65[meconium_24]" id="meconium_24" onclick="checkthis('meconium_24')" value="hepar 24 jam"> <span class="lbl">24 jam</span></label>
+    </td>
+  </tr>
+  <tr>
+    <td>Lien</td>
+    <td align="right">:</td>
+    <td>
+      <input type="text" class="input_type" name="form_65[lien]" id="lien" onchange="fillthis('lien')">
+    </td>
+    <td align="right"></td>
+    <td>
+      <label><input type="checkbox" class="ace" name="form_65[meconium_lebih_24]" id="meconium_lebih_24" onclick="checkthis('meconium_lebih_24')" value="lien 24 jam"> <span class="lbl">24 jam</span></label>
+    </td>
+  </tr>
+  <tr>
+    <td>Kelainan Umbilicus</td>
+    <td align="right">:</td>
+    <td>
+      <input type="text" class="input_type" name="form_65[umbilicus]" id="umbilicus" onchange="fillthis('umbilicus')">
+    </td>
+    <td align="right"></td>
+    <td>
+      <label><input type="checkbox" class="ace" name="form_65[meconium_kelainan]" id="meconium_kelainan" onclick="checkthis('meconium_kelainan')" value="Kelainan"> <span class="lbl">Kelainan</span></label>
+    </td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="6" style="font-size: 13px; line-height: 1.6; border-collapse: collapse;">
+  <tr>
+    <td valign="top" width="65%">
+      <b>GENETALIA</b>
+      <table width="95%" border="0" cellspacing="4" cellpadding="4" style="font-size: 13px; line-height: 1.5; border-collapse: collapse;">
+        <tr>
+          <td width="35%">Desensus Testikulorum</td>
+          <td width="5%" align="right">:</td>
+          <td>
+            <textarea class="input_type" name="form_65[desensus_testikulorum]" id="desensus_testikulorum" rows="2" style="width: 95%;" onchange="fillthis('desensus_testikulorum')"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>Keadaan Labia Minor</td>
+          <td align="right">:</td>
+          <td>
+            <textarea class="input_type" name="form_65[labia_minor]" id="labia_minor" rows="2" style="width: 95%;" onchange="fillthis('labia_minor')"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>Kelainan</td>
+          <td align="right">:</td>
+          <td>
+            <input type="text" class="input_type" name="form_65[kelainan_genetalia]" id="kelainan_genetalia" style="width: 95%;" onchange="fillthis('kelainan_genetalia')">
+          </td>
+        </tr>
+        <tr>
+          <td>ANUS (Normal/Kelainan)</td>
+          <td align="right">:</td>
+          <td>
+            <input type="text" class="input_type" name="form_65[anus]" id="anus" style="width: 95%;" onchange="fillthis('anus')">
+          </td>
+        </tr>
+      </table>
+    </td>
+
+    <td valign="top" width="35%">
+      <b>MIKSI</b><br>
+      <label><input type="checkbox" class="ace" name="form_65[miksi_sudah]" id="miksi_sudah" onclick="checkthis('miksi_sudah')" value="sudah"> <span class="lbl">sudah</span></label><br>
+      <label><input type="checkbox" class="ace" name="form_65[miksi_belum]" id="miksi_belum" onclick="checkthis('miksi_belum')" value="belum"> <span class="lbl">belum</span></label>
+    </td>
+  </tr>
+</table>
+
+
     </div>
 </div>
 </div>
@@ -562,17 +570,6 @@ jQuery(function($) {
           <input type="text" class="input_type" name="form_65[bising_jantung]" id="bising_jantung" onchange="fillthis('bising_jantung')">
         </label>
       </div>
-      <!-- <div class="form-row">
-        <label>Mammae</label>
-        <label>:
-          <select class="input_type" name="form_65[mammae]" id="mammae" onchange="fillthis('mammae')">
-            <option value="">-- Pilih --</option>
-            <option value="simetris">Simetris</option>
-            <option value="asimetri">Asimetri</option>
-          </select>
-        </label>
-      </div>
-       -->
       <div class="form-row">
   <label>Mammae</label>
   <label>:
@@ -722,9 +719,47 @@ jQuery(function($) {
   </div>
 </div>
 
+<br><br>
+<!-- ----- -->
+<table class="table" style="width: 100%; border:1px solid #000; border-collapse:collapse;">
+  <tbody>
+    <tr>
+      <td style="width:50%; text-align:center;">
+        Tanda Tangan
+        <br><br>
+        <span class="ttd-btn" data-role="petugas" id="ttd_petugas" style="cursor: pointer;">
+          <i class="fa fa-pencil blue"></i>
+        </span>
+        <br>
+        <img id="img_ttd_petugas" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
+        <br><br>
+        <input type="text" class="input_type" name="form_65[nama_petugas]" id="nama_petugas" placeholder="Nama Dokter" style="width:33%; text-align:center;">
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 </div>
 </div>
 
+<div class="modal fade" id="ttdModal" tabindex="-1" role="dialog" aria-labelledby="ttdModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="ttdModalLabel" style="color: white">Tanda Tangan Digital</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <canvas id="ttd-canvas" style="border:1px solid #ccc;touch-action:none;" width="350" height="120"></canvas>
+        <br>
+        <button type="button" class="btn btn-warning btn-sm" id="clear-ttd">Bersihkan</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-xs btn-default" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-xs btn-primary" id="save-ttd">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<?php echo $footer; ?>
+<?php //echo $footer; ?>

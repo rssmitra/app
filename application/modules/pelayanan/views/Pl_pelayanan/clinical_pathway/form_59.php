@@ -136,7 +136,7 @@ jQuery(function($) {
 <?php echo $header; ?>
 <hr>
 <br>
-
+<!-- <p>edited by amelia yahya 25 september 2025</p> -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
 <div style="text-align: center; font-size: 18px;">
@@ -307,7 +307,6 @@ jQuery(function($) {
                 <span class="lbl"> Efek samping tindakan (mis. Tidakan operasi bypass)</span>
             </label>
         </div>
-        
     </td>
     <td width="50%" valign="top" style="border: 1px solid black; padding: 5px;">
         <b>Setelah dilakukan intervensi selama <input type="text" class="input_type" name="form_59[ket_intervensi_selama]" id="ket_intervensi_selama" onchange="fillthis('ket_intervensi_selama')" style="width:10%;"> Perfusi serebral meningkat (L.02014), dengan kriteria hasil:</b><br><br>
@@ -350,7 +349,7 @@ jQuery(function($) {
         <div class="checkbox">
             <label>
                 <input type="checkbox" class="ace" name="form_59[kriteria_hasil][]" id="kriteria_hasil_frekuensi_nadi" onclick="checkthis('kriteria_hasil_frekuensi_nadi')" value="Frekwensi nadi">
-                <span class="lbl"> Frekwensi nadi <input type="text" class="input_type" name="form_59[ket_kriteria_nadi]" id="ket_intervensi_ket_kriteria_nadiselama" onchange="fillthis('ket_kriteria_nadi')" style="width:10%;"> x/mnt</span>
+                <span class="lbl"> Frekwensi nadi <input type="text" class="input_type" name="form_59[ket_kriteria_nadi]" id="ket_kriteria_nadi" onchange="fillthis('ket_kriteria_nadi')" style="width:10%;"> x/mnt</span>
             </label>
         </div>
         <div class="checkbox">
@@ -405,7 +404,7 @@ jQuery(function($) {
     <tbody>
         <tr>
             <td colspan="2" style="border: 1px solid black; padding: 5px;">
-                <b>Manajemen Peningkatan Tekanan Intrakranial <i>(Mengidentifikasi & mengelola peningkatan tekanan dalam rongga kranial)</i> (I.06194)</b>
+                <b>Manajemen Peningkatan Tekanan Intrakranial</b> <i>(Mengidentifikasi & mengelola peningkatan tekanan dalam rongga kranial)</i> <b>(I.06194)</b>
             </td>
         </tr>
         <tr>
@@ -414,7 +413,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: center;"><b>1</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align: center;"><b>1</b></td>
             <td style="border: 1px solid black; padding: 5px;">
                 <label><b>Observasi</b></label><br>
                 <div class="checkbox">
@@ -459,7 +458,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: center;"><b>2</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align: center;"><b>2</b></td>
             <td style="border: 1px solid black; padding: 5px;">
                 <label><b>Terapeutik</b></label><br>
                 <div class="checkbox">
@@ -516,7 +515,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: center;"><b>3</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align: center;"><b>3</b></td>
             <td style="border: 1px solid black; padding: 5px;">
                 <label><b>Edukasi</b></label><br>
                 <div class="checkbox">
@@ -544,13 +543,12 @@ jQuery(function($) {
         </tr>
     </tbody>
 </table>
-<br>
 
 <table width="100%" border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; font-size: 13px;">
     <tbody>
         <tr>
             <td colspan="2" style="border: 1px solid black; padding: 5px;">
-                <b>Pemantauan Tekanan Intrakranial <i>(Mengumpulkan dan menganalisis data terkait regulasi tekanan di dalam ruang intrakranial) </i> (I.06198)</b>
+                <b>Pemantauan Tekanan Intrakranial </b> <i>(Mengumpulkan dan menganalisis data terkait regulasi tekanan di dalam ruang intrakranial) </i> <b>(I.06198)</b>
             </td>
         </tr>
         <tr>
@@ -559,7 +557,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="width: 5%; border: 1px solid black; padding: 5px; text-align: center;"><b>1</b></td>
+            <td style="width: 5%; border: 1px solid black; padding: 5px; vertical-align: top; text-align: center;"><b>1</b></td>
             <td style="border: 1px solid black; padding: 5px;">
                 <label><b>Observasi</b></label><br>
                 <div class="checkbox">
@@ -622,7 +620,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: center;"><b>2</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align: center;"><b>2</b></td>
             <td style="border: 1px solid black; padding: 5px;">
                 <label><b>Terapeutik</b></label><br>
                 <div class="checkbox">
@@ -649,7 +647,7 @@ jQuery(function($) {
             </td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: center;"><b>3</b></td>
+            <td style="border: 1px solid black; padding: 5px; vertical-align: top; text-align: center;"><b>3</b></td>
             <td style="border: 1px solid black; padding: 5px;">
                 <label><b>Edukasi</b></label><br>
                 <div class="checkbox">
@@ -672,6 +670,7 @@ jQuery(function($) {
     </tbody>
 </table>
 
+<!-- ----- -->
 <table class="table" style="width: 100%; border:1px solid #000; border-collapse:collapse;">
   <tbody>
     <tr>
@@ -684,7 +683,7 @@ jQuery(function($) {
         <br>
         <img id="img_ttd_petugas" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" class="input_type" name="form_58[nama_petugas]" id="nama_petugas" placeholder="Nama Jelas" style="width:33%; text-align:center;">
+        <input type="text" class="input_type" name="form_59[nama_petugas]" id="nama_petugas" placeholder="Nama Jelas" style="width:33%; text-align:center;">
       </td>
 
       <td colspan="2">
