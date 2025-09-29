@@ -32,8 +32,9 @@ final Class Authuser {
         /*check existing*/
         $query = "SELECT action_code
                     FROM tmp_role_has_menu
-                    WHERE menu_id = (SELECT TOP 1 menu_id FROM tmp_mst_menu WHERE link='$link') AND role_id IN (SELECT TOP 1 role_id FROM tmp_user_has_role WHERE user_id=".$CI->session->userdata('user')->user_id.")"; 
+                    WHERE menu_id = (SELECT TOP 1 menu_id FROM tmp_mst_menu WHERE link='$link') AND role_id IN (SELECT role_id FROM tmp_user_has_role WHERE user_id=".$CI->session->userdata('user')->user_id.")"; 
         $result = $db->query($query);
+        // echo "<pre>";print_r($query);die;
         if($result->num_rows() > 0){
             $action_code = $result->row()->action_code;
             $str_to_array = explode(',', $action_code); 
