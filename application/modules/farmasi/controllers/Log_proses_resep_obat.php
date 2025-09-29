@@ -128,22 +128,23 @@ class Log_proses_resep_obat extends MX_Controller {
             $this->db->trans_begin();
             $dataexc = [];
             // cek proses
-            
-            if(!empty($_POST['jenis'])){
-                if($_POST['jenis'] == 'non_racikan' && $_POST['proses'] == 4){
+            $jenis_resep = (empty($_POST['jenis'])) ? 'non_racikan' : $_POST['jenis'] ;
+
+            if(!empty($jenis_resep)){
+                if($jenis_resep == 'non_racikan' && $_POST['proses'] == 4){
                     $proses = $_POST['proses'] - 2;
                 }else{
                     $proses = ($_POST['proses'] == 1) ? 1 : $_POST['proses'] - 1;
                 }
             }else{
-                if($_POST['jenis'] == 'non_racikan' && $_POST['proses'] == 4){
+                if($jenis_resep == 'non_racikan' && $_POST['proses'] == 4){
                     $proses = $_POST['proses'] - 2;
                 }else{
                     $proses = $_POST['proses'] - 1;
                 }
             }
             
-            
+            // echo $proses;die;
             if($_POST['proses'] > 1) {
                 $cek_proses_sebelumnya = $this->db->where('log_time_'.$proses.' is not null')->get_where('fr_tc_far', ['kode_trans_far' => $_POST['ID']])->row();
                 // echo $this->db->last_query();die;

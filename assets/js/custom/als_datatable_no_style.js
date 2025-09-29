@@ -61,27 +61,27 @@ $(document).ready(function() {
             find_data_reload(data,base_url);
           }
         });
-      });
+    });
 
-      $('#btn_export_excel').click(function (e) {
-        var url_search = $('#form_search').attr('action');
-        e.preventDefault();
-        $.ajax({
-          url: url_search,
-          type: "post",
-          data: $('#form_search').serialize(),
-          dataType: "json",
-          success: function(data) {
-            console.log(data.data);
-            export_excel(data);
-          }
-        });
+    $('#btn_export_excel').click(function (e) {
+      var url_search = $('#form_search').attr('action');
+      e.preventDefault();
+      $.ajax({
+        url: url_search,
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        success: function(data) {
+          console.log(data.data);
+          export_excel(data);
+        }
       });
+    });
 
     $('#btn_reset_data').click(function (e) {
-            e.preventDefault();
-            reset_table();
-      });
+          e.preventDefault();
+          reset_table();
+    });
 
 
     $( ".form-control" )    

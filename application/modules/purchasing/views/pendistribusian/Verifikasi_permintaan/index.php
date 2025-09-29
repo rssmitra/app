@@ -26,15 +26,6 @@
       }       
   });
 
-  $("#btn_create_po").click(function(event){
-        event.preventDefault();
-        var searchIDs = $("#dynamic-table input:checkbox:checked").map(function(){
-          return $(this).val();
-        }).toArray();
-        get_detail_brg_po(''+searchIDs+'')
-        console.log(searchIDs);
-  });
-
   function checkAll(elm) {
 
     if($(elm).prop("checked") == true){
@@ -47,52 +38,20 @@
 
   }
 
-  function get_detail_brg_po(myid){
+  if(!ace.vars['touch']) {
+          $('.chosen-select').chosen({allow_single_deselect:true}); 
+      //resize the chosen on window resize
 
-    if(confirm('Are you sure?')){
-
-      $.ajax({
-          url: 'purchasing/pendistribusian/Distribusi_permintaan/get_detail_brg_po',
-          type: "post",
-          data: {ID:myid},
-          dataType: "json",
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          uploadProgress: function(event, position, total, percentComplete) {
-          },
-          complete: function(xhr) {     
-            var data=xhr.responseText;
-            var jsonResponse = JSON.parse(data);
-            getMenuTabs('purchasing/pendistribusian/Distribusi_permintaan/create_po/'+$('#flag_string').val()+'?'+jsonResponse.params+'', 'tabs_form_po');
-            achtungHideLoader();
-          }
-
-      });
-
-  }else{
-
-    return false;
+      $(window)
+      .off('resize.chosen')
+      .on('resize.chosen', function() {
+        $('.chosen-select').each(function() {
+            var $this = $(this);
+            $this.next().css({'width': $this.parent().width()});
+        })
+      }).trigger('resize.chosen');
 
   }
-  
-}
-
-$('select[name="search_by"]').change(function () {      
-
-    if( $(this).val() == 'month'){
-      /*show form month*/
-      $('#div_month').show();
-      $('#div_keyword').hide();
-    }
-
-    if( $(this).val() == 'kode_permintaan'){
-      /*show form month*/
-      $('#div_month').hide();
-      $('#div_keyword').show();
-    }
-
-});
 
 </script>
 <div class="page-header">
@@ -108,8 +67,8 @@ $('select[name="search_by"]').change(function () {
 <div class="row">
   <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Distribusi_permintaan/find_data?flag=<?php echo $flag?>">
-
+    <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Verifikasi_permintaan/find_data?flag=<?php echo $flag?>">
+      
       <!-- hidden form -->
       <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
 
@@ -117,7 +76,7 @@ $('select[name="search_by"]').change(function () {
           <label class="control-label col-md-2">Pilih Bagian/Unit</label>
           <div class="col-md-5">
           <?php 
-              echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+              echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '' , 'kode_bagian', 'kode_bagian', 'chosen-select form-control', '', '') ?>
           </div>
       </div>
 
@@ -143,15 +102,27 @@ $('select[name="search_by"]').change(function () {
       </div>
 
       <div class="form-group">
+          <label class="control-label col-md-2">Status Verifikasi</label>
+          <div class="col-md-2">
+            <select name="status" id="status" class="form-control">
+              <option value="3">Semua</option>
+              <option value="2">Belum diverifikasi</option>
+              <option value="1">Disetujui</option>
+              <option value="0">Dikembalikan</option>
+            </select>
+          </div>
+      </div>
+
+      <div class="form-group">
         <label class="control-label col-md-2">Jenis Barang Permintaan</label>
         <div class="col-md-2">
           <div class="radio">
             <label>
-              <input name="flag" type="radio" class="ace" value="medis" onclick="$('#btn_search_data').click();" <?php echo isset($flag) && $flag == 'medis' ? 'checked' : 'checked' ?>/>
+              <input name="flag" type="radio" class="ace" value="medis" checked onclick="$('#btn_search_data').click();" />
               <span class="lbl"> Medis</span>
             </label>
             <label>
-              <input name="flag" type="radio" class="ace" value="non_medis" onclick="$('#btn_search_data').click();" <?php echo isset($flag) && $flag == 'non_medis' ? 'checked' : '' ?>/>
+              <input name="flag" type="radio" class="ace" value="non_medis" onclick="$('#btn_search_data').click();" />
               <span class="lbl"> Non Medis</span>
             </label>
           </div>
@@ -167,40 +138,26 @@ $('select[name="search_by"]').change(function () {
           </a>
         </div>            
       </div>
+
       
       <hr class="separator">
-      <div class="clearfix" style="margin-bottom:-5px">
-          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Print Selected</a>
-        </div>
-
-      <hr class="separator">
       <div style="margin-top:-25px">
-        <table id="dynamic-table" base-url="purchasing/pendistribusian/Distribusi_permintaan" data-id="flag=<?php echo $flag?>" url-detail="purchasing/pendistribusian/Permintaan_stok_unit/get_detail" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="purchasing/pendistribusian/Verifikasi_permintaan" data-id="flag=<?php echo isset($flag)?$flag:'medis'?>" url-detail="purchasing/pendistribusian/Verifikasi_permintaan/get_detail" class="table table-bordered table-hover">
           <thead>
             <tr>  
-              <th width="30px" class="center">
-                <div class="center">
-                  <label class="pos-rel">
-                      <input type="checkbox" class="ace" name="" onClick="checkAll(this);" value="0"/>
-                      <span class="lbl"></span>
-                  </label>
-                </div>
-              </th>
+              <th width="30px" class="center">No</th>
               <th width="40px" class="center"></th>
               <th width="40px"></th>
-              <th width="40px"></th>
               <th width="50px">ID</th>
-              <!-- <th>Nomor Permintaan</th> -->
-              <th>Tgl Permintaan</th>
+              <!-- <th width="140px">Nomor Permintaan</th> -->
+              <th width="150px">Tgl Permintaan</th>
               <th>Bagian/Unit</th>
               <th>Petugas</th>
+              <th width="80px">Tipe</th>
               <th>Keterangan</th>
               <th>Tgl ACC</th>
-              <th width="100px">Disetujui Oleh</th>
-              <th width="100px">Status Verif</th>
-              <th>Tgl Dikirim</th>
-              <th>Tgl Diterima</th>
-              <th width="150px">Diterima Oleh</th>
+              <th width="150px">Disetujui Oleh</th>
+              <th width="120px">Status Verifikasi</th>
             </tr>
           </thead>
           <tbody>
@@ -212,7 +169,6 @@ $('select[name="search_by"]').change(function () {
     </form>
   </div><!-- /.col -->
 </div><!-- /.row -->
-
 
 <script>
 var oTable;
@@ -232,7 +188,7 @@ $(document).ready(function() {
       "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": base_url+'/get_data?'+params,
+          "url": base_url+'/get_data?'+params+'&status=3&from_tgl=<?php echo date('Y-m-01')?>&to_tgl=<?php echo date('Y-m-t')?>',
           "type": "POST"
       },
       "columnDefs": [
@@ -406,39 +362,6 @@ function print_data(myid){
       PopupCenter(''+base_url+'/print_multiple_preview?'+jsonResponse.queryString+'', 'PRINT PREVIEW', 1000, 550);
     }
   });
-}
-
-function kirim_permintaan(myid){
-  if(confirm('Apakah Anda yakin akan mengirim permintaan ini?')){
-    $.ajax({
-        url: base_url+'/kirim_permintaan',
-        type: "post",
-        data: {
-          ID: myid,
-          flag: $('input[name=flag]:checked').val()
-        },
-        dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        success: function(response) {
-          if(response.status === 200){
-            $.achtung({message: response.message, timeout:5});
-            reload_table();
-          } else {
-            $.achtung({message: response.message, timeout:5, className: 'achtungFail'});
-          }
-        },
-        error: function(xhr, status, error) {
-          $.achtung({message: 'Terjadi kesalahan saat mengirim permintaan', timeout:5, className: 'achtungFail'});
-        },
-        complete: function() {
-          achtungHideLoader();
-        }
-    });
-  } else {
-    return false;
-  }
 }
 
 </script>

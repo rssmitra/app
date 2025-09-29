@@ -3,29 +3,41 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Pengiriman_unit extends MX_Controller {
+class Penerimaan_stok extends MX_Controller {
 
     /*function constructor*/
     function __construct() {
 
         parent::__construct();
         /*breadcrumb default*/
-        $this->breadcrumbs->push('Index', 'purchasing/pendistribusian/Pengiriman_unit');
+        $this->breadcrumbs->push('Index', 'purchasing/pendistribusian/Penerimaan_stok');
         /*session redirect login if not login*/
         if($this->session->userdata('logged')!=TRUE){
             echo 'Session Expired !'; exit;
         }
         /*load model*/
-        $this->load->model('purchasing/penerimaan/Penerimaan_brg_model', 'Penerimaan_brg');
+        $this->load->model('purchasing/pendistribusian/Penerimaan_stok_model', 'Penerimaan_stok');
         $this->load->model('purchasing/pendistribusian/Pengiriman_unit_model', 'Pengiriman_unit');
         $this->load->model('purchasing/pendistribusian/Permintaan_stok_unit_model', 'Permintaan_stok_unit');
-        // load libraries
-        $this->load->library('stok_barang');
         /*enable profiler*/
         $this->output->enable_profiler(false);
+        // load libraries
+        $this->load->library('stok_barang');
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
+    }
+
+    public function index() { 
+        //echo '<pre>';print_r($this->session->all_userdata());
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'flag' => $_GET['flag'],
+        );
+        /*load view index*/
+        $this->load->view('pendistribusian/Penerimaan_stok/index', $data);
     }
 
     public function form($id='')
@@ -55,26 +67,13 @@ class Pengiriman_unit extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('pendistribusian/Pengiriman_unit/form', $data);
-    }
-
-    public function form_edit_brg($id_tc_permintaan_inst_det='')
-    {
-        $data = [];
-        $data['flag'] = isset($_GET['flag'])?$_GET['flag']:'non_medis';
-        $kode_gudang = ($_GET['flag']=='non_medis')?'070101':'060201';
-        $data['kode_gudang'] = $kode_gudang;
-        $data['value'] = $this->Pengiriman_unit->get_permintaan_inst_det_by_id($id_tc_permintaan_inst_det, $_GET['flag']);
-        // echo '<pre>';print_r($data);die;
-        
-        /*load form view*/
-        $this->load->view('pendistribusian/Pengiriman_unit/form_edit_brg', $data);
+        $this->load->view('pendistribusian/Penerimaan_stok/form', $data);
     }
 
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Permintaan_stok_unit->get_datatables();
+        $list = $this->Penerimaan_stok->get_datatables();
         
         $data = array();
         $no = $_POST['start'];
@@ -89,22 +88,8 @@ class Pengiriman_unit extends MX_Controller {
                       </div>';
             $row[] = '';
             $row[] = $row_list->id_tc_permintaan_inst;
-            if( $row_list->status_acc != 1 ){
-                $row[] = '<div class="center">
-                            <div class="btn-group">
-                                <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                                    <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-inverse">
-                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','R',$row_list->id_tc_permintaan_inst,67).'</li>
-                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','U',$row_list->id_tc_permintaan_inst,67).'</li>
-                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','D',$row_list->id_tc_permintaan_inst,6).'</li>
-                                </ul>
-                            </div>
-                        </div>';
-            }else{
-                $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'".base_url().'purchasing/pendistribusian/Permintaan_stok_unit/print_preview/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".', '."'PERMINTAAN PEMBELIAN'".', 1000, 550)" ><i class="fa fa-print bigger-150 inverse"></a></div>';
-            }
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'".base_url().'purchasing/pendistribusian/Penerimaan_stok/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".')" class="label label-xs label-primary" style="width: 100%">Terima Barang</div>';
+
             $row[] = '<div class="center">'.$row_list->id_tc_permintaan_inst.'</div>';
             // $row[] = $row_list->nomor_permintaan;
             
@@ -138,53 +123,29 @@ class Pengiriman_unit extends MX_Controller {
             $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_pengiriman).'</div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_input_terima).'</div>';
             $row[] = '<div class="center">'.ucfirst($row_list->yg_terima).'</div>';
-            $btn_kirim_permintaan = ($row_list->status_acc == null) ? '<a href="#" onclick="kirim_permintaan('."'".$row_list->id_tc_permintaan_inst."'".')" title="Kirim Permintaan" class="label label-xs label-primary"><i class="fa fa-paper-plane"></i> Kirim</a>' : '';
-            if($row_list->send_to_verify == 1){
-                $btn_kirim_permintaan = '<i class="fa fa-check bigger-150 green" title="Terkirim"></i>';
-            }
-            $row[] = '<div class="center">'.$btn_kirim_permintaan.'</div>';
                   
             $data[] = $row;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Permintaan_stok_unit->count_all(),
-                        "recordsFiltered" => $this->Permintaan_stok_unit->count_filtered(),
+                        "recordsTotal" => $this->Penerimaan_stok->count_all(),
+                        "recordsFiltered" => $this->Penerimaan_stok->count_filtered(),
                         "data" => $data,
                 );
         //output to json format
         echo json_encode($output);
     }
 
-    public function form_pengiriman_unit()
-    {
-        /*breadcrumbs for view*/
-        $this->breadcrumbs->push('Pengimriman Barang ', 'Pengiriman_unit/'.strtolower(get_class($this)).'/'.__FUNCTION__.'?ID='.$_GET['ID'].'&flag='.$_GET['flag']);
-
-        /*define data variabel*/
-        $result = $this->Penerimaan_brg->get_penerimaan_brg($_GET['flag'], $_GET['ID']);
-        $data['id'] = $_GET['ID'];
-        $data['nomor_permintaan'] = $this->master->format_nomor_permintaan($_GET['flag']);
-        $data['flag'] = isset($_GET['flag'])?$_GET['flag']:'';
-        $data['penerimaan'] = $result;
-        $data['value'] = $this->Pengiriman_unit->get_by_id($_GET['ID']);
-        $data['title'] = 'Pengiriman Barang ke Unit/Depo';
-        $data['breadcrumbs'] = $this->breadcrumbs->show();
-        // echo '<pre>'; print_r($data);die;
-        /*load form view*/
-        $this->load->view('pendistribusian/Pengiriman_unit/form_pengiriman_unit', $data);
-    }
-
-    public function process_edit_brg()
+    public function process_penerimaan_stok()
     {
         // print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
-        $val->set_rules('kode_brg_revisi', 'Kode Barang', 'trim|required');
-        $val->set_rules('qtyBrg', 'Jumlah Revisi Barang', 'trim|required');
+        $val->set_rules('tgl_diterima', 'Tanggal Distribusi', 'trim');
         $val->set_rules('catatan', 'Catatan', 'trim');
+        $val->set_rules('yang_menerima', 'Yang Menyerahkan', 'trim|required');
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -197,59 +158,15 @@ class Pengiriman_unit extends MX_Controller {
         {                       
             $this->db->trans_begin();
 
-            $table = ($_POST['flag']=='medis')?'tc_permintaan_inst_det':'tc_permintaan_inst_nm_det';
-            $is_bhp = isset($_POST['is_bhp']) ? 1 : 0 ;
-            $dataexc = array(
-                'rev_kode_brg' => $this->regex->_genRegex($val->set_value('kode_brg_revisi'),'RGXQSL'),
-                'rev_qty' => $this->regex->_genRegex($_POST['qtyBrg'],'RGXINT'),
-                'is_bhp' => $this->regex->_genRegex($is_bhp,'RGXINT'),
-            );
-            $this->Pengiriman_unit->update($table, ['id_tc_permintaan_inst_det' => $_POST['id_det']], $dataexc);
-            
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
-            }
-        }
-    }
-
-    public function process_pengiriman_brg_unit()
-    {
-        // print_r($_POST);die;
-        $this->load->library('form_validation');
-        $val = $this->form_validation;
-        
-        $val->set_rules('tgl_distribusi', 'Tanggal Distribusi', 'trim');
-        $val->set_rules('catatan', 'Catatan', 'trim');
-        $val->set_rules('yang_menyerahkan', 'Yang Menyerahkan', 'trim|required');
-        
-        $val->set_message('required', "Silahkan isi field \"%s\"");
-
-        if ($val->run() == FALSE)
-        {
-            $val->set_error_delimiters('<div style="color:white">', '</div>');
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            $this->db->trans_begin();
-
-            
             $table = ($_POST['flag_cart']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
             $mt_depo_stok = ($_POST['flag_cart']=='medis')?'mt_depo_stok':'mt_depo_stok_nm';
             $kode_gudang = ($_POST['flag_cart']=='medis')?'060201':'070101';
             $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $_POST['kode_bagian_minta']));
 
             $dataexc = array(
-                'tgl_pengiriman' => $val->set_value('tgl_distribusi').' '.date(' H:i:s '),
-                'keterangan_kirim' => $this->regex->_genRegex($val->set_value('catatan'),'RGXQSL'),
-                'yg_serah' => $this->regex->_genRegex($val->set_value('yang_menyerahkan'),'RGXQSL'),
+                'tgl_input_terima' => $val->set_value('tgl_diterima').' '.date(' H:i:s '),
+                'keterangan_terima' => $this->regex->_genRegex($val->set_value('catatan'),'RGXQSL'),
+                'yg_terima' => $this->regex->_genRegex($val->set_value('yang_menerima'),'RGXQSL'),
                 'updated_date' => date('Y-m-d H:i:s'),
                 'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
             );
@@ -261,20 +178,22 @@ class Pengiriman_unit extends MX_Controller {
             // update stok gudang
             foreach( $cart_data as $row_brg ){
                 
-                // kurang stok gudang
+                // tambah stok depo
                 $kode_brg = ($row_brg->rev_kode_brg != NULL || !empty($row_brg->rev_kode_brg) ) ? $row_brg->rev_kode_brg : $row_brg->kode_brg ;
                 $qty_brg = ($row_brg->rev_qty != NULL || !empty($row_brg->rev_qty) ) ? $row_brg->rev_qty : $row_brg->qty ;
 
                 // update status verif di detail permintaan
                 $update_detail = array(
-                    'tgl_kirim' => date('Y-m-d H:i:s'),
-                    'jumlah_kirim' => $qty_brg,
-                    'petugas_kirim' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'),
+                    'tgl_terima' => date('Y-m-d H:i:s'),
+                    'jumlah_penerimaan' => $qty_brg,
+                    'petugas_terima' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'),
                 );
                 // update table permintaan detail
                 $this->Pengiriman_unit->update($table.'_det', ['id_tc_permintaan_inst_det' => $row_brg->id_tc_permintaan_inst_det], $update_detail);
-                // proses stok
-                $this->stok_barang->stock_process($kode_brg, $qty_brg, $kode_gudang, 3 ," ".$nama_bagian." &nbsp; [".$_POST['id']."] ", 'reduce');
+
+                // tambah stok depo
+                $this->stok_barang->stock_process_depo($kode_brg, $qty_brg, $kode_gudang, 3 ," ".$nama_bagian." &nbsp; [ ".$_POST['id']." ]", 'restore', $_POST['kode_bagian_minta']);
+
                 $this->db->trans_commit();
 
             }
@@ -305,7 +224,7 @@ class Pengiriman_unit extends MX_Controller {
             $row = array();
 
             if($row_list->status_verif == 1){
-                if($row_list->jumlah_kirim > 0){
+                if($row_list->jumlah_penerimaan > 0){
                     $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
                 }else{
                     $row[] = '<div class="center">
@@ -335,16 +254,18 @@ class Pengiriman_unit extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->keterangan_verif.'</div>';
             $row[] = '<div style="text-align: right">'.number_format($row_list->harga).'</div>';
 
-            if($row_list->status_verif == 1){
-                if($row_list->jumlah_kirim > 0){
-                    $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
-                }else{
-                    $row[] = '<div style="text-align: center"><a class="label label-xs label-success" onclick="edit_brg('.$row_list->id_tc_permintaan_inst_det.', '."'Penyesuaian Permintaan Barang x Distribusi'".')" href="#"><span><i class="fa fa-pencil"></i></span></a></div>';
-                }
-            }else{
-                $row[] = '<div class="center">-</div>';
-            }
-   
+            // if($row_list->status_verif == 1){
+            //     if($row_list->jumlah_penerimaan > 0){
+            //         $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
+            //     }else{
+            //         $row[] = '<div style="text-align: center"><a class="label label-xs label-success" onclick="edit_brg('.$row_list->id_tc_permintaan_inst_det.', '."'Penyesuaian Permintaan Barang x Distribusi'".')" href="#"><span><i class="fa fa-pencil"></i></span></a></div>';
+            //     }
+            // }else{
+            //     $row[] = '<div class="center">-</div>';
+            // }
+
+            
+                  
             $data[] = $row;
         }
 
@@ -355,11 +276,72 @@ class Pengiriman_unit extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function print_multiple()
+    {   
+        $toArray['id'] = explode(',', $_POST['ID']);
+        $toArray['flag'] = str_replace('flag=','',$_POST['flag']);
+        //print_r($toArray);die;
+        $output = array( "queryString" => http_build_query($toArray) . "\n" );
+        echo json_encode( $output );
+    }
 
+    public function print_multiple_preview(){
+
+        $result = $this->Penerimaan_stok->get_detail_brg_permintaan_multiple($_GET['flag'], $_GET['id']);
+
+        $table = ($_GET['flag']=='non_medis')?'tc_permintaan_inst_nm':'tc_permintaan_inst';
+        $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
+        $subtitle = str_replace('_',' ',$_GET['flag']);
+        $data = array(
+            'permintaan' => $result,
+            'flag' => $_GET['flag'],
+            'title' => $title,
+            'subtitle' => $subtitle,
+            );
+        // echo '<pre>'; print_r($data);
+        $this->load->view('pendistribusian/Penerimaan_stok/print_preview_multiple', $data);
+    }
+
+    public function print_preview($id){
+        $result = $this->Penerimaan_stok->get_brg_permintaan($_GET['flag'], $id);
+        $table = ($_GET['flag']=='non_medis')?'tc_permintaan_inst_nm':'tc_permintaan_inst';
+        $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
+        $subtitle = str_replace('_',' ',$_GET['flag']);
+        $data = array(
+            'dt_detail_brg' => $result,
+            'permintaan' => $this->db->get_where($table, array('id_tc_permintaan_inst' => $id))->row(),
+            'flag' => $_GET['flag'],
+            'title' => $title,
+            'subtitle' => $subtitle,
+            );
+        // echo '<pre>'; print_r($data);
+        $this->load->view('pendistribusian/Penerimaan_stok/print_preview', $data);
+    }
+
+    public function print_preview_retur($id){
+        $result = $this->Penerimaan_stok->get_brg_retur($_GET['flag'], $id);
+        // echo '<pre>'; print_r($result);die;
+        $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
+        $subtitle = str_replace('_',' ',$_GET['flag']);
+        $data = array(
+            'dt_detail_brg' => $result,
+            'retur' => $result[0],
+            'flag' => $_GET['flag'],
+            'title' => $title,
+            'subtitle' => $subtitle,
+            );
+        // echo '<pre>'; print_r($data);
+        $this->load->view('pendistribusian/Penerimaan_stok/print_preview_retur', $data);
+    }
+
+    public function find_data()
+    {   
+        $output = array( "data" => http_build_query($_POST) . "\n" );
+        echo json_encode($output);
+    }
 
 }
 
 
 /* End of file example.php */
 /* Location: ./application/modules/example/controllers/example.php */
-

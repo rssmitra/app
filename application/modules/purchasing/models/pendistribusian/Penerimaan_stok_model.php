@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Distribusi_permintaan_model extends CI_Model {
+class Penerimaan_stok_model extends CI_Model {
 
 	var $table_nm = 'tc_permintaan_inst_nm';
 	var $table = 'tc_permintaan_inst';

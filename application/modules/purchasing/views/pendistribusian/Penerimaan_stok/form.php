@@ -13,7 +13,7 @@ jQuery(function($) {
     $(this).prev().focus();
   });
   
-  $('#form_cart').ajaxForm({
+  $('#form_terima').ajaxForm({
     beforeSend: function() {
       achtungShowLoader();  
     },
@@ -26,7 +26,7 @@ jQuery(function($) {
       if(jsonResponse.status === 200){
         $.achtung({message: jsonResponse.message, timeout:5});
 
-        getMenu('purchasing/pendistribusian/Distribusi_permintaan?flag='+jsonResponse.flag+'');
+        getMenu('purchasing/pendistribusian/Penerimaan_stok?flag='+jsonResponse.flag+'');
 
       }else{
         $.achtung({message: jsonResponse.message, timeout:5});
@@ -45,7 +45,7 @@ jQuery(function($) {
       "searching": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": "purchasing/pendistribusian/Pengiriman_unit/get_detail_cart?flag="+$('#flag_cart').val()+"&id="+id,
+          "url": "purchasing/pendistribusian/Penerimaan_stok/get_detail_cart?flag="+$('#flag_cart').val()+"&id="+id,
           "type": "POST"
       },
     });
@@ -53,13 +53,15 @@ jQuery(function($) {
 
 });
 
-function submit_cart(){
+
+
+function submit_terima(){
   preventDefault();
-  $('#form_cart').submit();
+  $('#form_terima').submit();
 }
 
 function edit_brg(id_det, title){
-  show_modal_medium('purchasing/pendistribusian/Pengiriman_unit/form_edit_brg/'+id_det+'?flag='+$('#flag_cart').val(), title);
+  show_modal_medium('purchasing/pendistribusian/Penerimaan_stok/form_edit_brg/'+id_det+'?flag='+$('#flag_cart').val(), title);
 }
 
 </script>
@@ -112,17 +114,17 @@ th, td {
     <br>
     <!-- PAGE CONTENT BEGINS -->
 
-        <form class="form-horizontal" method="post" id="form_cart" action="<?php echo base_url().'purchasing/pendistribusian/Pengiriman_unit/process_pengiriman_brg_unit'?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
+        <form class="form-horizontal" method="post" id="form_terima" action="<?php echo base_url().'purchasing/pendistribusian/Penerimaan_stok/process_penerimaan_stok'?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
 
           <input class="form-control" type="hidden" name="id" id="id" value="<?php echo isset($value->id_tc_permintaan_inst)?$value->id_tc_permintaan_inst:''?>">
           <input class="form-control" type="hidden" name="kode_bagian_minta" id="kode_bagian_minta" value="<?php echo isset($value->kode_bagian_minta)?$value->kode_bagian_minta:''?>">
           
           <div class="col-md-12">
-            <a href="#" onclick="getMenu('purchasing/pendistribusian/Distribusi_permintaan?flag=<?php echo $type?>')" class="btn btn-xs btn-default">
+            <a href="#" onclick="getMenu('purchasing/pendistribusian/Penerimaan_stok?flag=<?php echo $type?>')" class="btn btn-xs btn-default">
               <i class="fa fa-arrow-left bigger-150"></i>
             </a>
             <br>
-            <div style="font-weight: bold; font-size: 14px; padding: 5px">Distribusi Barang Permintaan Stok Unit</div>
+            <div style="font-weight: bold; font-size: 14px; padding: 5px">Penerimaan Stok Barang Unit</div>
             <div class="form-group">
               <label class="control-label col-md-2">Jenis Barang</label>
               <div class="col-md-9" style="padding-left: 19px;padding-top: 5px;font-weight: bold;">
@@ -131,23 +133,15 @@ th, td {
             </div>
             
             <div class="form-group">
-              <label class="control-label col-md-2">Permintaan dari Unit</label>
+              <label class="control-label col-md-2">Unit Bagian</label>
               <div class="col-md-7" style="padding-left: 19px;padding-top: 5px;font-weight: bold;">
                 <span><?php echo isset($value->bagian_minta)?ucwords($value->bagian_minta):''?></span>
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">Tanggal Permintaan</label>
-              <div class="col-md-7" style="padding-left: 19px;padding-top: 5px;font-weight: bold;">
-                <span><?php echo isset($value->tgl_permintaan)?$this->tanggal->formatDateDmy($value->tgl_permintaan):''?></span>
-              </div>
-            </div>
-
             <!-- hidden after search barang -->
             <input type="hidden" name="flag_cart" id="flag_cart" value="<?php echo $type; ?>">
-
-            <table id="cart-data" base-url="purchasing/pendistribusian/Pengiriman_unit" data-id="flag=<?php echo $type?>" class="table table-bordered table-hover">
+            <table id="cart-data" base-url="purchasing/pendistribusian/Penerimaan_stok" data-id="flag=<?php echo $type?>" class="table table-bordered table-hover">
               <thead>
                 <tr>  
                   <th class="center" width="30px">
@@ -168,7 +162,7 @@ th, td {
                   <th class="center">Stok Gudang</th>
                   <th class="center">Keterangan Verif</th>
                   <th style="width: 80px">Total</th>
-                  <th style="width: 50px">#</th>
+                  <!-- <th style="width: 50px">#</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -176,10 +170,10 @@ th, td {
             </table>
 
             <div class="form-group">
-              <label class="control-label col-md-2">Tgl Distribusi</label>
+              <label class="control-label col-md-2">Tgl Diterima</label>
               <div class="col-md-2">
                 <div class="input-group">
-                    <input class="form-control date-picker" name="tgl_distribusi" id="tgl_distribusi" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                    <input class="form-control date-picker" name="tgl_diterima" id="tgl_diterima" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
                     <span class="input-group-addon">
                       <i class="fa fa-calendar bigger-110"></i>
                     </span>
@@ -187,7 +181,7 @@ th, td {
               </div>
               <label class="control-label col-md-2" style="margin-left: 42px">Petugas</label>
               <div class="col-md-3">
-                <input class="form-control" type="text" name="yang_menyerahkan" id="yang_menyerahkan" value="<?php echo $this->session->userdata('user')->fullname?>">
+                <input class="form-control" type="text" name="yang_menerima" id="yang_menerima" value="<?php echo $this->session->userdata('user')->fullname?>">
               </div>
             </div>
 
@@ -200,19 +194,18 @@ th, td {
 
             <hr>
             <div class="center" style="padding-right: 10px; padding-bottom: 5px">
+
               
-              <?php if($value->tgl_pengiriman == null) : ?>
-              <a href="#" id="btnSave" name="submit" class="btn btn-xs btn-danger">
-                <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-                Reset Form
-              </a>
-              <a href="#" id="btnSave" onclick="submit_cart()" name="submit" class="btn btn-xs btn-info">
+
+              <?php if($value->tgl_input_terima == null) : ?>
+              <a href="#" id="btnSave" onclick="submit_terima()" name="submit" class="btn btn-xs btn-info">
                 <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-                Submit
+                Proses Terima Barang
               </a>
               <?php else :?>
-                <div class="alert alert-success"><strong style="font-size: 16px">Barang telah didistribusikan!</strong><br> Barang yang sudah terdistribusi tidak dapat diproses ulang kembali.</div>
+                <div class="alert alert-success"><strong style="font-size: 16px">Barang telah diterima!</strong><br> Barang yang sudah diterima tidak dapat diproses ulang kembali.</div>
               <?php endif; ?>
+              
             </div>
 
           </div>

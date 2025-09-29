@@ -26,15 +26,6 @@
       }       
   });
 
-  $("#btn_create_po").click(function(event){
-        event.preventDefault();
-        var searchIDs = $("#dynamic-table input:checkbox:checked").map(function(){
-          return $(this).val();
-        }).toArray();
-        get_detail_brg_po(''+searchIDs+'')
-        console.log(searchIDs);
-  });
-
   function checkAll(elm) {
 
     if($(elm).prop("checked") == true){
@@ -46,37 +37,6 @@
     }
 
   }
-
-  function get_detail_brg_po(myid){
-
-    if(confirm('Are you sure?')){
-
-      $.ajax({
-          url: 'purchasing/pendistribusian/Distribusi_permintaan/get_detail_brg_po',
-          type: "post",
-          data: {ID:myid},
-          dataType: "json",
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          uploadProgress: function(event, position, total, percentComplete) {
-          },
-          complete: function(xhr) {     
-            var data=xhr.responseText;
-            var jsonResponse = JSON.parse(data);
-            getMenuTabs('purchasing/pendistribusian/Distribusi_permintaan/create_po/'+$('#flag_string').val()+'?'+jsonResponse.params+'', 'tabs_form_po');
-            achtungHideLoader();
-          }
-
-      });
-
-  }else{
-
-    return false;
-
-  }
-  
-}
 
 $('select[name="search_by"]').change(function () {      
 
@@ -94,6 +54,28 @@ $('select[name="search_by"]').change(function () {
 
 });
 
+if(!ace.vars['touch']) {
+      $('.chosen-select').chosen({allow_single_deselect:true}); 
+  //resize the chosen on window resize
+
+  $(window)
+  .off('resize.chosen')
+  .on('resize.chosen', function() {
+    $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': $this.parent().width()});
+    })
+  }).trigger('resize.chosen');
+
+}
+
+$('input[name=flag]').change(function(){
+  var value = $( 'input[name=flag]:checked' ).val();
+  // Update flag_cart sesuai flag_gudang
+  $('#dynamic-table').attr('data-id', 'flag=' + value);
+});
+
+
 </script>
 <div class="page-header">
   <h1>
@@ -108,38 +90,38 @@ $('select[name="search_by"]').change(function () {
 <div class="row">
   <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Distribusi_permintaan/find_data?flag=<?php echo $flag?>">
-
+    <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Permintaan_stok_unit/find_data?flag=<?php echo isset($flag)?$flag:'medis'?>">
+      
       <!-- hidden form -->
-      <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
+      <input type="hidden" name="flag" id="flag" value="<?php echo isset($flag)?$flag:'medis'?>">
 
       <div class="form-group">
           <label class="control-label col-md-2">Pilih Bagian/Unit</label>
           <div class="col-md-5">
           <?php 
-              echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+              echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '' , 'kode_bagian', 'kode_bagian', 'chosen-select form-control', '', '') ?>
           </div>
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2">Tanggal Permintaan</label>
-        <div class="col-md-2">
-        <div class="input-group">
-            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-01')?>"/>
-            <span class="input-group-addon">
-              <i class="fa fa-calendar bigger-110"></i>
-            </span>
+          <label class="control-label col-md-2">Tanggal Permintaan</label>
+          <div class="col-md-2">
+          <div class="input-group">
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-01')?>"/>
+              <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+              </span>
+            </div>
           </div>
-        </div>
-        <label class="control-label col-md-1">s/d</label>
-        <div class="col-md-2">
-        <div class="input-group">
-            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-t')?>"/>
-            <span class="input-group-addon">
-              <i class="fa fa-calendar bigger-110"></i>
-            </span>
+          <label class="control-label col-md-1">s/d</label>
+          <div class="col-md-2">
+          <div class="input-group">
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-t')?>"/>
+              <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+              </span>
+            </div>
           </div>
-        </div>
       </div>
 
       <div class="form-group">
@@ -147,11 +129,11 @@ $('select[name="search_by"]').change(function () {
         <div class="col-md-2">
           <div class="radio">
             <label>
-              <input name="flag" type="radio" class="ace" value="medis" onclick="$('#btn_search_data').click();" <?php echo isset($flag) && $flag == 'medis' ? 'checked' : 'checked' ?>/>
+              <input name="flag" type="radio" class="ace" value="medis" onclick="$('#btn_search_data').click();" checked />
               <span class="lbl"> Medis</span>
             </label>
             <label>
-              <input name="flag" type="radio" class="ace" value="non_medis" onclick="$('#btn_search_data').click();" <?php echo isset($flag) && $flag == 'non_medis' ? 'checked' : '' ?>/>
+              <input name="flag" type="radio" class="ace" value="non_medis" onclick="$('#btn_search_data').click();" />
               <span class="lbl"> Non Medis</span>
             </label>
           </div>
@@ -167,15 +149,17 @@ $('select[name="search_by"]').change(function () {
           </a>
         </div>            
       </div>
-      
+
       <hr class="separator">
       <div class="clearfix" style="margin-bottom:-5px">
+          <?php echo $this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','C','',7)?> 
+          <?php echo $this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','D','',5)?>
           <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Print Selected</a>
         </div>
 
       <hr class="separator">
       <div style="margin-top:-25px">
-        <table id="dynamic-table" base-url="purchasing/pendistribusian/Distribusi_permintaan" data-id="flag=<?php echo $flag?>" url-detail="purchasing/pendistribusian/Permintaan_stok_unit/get_detail" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="purchasing/pendistribusian/Permintaan_stok_unit" data-id="flag=<?php echo isset($flag)?$flag:'medis'?>" url-detail="purchasing/pendistribusian/Permintaan_stok_unit/get_detail" class="table table-bordered table-hover">
           <thead>
             <tr>  
               <th width="30px" class="center">
@@ -201,6 +185,7 @@ $('select[name="search_by"]').change(function () {
               <th>Tgl Dikirim</th>
               <th>Tgl Diterima</th>
               <th width="150px">Diterima Oleh</th>
+              <th width="50px">Kirim</th>
             </tr>
           </thead>
           <tbody>
@@ -442,3 +427,6 @@ function kirim_permintaan(myid){
 }
 
 </script>
+
+
+

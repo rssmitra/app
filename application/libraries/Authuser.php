@@ -32,7 +32,7 @@ final Class Authuser {
         /*check existing*/
         $query = "SELECT action_code
                     FROM tmp_role_has_menu
-                    WHERE menu_id = (SELECT menu_id FROM tmp_mst_menu WHERE link='$link') AND role_id IN (SELECT role_id FROM tmp_user_has_role WHERE user_id=".$CI->session->userdata('user')->user_id.")"; 
+                    WHERE menu_id = (SELECT TOP 1 menu_id FROM tmp_mst_menu WHERE link='$link') AND role_id IN (SELECT TOP 1 role_id FROM tmp_user_has_role WHERE user_id=".$CI->session->userdata('user')->user_id.")"; 
         $result = $db->query($query);
         if($result->num_rows() > 0){
             $action_code = $result->row()->action_code;
@@ -143,7 +143,8 @@ final Class Authuser {
 
             case 'C7':
                 # code...
-                $Query_String  = isset($_SERVER['REQUEST_URI']) ? explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] ) : '' ;
+                $explode_req_uri = isset(explode("?", $_SERVER['REQUEST_URI'])[1]) ? explode("?", $_SERVER['REQUEST_URI'])[1] : '' ;
+                $Query_String  = isset($_SERVER['REQUEST_URI']) ? explode("&", $explode_req_uri ) : '' ;
                 $param_string = http_build_query($_GET);
 
                 $btn = '<a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'".$link.'/form?'.$param_string.''."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i>Create New</a>';

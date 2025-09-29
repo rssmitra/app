@@ -36,27 +36,28 @@ class Distribusi_permintaan extends MX_Controller {
         $this->load->view('pendistribusian/Distribusi_permintaan/index', $data);
     }
 
-    public function form($id='')
+     public function form($id='')
     {
-        $data['string'] = isset($_GET['flag'])?$_GET['flag']:'';
+        $flag = isset($_GET['flag'])?$_GET['flag']:'medis';
+        $data['flag_type'] = $flag; 
         /*if id is not null then will show form edit*/
         if( $id != '' ){
             /*breadcrumbs for edit*/
-            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Distribusi_permintaan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Permintaan_stok_unit/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
             /*get value by id*/
-            $data['value'] = $this->Distribusi_permintaan->get_by_id($id);
-            // print_r($data);die;
-            $data['total_brg'] = $this->Distribusi_permintaan->get_brg_permintaan($_GET['flag'], $id); 
+            $data['id'] = $id; 
+            
+            $data['value'] = $this->Permintaan_stok_unit->get_by_id($id); 
             /*initialize flag for form*/
             $data['flag'] = "update";
         }else{
             /*breadcrumbs for create or add row*/
-            $data['nomor_permintaan'] = $this->master->format_nomor_permintaan($_GET['flag']);
-            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Distribusi_permintaan/'.strtolower(get_class($this)).'/form');
+            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Permintaan_stok_unit/'.strtolower(get_class($this)).'/form');
             /*initialize flag for form add*/
             $data['flag'] = "create";
         }
-        // print_r($data);die;
+        $data['cart_data'] = $this->Permintaan_stok_unit->get_cart_data();
+        // echo "<pre>";print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -99,35 +100,47 @@ class Distribusi_permintaan extends MX_Controller {
                       </div>';
             $row[] = '';
             $row[] = $row_list->id_tc_permintaan_inst;
-            if( $row_list->status_selesai != 4 ){
-                $row[] = '<div class="center">
-                            <div class="btn-group">
-                                <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                                    <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-inverse">
-                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Distribusi_permintaan?flag='.$_GET['flag'].'','R',$row_list->id_tc_permintaan_inst,67).'</li>
-                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Distribusi_permintaan?flag='.$_GET['flag'].'','U',$row_list->id_tc_permintaan_inst,67).'</li>
-                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Distribusi_permintaan?flag='.$_GET['flag'].'','D',$row_list->id_tc_permintaan_inst,6).'</li>
-                                </ul>
-                            </div>
-                        </div>';
-            }else{
-                $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'".base_url().'purchasing/pendistribusian/Distribusi_permintaan/print_preview/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".', '."'PERMINTAAN PEMBELIAN'".', 1000, 550)" ><i class="fa fa-print bigger-150 inverse"></a></div>';
-            }
+            // if($row_list->tgl_pengiriman == null){
+            //     $row[] = '<div class="center"><a href="#" onclick="getMenu('."'".base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".')" class="label label-xs label-primary" style="width: 100%">Distribusi</div>';
+            // }else{
+            //     $row[] = '<div class="center"><i class="fa fa-check green bigger-120"></i></div>';
+            // }
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'".base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".')" class="label label-xs label-primary" style="width: 100%">Distribusi</div>';
+            
+
             $row[] = '<div class="center">'.$row_list->id_tc_permintaan_inst.'</div>';
-            $row[] = $row_list->nomor_permintaan;
-            $row[] = $this->tanggal->formatDate($row_list->tgl_permintaan);
-            $row[] = '<div class="left">'.ucwords($row_list->bagian_minta).'</div>';
-            $row[] = '<div class="left">'.ucfirst($row_list->yg_serah).'</div>';
-            $row[] = '<div class="left">'.ucfirst($row_list->yg_terima).'</div>';
+            // $row[] = $row_list->nomor_permintaan;
+            
+            // Determine label based on flag parameter
+            $flag = isset($_GET['flag']) ? $_GET['flag'] : '';
+            if ($flag == 'medis') {
+                $label_flag = '<span style="color: green; font-weight: bold">Medis</span>';
+            } elseif ($flag == 'non_medis') {
+                $label_flag = '<span style="color: blue; font-weight: bold">Non Medis</span>';
+            } else {
+                $label_flag = '';
+            }
+
             $jenis_permintaan = ($row_list->jenis_permintaan==0)?'Rutin':'Cito';
-            $row[] = '<div class="center">'.ucfirst($jenis_permintaan).'</div>';
-            $style_status = ($row_list->status_selesai == 4) ? '<span style="color: green">Selesai</span>' :'<span style="color: red">Dalam Proses</span>';
+            $row[] = $this->tanggal->formatDateDmy($row_list->tgl_permintaan).'<br>'.$label_flag.' - '.ucfirst($jenis_permintaan).'';
+            $row[] = '<div class="left">'.ucwords($row_list->bagian_minta).'</div>';
+            $row[] = '<div class="left">'.ucfirst($row_list->nama_user_input).'</div>';
+            $row[] = '<div class="left">'.$row_list->catatan.'</div>';
+            $tgl_acc = ($row_list->tgl_acc ==null) ? '<i class="fa fa-exclamation-triangle bigger-150 orange"></i>' : $this->tanggal->formatDateDmy($row_list->tgl_acc);
+            $acc_by = ($row_list->acc_by ==null) ? '<i class="fa fa-exclamation-triangle bigger-150 orange"></i>' : $row_list->acc_by;
+            $row[] = '<div class="center">'.$tgl_acc.'</div>';
+            $row[] = '<div class="center">'.$acc_by.'</div>';
+            if($row_list->tgl_acc == null)
+            {
+                $style_status = '<span style="width: 100% !important" class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Belum diverifikasi</span>';
+            }else{
+                $style_status = ($row_list->status_acc == 1) ? '<span class="label label-success" style="width: 100% !important"><i class="fa fa-check"></i> Disetujui</span>' :'<span style="width: 100% !important" class="label label-danger"><i class="fa fa-times"></i> Tidak disetujui</span>';
+            }
+            
             $row[] = '<div class="center">'.$style_status.'</div>';
-            $row[] = '<div class="left">
-                        Barang diterima oleh '.ucfirst($row_list->yg_terima).'<br>tanggal '.$this->tanggal->formatDateTime($row_list->tgl_input_terima).'
-                      </div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pengiriman).'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_input_terima).'</div>';
+            $row[] = '<div class="center">'.ucfirst($row_list->yg_terima).'</div>';
                   
             $data[] = $row;
         }

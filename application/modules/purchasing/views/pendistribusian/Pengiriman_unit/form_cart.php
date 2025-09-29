@@ -61,11 +61,25 @@ function show_hide_note(action){
     $('#catatan').val('');
   }
 }
+
+if(!ace.vars['touch']) {
+        $('.chosen-select').chosen({allow_single_deselect:true}); 
+    //resize the chosen on window resize
+
+    $(window)
+    .off('resize.chosen')
+    .on('resize.chosen', function() {
+      $('.chosen-select').each(function() {
+          var $this = $(this);
+          $this.next().css({'width': $this.parent().width()});
+      })
+    }).trigger('resize.chosen');
+
+  }
 </script>
 
 
-  <div class="row" style="margin-top: -13px;">
-
+  <span style="font-weight: bold; font-size: 14px">Tujuan Distribusi ke Unit</span>
   <!-- hidden form -->
     <input type="hidden" name="flag" id="flag_cart" value="<?php echo isset($flag)?$flag:''?>">
     <input type="hidden" name="flag_form" id="flag_form" value="<?php echo isset($form)?$form:''?>">
@@ -86,7 +100,7 @@ function show_hide_note(action){
       <?php $form_label = ($form == 'distribusi') ? '<label class="control-label col-md-2">Tujuan Unit</label>' : '<label class="control-label col-md-2">Dari unit</label>' ; echo $form_label; ?>
       <div class="col-md-7">
         <?php 
-          echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), isset($value)?$value->kode_bagian_minta:'' , 'kode_bagian_minta', 'kode_bagian_minta', 'form-control', '', '') ?>
+          echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), isset($value)?$value->kode_bagian_minta:'' , 'kode_bagian_minta', 'kode_bagian_minta', 'chosen-select form-control', '', '') ?>
       </div>
       <div style="margin-top: 5px">
         <span id="add_note_span"><a href="#" class="" onclick="show_hide_note('show')"><i class="fa fa-edit bigger-120 green"></i> Add note</a></span>
@@ -172,5 +186,4 @@ function show_hide_note(action){
       
     </div>
 
-  </div>
 

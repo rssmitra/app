@@ -52,7 +52,7 @@
     if(confirm('Are you sure?')){
 
       $.ajax({
-          url: 'purchasing/pendistribusian/Distribusi_permintaan/get_detail_brg_po',
+          url: 'purchasing/pendistribusian/Penerimaan_stok/get_detail_brg_po',
           type: "post",
           data: {ID:myid},
           dataType: "json",
@@ -64,7 +64,7 @@
           complete: function(xhr) {     
             var data=xhr.responseText;
             var jsonResponse = JSON.parse(data);
-            getMenuTabs('purchasing/pendistribusian/Distribusi_permintaan/create_po/'+$('#flag_string').val()+'?'+jsonResponse.params+'', 'tabs_form_po');
+            getMenuTabs('purchasing/pendistribusian/Penerimaan_stok/create_po/'+$('#flag_string').val()+'?'+jsonResponse.params+'', 'tabs_form_po');
             achtungHideLoader();
           }
 
@@ -108,7 +108,7 @@ $('select[name="search_by"]').change(function () {
 <div class="row">
   <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Distribusi_permintaan/find_data?flag=<?php echo $flag?>">
+    <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Penerimaan_stok/find_data?flag=<?php echo $flag?>">
 
       <!-- hidden form -->
       <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
@@ -175,7 +175,7 @@ $('select[name="search_by"]').change(function () {
 
       <hr class="separator">
       <div style="margin-top:-25px">
-        <table id="dynamic-table" base-url="purchasing/pendistribusian/Distribusi_permintaan" data-id="flag=<?php echo $flag?>" url-detail="purchasing/pendistribusian/Permintaan_stok_unit/get_detail" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="purchasing/pendistribusian/Penerimaan_stok" data-id="flag=<?php echo $flag?>" url-detail="purchasing/pendistribusian/Permintaan_stok_unit/get_detail" class="table table-bordered table-hover">
           <thead>
             <tr>  
               <th width="30px" class="center">
@@ -200,7 +200,7 @@ $('select[name="search_by"]').change(function () {
               <th width="100px">Status Verif</th>
               <th>Tgl Dikirim</th>
               <th>Tgl Diterima</th>
-              <th width="150px">Diterima Oleh</th>
+              <th width="120px">Diterima Oleh</th>
             </tr>
           </thead>
           <tbody>
