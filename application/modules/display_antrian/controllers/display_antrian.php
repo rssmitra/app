@@ -28,7 +28,7 @@ class Display_antrian extends MX_Controller {
         $data = array();
         $date = isset($_GET['tanggal'])?$_GET['tanggal']:date('Y-m-d');
 
-        $resep_diterima = $this->db->select('mt_master_pasien.nama_pasien, tgl_pesan as tgl_trans, fr_tc_far.kode_trans_far')->order_by('tgl_pesan', 'ASC')->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_pesan_resep.no_mr','left')->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_tc_pesan_resep.kode_pesan_resep','left')->get_where('fr_tc_pesan_resep', ['CAST(tgl_pesan as DATE) = ' => $date, 'fr_tc_pesan_resep.kode_profit' => 2000, 'substring(fr_tc_pesan_resep.kode_bagian_asal, 1,2) = ' => '01'])->result();
+        $resep_diterima = $this->db->select('mt_master_pasien.nama_pasien, tgl_pesan as tgl_trans, fr_tc_far.kode_trans_far')->order_by('tgl_pesan', 'ASC')->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_pesan_resep.no_mr','left')->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_tc_pesan_resep.kode_pesan_resep','left')->get_where('fr_tc_pesan_resep', ['CAST(tgl_pesan as DATE) = ' => $date, 'fr_tc_pesan_resep.kode_profit' => 2000, 'substring(fr_tc_pesan_resep.kode_bagian_asal, 1,2) = ' => '01', 'status_batal' => NULL])->result();
 
         // echo '<pre>';print_r($resep_diterima);die;
         $resep = $this->Log_proses_resep_obat->get_data();

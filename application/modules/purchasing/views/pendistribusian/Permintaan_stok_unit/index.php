@@ -129,11 +129,11 @@ $('input[name=flag]').change(function(){
         <div class="col-md-2">
           <div class="radio">
             <label>
-              <input name="flag" type="radio" class="ace" value="medis" onclick="$('#btn_search_data').click();" checked />
+              <input name="flag" type="radio" class="ace" value="medis" onclick="$('#btn_search_data').click();" <?php echo (isset($_GET['flag']) && $_GET['flag'] == 'medis') ? 'checked' : ''?> />
               <span class="lbl"> Medis</span>
             </label>
             <label>
-              <input name="flag" type="radio" class="ace" value="non_medis" onclick="$('#btn_search_data').click();" />
+              <input name="flag" type="radio" class="ace" value="non_medis" onclick="$('#btn_search_data').click();" <?php echo (isset($_GET['flag']) && $_GET['flag'] == 'non_medis') ? 'checked' : ''?> />
               <span class="lbl"> Non Medis</span>
             </label>
           </div>

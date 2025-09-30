@@ -192,11 +192,11 @@ function getDetailBarang(kode_brg){
   
 }
 
-function update_cart(kode_brg, id_det=''){
+function update_cart(kode_brg, id_det='', type_tbl=''){
   preventDefault();
   $('#div_detail_brg').show();
 
-  $.getJSON('purchasing/pendistribusian/Permintaan_stok_unit/get_item_detail?ID=' + id_det +'&flag='+$("input[name='flag_gudang']:checked").val(), '', function (response) {
+  $.getJSON('purchasing/pendistribusian/Permintaan_stok_unit/get_item_detail?ID=' + id_det +'&flag='+$("input[name='flag_gudang']:checked").val()+'&type='+type_tbl+'', '', function (response) {
       // detail barang
       var dt_brg = response.data;
       $('#id_tc_permintaan_inst_det').val(dt_brg.id_tc_permintaan_inst_det);
@@ -240,6 +240,7 @@ function insert_cart_log(){
     dari_unit : $('#dari_unit').val(),
     is_bhp : $('input[name=is_bhp]:checked').val(),
     flag_form : 'permintaan_stok_unit',
+    type_tbl : $('#type_tbl').val(),
 
   };
   $.ajax({ //Process the form using $.ajax()
@@ -278,12 +279,12 @@ function insert_cart_log(){
 
 }
 
-function delete_cart(kode_brg, id_det=''){
+function delete_cart(kode_brg, id_det, type_tbl){
   preventDefault();
   $.ajax({
     url: 'purchasing/pendistribusian/Permintaan_stok_unit/delete_cart',
     type: "post",
-    data: {ID: kode_brg, flag: $('#flag_cart').val(), flag_form : 'permintaan_stok_unit', id_tc_permintaan_inst_det: id_det },
+    data: {ID: kode_brg, flag: $('#flag_cart').val(), flag_form : 'permintaan_stok_unit', id_tc_permintaan_inst_det: id_det, type: type_tbl},
     dataType: "json",
     beforeSend: function() {
       achtungShowLoader();  
@@ -365,6 +366,8 @@ th, td {
 
           <input class="form-control" type="hidden" name="id" id="id" value="<?php echo isset($value->id_tc_permintaan_inst)?$value->id_tc_permintaan_inst:''?>">
           <input class="form-control" type="hidden" name="id_tc_permintaan_inst_det" id="id_tc_permintaan_inst_det" value="<?php echo isset($value->id_tc_permintaan_inst_det)?$value->id_tc_permintaan_inst_det:''?>">
+
+          <input class="form-control" type="hidden" name="type_tbl" id="type_tbl" value="<?php echo isset($value->id_tc_permintaan_inst) ? 'tc_permintaan_inst' : 'cart_log'?>">
           
           <div class="col-md-9">
             <a href="#" onclick="getMenu('purchasing/pendistribusian/Permintaan_stok_unit')" class="btn btn-xs btn-default">
@@ -377,6 +380,15 @@ th, td {
               <label class="control-label col-md-2">Jenis Barang</label>
               <div class="col-md-9">
                 <div class="radio">
+                  <?php 
+                    if(isset($cart_data[0]->flag) && $cart_data[0]->flag == 'medis'){
+                      $checked_medis = 'checked';
+                      $checked_non_medis = '';
+                    }else{
+                      $checked_non_medis = 'checked';
+                      $checked_medis = '';
+                    }
+                  ?>
                   <label>
                     <input name="flag_gudang" type="radio" class="ace" value="medis" <?php echo ($flag_type == 'medis')?'checked':''?>  />
                     <span class="lbl"> Medis</span>
@@ -393,7 +405,12 @@ th, td {
               <label class="control-label col-md-2">Unit Bagian</label>
               <div class="col-md-7">
                 <?php 
-                  echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), isset($value->kode_bagian_minta)?$value->kode_bagian_minta:'' , 'dari_unit', 'dari_unit', 'chosen-select form-control', '', '') ?>
+                  if(isset($cart_data[0]->kode_bagian)){
+                    $kode_bagian_minta = isset($cart_data[0]->kode_bagian)?$cart_data[0]->kode_bagian:'';
+                  }else{
+                    $kode_bagian_minta = isset($value->kode_bagian_minta)?$value->kode_bagian_minta:'';
+                  }
+                  echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), $kode_bagian_minta , 'dari_unit', 'dari_unit', 'chosen-select form-control', '', '') ?>
               </div>
             </div>
 

@@ -23,7 +23,7 @@ class Turn_around_time_model extends CI_Model {
 		$this->db->where('status_terima NOT IN (1,2)');
 		$this->db->where('flag_trans', 'RJ');
 		// $this->db->where('e_resep', 1);
-		$this->db->where('log_time_6 is not null');
+		$this->db->where('log_time_5 is not null');
 
 	}
 

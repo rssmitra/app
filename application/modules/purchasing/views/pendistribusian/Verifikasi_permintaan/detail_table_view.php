@@ -88,24 +88,35 @@
 
     <form class="form-horizontal" method="post" id="form_input_<?php echo $flag?>_<?php echo $id?>" action="<?php echo site_url('purchasing/pendistribusian/Verifikasi_permintaan/process_approval')?>" enctype="multipart/form-data" >
 
+      <?php 
+        $current_user_id = $this->session->userdata('user')->user_id;
+        $ttd_user_id = $this->master->get_ttd_data(($flag == 'medis') ? 'verifikator_m_1' : 'verifikator_nm_1', 'reff_id');
+        if($current_user_id == 1 || $current_user_id == $ttd_user_id){
+          // Tampilkan form verifikasi (tidak perlu return)
+        } else {
+          echo '<div class="alert alert-danger">Anda tidak memiliki akses untuk memverifikasi permintaan ini.</div>';
+          return;
+        }
+      ?>
+    
       <!-- hidden form -->
       <input type="hidden" name="id_tc_permintaan_inst" id="id_tc_permintaan_inst" value="<?php echo $id?>">
       <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
 
-      <table border="0">
+      <table border="0" style="width: 100%">
 
         <tr>
-          <td width="35%" style="padding-bottom:5px;padding-top:8px; padding-left: 4px;"> Tanggal Verifikasi</td>
+          <td style="width: 10%; padding-bottom:5px;padding-top:8px; padding-left: 4px;"> Tanggal Verifikasi</td>
           <td style="padding-left:5px;"><?php echo date('d/M/Y H:i:s')?></td>
         </tr>
         <tr>
-          <td width="35%" style="padding-bottom:5px;padding-top:8px; vertical-align: top; padding-left: 4px;">Verifikator</td>
-          <td style="padding-left:5px;padding-top: 5px; width: 350px" ><?php echo $this->master->get_ttd_data('verifikator_m_1','label'); ?> (<?php echo $this->master->get_ttd_data('verifikator_m_1','value'); ?>)<br><span style="color: red"><i>Menunggu persetujuan..</i></span> 
-            <input type="hidden" name="pemeriksa" id="verifikator_m_1" value="<?php echo $this->master->get_ttd_data('verifikator_m_1','label'); ?>">
+          <td style="padding-bottom:5px;padding-top:8px; vertical-align: top; padding-left: 4px;">Verifikator</td>
+          <td style="padding-left:5px;padding-top: 5px; width: 350px" ><?php echo $this->master->get_ttd_data(($flag == 'medis')?'verifikator_m_1' : 'verifikator_nm_1','label'); ?> (<?php echo $this->master->get_ttd_data('verifikator_m_1','value'); ?>)<br><span style="color: red"><i>Menunggu persetujuan..</i></span> 
+            <input type="hidden" name="pemeriksa" id="verifikator_m_1" value="<?php echo $this->master->get_ttd_data(($flag == 'medis')?'verifikator_m_1' : 'verifikator_nm_1','label'); ?>">
           </td>
         </tr>
         <tr>
-          <td width="35%" style="padding-bottom:5px;padding-top:8px;vertical-align: top;padding-left: 4px;">&nbsp;</td>
+          <td style="padding-bottom:5px;padding-top:8px;vertical-align: top;padding-left: 4px;">&nbsp;</td>
           <td style="padding-left:5px;">
           <textarea class="form-control" name="catatan_verifikator_m_1" id="catatan_verifikator_m_1" style="height:70px !important; width: 100%" placeholder="Masukan catatan..."><?php echo ($dt_detail_brg[0]->acc_note) ? $dt_detail_brg[0]->acc_note : '';?></textarea>
           </td>
@@ -156,8 +167,17 @@
       <p style="padding: 5px; font-style: italic">Tanggal terakhir di verifikasi, <?php echo $this->tanggal->formatDateDmy($dt_detail_brg[0]->tgl_acc);?></p>
 
       <hr>
+      <?php if($dt_detail_brg[0]->status_acc != 1) : ?>
       <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_m_1', <?php echo $id; ?>,1,'<?php echo $_GET['flag']?>')"><i class="fa fa-check-circle"></i> Setuju</button>
       <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_m_1', <?php echo $id; ?>,0,'<?php echo $_GET['flag']?>')"><i class="fa fa-times-circle"></i> Kembalikan</button>
+      <?php 
+        else:
+          $txt = ($dt_detail_brg[0]->status_acc == 1) ? 'Disetujui' : 'Ditolak';
+          $clr = ($dt_detail_brg[0]->status_acc == 1) ? 'success' : 'danger';
+      ?>
+        <div class="alert alert-<?php echo $clr;?>"><strong style="font-weight: bold; font-size: 14px">Permintaan <?php echo $txt; ?></strong><br>Permintaan ini telah disetujui dan tidak dapat diubah kembali.</div>
+      <?php endif; ?>
+
     <!-- PAGE rasio ENDS -->
 
     </form>

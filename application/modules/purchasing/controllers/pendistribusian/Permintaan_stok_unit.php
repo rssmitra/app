@@ -25,7 +25,7 @@ class Permintaan_stok_unit extends MX_Controller {
     }
 
     public function index() { 
-        //echo '<pre>';print_r($this->session->all_userdata());
+        // echo '<pre>';print_r($this->session->all_userdata());
         /*define variable data*/
         $data = array(
             'title' => $this->title,
@@ -251,6 +251,7 @@ class Permintaan_stok_unit extends MX_Controller {
         $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
 
         if($_POST['id_tc_permintaan_inst'] !=''){
+
             $dt_detail = array(
                 'id_dd_user' => $this->session->userdata('user')->user_id,
                 'id_tc_permintaan_inst' => $_POST['id_tc_permintaan_inst'],
@@ -261,7 +262,6 @@ class Permintaan_stok_unit extends MX_Controller {
                 'is_bhp' => isset($_POST['is_bhp'])?$_POST['is_bhp']:0,
                 'tgl_input' => date('Y-m-d H:i:s'),
             );
-            
             $dt_detail['created_date'] = date('Y-m-d H:i:s');
             $dt_detail['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
             // echo "<pre>";print_r($dt_detail);die;
@@ -271,9 +271,10 @@ class Permintaan_stok_unit extends MX_Controller {
             }else{
                 $id_permintaan_inst_det = $this->Permintaan_stok_unit->save($table.'_det', $dt_detail);
             }
-
             $this->db->trans_commit();
+
         }else{
+
             $dataexc = array(
                 'kode_brg' => $_POST['kode_brg'],
                 'nama_brg' => $_POST['nama_brg'],
@@ -295,9 +296,7 @@ class Permintaan_stok_unit extends MX_Controller {
             $this->db->trans_commit();
         }
 
-
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'kode_brg' => $_POST['kode_brg'], 'nama_brg' => $_POST['nama_brg']));
-    
 
     }
 
@@ -307,13 +306,23 @@ class Permintaan_stok_unit extends MX_Controller {
         if($id!=null){
 
             if($_POST['id_tc_permintaan_inst_det'] != ''){
-                $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
-                if($this->Permintaan_stok_unit->delete_brg_permintaan($table.'_det', array($_POST['id_tc_permintaan_inst_det']))){
-                    echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+                if($_POST['type'] == 'cart_log'){
+                    if($this->Permintaan_stok_unit->delete_cart_log('tc_permintaan_inst_cart_log', array($_POST['id_tc_permintaan_inst_det']))){
+                        echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+                    }else{
+                        echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+                    }
+                    exit;
                 }else{
-                    echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+                    $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
+                    if($this->Permintaan_stok_unit->delete_brg_permintaan($table.'_det', array($_POST['id_tc_permintaan_inst_det']))){
+                        echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+                    }else{
+                        echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+                    }
+                    exit;
                 }
-                exit;
+                
             }else{
                 if($this->db->where(array('kode_brg' => $id, 'user_id_session' => $this->session->userdata('user')->user_id, 'flag_form' => $_POST['flag_form']))->delete('tc_permintaan_inst_cart_log')){
                     echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan' ));
@@ -480,7 +489,7 @@ class Permintaan_stok_unit extends MX_Controller {
             $row[] = '<div style="text-align: right">'.number_format($row_list->harga).'</div>';
             $id_tc_permintaan_inst_det = isset($row_list->id_tc_permintaan_inst_det)?$row_list->id_tc_permintaan_inst_det:'';
             $row[] = '<div class="left">'.$row_list->keterangan_permintaan.'</div>';
-            $row[] = '<div class="center"><a href="#" class="label label-danger" onclick="delete_cart('."'".$row_list->kode_brg."'".', '.$id_tc_permintaan_inst_det.')"><i class="fa fa-times-circle bigger-120"></i></a> <a class="label label-success" href="#" onclick="update_cart('."'".$row_list->kode_brg."'".', '.$id_tc_permintaan_inst_det.')"><i class="fa fa-pencil bigger-120"></i></a></div>';
+            $row[] = '<div class="center"><a href="#" class="label label-danger" onclick="delete_cart('."'".trim($row_list->kode_brg)."'".', '.$id_tc_permintaan_inst_det.', '."'".$row_list->type_tbl."'".')"><i class="fa fa-times-circle bigger-120"></i></a> <a class="label label-success" href="#" onclick="update_cart('."'".trim($row_list->kode_brg)."'".', '.$id_tc_permintaan_inst_det.', '."'".$row_list->type_tbl."'".')"><i class="fa fa-pencil bigger-120"></i></a></div>';
 
             $data[] = $row;
         }
@@ -496,7 +505,8 @@ class Permintaan_stok_unit extends MX_Controller {
     {
         $ID = $this->input->get('ID')?$this->regex->_genRegex($this->input->get('ID',TRUE),'RGXQSL'):null;
         $flag = $this->input->get('flag')?$this->regex->_genRegex($this->input->get('flag',TRUE),'RGXQSL'):null;
-        $item = $this->Permintaan_stok_unit->get_item_detail($ID, $flag);
+        $type = $this->input->get('flag')?$this->regex->_genRegex($this->input->get('type',TRUE),'RGXQSL'):null;
+        $item = $this->Permintaan_stok_unit->get_item_detail($ID, $flag, $type);
         echo json_encode(['status' => 200, 'data' => $item]);
         
     }
