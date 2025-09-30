@@ -72,6 +72,11 @@ class E_resep_rj_model extends CI_Model {
         }
         // default for this modul
         // $this->db->where('(status_tebus is null or status_tebus = 0)');
+		if(isset($_GET['resep_batal']) AND $_GET['resep_batal']!=0 ){
+			$this->db->where('fr_listpesanan_v.status_batal', 1);
+		}else{
+			$this->db->where('fr_listpesanan_v.status_batal is null');
+		}
 
 		$i = 0;
 		$col_str = '';
@@ -111,6 +116,20 @@ class E_resep_rj_model extends CI_Model {
 	function get_data()
 	{
 		$this->_main_query();
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function get_data_resep_diterima()
+	{
+		$this->_main_query();
+		$this->db->select('tgl_pesan as tgl_trans');
+		$this->db->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_listpesanan_v.kode_pesan_resep','left');
+		$this->db->where('fr_listpesanan_v.status_batal is null');
+		$this->db->where('fr_listpesanan_v.lock_eresep',1);
+		$this->db->where('CAST(tgl_pesan as DATE) = ', date('Y-m-d'));		
+		$this->db->where_in('substring(fr_listpesanan_v.kode_bagian_asal, 1,2)', ['01','02']);		
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

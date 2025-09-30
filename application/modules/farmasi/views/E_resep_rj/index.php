@@ -245,6 +245,10 @@ if(!ace.vars['touch']) {
 
 }
 
+$('#resep_batal').on('change', function() {
+  $('#btn_search_data').click();
+});
+
 </script>
 
 <div class="row">
@@ -311,6 +315,13 @@ if(!ace.vars['touch']) {
               <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'dokterHidden', 'dokterHidden', 'chosen-select form-control', '', '') ?>
           </div>
       </div>
+
+      <div class="col-md-12" style="margin-left: 10px">
+          <label class="inline" style="margin-top: 4px;margin-left: -20px;">
+        <input type="checkbox" class="ace" name="resep_batal" id="resep_batal" value="1">
+        <span class="lbl" style="font-weight: bold; font-style: italic"> Tampilkan resep batal</span>
+          </label>
+      </div>
       
       <div class="form-group">
         <label class="col-md-2 ">&nbsp;</label>
@@ -329,7 +340,6 @@ if(!ace.vars['touch']) {
       <!-- div.dataTables_borderWrap -->
       <div class="row">
         <div class="col-md-12">
-          <!-- <table id="dynamic-table" base-url="farmasi/E_resep_rj/get_data?flag=<?php echo $flag?>" class="table table-bordered table-hover"> -->
           <table id="dynamic-table" base-url="farmasi/E_resep_rj/get_data" data-id="flag=<?php echo $flag?>" url-detail="farmasi/Farmasi_pesan_resep/getDetail" class="table table-bordered table-hover">
             <thead>
               <tr>  
