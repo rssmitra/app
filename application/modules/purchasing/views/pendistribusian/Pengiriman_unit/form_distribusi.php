@@ -117,7 +117,7 @@ function getDetailBarang(kode_brg){
 }
 
 function show_default_cart(){
-  $('#div_cart').load('purchasing/pendistribusian/Pengiriman_unit/show_cart?flag='+$("input[name='flag_gudang']:checked"). val()+'&form=distribusi');
+  $('#div_cart').load('purchasing/pendistribusian/Distribusi_permintaan/show_cart?flag='+$("input[name='flag_gudang']:checked"). val()+'&form=distribusi');
 }
 
 function insert_cart_log(){
@@ -146,7 +146,7 @@ function insert_cart_log(){
 
   $.ajax({ //Process the form using $.ajax()
       type      : 'POST', //Method type
-      url       : 'purchasing/pendistribusian/Pengiriman_unit/insert_cart_log', //Your form processing file URL
+      url       : 'purchasing/pendistribusian/Distribusi_permintaan/insert_cart_log', //Your form processing file URL
       data      : post_data, //Forms name
       dataType  : 'json',
       beforeSend: function() {
@@ -301,7 +301,7 @@ th, td {
   <div class="col-xs-12">
     <br>
     <!-- PAGE CONTENT BEGINS -->
-      <?php $url = ($form == 'distribusi') ? 'purchasing/pendistribusian/Pengiriman_unit/process_pengiriman_brg_unit' : 'purchasing/pendistribusian/Pengiriman_unit/process_retur_brg_unit' ; ?>
+      <?php $url = ($form == 'distribusi') ? 'purchasing/pendistribusian/Distribusi_permintaan/process_pengiriman_brg_unit' : 'purchasing/pendistribusian/Distribusi_permintaan/process_retur_brg_unit' ; ?>
 
         <form class="form-horizontal" method="post" id="form_cart" action="<?php echo base_url().$url?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
 

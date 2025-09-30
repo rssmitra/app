@@ -128,61 +128,17 @@ class Distribusi_permintaan_model extends CI_Model {
 		return true;
 	}
 
-	public function delete_brg_permintaan($table, $id)
-	{
-		$this->db->where_in('id_tc_permintaan_inst_det', $id)->delete($table);
-		return true;
-	}
+	public function get_cart_data(){
 
-	public function get_brg_permintaan($flag, $id){
-		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
-		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
-		$join_3 = ($flag=='non_medis')?'mt_depo_stok_nm':'mt_depo_stok';
-
-		$this->db->select('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, c.content as rasio, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.nama_bagian,CAST(c.harga_beli as INT) as harga_beli, CAST(e.catatan as NVARCHAR(1000)) as catatan, e.tgl_acc, e.acc_by, e.status_acc, e.no_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima');
-		$this->db->from(''.$table.'_det a');
-		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
-		$this->db->join($table.' e', 'e.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'left');
-		$this->db->join('mt_bagian g', 'g.kode_bagian=e.kode_bagian_minta', 'left');
-		$this->db->join($join_3.' f', '(f.kode_brg=a.kode_brg AND f.kode_bagian=e.kode_bagian_kirim)', 'left');
-		$id = (is_array($id)) ? implode(',', $id) : $id ;
-		$this->db->where('a.id_tc_permintaan_inst IN ('.$id.')');
-		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian, CAST(c.harga_beli as INT), CAST(e.catatan as NVARCHAR(1000)), e.no_acc, e.tgl_acc, e.acc_by, e.status_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima');
-		$query = $this->db->get()->result();
-		// print_r($this->db->last_query());die;
-		return $query;
-	}
-
-	public function get_brg_retur($flag, $id){
-		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
-
-		$this->db->select('a.*, c.nama_brg, c.content as rasio, c.satuan_kecil, c.satuan_besar, e.kode_retur, e.tgl_retur, g.nama_bagian');
-		$this->db->from('tc_retur_unit_det a');
-		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
-		$this->db->join('tc_retur_unit e', 'e.id_tc_retur_unit=a.id_tc_retur_unit', 'left');
-		$this->db->join('mt_bagian g', 'g.kode_bagian=e.kode_bagian', 'left');
-		$id = (is_array($id)) ? implode(',', $id) : $id ;
-		$this->db->where('a.id_tc_retur_unit IN ('.$id.')');
-		$this->db->order_by('c.nama_brg ASC');
+		$this->db->select('kode_brg, nama_brg, qty, satuan, cast(harga as int) as harga, flag, nama_bagian, qtyBefore as jumlah_stok_sebelumnya, reff_kode, retur_type, is_bhp, is_restock, tc_permintaan_inst_cart_log.kode_bagian, keterangan as keterangan_permintaan, id as id_tc_permintaan_inst_det, '."'cart_log'".' as type_tbl');
+		$this->db->from('tc_permintaan_inst_cart_log');
+		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_permintaan_inst_cart_log.kode_bagian');
+		$this->db->where('user_id_session', $this->session->userdata('user')->user_id);
+		$this->db->where('flag_form', 'distribusi');
+		$this->db->order_by('tc_permintaan_inst_cart_log.id', 'ASC');
+		// $this->db->group_by('tc_permintaan_inst_cart_log.id, kode_brg, nama_brg, satuan, harga, flag, nama_bagian, qtyBefore, reff_kode, retur_type, is_bhp, is_restock, tc_permintaan_inst_cart_log.kode_bagian, keterangan');
 		return $this->db->get()->result();
-	}
 
-	public function get_detail_brg_permintaan_multiple($flag, $id){
-
-		$result = $this->get_brg_permintaan($flag, $id);
-		$getData = [];
-		foreach($result as $row){
-			$getData[$row->nomor_permintaan][] = array(
-				'nomor_permintaan' => $row->nomor_permintaan,
-				'tgl_permintaan' => $row->tgl_permintaan,
-				'jenis_permintaan' => $row->jenis_permintaan,
-				'nama_bagian' => $row->nama_bagian,
-				'barang' => $row,
-			);
-		}
-		// echo '<pre>';print_r($getData);die;
-		return $getData;
-		
 	}
 
 	

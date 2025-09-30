@@ -170,8 +170,9 @@ $('select[name="search_by"]').change(function () {
       
       <hr class="separator">
       <div class="clearfix" style="margin-bottom:-5px">
-          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Print Selected</a>
-        </div>
+        <?php echo $this->authuser->show_button('purchasing/pendistribusian/Distribusi_permintaan','C','',7)?>
+        <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Print Selected</a>
+      </div>
 
       <hr class="separator">
       <div style="margin-top:-25px">
