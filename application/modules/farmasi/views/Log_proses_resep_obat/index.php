@@ -107,12 +107,12 @@
       oTable.ajax.url($('#dynamic-table').attr('base-url')+'&'+result.data).load();
   }
 
-  function exc_process(kode_trans_far, flag_code, jenis_resep){
+  function exc_process(kode_trans_far, flag_code, jenis_resep, status_ambil=0) {
     preventDefault();
     $.ajax({
         url: 'farmasi/Log_proses_resep_obat/process',
         type: "post",
-        data: {ID : kode_trans_far, proses: flag_code, jenis : jenis_resep},
+        data: {ID : kode_trans_far, proses: flag_code, jenis : jenis_resep, status_ambil : status_ambil},
         dataType: "json",
         beforeSend: function() {
           // achtungShowLoader();  

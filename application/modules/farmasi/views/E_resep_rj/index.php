@@ -230,6 +230,21 @@ function saveCatatanVerif(id){
   });
 }
 
+if(!ace.vars['touch']) {
+      $('.chosen-select').chosen({allow_single_deselect:true}); 
+  //resize the chosen on window resize
+
+  $(window)
+  .off('resize.chosen')
+  .on('resize.chosen', function() {
+    $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': $this.parent().width()});
+    })
+  }).trigger('resize.chosen');
+
+}
+
 </script>
 
 <div class="row">
@@ -289,12 +304,11 @@ function saveCatatanVerif(id){
       <div class="form-group">
         <label class="control-label col-md-2">Poli/Klinik</label>
         <div class="col-md-3">
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0300','0500')) ), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0300','0500')) ), '' , 'bagian', 'bagian', 'chosen-select form-control', '', '') ?>
         </div>
         <label class="control-label col-md-1">Dokter</label>
-          <div class="col-md-3">
-              <input id="inputDokter" class="form-control" name="dokter" type="text" placeholder="Masukan keyword minimal 3 karakter" value="" />
-              <input type="hidden" name="dokterHidden" value="" id="dokterHidden">
+          <div class="col-md-4">
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'dokterHidden', 'dokterHidden', 'chosen-select form-control', '', '') ?>
           </div>
       </div>
       

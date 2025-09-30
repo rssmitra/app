@@ -5,7 +5,7 @@ class Log_proses_resep_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('nama_pasien', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, fr_tc_far.kode_pesan_resep, tgl_trans, nama_pelayanan, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, fr_tc_far.jenis_resep, status_terima, flag_trans, tgl_pesan, log_time_1, log_time_2, log_time_3, log_time_4, log_time_5, log_time_6';
+	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, fr_tc_far.kode_pesan_resep, tgl_trans, nama_pelayanan, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, fr_tc_far.jenis_resep, status_terima, flag_trans, tgl_pesan, log_time_1, log_time_2, log_time_3, log_time_4, log_time_5, log_time_6, fr_tc_pesan_resep.status_batal, status_tebus, status_ambil_obat';
 
 	var $order = array('tgl_pesan' => 'ASC');
 
@@ -50,8 +50,8 @@ class Log_proses_resep_obat_model extends CI_Model {
 	{
 		$this->_get_datatables_query();
 		$this->db->order_by('tgl_trans', 'ASC');
-		$this->db->where('log_time_6 is null');
-		$this->db->where('fr_tc_pesan_resep.status_batal !=', 1);
+		// $this->db->where('log_time_6 is null');
+		$this->db->where('fr_tc_pesan_resep.status_batal is null');
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

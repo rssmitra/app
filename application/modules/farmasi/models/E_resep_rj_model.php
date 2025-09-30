@@ -48,9 +48,9 @@ class E_resep_rj_model extends CI_Model {
 			$this->db->like('fr_listpesanan_v.'.$_GET['search_by'].'', $_GET['keyword']);
 		}
 
-		if(isset($_GET['klinik'])){
-			if($_GET['klinik']!='' or $_GET['klinik']!=0){
-				$this->db->where('fr_listpesanan_v.kode_bagian', (int)$_GET['klinik']);
+		if(isset($_GET['bagian'])){
+			if($_GET['bagian']!='' or $_GET['bagian']!=0){
+				$this->db->where('fr_listpesanan_v.kode_bagian_asal', (int)$_GET['bagian']);
 			}
 		}
 

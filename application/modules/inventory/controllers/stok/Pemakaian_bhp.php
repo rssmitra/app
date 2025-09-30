@@ -244,8 +244,9 @@ class Pemakaian_bhp extends MX_Controller {
             foreach( $cart_data as $row_brg ){
                 $kode_bagian_gdg = ($row_brg->flag=='non_medis')?'070101':'060201';
                 $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $row_brg->kode_bagian ) );
+                $tgl_input = $val->set_value('tgl_pemakaian_bhp').' '.date('H:i:s');
                 // kurang stok depo
-                $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian_gdg, 7 ," ".$nama_bagian." ", 'reduce', $row_brg->kode_bagian);
+                $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian_gdg, 7 ," ".$nama_bagian." ", 'reduce', $row_brg->kode_bagian, '', $tgl_input);
                 $this->db->trans_commit();
             }
 

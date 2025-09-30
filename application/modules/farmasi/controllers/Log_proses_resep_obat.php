@@ -61,7 +61,7 @@ class Log_proses_resep_obat extends MX_Controller {
             $row = array();
             $row[] = '';
             $row[] = $row_list->kode_pesan_resep;
-            $row[] = $no;
+            $row[] = '<div class="center">'.$no.'</div>';
 
             $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=1'".')">'.$row_list->kode_trans_far.'</a></b></div>';
 
@@ -79,7 +79,31 @@ class Log_proses_resep_obat extends MX_Controller {
             }
             $row[] = ($row_list->log_time_4 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-success" onclick="exc_process('.$row_list->kode_trans_far.', 4, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-play"></i> Mulai eTiket </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_4).'</div>';
             $row[] = ($row_list->log_time_5 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 5, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-check-circle"></i> Siap Diambil </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_5).'</div>';
-            $row[] = ($row_list->log_time_6 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-check-circle"></i> Selesai </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_6).'</div>';
+
+            if($row_list->status_ambil_obat == 1){
+                $title_status = 'Sudah diambil';
+                $class_btn = 'btn-success';
+
+            }else if($row_list->status_ambil_obat == 2){
+                $title_status = 'Ditinggal';
+                $class_btn = 'btn-danger';
+            }else{
+                $title_status = 'Belum diambil';
+                $class_btn = 'btn-warning';
+            }
+
+            $btn_status = '<div class="btn-group">
+                                <button data-toggle="dropdown" class="btn btn-xs '.$class_btn.' dropdown-toggle">
+                                    '.$title_status.'
+                                    <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-warning">
+                                    <li><a href="#" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".', 2)">Ditinggal</a></li>
+                                    <li><a href="#" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".', 1)">Sudah diambil</a></li>
+                                </ul>
+                            </div>';
+
+            $row[] = '<div class="center">'.$btn_status.'</div>';
             // selisih log_time_1 sampai dengan log_time_6 tanpa library tanggal, gunakan fungsi PHP
             if ($row_list->log_time_5 != null && strtotime($row_list->log_time_1) !== false && strtotime($row_list->log_time_5) !== false) {
                 $start = new DateTime($row_list->log_time_1);
@@ -156,6 +180,14 @@ class Log_proses_resep_obat extends MX_Controller {
                 if (!$cek_proses_sebelumnya) {
                     echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Sebelumnya Belum Dilakukan'));
                     return;
+                }
+            }
+
+            if($_POST['proses'] == 6){
+                if($_POST['status_ambil'] == 1){
+                    $dataexc['status_ambil_obat'] = 1; // sudah diambil
+                }elseif($_POST['status_ambil'] == 2){
+                    $dataexc['status_ambil_obat'] = 2; // ditinggal
                 }
             }
 

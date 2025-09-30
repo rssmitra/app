@@ -194,7 +194,7 @@ final Class Stok_barang{
 
     }
 
-    function stock_process_depo($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag, $kode_bagian_minta='', $reff_no_kunjungan='') {
+    function stock_process_depo($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag, $kode_bagian_minta='', $reff_no_kunjungan='', $tgl_input='') {
 
         // restore => untuk mengembalikan stok ke jumlah sebelumnya
         // reduce => untuk mengurangi stok sesuai dengan jumlah yang dikirim
@@ -237,7 +237,7 @@ final Class Stok_barang{
                 $ket_jenis_kartu = $db->get_where('mt_jenis_kartu_stok', array('jenis_transaksi' => $jenisKartuStok) )->row();
                 $dataexc["keterangan"] = $ket_jenis_kartu->nama_jenis. ' ' .$keterangan;
                 $dataexc["petugas"] = $CI->session->userdata('user')->user_id;
-                $dataexc["tgl_input"]= date('Y-m-d H:i:s');
+                $dataexc["tgl_input"]= ($tgl_input != '') ? $tgl_input : date('Y-m-d H:i:s');
                 $db->insert($t_kartu_stok, $dataexc);
 
                 /*update mt_depo_stok*/
