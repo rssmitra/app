@@ -22,6 +22,7 @@ class Log_proses_resep_obat_model extends CI_Model {
 		$this->db->join('fr_tc_pesan_resep','fr_tc_pesan_resep.kode_pesan_resep=fr_tc_far.kode_pesan_resep','left');
 		$this->db->where('status_terima NOT IN (1,2)');
 		$this->db->where('flag_trans', 'RJ');
+		$this->db->where('status_batal !=', 1);
 
 	}
 
