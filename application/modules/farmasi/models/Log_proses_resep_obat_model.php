@@ -22,7 +22,7 @@ class Log_proses_resep_obat_model extends CI_Model {
 		$this->db->join('fr_tc_pesan_resep','fr_tc_pesan_resep.kode_pesan_resep=fr_tc_far.kode_pesan_resep','left');
 		$this->db->where('status_terima NOT IN (1,2)');
 		$this->db->where('flag_trans', 'RJ');
-		$this->db->where('status_batal !=', 1);
+		
 
 	}
 
@@ -51,6 +51,7 @@ class Log_proses_resep_obat_model extends CI_Model {
 		$this->_get_datatables_query();
 		$this->db->order_by('tgl_trans', 'ASC');
 		$this->db->where('log_time_6 is null');
+		$this->db->where('fr_tc_pesan_resep.status_batal !=', 1);
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();
@@ -64,6 +65,7 @@ class Log_proses_resep_obat_model extends CI_Model {
 		}else{
 			$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
 		}
+		$this->db->where('fr_tc_pesan_resep.status_batal is null');
 		$this->db->order_by('tgl_trans', 'ASC');
 		// print_r($this->db->last_query());die;
 		$query = $this->db->get();
