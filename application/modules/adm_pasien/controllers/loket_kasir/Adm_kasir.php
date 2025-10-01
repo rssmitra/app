@@ -75,8 +75,8 @@ class Adm_kasir extends MX_Controller {
         $tgl_keluar_null = [];
         $no = $_POST['start'];
         foreach ($list as $key_list=>$row_list) {
+            // echo '<pre>';print_r($row_list);die;    
             if( $_GET['pelayanan'] != 'RI' ){
-                // echo '<pre>';print_r($row_list);die;    
                 $key = array_search('Rujuk ke Rawat Inap', array_column($row_list, 'cara_keluar_pasien'));
                 if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) != '03'){
                     $no++;

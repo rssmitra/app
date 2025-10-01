@@ -227,12 +227,16 @@ class Penerimaan_stok extends MX_Controller {
                 if($row_list->jumlah_penerimaan > 0){
                     $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
                 }else{
-                    $row[] = '<div class="center">
+                    if($row_list->jumlah_kirim > 0){
+                        $row[] = '<div class="center">
                         <label class="pos-rel">
                             <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_permintaan_inst_det.'"/>
                             <span class="lbl"></span>
                         </label>
-                      </div>';    
+                      </div>'; 
+                    }else{
+                        $row[] = '<div class="center"><i class="fa fa-times red"></i></div>';
+                    }   
                 }
                 
             }else{

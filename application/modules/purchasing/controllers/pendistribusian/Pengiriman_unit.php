@@ -143,7 +143,6 @@ class Pengiriman_unit extends MX_Controller {
                 $btn_kirim_permintaan = '<i class="fa fa-check bigger-150 green" title="Terkirim"></i>';
             }
             $row[] = '<div class="center">'.$btn_kirim_permintaan.'</div>';
-                  
             $data[] = $row;
         }
 
@@ -299,13 +298,14 @@ class Pengiriman_unit extends MX_Controller {
         // echo '<pre>';print_r($list);die;
         
         $data = array();
+        $arr_count = array();
         $no=0;
         foreach ($list as $row_list) {
             $no++;
             $row = array();
 
             if($row_list->status_verif == 1){
-                if($row_list->jumlah_kirim > 0){
+                if($row_list->jumlah_kirim == $row_list->jml_acc_atasan){
                     $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
                 }else{
                     $row[] = '<div class="center">
@@ -313,9 +313,9 @@ class Pengiriman_unit extends MX_Controller {
                             <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_permintaan_inst_det.'"/>
                             <span class="lbl"></span>
                         </label>
-                      </div>';    
+                      </div>';   
+                      $arr_count[] = 1; 
                 }
-                
             }else{
                 $row[] = '<div class="center"><i class="fa fa-times red"></i></div>';
             }
@@ -331,6 +331,7 @@ class Pengiriman_unit extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->jumlah_stok_sebelumnya.'</div>';
             $row[] = '<div class="center">'.$qty.'</div>';
             $row[] = '<div class="center">'.$row_list->jml_acc_atasan.'</div>';
+            $row[] = '<div class="center">'.$row_list->jumlah_kirim.'</div>';
             $row[] = '<div class="center">'.$stok_gudang.'</div>';
             $row[] = '<div class="center">'.$row_list->keterangan_verif.'</div>';
             $row[] = '<div style="text-align: right">'.number_format($row_list->harga).'</div>';
@@ -349,10 +350,26 @@ class Pengiriman_unit extends MX_Controller {
         }
 
         $output = array(
-                        "data" => $data,
-                );
+            "total_belum_didistribusi" => array_sum($arr_count),
+            "data" => $data,
+        );
         //output to json format
         echo json_encode($output);
+    }
+
+    public function delete_cart()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        if($id!=null){
+            if($this->db->where(array('kode_brg' => $id, 'user_id_session' => $this->session->userdata('user')->user_id))->delete('tc_permintaan_inst_cart_log')){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan' ));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
     }
 
 

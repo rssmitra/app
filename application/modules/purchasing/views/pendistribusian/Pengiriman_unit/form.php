@@ -48,6 +48,17 @@ jQuery(function($) {
           "url": "purchasing/pendistribusian/Pengiriman_unit/get_detail_cart?flag="+$('#flag_cart').val()+"&id="+id,
           "type": "POST"
       },
+      // drawCallBack
+      "fnDrawCallback": function( response ) {
+          var obj = response.json;
+          if(obj.total_belum_didistribusi == 0){
+            $('#btn_action').hide();
+            $('#alert_finish').show();
+          }else{
+            $('#btn_action').show();
+          }
+      },
+
     });
 
 
@@ -163,8 +174,9 @@ th, td {
                   <th>Nama Barang</th>
                   <th class="center">Satuan</th>
                   <th class="center">Stok Akhir</th>
-                  <th class="center">Jumlah Permintaan</th>
-                  <th class="center">Jumlah Disetujui</th>
+                  <th class="center">Jumlah<br>Permintaan</th>
+                  <th class="center">Jumlah<br>Disetujui</th>
+                  <th class="center">Jumlah<br>Kirim</th>
                   <th class="center">Stok Gudang</th>
                   <th class="center">Keterangan Verif</th>
                   <th style="width: 80px">Total</th>
@@ -199,9 +211,7 @@ th, td {
             </div>
 
             <hr>
-            <div class="center" style="padding-right: 10px; padding-bottom: 5px">
-              
-              <?php if($value->tgl_pengiriman == null) : ?>
+            <div class="center" style="padding-right: 10px; padding-bottom: 5px" id="btn_action">
               <a href="#" id="btnSave" name="submit" class="btn btn-xs btn-danger">
                 <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
                 Reset Form
@@ -210,10 +220,9 @@ th, td {
                 <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
                 Submit
               </a>
-              <?php else :?>
-                <div class="alert alert-success"><strong style="font-size: 16px">Barang telah didistribusikan!</strong><br> Barang yang sudah terdistribusi tidak dapat diproses ulang kembali.</div>
-              <?php endif; ?>
             </div>
+
+            <div class="alert alert-success" id="alert_finish" style="display: none"><strong style="font-size: 16px">Barang telah didistribusikan!</strong><br> Barang yang sudah terdistribusi tidak dapat diproses ulang kembali.</div>
 
           </div>
           

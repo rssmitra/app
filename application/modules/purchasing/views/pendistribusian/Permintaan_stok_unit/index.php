@@ -90,6 +90,8 @@ $('input[name=flag]').change(function(){
 <div class="row">
   <div class="col-xs-12">
 
+    <div class="alert alert-info"><strong>Informasi Penting !</strong> Permintaan barang yang sudah melewati 2 minggu tidak akan ditampilkan kembali, untuk melihat riwayat sebelumnya silahkan pilih tanggal diatas untuk pencarian data</div>
+
     <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Permintaan_stok_unit/find_data?flag=<?php echo isset($flag)?$flag:'medis'?>">
       
       <!-- hidden form -->
@@ -107,7 +109,7 @@ $('input[name=flag]').change(function(){
           <label class="control-label col-md-2">Tanggal Permintaan</label>
           <div class="col-md-2">
           <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-01')?>"/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -116,7 +118,7 @@ $('input[name=flag]').change(function(){
           <label class="control-label col-md-1">s/d</label>
           <div class="col-md-2">
           <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-t')?>"/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -149,11 +151,11 @@ $('input[name=flag]').change(function(){
           </a>
         </div>            
       </div>
-
+      <br>
+      
       <hr class="separator">
       <div class="clearfix" style="margin-bottom:-5px">
           <?php echo $this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','C','',7)?> 
-          <?php echo $this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','D','',5)?>
           <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Print Selected</a>
         </div>
 

@@ -208,6 +208,7 @@ class Distribusi_permintaan extends MX_Controller {
                 'kode_bagian_minta' => $this->regex->_genRegex($val->set_value('kode_bagian_minta'),'RGXQSL'),
                 'jenis_permintaan' => $this->regex->_genRegex(0,'RGXQSL'),
                 'catatan' => $this->regex->_genRegex($val->set_value('catatan'),'RGXQSL'),
+                'version' => 1,
             );
             // print_r($dataexc);die;
             $dataexc['created_date'] = date('Y-m-d H:i:s');
