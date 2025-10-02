@@ -136,6 +136,11 @@
                 </div>
               </div>
 
+              <label class="control-label col-md-2">Waktu Max pelayanan (menit)</label>
+              <div class="col-md-1">
+                <input class="form-control" name="max_layan" id="max_layan" type="text" value="45"/>
+              </div>
+
               <div class="col-md-6" style="margin-left: -1.3%">
               <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>

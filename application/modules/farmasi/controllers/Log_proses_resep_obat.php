@@ -52,7 +52,7 @@ class Log_proses_resep_obat extends MX_Controller {
         $no = $_POST['start'];
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
         );
-        
+        $max_layan = (isset($_GET['max_layan']) && is_numeric($_GET['max_layan'])) ? (int)$_GET['max_layan'] : 45;
         $arr_seconds = array();
         foreach ($list as $row_list) {
             $no++;
@@ -112,13 +112,14 @@ class Log_proses_resep_obat extends MX_Controller {
             $row[] = '<div class="center">'.$btn_status.'</div>';
             // selisih log_time_1 sampai dengan log_time_6 tanpa library tanggal, gunakan fungsi PHP
             if ($row_list->log_time_5 != null && strtotime($row_list->log_time_1) !== false && strtotime($row_list->log_time_5) !== false) {
+                
                 $start = new DateTime($row_list->log_time_1);
                 $end = new DateTime($row_list->log_time_5);
                 $diff = $start->diff($end);
                 $hours = $diff->h + ($diff->days * 24);
                 $minutes = $diff->i;
                 $total_minutes = ($hours * 60) + $minutes;
-                $color = ($total_minutes < 45) ? 'green' : 'red';
+                $color = ($total_minutes < $max_layan) ? 'green' : 'red';
                 $row[] = '<div class="center"><span style="color:'.$color.'; font-weight: bold; font-size: 14px">'.sprintf('%02d:%02d', $hours, $minutes).'</span></div>';
             } else {
                 $row[] = '';
@@ -135,7 +136,7 @@ class Log_proses_resep_obat extends MX_Controller {
                         "draw" => $_POST['draw'],
                         "data" => $data,
                         "count_data" => count($list),
-                        "tat" => (count($arr_seconds) > 0) ? $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds)) : '00:00:00',
+                        "tat" => (count($arr_seconds) > 0) ? $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds), $max_layan) : '00:00:00',
                         "count_selesai" => (count($arr_seconds) > 0) ? count($arr_seconds) : '00:00:00',
         );
         //output to json format
