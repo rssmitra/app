@@ -48,6 +48,15 @@ jQuery(function($) {
           "url": "purchasing/pendistribusian/Penerimaan_stok/get_detail_cart?flag="+$('#flag_cart').val()+"&id="+id,
           "type": "POST"
       },
+      "fnDrawCallback": function( response ) {
+          var obj = response.json;
+          if(obj.total_belum_diterima == 0){
+            $('#btn_action').hide();
+            $('#alert_finish').show();
+          }else{
+            $('#btn_action').show();
+          }
+      },
     });
 
 
@@ -193,20 +202,16 @@ th, td {
             </div>
 
             <hr>
-            <div class="center" style="padding-right: 10px; padding-bottom: 5px">
+            <div class="center" style="padding-right: 10px; padding-bottom: 5px" id="btn_action">
 
-              
-
-              <?php if($value->tgl_input_terima == null) : ?>
               <a href="#" id="btnSave" onclick="submit_terima()" name="submit" class="btn btn-xs btn-info">
                 <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
                 Proses Terima Barang
               </a>
-              <?php else :?>
-                <div class="alert alert-success"><strong style="font-size: 16px">Barang telah diterima!</strong><br> Barang yang sudah diterima tidak dapat diproses ulang kembali.</div>
-              <?php endif; ?>
               
             </div>
+
+            <div class="alert alert-success" id="alert_finish" style="display: none"><strong style="font-size: 16px">Barang telah diterima!</strong><br> Barang yang sudah diterima tidak dapat diproses ulang kembali.</div>
 
           </div>
           

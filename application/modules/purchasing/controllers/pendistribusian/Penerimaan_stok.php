@@ -218,6 +218,7 @@ class Penerimaan_stok extends MX_Controller {
         // echo '<pre>';print_r($list);die;
         
         $data = array();
+        $arr_count = array();
         $no=0;
         foreach ($list as $row_list) {
             $no++;
@@ -234,6 +235,7 @@ class Penerimaan_stok extends MX_Controller {
                             <span class="lbl"></span>
                         </label>
                       </div>'; 
+                      $arr_count[] = 1; 
                     }else{
                         $row[] = '<div class="center"><i class="fa fa-times red"></i></div>';
                     }   
@@ -274,8 +276,9 @@ class Penerimaan_stok extends MX_Controller {
         }
 
         $output = array(
-                        "data" => $data,
-                );
+            "total_belum_diterima" => array_sum($arr_count),
+            "data" => $data,
+        );
         //output to json format
         echo json_encode($output);
     }

@@ -1859,24 +1859,25 @@ public function pengadaan_mod_8(){
 
 	public function vsql_ugd(){
 		if($_POST['penunjang']=='Lab'){
-		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+		
+			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
 				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			}
-			else if($_POST['penunjang']=='Rad'){
+		else if($_POST['penunjang']=='Rad'){
 			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
 				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
-			}
-			else{
+		}
+		else{
 				$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
 				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			
-			}
+		}
 		
 		return $this->db->query($query)->result();
 	}
