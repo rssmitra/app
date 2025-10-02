@@ -2037,7 +2037,7 @@ class References extends MX_Controller {
     	$this->db->where('a.is_active = 1');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
-		// print_r($this->db->last_query());die;
+		print_r($this->db->last_query());die;
 
 		$arrResult = [];
 		foreach ($result as $key => $value) {
@@ -2100,7 +2100,7 @@ class References extends MX_Controller {
 		$tc_permintaan_inst = ($_GET['flag'] == 'non_medis') ? 'tc_permintaan_inst_nm' : 'tc_permintaan_inst' ;
 
 		$this->db->from($table.' as a');
-		$this->db->join($mt_depo_stok.' as b', 'b.kode_brg=a.kode_brg' , 'left');
+		$this->db->join($mt_depo_stok.' as b', '(b.kode_brg=a.kode_brg AND b.kode_bagian = '.$_GET['from_unit'].')' , 'left');
 		$this->db->where('a.kode_brg', $_GET['kode_brg']);
 		if($_GET['retur']=='lainnya'){
 			$this->db->where('b.kode_bagian', $_GET['from_unit']);

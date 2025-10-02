@@ -34,6 +34,7 @@
       drawCallback: function( settings ) {
           var response = this.api().ajax.json();
           if(response != undefined){
+            $('#count_selesai').html(response.count_data+' Resep');
             $('#avg-tat-info').html(response.tat);
           }
       },
@@ -153,9 +154,15 @@
       </div>
       
       <hr class="separator">
-      <!-- div.dataTables_borderWrap -->
-       <div><i>Rata-rata waktu pelayanan farmasi :</i><br><span id="avg-tat-info" style="font-size: 24px; font-weight: bold">(hh:ii:ss)</span><div>
-      <div style="margin-top:-27px">
+      <table>
+        <tr>
+          <td width="200px"><span><i>Total Resep Selesai :</i><br><span id="count_selesai" style="font-size: 24px; font-weight: bold">0 Resep</span></td>
+          <td width="200px"><span><i>Rata-rata waktu pelayanan farmasi :</i><br><span id="avg-tat-info" style="font-size: 24px; font-weight: bold">(hh:ii:ss)</span></td>
+        </tr>
+      </table>
+      <hr>
+      
+      <div>
         
         <table id="table-tat" base-url="farmasi/Turn_around_time/get_data?flag=All" class="table table-bordered table-hover">
           <thead>
