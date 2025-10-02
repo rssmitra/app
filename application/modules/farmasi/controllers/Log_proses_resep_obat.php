@@ -53,6 +53,7 @@ class Log_proses_resep_obat extends MX_Controller {
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
         );
         
+        $arr_seconds = array();
         foreach ($list as $row_list) {
             $no++;
             // $flag = $this->regex->_genRegex($row_list->no_resep, 'RQXAZ');
@@ -123,21 +124,25 @@ class Log_proses_resep_obat extends MX_Controller {
                 $row[] = '';
             }
 
+            if($_GET['flag'] == 'selesai'){
+                $arr_seconds[] = $this->tanggal->diffHourMinuteReturnSecond($row_list->log_time_1, $row_list->log_time_5);
+            }
             
             $data[] = $row;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        // "recordsTotal" => $this->Log_proses_resep_obat->count_all(),
-                        // "recordsFiltered" => $this->Log_proses_resep_obat->count_filtered(),
                         "data" => $data,
                         "count_data" => count($list),
+                        "tat" => (count($arr_seconds) > 0) ? $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds)) : '00:00:00',
+                        "count_selesai" => (count($arr_seconds) > 0) ? count($arr_seconds) : '00:00:00',
         );
         //output to json format
         echo json_encode($output);
     }
 
+    
     public function process()
     {
         // print_r($_POST);die;

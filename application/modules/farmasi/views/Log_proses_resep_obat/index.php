@@ -26,7 +26,7 @@
       oTableSelesai.ajax.reload();
     }
 
-    setInterval(reloadAllTables, 30000);
+    // setInterval(reloadAllTables, 30000);
 
     //initiate dataTables plugin
     oTableResepDiterima = $('#tbl_resep_diterima').DataTable({ 
@@ -301,6 +301,8 @@
       drawCallback: function( settings ) {
            var response = settings.json;
            $('#total_selesai').html(response.count_data);
+           $('#avg-tat-info').html(response.tat);
+           $('#count_selesai').html(response.count_selesai+' Resep');
       },
       "columnDefs": [
           { 
@@ -347,7 +349,6 @@
             $(this).addClass('selected');
         }
     } );
-
 
   } ); 
 
@@ -454,11 +455,17 @@
             </div>
 
           </div>
-
         </div>
       </div>
       <hr>
-
+      <table>
+        <tr>
+          <td width="200px"><span><i>Total Resep Selesai :</i><br><span id="count_selesai" style="font-size: 24px; font-weight: bold">0 Resep</span></td>
+          <td width="200px"><span><i>Rata-rata waktu pelayanan farmasi :</i><br><span id="avg-tat-info" style="font-size: 24px; font-weight: bold">(hh:ii:ss)</span></td>
+        </tr>
+      </table>
+      
+      <hr>
       <div class="tabbable">
         <ul class="nav nav-tabs" id="myTab">
           <li class="active">
@@ -498,11 +505,10 @@
 
 
         </ul>
-
         <div class="tab-content">
           <div id="resep_diterima" class="tab-pane fade in active">
             <!-- div.dataTables_borderWrap -->
-            <div style="margin-top:20px">
+            <div>
               <table id="tbl_resep_diterima" base-url="farmasi/Log_proses_resep_obat/get_data?flag=resep_diterima" class="table table-bordered table-hover">
                 <thead>
                   <tr>  
@@ -530,7 +536,7 @@
 
           <div id="proses_racikan" class="tab-pane fade">
             <!-- div.dataTables_borderWrap -->
-            <div style="margin-top:20px">
+            <div>
               <table id="tbl_proses_racikan" base-url="farmasi/Log_proses_resep_obat/get_data?flag=proses_racikan" class="table table-bordered table-hover">
                 <thead>
                   <tr>  
@@ -558,7 +564,7 @@
 
           <div id="proses_etiket" class="tab-pane fade">
             <!-- div.dataTables_borderWrap -->
-            <div style="margin-top:20px">
+            <div>
               <table id="tbl_proses_etiket" base-url="farmasi/Log_proses_resep_obat/get_data?flag=proses_etiket" class="table table-bordered table-hover">
                 <thead>
                   <tr>  
@@ -586,7 +592,7 @@
 
           <div id="siap_diambil" class="tab-pane fade">
             <!-- div.dataTables_borderWrap -->
-            <div style="margin-top:20px">
+            <div>
               <table id="tbl_siap_diambil" base-url="farmasi/Log_proses_resep_obat/get_data?flag=siap_diambil" class="table table-bordered table-hover">
                 <thead>
                   <tr>  
@@ -614,7 +620,7 @@
 
           <div id="selesai" class="tab-pane fade">
             <!-- div.dataTables_borderWrap -->
-            <div style="margin-top:20px">
+            <div>
               <table id="tbl_selesai" base-url="farmasi/Log_proses_resep_obat/get_data?flag=selesai" class="table table-bordered table-hover">
                 <thead>
                   <tr>  
