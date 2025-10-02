@@ -77,7 +77,12 @@ class Log_proses_resep_obat extends MX_Controller {
             }else{
                 $row[] = '<div class="center">-</div>';
             }
-            $row[] = ($row_list->log_time_4 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-success" onclick="exc_process('.$row_list->kode_trans_far.', 4, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-play"></i> Mulai eTiket </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_4).'</div>';
+            if($row_list->log_time_4 == null){
+                $row[] = ($row_list->log_time_4 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-success" onclick="exc_process('.$row_list->kode_trans_far.', 4, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-play"></i> Mulai eTiket </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_4).'</div>';
+            }else{
+                $row[] = ($row_list->log_time_5 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 5, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-pause"></i> Selesai eTiket </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_4).'</div>';
+            }
+
             $row[] = ($row_list->log_time_5 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 5, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-check-circle"></i> Siap Diambil </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_5).'</div>';
 
             if($row_list->status_ambil_obat == 1){

@@ -44,7 +44,7 @@ class Log_proses_resep_obat_model extends CI_Model {
 				$this->db->where('(log_time_2 is not null AND log_time_3 is null)');
 			}else if($_GET['flag'] == 'proses_etiket'){
 				$this->db->where('fr_tc_far.jenis_resep', 'non_racikan');
-				$this->db->where('(log_time_2 is not null AND log_time_4 is null)');
+				$this->db->where('(log_time_2 is not null AND (log_time_4 is null or log_time_4 is not null AND log_time_5 is null))');
 			}else if($_GET['flag'] == 'siap_diambil'){
 				$this->db->where('(log_time_5 is not null AND log_time_6 is null)');
 			}else if($_GET['flag'] == 'selesai'){

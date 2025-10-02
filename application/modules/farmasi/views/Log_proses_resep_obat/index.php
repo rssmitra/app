@@ -26,7 +26,7 @@
       oTableSelesai.ajax.reload();
     }
 
-    setInterval(reloadAllTables, 30000);
+    // setInterval(reloadAllTables, 30000);
 
     //initiate dataTables plugin
     oTableResepDiterima = $('#tbl_resep_diterima').DataTable({ 
