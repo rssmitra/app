@@ -141,7 +141,7 @@
 
   <body class="no-skin">
     <!-- STAMP LABEL -->
-    <div class="uji-coba-stamp">Sedang Uji Coba</div>
+    <!-- <div class="uji-coba-stamp">Sedang Uji Coba</div> -->
     <style>
       .uji-coba-stamp {
         position: fixed;

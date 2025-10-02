@@ -51,7 +51,7 @@ class Log_proses_resep_obat extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
-            );
+        );
         
         foreach ($list as $row_list) {
             $no++;
@@ -127,6 +127,7 @@ class Log_proses_resep_obat extends MX_Controller {
                         // "recordsTotal" => $this->Log_proses_resep_obat->count_all(),
                         // "recordsFiltered" => $this->Log_proses_resep_obat->count_filtered(),
                         "data" => $data,
+                        "count_data" => count($list),
         );
         //output to json format
         echo json_encode($output);
