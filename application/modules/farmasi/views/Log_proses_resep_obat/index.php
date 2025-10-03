@@ -26,7 +26,7 @@
       oTableSelesai.ajax.reload();
     }
 
-    // setInterval(reloadAllTables, 30000);
+    setInterval(reloadAllTables, 30000);
 
     //initiate dataTables plugin
     oTableResepDiterima = $('#tbl_resep_diterima').DataTable({ 
@@ -372,11 +372,11 @@
   $('#btn_reset_data').click(function (e) {
     e.preventDefault();
     $('#form_search')[0].reset();
-    oTableResepDiterima.ajax.url($('#tbl_resep_diterima').attr('base-url')).load();
+    reloadAllTables();
   });
 
   function find_data_reload(result){
-      oTableResepDiterima.ajax.url($('#tbl_resep_diterima').attr('base-url')+'&'+result.data).load();
+      reloadAllTables();
   }
 
   function exc_process(kode_trans_far, flag_code, jenis_resep, status_ambil=0) {
@@ -395,7 +395,7 @@
           if(data.status === 200){          
 
             $.achtung({message: data.message, timeout:5});  
-            oTableResepDiterima.ajax.reload();  
+            reloadAllTables(); 
 
           }else{
 

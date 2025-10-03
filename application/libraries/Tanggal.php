@@ -886,13 +886,13 @@ final class Tanggal {
         return '-';
     }
 
-    public function convertHourMinutesSecond($second) {
+    public function convertHourMinutesSecond($second, $max_layan=45) {
         if ($second) {
             $hours = floor($second / 3600);
             $minutes = floor(($second % 3600) / 60);
             $seconds = $second % 60;
 
-            if($minutes > 45){
+            if($minutes > $max_layan){
                 $color = 'red';
             }else{
                 $color = 'green';
@@ -903,7 +903,7 @@ final class Tanggal {
         return '-';
     }
 
-    public function diffHourMinute($start, $end) {
+    public function diffHourMinute($start, $end, $max_layan=45) {
         if ($start && $end && strtotime($start) !== false && strtotime($end) !== false) {
             $start_ts = strtotime($start);
             $end_ts = strtotime($end);
@@ -911,7 +911,7 @@ final class Tanggal {
             $hours = floor($diff / 3600);
             $minutes = floor(($diff % 3600) / 60);
             $seconds = $diff % 60;
-            if($minutes > 45){
+            if($minutes > $max_layan){
                 $color = 'red';
             }else{
                 $color = 'green';
