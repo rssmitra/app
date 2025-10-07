@@ -22,6 +22,7 @@ class Riwayat_pemakaian_bhp_model extends CI_Model {
 		$kode_bagian = isset($_GET['kode_bagian'])?$_GET['kode_bagian']:'060201';
 		$this->db->where('tc_kartu_stok.kode_bagian', $kode_bagian);
 		$this->db->where('jenis_transaksi', 7);
+		$this->db->where('is_retur is null');
 		
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,tc_kartu_stok.tgl_input,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
