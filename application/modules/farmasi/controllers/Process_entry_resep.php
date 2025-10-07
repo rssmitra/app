@@ -449,7 +449,6 @@ class Process_entry_resep extends MX_Controller {
                 'lampiran_lab_kode_penunjang' => $kode_penunjang,
                 'lampiran_memo_inhibitor' => isset($_POST['lampiran_memo_inhibitor'])?$_POST['lampiran_memo_inhibitor']:'',
                 'perubahan_resep' => isset($_POST['perubahan_resep'])?$_POST['perubahan_resep']:'',
-                'log_time_2' => date('Y-m-d H:i:s'),
                 'jenis_resep' => ($ex_dt->jenis_resep == 'racikan')?'racikan':'non_racikan',
             ];
 

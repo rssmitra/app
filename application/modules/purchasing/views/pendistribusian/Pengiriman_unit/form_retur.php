@@ -392,139 +392,111 @@ th, td {
 <div class="row">
   <div class="col-xs-12">
     <!-- PAGE CONTENT BEGINS -->
-      <div class="widget-body">
-        <div class="widget-main no-padding">
+      <form class="form-horizontal" autocomplete="off">
 
-          <form class="form-horizontal" autocomplete="off">
+        <div class="col-md-6">
 
-              <div class="row">
+          <div class="form-group" id="barcode_input" style="display: none">
+            <label class="control-label col-md-3">Kode Barcode</label>
+            <div class="col-md-9" style="margin-top: 4px; padding-left: 20px">
+              <span id="barcode_text"><i class="fa fa-question-circle bigger-150 orange"></i></span>
+              <input type="hidden" id="barcode_value">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3">Jenis Retur</label>
+            <div class="col-md-9">
+              <select name="jenis_retur" id="jenis_retur" class="form-control">
+                <option value="#">-Pilih Jenis Retur-</option>
+                <option value="penjualan_brg" <?php echo isset($_GET['type'])?($_GET['type'] == 'penjualan')?'selected':'':''?>>Penjualan Farmasi</option>
+                <option value="penerimaan_brg">Penerimaan Barang</option>
+                <!-- <option value="pengiriman_brg_unit">Pengiriman Barang Unit</option> -->
+                <option value="lainnya">Retur Stok Unit ke Gudang</option>
+                <option value="expired">Barang Expired</option>
+              </select>
+            </div>  
+          </div>
 
-                <div class="col-md-6">
-                  <h3 class="header smaller lighter blue" style="font-size: 15px;margin-top: -2px;">Form Retur</h3>
-                  
-                  <div class="widget-box" style="margin-top: -13px">
-                    <div class="widget-body">
-                      <div class="widget-main">
-                        <div class="form-group" id="barcode_input" style="display: none">
-                          <label class="control-label col-md-3">Kode Barcode</label>
-                          <div class="col-md-9" style="margin-top: 4px; padding-left: 20px">
-                            <span id="barcode_text"><i class="fa fa-question-circle bigger-150 orange"></i></span>
-                            <input type="hidden" id="barcode_value">
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label class="control-label col-md-3">Jenis Retur</label>
-                          <div class="col-md-9">
-                            <select name="jenis_retur" id="jenis_retur" class="form-control">
-                              <option value="#">-Pilih Jenis Retur-</option>
-                              <option value="penjualan_brg" <?php echo isset($_GET['type'])?($_GET['type'] == 'penjualan')?'selected':'':''?>>Penjualan Farmasi</option>
-                              <option value="penerimaan_brg">Penerimaan Barang</option>
-                              <!-- <option value="pengiriman_brg_unit">Pengiriman Barang Unit</option> -->
-                              <option value="lainnya">Retur Stok Unit ke Gudang</option>
-                              <option value="expired">Barang Expired</option>
-                            </select>
-                          </div>  
-                        </div>
-
-                        <div id="div_jenis_retur_ex_penjualan" style="display: none">
-                          <div class="form-group">
-                            <label class="control-label col-md-3">Retur ke Gudang</label>
-                            <div class="col-md-9">
-                              <div class="radio">
-                                <label>
-                                  <input name="flag_gudang" type="radio" class="ace" value="medis" checked />
-                                  <span class="lbl"> Medis</span>
-                                </label>
-                                <label>
-                                  <input name="flag_gudang" type="radio" class="ace" value="non_medis"/>
-                                  <span class="lbl"> Non Medis</span>
-                                </label>
-                              </div>
-                            </div>             
-                          </div>
-
-                          <div class="form-group" id="dari_unit_div">
-                            <label class="control-label col-md-3">Dari unit</label>
-                            <div class="col-md-9">
-                              <?php 
-                                echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060101' , 'dari_unit', 'dari_unit', 'form-control', '', '') ?>
-                            </div>  
-                          </div>
-
-                          <div class="form-group">
-                              <label class="control-label col-md-3">Cari Barang</label>
-                              <div class="col-md-9">
-                                <input type="text" class="form-control" name="keyword" id="inputKeyBarang">
-                              </div>
-                          </div>
-                        </div>
-
-                        <div id="div_retur_penjualan" <?php echo isset($_GET['type'])?($_GET['type'] == 'penjualan')?'':'style="display: none"':'style="display: none"'?> >
-                          <div class="form-group">
-                              <label class="control-label col-md-3">Kode Transaksi</label>
-                              <div class="col-md-9">
-                                <input type="text" class="form-control" name="kode_transaksi" id="kode_transaksi">
-                              </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="widget-box">
-                    <div class="widget-body" style="background: #edf3f4;">
-                      <div class="widget-main">
-                          
-                          <div class="form-group">
-                            <label class="control-label col-md-2">Kode brg</label>
-                            <div class="col-md-3" >
-                              <input class="form-control" type="text" name="kode_brg_hidden" id="kode_brg_hidden">
-                              <input class="form-control" type="hidden" name="nama_brg_hidden" id="nama_brg_hidden">
-                              <input class="form-control" type="hidden" name="satuan_brg_hidden" id="satuan_brg_hidden">
-                              <input class="form-control" type="hidden" name="harga_brg_hidden" id="harga_brg_hidden">
-                            </div>
-                            <label class="control-label col-md-1">Qty</label>
-                            <div class="col-md-2" >
-                              <input class="form-control" type="number" name="qtyBrg" id="qtyBarang" value="0">
-                              <input class="form-control" type="hidden" name="qtyBrgStok" id="qtyStok">
-                              <input class="form-control" type="hidden" name="reff_kode" id="reff_kode">
-                              <input class="form-control" type="hidden" name="retur_type" id="retur_type">
-                            </div>
-                            <div class="col-md-3" id="div_restock">
-                                <label style="padding-top: 3px">
-                                  <input type="checkbox" class="ace" name="restock" id="restock" value="1">
-                                  <span class="lbl"> Kembalikan stok</span>
-                                </label>
-                            </div>
-                            <div class="col-md-1" style="margin-left: -10px;">
-                              <a href="#" onclick="insert_cart_log()" class="btn btn-xs btn-yellow"><i class="fa fa-shopping-cart"></i> Masukan List</a>
-                            </div>
-                            
-                          </div>
-
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div id="div_detail_brg"></div>
-                    </div>
-                  </div>
-
+          <div id="div_jenis_retur_ex_penjualan" style="display: none">
+            <div class="form-group">
+              <label class="control-label col-md-3">Retur ke Gudang</label>
+              <div class="col-md-9">
+                <div class="radio">
+                  <label>
+                    <input name="flag_gudang" type="radio" class="ace" value="medis" checked />
+                    <span class="lbl"> Medis</span>
+                  </label>
+                  <label>
+                    <input name="flag_gudang" type="radio" class="ace" value="non_medis"/>
+                    <span class="lbl"> Non Medis</span>
+                  </label>
                 </div>
-                <div class="col-md-6">
-                <h3 class="header smaller lighter blue" style="font-size: 15px;margin-top: -2px;margin-left: -12px;">Daftar Retur Barang</h3>
-                  <div id="div_cart"></div>
-                </div>
+              </div>             
+            </div>
 
+            <div class="form-group" id="dari_unit_div">
+              <label class="control-label col-md-3">Dari unit</label>
+              <div class="col-md-9">
+                <?php 
+                  echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060101' , 'dari_unit', 'dari_unit', 'form-control', '', '') ?>
+              </div>  
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3">Cari Barang</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="keyword" id="inputKeyBarang">
+                </div>
+            </div>
+          </div>
+
+          <div id="div_retur_penjualan" <?php echo isset($_GET['type'])?($_GET['type'] == 'penjualan')?'':'style="display: none"':'style="display: none"'?> >
+            <div class="form-group">
+                <label class="control-label col-md-3">Kode Transaksi</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="kode_transaksi" id="kode_transaksi">
+                </div>
+            </div>
+          </div>
+
+          <div style="padding: 10px; background-color: #d9edf7; border: 1px solid #bce8f1; border-radius: 4px; margin-bottom: 10px;">
+            <div class="form-group">
+              <label class="control-label col-md-2">Kode brg</label>
+              <div class="col-md-3" >
+                <input class="form-control" type="text" name="kode_brg_hidden" id="kode_brg_hidden">
+                <input class="form-control" type="hidden" name="nama_brg_hidden" id="nama_brg_hidden">
+                <input class="form-control" type="hidden" name="satuan_brg_hidden" id="satuan_brg_hidden">
+                <input class="form-control" type="hidden" name="harga_brg_hidden" id="harga_brg_hidden">
               </div>
+              <label class="control-label col-md-1">Qty</label>
+              <div class="col-md-2" >
+                <input class="form-control" type="number" name="qtyBrg" id="qtyBarang" value="0">
+                <input class="form-control" type="hidden" name="qtyBrgStok" id="qtyStok">
+                <input class="form-control" type="hidden" name="reff_kode" id="reff_kode">
+                <input class="form-control" type="hidden" name="retur_type" id="retur_type">
+              </div>
+              <div class="col-md-3" id="div_restock">
+                  <label style="padding-top: 3px">
+                    <input type="checkbox" class="ace" name="restock" id="restock" value="1">
+                    <span class="lbl"> Kembalikan stok</span>
+                  </label>
+              </div>
+              <div class="col-md-1" style="margin-left: -10px;">
+                <a href="#" onclick="insert_cart_log()" class="btn btn-xs btn-yellow"><i class="fa fa-shopping-cart"></i> Masukan List</a>
+              </div>
+            </div>
+            <br>
 
-          </form>
-          
+          </div>
+
+          <div id="div_detail_brg"></div>
+          <br>
+          <div id="div_cart" style="padding: 10px"></div>
+
         </div>
-      </div>
+
+
+      </form>
     <!-- PAGE CONTENT ENDS -->
   </div><!-- /.col -->
 </div><!-- /.row -->

@@ -350,20 +350,20 @@ final class Tarif extends AvObjects {
 
     }
 
-    function getTarifForinsert(){
+    function getTarifForinsert($is_paket=''){
 
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
         $jumlah = isset($_POST['pl_jumlah'])?$_POST['pl_jumlah']:1;
         $data = array(
-            'bill_rs' => $_POST['bill_rs'] * $jumlah,
-            'bill_dr1' => $_POST['bill_dr1'] * $jumlah,
-            'bill_dr2' => $_POST['bill_dr2'] * $jumlah,
-            'bill_dr3' => $_POST['bill_dr3'] * $jumlah,
-            'bhp' => $_POST['bhp'] * $jumlah,
-            'pendapatan_rs' => $_POST['pendapatan_rs'] * $jumlah,
-            'alat_rs' => $_POST['alat_rs'] * $jumlah,
-            'kamar_tindakan' => $_POST['kamar_tindakan'] * $jumlah,
+            'bill_rs' => ($is_paket == 1) ? 0 : $_POST['bill_rs'] * $jumlah,
+            'bill_dr1' => ($is_paket == 1) ? 0 : $_POST['bill_dr1'] * $jumlah,
+            'bill_dr2' => ($is_paket == 1) ? 0 : $_POST['bill_dr2'] * $jumlah,
+            'bill_dr3' => ($is_paket == 1) ? 0 : $_POST['bill_dr3'] * $jumlah,
+            'bhp' => ($is_paket == 1) ? 0 : $_POST['bhp'] * $jumlah,
+            'pendapatan_rs' => ($is_paket == 1) ? 0 : $_POST['pendapatan_rs'] * $jumlah,
+            'alat_rs' => ($is_paket == 1) ? 0 : $_POST['alat_rs'] * $jumlah,
+            'kamar_tindakan' => ($is_paket == 1) ? 0 : $_POST['kamar_tindakan'] * $jumlah,
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $CI->session->userdata('user')->fullname,
             );

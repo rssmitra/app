@@ -230,6 +230,25 @@ function saveCatatanVerif(id){
   });
 }
 
+if(!ace.vars['touch']) {
+      $('.chosen-select').chosen({allow_single_deselect:true}); 
+  //resize the chosen on window resize
+
+  $(window)
+  .off('resize.chosen')
+  .on('resize.chosen', function() {
+    $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': $this.parent().width()});
+    })
+  }).trigger('resize.chosen');
+
+}
+
+$('#resep_batal').on('change', function() {
+  $('#btn_search_data').click();
+});
+
 </script>
 
 <div class="row">
@@ -289,13 +308,19 @@ function saveCatatanVerif(id){
       <div class="form-group">
         <label class="control-label col-md-2">Poli/Klinik</label>
         <div class="col-md-3">
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0300','0500')) ), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0300','0500')) ), '' , 'bagian', 'bagian', 'chosen-select form-control', '', '') ?>
         </div>
         <label class="control-label col-md-1">Dokter</label>
-          <div class="col-md-3">
-              <input id="inputDokter" class="form-control" name="dokter" type="text" placeholder="Masukan keyword minimal 3 karakter" value="" />
-              <input type="hidden" name="dokterHidden" value="" id="dokterHidden">
+          <div class="col-md-4">
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'dokterHidden', 'dokterHidden', 'chosen-select form-control', '', '') ?>
           </div>
+      </div>
+
+      <div class="col-md-12" style="margin-left: 10px">
+          <label class="inline" style="margin-top: 4px;margin-left: -20px;">
+        <input type="checkbox" class="ace" name="resep_batal" id="resep_batal" value="1">
+        <span class="lbl" style="font-weight: bold; font-style: italic"> Tampilkan resep batal</span>
+          </label>
       </div>
       
       <div class="form-group">
@@ -315,7 +340,6 @@ function saveCatatanVerif(id){
       <!-- div.dataTables_borderWrap -->
       <div class="row">
         <div class="col-md-12">
-          <!-- <table id="dynamic-table" base-url="farmasi/E_resep_rj/get_data?flag=<?php echo $flag?>" class="table table-bordered table-hover"> -->
           <table id="dynamic-table" base-url="farmasi/E_resep_rj/get_data" data-id="flag=<?php echo $flag?>" url-detail="farmasi/Farmasi_pesan_resep/getDetail" class="table table-bordered table-hover">
             <thead>
               <tr>  

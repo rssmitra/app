@@ -141,7 +141,7 @@
 
   <body class="no-skin">
     <!-- STAMP LABEL -->
-    <div class="uji-coba-stamp">Sedang Uji Coba</div>
+    <!-- <div class="uji-coba-stamp">Sedang Uji Coba</div> -->
     <style>
       .uji-coba-stamp {
         position: fixed;
@@ -226,8 +226,8 @@
                             <?php 
                               $no=0; 
                               $arr_resep_diterima = [];
+                              // echo '<pre>';print_r($resep_diterima);die;
                               foreach($resep_diterima as $row) :
-                                if($row->kode_trans_far == null) :
                                   $no++;
                                   $arr_resep_diterima[] = $row;
                             ?>
@@ -251,7 +251,7 @@
                               </td>
                               <td align="center" style="vertical-align: top"><?php echo date('H:i', strtotime($row->tgl_trans))?></td>
                             </tr>
-                            <?php endif; endforeach;?>
+                            <?php endforeach;?>
                           </tbody>
                         </table></div></div>
                       </div>

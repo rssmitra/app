@@ -51,19 +51,23 @@ class Log_proses_resep_obat extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
-            );
-        
+        );
+        $max_layan = (isset($_GET['max_layan']) && is_numeric($_GET['max_layan'])) ? (int)$_GET['max_layan'] : 45;
+        $arr_seconds = array();
         foreach ($list as $row_list) {
             $no++;
             // $flag = $this->regex->_genRegex($row_list->no_resep, 'RQXAZ');
             $flag = preg_replace('/[^A-Za-z\?!]/', '', $row_list->no_resep);
 
             $row = array();
+            $row[] = '';
+            $row[] = $row_list->kode_pesan_resep;
             $row[] = '<div class="center">'.$no.'</div>';
+
             $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=1'".')">'.$row_list->kode_trans_far.'</a></b></div>';
 
             // $row[] = '<div class="center">'.$row_list->no_resep.'</div>';
-            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans);
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</div>';
             $row[] = $row_list->no_mr.' - '.strtoupper($row_list->nama_pasien);
             $jenis_resep = ($row_list->jenis_resep == 'racikan')?'<span style="font-weight: bold; color: red">Racikan</span>':'<span style="font-weight: bold; color: blue">Non Racikan</span>';
             $row[] = '<div class="center">'.$jenis_resep.'</div>';
@@ -74,35 +78,72 @@ class Log_proses_resep_obat extends MX_Controller {
             }else{
                 $row[] = '<div class="center">-</div>';
             }
-            $row[] = ($row_list->log_time_4 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-success" onclick="exc_process('.$row_list->kode_trans_far.', 4, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-play"></i> Mulai eTiket </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_4).'</div>';
+            if($row_list->log_time_4 == null){
+                $row[] = ($row_list->log_time_4 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-success" onclick="exc_process('.$row_list->kode_trans_far.', 4, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-play"></i> Mulai eTiket </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_4).'</div>';
+            }else{
+                $row[] = ($row_list->log_time_5 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 5, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-pause"></i> Selesai eTiket </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_4).'</div>';
+            }
+
             $row[] = ($row_list->log_time_5 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 5, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-check-circle"></i> Siap Diambil </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_5).'</div>';
-            $row[] = ($row_list->log_time_6 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-check-circle"></i> Selesai </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_6).'</div>';
+
+            if($row_list->status_ambil_obat == 1){
+                $title_status = 'Sudah diambil';
+                $class_btn = 'btn-success';
+
+            }else if($row_list->status_ambil_obat == 2){
+                $title_status = 'Ditinggal';
+                $class_btn = 'btn-danger';
+            }else{
+                $title_status = 'Belum diambil';
+                $class_btn = 'btn-warning';
+            }
+
+            $btn_status = '<div class="btn-group">
+                                <button data-toggle="dropdown" class="btn btn-xs '.$class_btn.' dropdown-toggle">
+                                    '.$title_status.'
+                                    <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-warning">
+                                    <li><a href="#" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".', 2)">Ditinggal</a></li>
+                                    <li><a href="#" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".', 1)">Sudah diambil</a></li>
+                                </ul>
+                            </div>';
+
+            $row[] = '<div class="center">'.$btn_status.'</div>';
             // selisih log_time_1 sampai dengan log_time_6 tanpa library tanggal, gunakan fungsi PHP
-            if ($row_list->log_time_6 != null && strtotime($row_list->log_time_1) !== false && strtotime($row_list->log_time_6) !== false) {
+            if ($row_list->log_time_5 != null && strtotime($row_list->log_time_1) !== false && strtotime($row_list->log_time_5) !== false) {
+                
                 $start = new DateTime($row_list->log_time_1);
-                $end = new DateTime($row_list->log_time_6);
+                $end = new DateTime($row_list->log_time_5);
                 $diff = $start->diff($end);
                 $hours = $diff->h + ($diff->days * 24);
                 $minutes = $diff->i;
-                $row[] = '<div class="center">'.sprintf('%02d:%02d', $hours, $minutes).'</div>';
+                $total_minutes = ($hours * 60) + $minutes;
+                $color = ($total_minutes < $max_layan) ? 'green' : 'red';
+                $row[] = '<div class="center"><span style="color:'.$color.'; font-weight: bold; font-size: 14px">'.sprintf('%02d:%02d', $hours, $minutes).'</span></div>';
             } else {
                 $row[] = '';
             }
 
+            if($_GET['flag'] == 'selesai'){
+                $arr_seconds[] = $this->tanggal->diffHourMinuteReturnSecond($row_list->log_time_1, $row_list->log_time_5);
+            }
             
             $data[] = $row;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        // "recordsTotal" => $this->Log_proses_resep_obat->count_all(),
-                        // "recordsFiltered" => $this->Log_proses_resep_obat->count_filtered(),
                         "data" => $data,
+                        "count_data" => count($list),
+                        "tat" => (count($arr_seconds) > 0) ? $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds), $max_layan) : '00:00:00',
+                        "count_selesai" => (count($arr_seconds) > 0) ? count($arr_seconds) : '00:00:00',
         );
         //output to json format
         echo json_encode($output);
     }
 
+    
     public function process()
     {
         // print_r($_POST);die;
@@ -128,28 +169,37 @@ class Log_proses_resep_obat extends MX_Controller {
             $this->db->trans_begin();
             $dataexc = [];
             // cek proses
-            
-            if(!empty($_POST['jenis'])){
-                if($_POST['jenis'] == 'non_racikan' && $_POST['proses'] == 4){
+            $jenis_resep = (empty($_POST['jenis'])) ? 'non_racikan' : $_POST['jenis'] ;
+
+            if(!empty($jenis_resep)){
+                if($jenis_resep == 'non_racikan' && $_POST['proses'] == 4){
                     $proses = $_POST['proses'] - 2;
                 }else{
                     $proses = ($_POST['proses'] == 1) ? 1 : $_POST['proses'] - 1;
                 }
             }else{
-                if($_POST['jenis'] == 'non_racikan' && $_POST['proses'] == 4){
+                if($jenis_resep == 'non_racikan' && $_POST['proses'] == 4){
                     $proses = $_POST['proses'] - 2;
                 }else{
                     $proses = $_POST['proses'] - 1;
                 }
             }
             
-            
+            // echo $proses;die;
             if($_POST['proses'] > 1) {
                 $cek_proses_sebelumnya = $this->db->where('log_time_'.$proses.' is not null')->get_where('fr_tc_far', ['kode_trans_far' => $_POST['ID']])->row();
                 // echo $this->db->last_query();die;
                 if (!$cek_proses_sebelumnya) {
                     echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Sebelumnya Belum Dilakukan'));
                     return;
+                }
+            }
+
+            if($_POST['proses'] == 6){
+                if($_POST['status_ambil'] == 1){
+                    $dataexc['status_ambil_obat'] = 1; // sudah diambil
+                }elseif($_POST['status_ambil'] == 2){
+                    $dataexc['status_ambil_obat'] = 2; // ditinggal
                 }
             }
 

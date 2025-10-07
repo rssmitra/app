@@ -291,7 +291,7 @@ function view_data_soap(myid, flag, no_kunjungan, reff_id){
   preventDefault();
   if(flag == 'RJ'){
 
-    $.getJSON('pelayanan/Pl_pelayanan/diagnosa_dr_view_only/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $kode_bagian;?>&response=json', '' , function (response) {    
+    $.getJSON('pelayanan/Pl_pelayanan/diagnosa_dr_view_only/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $sess_kode_bag;?>&response=json', '' , function (response) {    
       console.log(response);
       openSlidePanel(response.html);
     }); 
@@ -300,7 +300,7 @@ function view_data_soap(myid, flag, no_kunjungan, reff_id){
     // $('#li_soap').addClass('active');
     // $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processUpdateDiagnosaDr');
 
-    // show_modal('pelayanan/Pl_pelayanan/diagnosa_dr_view_only/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $kode_bagian;?>', 'SOAP DOKTER');
+    // show_modal('pelayanan/Pl_pelayanan/diagnosa_dr_view_only/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $sess_kode_bag;?>', 'SOAP DOKTER');
   }
 
 }

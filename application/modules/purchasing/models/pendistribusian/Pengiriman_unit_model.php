@@ -188,7 +188,126 @@ class Pengiriman_unit_model extends CI_Model {
 		return $result;
 	}
 
-	public function get_cart_data($flag_form){
+	public function get_cart_data() {
+		$flag = isset($_GET['flag']) ? $_GET['flag'] : '';
+		$ids = isset($_GET['id']) ? $_GET['id'] : '';
+		if (empty($ids)) {
+			return [];
+		}
+
+		$mt_barang = ($flag == 'non_medis') ? 'mt_barang_nm' : 'mt_barang';
+		$table = ($flag == 'non_medis') ? $this->table_nm : $this->table;
+		$join_3 = ($flag == 'non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok';
+		$join_4 = ($flag == 'non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok';
+		$kode_gudang = ($flag == 'non_medis') ? '070101' : '060201';
+
+		$ids_str = is_array($ids) ? implode(',', array_map('intval', $ids)) : intval($ids);
+
+		$this->db->select([
+			'a.id_tc_permintaan_inst_det',
+			'e.kode_bagian_minta as kode_bagian',
+			'jumlah_permintaan as qty',
+			'jumlah_penerimaan',
+			'a.kode_brg',
+			'c.nama_brg',
+			'c.content as rasio',
+			'c.satuan_kecil as satuan',
+			'c.satuan_besar',
+			'e.nomor_permintaan',
+			'e.jenis_permintaan',
+			'e.tgl_permintaan',
+			'f.jml_sat_kcl as jumlah_stok_gudang',
+			'g.nama_bagian',
+			'CAST(c.harga_beli as INT) as harga',
+			'CAST(e.catatan as NVARCHAR(1000)) as catatan',
+			'e.tgl_acc',
+			'e.acc_by',
+			'e.status_acc',
+			'e.no_acc',
+			'e.yg_terima',
+			'e.tgl_pengiriman',
+			'e.yg_serah',
+			'e.nomor_pengiriman',
+			'e.tgl_input_terima',
+			'h.nama_brg as brg_revisi',
+			'a.rev_qty as qty_revisi',
+			'a.is_bhp',
+			'a.jml_acc_atasan',
+			'keterangan_verif',
+			'keterangan_permintaan',
+			'i.jml_sat_kcl as jumlah_stok_sebelumnya',
+			'j.jml_sat_kcl as stok_gdg_revisi',
+			'a.status_verif',
+			'a.tgl_kirim',
+			'a.jumlah_kirim',
+			'a.petugas_kirim',
+			'a.jumlah_penerimaan',
+			'a.petugas_terima'
+		]);
+		$this->db->from("{$table}_det a");
+		$this->db->join("$mt_barang c", 'c.kode_brg=a.kode_brg', 'left');
+		$this->db->join("$table e", 'e.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'left');
+		$this->db->join('mt_bagian g', 'g.kode_bagian=e.kode_bagian_minta', 'left');
+		$this->db->join("$join_3 f", "f.kode_brg=a.kode_brg AND f.kode_bagian_gudang='$kode_gudang'", 'left');
+		$this->db->join("$join_3 j", "j.kode_brg=a.rev_kode_brg AND j.kode_bagian_gudang='$kode_gudang'", 'left');
+		$this->db->join("$join_4 i", 'i.kode_brg=a.kode_brg AND i.kode_bagian=e.kode_bagian_minta', 'left');
+		$this->db->join("$mt_barang h", 'h.kode_brg=a.rev_kode_brg', 'left');
+		$this->db->where("a.id_tc_permintaan_inst IN ($ids_str)");
+		$this->db->group_by([
+			'a.id_tc_permintaan_inst_det', 'e.kode_bagian_minta', 'jumlah_permintaan', 'jumlah_penerimaan',
+			'a.kode_brg', 'c.nama_brg', 'c.content', 'c.satuan_kecil', 'c.satuan_besar', 'e.nomor_permintaan',
+			'e.jenis_permintaan', 'e.tgl_permintaan', 'f.jml_sat_kcl', 'g.nama_bagian', 'CAST(c.harga_beli as INT)',
+			'CAST(e.catatan as NVARCHAR(1000))', 'e.no_acc', 'e.tgl_acc', 'e.acc_by', 'e.status_acc', 'e.yg_terima',
+			'e.tgl_pengiriman', 'e.yg_serah', 'e.nomor_pengiriman', 'e.tgl_input_terima', 'h.nama_brg', 'a.rev_qty',
+			'a.is_bhp', 'a.jml_acc_atasan', 'keterangan_verif', 'keterangan_permintaan', 'i.jml_sat_kcl', 'j.jml_sat_kcl',
+			'a.status_verif', 'a.tgl_kirim', 'a.jumlah_kirim', 'a.petugas_kirim', 'a.jumlah_penerimaan', 'a.petugas_terima'
+		]);
+		$this->db->order_by('c.nama_brg ASC');
+		return $this->db->get()->result();
+	}
+
+	public function get_permintaan_inst_det_by_id($id_tc_permintaan_inst_det, $flag){
+		
+		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
+		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
+		$join = ($flag=='non_medis')?'tc_permintaan_inst_nm_det':'tc_permintaan_inst_det';
+		$join_2 = ($flag=='non_medis')?'tc_permintaan_inst_nm':'tc_permintaan_inst';
+		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
+
+		$this->db->select('a.*, c.nama_brg, f.harga_beli, c.content as rasio, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, e.kode_bagian_minta');
+		$this->db->from(''.$table.'_det a');
+		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
+		$this->db->join($join_2.' e', 'e.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'left');
+		$this->db->join($join_3.' f', 'f.kode_brg=a.kode_brg', 'left');
+		$this->db->where('a.id_tc_permintaan_inst_det', $id_tc_permintaan_inst_det);
+		return $this->db->get()->row();
+
+	}
+
+	public function get_cart_data_by_id($flag, $id_tc_permintaan_inst_det){
+
+		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
+		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
+		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
+		$kode_gudang = ($flag=='non_medis')?'070101':'060201';
+
+		$this->db->select('a.id_tc_permintaan_inst_det, e.kode_bagian_minta as kode_bagian, jumlah_permintaan as qty, jumlah_penerimaan , a.kode_brg, c.nama_brg, c.content as rasio, c.satuan_kecil as satuan, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_gudang, g.nama_bagian, CAST(c.harga_beli as INT) as harga, CAST(e.catatan as NVARCHAR(1000)) as catatan, e.tgl_acc, e.acc_by, e.status_acc, e.no_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, h.nama_brg as brg_revisi, a.rev_qty as qty_revisi, a.is_bhp, a.rev_kode_brg, a.rev_qty, a.status_verif');
+		$this->db->from(''.$table.'_det a');
+		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
+		$this->db->join($table.' e', 'e.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'left');
+		$this->db->join('mt_bagian g', 'g.kode_bagian=e.kode_bagian_minta', 'left');
+		$this->db->join($join_3.' f', '(f.kode_brg=a.kode_brg AND f.kode_bagian_gudang='.$kode_gudang.')', 'left');
+		$this->db->join($mt_barang.' h', 'h.kode_brg=a.rev_kode_brg', 'left');
+		$id = (is_array($id_tc_permintaan_inst_det)) ? implode(',', $id_tc_permintaan_inst_det) : $id_tc_permintaan_inst_det ;
+		$this->db->where('a.id_tc_permintaan_inst_det IN ('.$id.')');
+		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian, CAST(c.harga_beli as INT), CAST(e.catatan as NVARCHAR(1000)), e.no_acc, e.tgl_acc, e.acc_by, e.status_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, h.nama_brg, a.rev_qty, a.is_bhp, a.rev_kode_brg, a.status_verif');
+		$this->db->order_by('c.nama_brg ASC');
+		$cart_data = $this->db->get()->result();
+		return $cart_data;
+
+	}
+
+	public function get_cart_data_log($flag_form){
 		$this->db->select('kode_brg, nama_brg, SUM(qty) as qty, satuan, cast(harga as int) as harga, flag, nama_bagian, qtyBefore, reff_kode, satuan, retur_type, is_bhp, is_restock, tc_permintaan_inst_cart_log.kode_bagian');
 		$this->db->from('tc_permintaan_inst_cart_log');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_permintaan_inst_cart_log.kode_bagian');
@@ -199,7 +318,5 @@ class Pengiriman_unit_model extends CI_Model {
 		return $this->db->get()->result();
 
 	}
-	
-
 
 }

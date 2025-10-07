@@ -5,7 +5,7 @@ class Inv_mutasi_model extends CI_Model {
 
 	var $table = 'tc_kartu_stok';
 	var $column = array('keterangan');
-	var $select = 'tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, kode_brg';
+	var $select = 'tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, tc_kartu_stok.kode_bagian, keterangan, petugas, id_kartu, kode_brg';
 	var $order = array('tc_kartu_stok.id_kartu' => 'DESC');
 
 	public function __construct()
@@ -19,7 +19,7 @@ class Inv_mutasi_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->select('fullname');
 		$this->db->from($this->table);
-		$this->db->where('kode_bagian', $_GET['kode_bagian']);
+		$this->db->where('tc_kartu_stok.kode_bagian', $_GET['kode_bagian']);
 		$this->db->where('kode_brg', $_GET['kode_brg']);
 		$this->db->join('tmp_user', 'tmp_user.user_id=tc_kartu_stok.petugas', 'left' );
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {

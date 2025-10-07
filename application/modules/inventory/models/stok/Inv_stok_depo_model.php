@@ -142,14 +142,14 @@ class Inv_stok_depo_model extends CI_Model {
 	}
 	public function get_mutasi_stok($kode_brg, $kode_bagian)
 	{
-		$this->db->select('a.rak as rak_lemari, b.*');
+		$this->db->select('a.rak as rak_lemari, a.jml_sat_kcl, a.stok_minimum, b.*');
 		$this->db->from($this->table.' as a');
 		$this->db->join('mt_barang b','b.kode_brg=a.kode_brg','left');
 		$this->db->where('a.kode_brg', $kode_brg);
 		$this->db->where('a.kode_bagian', $kode_bagian);
 		$query = $this->db->get();
-		return $query->row();
 		// echo '<pre>'; print_r($this->db->last_query());die;
+		return $query->row();
 	}
 
 	public function save($data)

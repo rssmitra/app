@@ -95,15 +95,6 @@ $(document).ready(function(){
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label class="control-label col-md-2">Last update</label>
-                  <div class="col-md-8" style="padding-top:8px;font-size:11px">
-                      <i class="fa fa-calendar"></i> <?php echo isset($value->updated_date)?$this->tanggal->formatDateTime($value->updated_date):isset($value)?$this->tanggal->formatDateTime($value->created_date):date('d-M-Y H:i:s')?> - 
-                      by : <i class="fa fa-user"></i> <?php echo isset($value->updated_by)?$value->updated_by:isset($value->created_by)?$value->created_by:$this->session->userdata('user')->username?>
-                  </div>
-                </div>
-
-
                 <div class="form-actions center">
 
                   <!--hidden field-->

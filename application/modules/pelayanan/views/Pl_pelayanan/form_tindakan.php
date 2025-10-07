@@ -779,7 +779,7 @@ function tambah_file()
         <div class="checkbox">
           <label>
             <input name="show_all_tarif" id="show_all_tarif" type="checkbox" class="ace" value="1">
-            <span class="lbl"><i>Tampilkan tarif dari seluruh unit</i></span>
+            <span class="lbl"><i> Tampilkan tarif dari seluruh unit</i></span>
           </label>
         </div>
 
@@ -811,6 +811,13 @@ function tambah_file()
 
         <div class="col-sm-12" id="formDetailTarif" style="display:none; background-color:rgba(195, 220, 119, 0.56); margin-bottom: 3px; padding: 5px">
            <div id="detailTarifHtml"></div>
+        </div>
+
+        <div class="checkbox" style="padding-bottom: 10px">
+          <label>
+            <input name="is_paket" id="is_paket" type="checkbox" class="ace" value="1">
+            <span class="lbl"><i> Harga sudah masuk dalam paket</i></span>
+          </label>
         </div>
 
         <div class="form-group">

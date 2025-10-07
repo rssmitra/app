@@ -873,6 +873,54 @@ final class Tanggal {
         return date('Y-m-d', $result);
      }
 
+     public function diffHourMinuteReturnSecond($start, $end) {
+        if ($start && $end && strtotime($start) !== false && strtotime($end) !== false) {
+            $start_ts = strtotime($start);
+            $end_ts = strtotime($end);
+            $diff = $end_ts - $start_ts;
+            $hours = floor($diff / 3600);
+            $minutes = floor(($diff % 3600) / 60);
+            $seconds = $diff % 60;
+            return $diff;
+        }
+        return '-';
+    }
+
+    public function convertHourMinutesSecond($second, $max_layan=45) {
+        if ($second) {
+            $hours = floor($second / 3600);
+            $minutes = floor(($second % 3600) / 60);
+            $seconds = $second % 60;
+
+            if($minutes > $max_layan){
+                $color = 'red';
+            }else{
+                $color = 'green';
+            }
+
+           return '<span style="color: '.$color.'; font-weight: bold">'.sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds).'</span>';
+        }
+        return '-';
+    }
+
+    public function diffHourMinute($start, $end, $max_layan=45) {
+        if ($start && $end && strtotime($start) !== false && strtotime($end) !== false) {
+            $start_ts = strtotime($start);
+            $end_ts = strtotime($end);
+            $diff = $end_ts - $start_ts;
+            $hours = floor($diff / 3600);
+            $minutes = floor(($diff % 3600) / 60);
+            $seconds = $diff % 60;
+            if($minutes > $max_layan){
+                $color = 'red';
+            }else{
+                $color = 'green';
+            }
+            return '<span style="color: '.$color.'; font-weight: bold">'.sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds).'</span>';
+        }
+        return '-';
+    }
+
 
 }
 

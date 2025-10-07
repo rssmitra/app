@@ -100,12 +100,6 @@ $('select[name="search_by"]').change(function () {
 
     <form class="form-horizontal" method="post" id="form_search" action="purchasing/pendistribusian/Distribusi_permintaan/find_data?flag=<?php echo $flag?>">
 
-      <center>
-          <h4>
-            PERMINTAAN BARANG UNIT ( GUDANG <?php echo($flag=='non_medis')?'UMUM':'MEDIS'?> )<br><small style="font-size:12px">Data yang ditampilkan saat ini adalah data permintaan barang <?php echo($flag=='non_medis')?'Non Medis':'Medis'?> seluruh unit Tahun <?php echo date('Y')?> </small>
-          </h4>
-      </center>
-    
       <!-- hidden form -->
       <input type="hidden" name="flag_string" id="flag_string" value="<?php echo $flag?>">
 

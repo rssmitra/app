@@ -1273,12 +1273,12 @@ audio, canvas, progress, video {
 <br>
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(File Pengkajian Pasien)</span><br>
 <label for="form-field-8"><b>File Pengkajian Pasien per Periode Kunjungan </b></label><br>
-<?php echo $html_file; ?>
+<?php echo isset($html_file)?$html_file:''; ?>
 <br>
 
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(File Upload)</span><br>
 <label for="form-field-8"><b>File Rekam Medis yang di upload per Periode Kunjungan </b></label><br>
-<?php echo $html_file_rm; ?>
+<?php echo isset($html_file_rm)?$html_file_rm:''; ?>
 
 <br>
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Pemeriksaan Penunjang)</span>

@@ -18,6 +18,7 @@ final Class Stok_barang{
         $t_kartu_stok = ($kodeBagian=='070101') ? 'tc_kartu_stok_nm' : 'tc_kartu_stok' ;
         $t_depo_stok = ($kodeBagian=='070101') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
         $mt_rekap_stok = ($kodeBagian=='070101') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+        $mt_barang = ($kodeBagian=='070101') ? 'mt_barang_nm' : 'mt_barang' ;
 
         $dataexc=array();
         
@@ -193,7 +194,7 @@ final Class Stok_barang{
 
     }
 
-    function stock_process_depo($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag, $kode_bagian_minta='', $reff_no_kunjungan) {
+    function stock_process_depo($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag, $kode_bagian_minta='', $reff_no_kunjungan='', $tgl_input='') {
 
         // restore => untuk mengembalikan stok ke jumlah sebelumnya
         // reduce => untuk mengurangi stok sesuai dengan jumlah yang dikirim
@@ -225,7 +226,7 @@ final Class Stok_barang{
                 $id_kartu = $CI->master->get_max_number($t_kartu_stok, 'id_kartu');
                 $dataexc["id_kartu"] = $id_kartu;
                 $dataexc["kode_brg"] = $kodeBrg;
-                $dataexc["stok_awal"] = $kartu_stok->stok_akhir;
+                $dataexc["stok_awal"] = isset($kartu_stok->stok_akhir)?$kartu_stok->stok_akhir:0;
                 $dataexc["pemasukan"] = ($flag=='restore')?$jumlah:0;
                 $dataexc["pengeluaran"] = ($flag=='reduce')?$jumlah:0;
                 $dataexc["stok_akhir"] = $last_stok;
@@ -236,7 +237,7 @@ final Class Stok_barang{
                 $ket_jenis_kartu = $db->get_where('mt_jenis_kartu_stok', array('jenis_transaksi' => $jenisKartuStok) )->row();
                 $dataexc["keterangan"] = $ket_jenis_kartu->nama_jenis. ' ' .$keterangan;
                 $dataexc["petugas"] = $CI->session->userdata('user')->user_id;
-                $dataexc["tgl_input"]= date('Y-m-d H:i:s');
+                $dataexc["tgl_input"]= ($tgl_input != '') ? $tgl_input : date('Y-m-d H:i:s');
                 $db->insert($t_kartu_stok, $dataexc);
 
                 /*update mt_depo_stok*/

@@ -2032,11 +2032,11 @@ class References extends MX_Controller {
 		$this->db->select('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$this->_queryGetReturBrg($_POST['jenis_retur'], $_POST['flag'], $_POST['unit']);
 		$this->db->join($mt_barang.' as b', 'b.kode_brg=a.kode_brg' , 'left');
-		// $this->db->join($mt_rekap_stok.' as c', 'c.kode_brg=a.kode_brg' , 'left');
 		$this->db->where('(a.kode_brg LIKE '."'%".$_POST['keyword']."%'".' OR b.nama_brg LIKE '."'%".$_POST['keyword']."%'".')');
     	$this->db->where('a.is_active = 1');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
+		// print_r($_POST);die;
 		// print_r($this->db->last_query());die;
 
 		$arrResult = [];
@@ -2059,7 +2059,8 @@ class References extends MX_Controller {
 		$tc_permintaan_inst = ($flag=='non_medis') ? 'tc_permintaan_inst_nm' : 'tc_permintaan_inst' ;
 
 		// jenis retur dari penerimaan barang
-		if($jenis_retur == 'penerimaan_brg' || $jenis_retur = 'expired'){
+		// echo $jenis_retur;die;
+		if($jenis_retur == 'penerimaan_brg' || $jenis_retur == 'expired'){
 			$this->db->select('a.kode_brg as kode, z.nama_brg, a.jml_sat_kcl as qty');
 			$this->db->from($mt_rekap_stok.' as a');
 			$this->db->join($mt_barang.' as z', 'a.kode_brg=z.kode_brg' , 'left');
@@ -2100,7 +2101,7 @@ class References extends MX_Controller {
 		$tc_permintaan_inst = ($_GET['flag'] == 'non_medis') ? 'tc_permintaan_inst_nm' : 'tc_permintaan_inst' ;
 
 		$this->db->from($table.' as a');
-		$this->db->join($mt_depo_stok.' as b', 'b.kode_brg=a.kode_brg' , 'left');
+		$this->db->join($mt_depo_stok.' as b', '(b.kode_brg=a.kode_brg AND b.kode_bagian = '.$_GET['from_unit'].')' , 'left');
 		$this->db->where('a.kode_brg', $_GET['kode_brg']);
 		if($_GET['retur']=='lainnya'){
 			$this->db->where('b.kode_bagian', $_GET['from_unit']);

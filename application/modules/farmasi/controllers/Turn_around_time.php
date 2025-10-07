@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Turn_around_time extends MX_Controller {
-
+    
     /*function constructor*/
     function __construct() 
     {
@@ -50,10 +50,12 @@ class Turn_around_time extends MX_Controller {
         //     $this->find_data(); exit;
         // }
         $data = array();
+        $arr_seconds = array();
+
         $no = $_POST['start'];
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
             );
-        
+        $max_layan = (isset($_GET['max_layan']) && is_numeric($_GET['max_layan'])) ? (int)$_GET['max_layan'] : 45;
         foreach ($list as $row_list) {
             $no++;
             // $flag = $this->regex->_genRegex($row_list->no_resep, 'RQXAZ');
@@ -69,25 +71,33 @@ class Turn_around_time extends MX_Controller {
             $jenis_resep = ($row_list->jenis_resep == 'racikan')?'<span style="font-weight: bold; color: red">Racikan</span>':'<span style="font-weight: bold; color: blue">Non Racikan</span>';
             $row[] = '<div class="center">'.$jenis_resep.'</div>';
 
-            $row[] = '<div class="center">'.$this->diffHourMinute($row_list->log_time_1, $row_list->log_time_2).'</div>';
-            $row[] = '<div class="center">'.$this->diffHourMinute($row_list->log_time_2, $row_list->log_time_3).'</div>';
+            $row[] = '<div class="center">('.$this->tanggal->formatDateTimeToTime($row_list->log_time_1).' - '.$this->tanggal->formatDateTimeToTime($row_list->log_time_2).')<br>'.$this->tanggal->diffHourMinute($row_list->log_time_1, $row_list->log_time_2, $max_layan).'</div>';
+
             if($row_list->jenis_resep == 'racikan'){
-                $row[] = '<div class="center">'.$this->diffHourMinute($row_list->log_time_3, $row_list->log_time_4).'</div>';
+                $row[] = '<div class="center">('.$this->tanggal->formatDateTimeToTime($row_list->log_time_2).' - '.$this->tanggal->formatDateTimeToTime($row_list->log_time_3).')<br>'.$this->tanggal->diffHourMinute($row_list->log_time_2, $row_list->log_time_3, $max_layan).'</div>';
+            }else{
+                $row[] = '<div class="center">('.$this->tanggal->formatDateTimeToTime($row_list->log_time_2).' - '.$this->tanggal->formatDateTimeToTime($row_list->log_time_4).')<br>'.$this->tanggal->diffHourMinute($row_list->log_time_2, $row_list->log_time_4, $max_layan).'</div>';
+            }
+
+            if($row_list->jenis_resep == 'racikan'){
+                $row[] = '<div class="center">('.$this->tanggal->formatDateTimeToTime($row_list->log_time_3).' - '.$this->tanggal->formatDateTimeToTime($row_list->log_time_4).')<br>'.$this->tanggal->diffHourMinute($row_list->log_time_3, $row_list->log_time_4, $max_layan).'</div>';
             }else{
                 $row[] = '<div class="center">-</div>';
             }
-            $row[] = '<div class="center">'.$this->diffHourMinute($row_list->log_time_4, $row_list->log_time_5).'</div>';
-            $row[] = '<div class="center">'.$this->diffHourMinute($row_list->log_time_5, $row_list->log_time_6).'</div>';
-            $row[] = '<div class="center">'.$this->diffHourMinute($row_list->log_time_1, $row_list->log_time_5).'</div>';
 
+            $row[] = '<div class="center">('.$this->tanggal->formatDateTimeToTime($row_list->log_time_4).' - '.$this->tanggal->formatDateTimeToTime($row_list->log_time_5).')<br>'.$this->tanggal->diffHourMinute($row_list->log_time_4, $row_list->log_time_5, $max_layan).'</div>';
+            $row[] = '<div class="center">('.$this->tanggal->formatDateTimeToTime($row_list->log_time_5).' - '.$this->tanggal->formatDateTimeToTime($row_list->log_time_6).')<br>'.$this->tanggal->diffHourMinute($row_list->log_time_5, $row_list->log_time_6, $max_layan).'</div>';
+            $row[] = '<div class="center">('.$this->tanggal->formatDateTimeToTime($row_list->log_time_1).' - '.$this->tanggal->formatDateTimeToTime($row_list->log_time_5).')<br>'.$this->tanggal->diffHourMinute($row_list->log_time_1, $row_list->log_time_5, $max_layan).'</div>';
             $data[] = $row;
+
+            $arr_seconds[] = $this->tanggal->diffHourMinuteReturnSecond($row_list->log_time_1, $row_list->log_time_5);
         }
 
         $output = array(
-                        "draw" => $_POST['draw'],
-                        // "recordsTotal" => $this->Turn_around_time->count_all(),
-                        // "recordsFiltered" => $this->Turn_around_time->count_filtered(),
-                        "data" => $data,
+            "count_data" => count($list),
+            "tat" => $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds), $max_layan),
+            "draw" => $_POST['draw'],
+            "data" => $data,
         );
         //output to json format
         echo json_encode($output);
@@ -99,18 +109,10 @@ class Turn_around_time extends MX_Controller {
      * @param string $end
      * @return string
      */
-    public function diffHourMinute($start, $end) {
-        if ($start && $end && strtotime($start) !== false && strtotime($end) !== false) {
-            $start_ts = strtotime($start);
-            $end_ts = strtotime($end);
-            $diff = $end_ts - $start_ts;
-            $hours = floor($diff / 3600);
-            $minutes = floor(($diff % 3600) / 60);
-            $seconds = $diff % 60;
-            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-        }
-        return '-';
-    }
+    
+
+
+    
     
 }
 

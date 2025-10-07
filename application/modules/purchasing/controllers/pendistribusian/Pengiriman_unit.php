@@ -18,6 +18,7 @@ class Pengiriman_unit extends MX_Controller {
         /*load model*/
         $this->load->model('purchasing/penerimaan/Penerimaan_brg_model', 'Penerimaan_brg');
         $this->load->model('purchasing/pendistribusian/Pengiriman_unit_model', 'Pengiriman_unit');
+        $this->load->model('purchasing/pendistribusian/Permintaan_stok_unit_model', 'Permintaan_stok_unit');
         // load libraries
         $this->load->library('stok_barang');
         /*enable profiler*/
@@ -27,22 +28,47 @@ class Pengiriman_unit extends MX_Controller {
 
     }
 
-    public function form_distribusi()
+    public function form($id='')
     {
-        
-        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pengiriman_unit/'.strtolower(get_class($this)).'/form');
-        /*initialize flag for form add*/
-        $data['flag'] = "create";
-        // print_r($data);die;
+        $flag = isset($_GET['flag'])?$_GET['flag']:'medis';
+        $data = [];
+        /*if id is not null then will show form edit*/
+        if( $id != '' ){
+            /*breadcrumbs for edit*/
+            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Permintaan_stok_unit/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+            /*get value by id*/
+            $data['id'] = $id; 
+            
+            $data['value'] = $this->Permintaan_stok_unit->get_by_id($id); 
+            /*initialize flag for form*/
+            $data['flag'] = "update";
+        }else{
+            /*breadcrumbs for create or add row*/
+            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Permintaan_stok_unit/'.strtolower(get_class($this)).'/form');
+            /*initialize flag for form add*/
+            $data['flag'] = "create";
+        }
+        $data['type'] = $flag; 
+        // echo "<pre>";print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
-        $data['flag'] = isset($_GET['flag'])?$_GET['flag']:'non_medis';
-        $data['form'] = 'distribusi';
-        
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('pendistribusian/Pengiriman_unit/form_distribusi', $data);
+        $this->load->view('pendistribusian/Pengiriman_unit/form', $data);
+    }
+
+    public function form_edit_brg($id_tc_permintaan_inst_det='')
+    {
+        $data = [];
+        $data['flag'] = isset($_GET['flag'])?$_GET['flag']:'non_medis';
+        $kode_gudang = ($_GET['flag']=='non_medis')?'070101':'060201';
+        $data['kode_gudang'] = $kode_gudang;
+        $data['value'] = $this->Pengiriman_unit->get_permintaan_inst_det_by_id($id_tc_permintaan_inst_det, $_GET['flag']);
+        // echo '<pre>';print_r($data);die;
+        
+        /*load form view*/
+        $this->load->view('pendistribusian/Pengiriman_unit/form_edit_brg', $data);
     }
 
     public function form_retur()
@@ -61,6 +87,91 @@ class Pengiriman_unit extends MX_Controller {
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
         $this->load->view('pendistribusian/Pengiriman_unit/form_retur', $data);
+    }
+
+    public function get_data()
+    {
+        /*get data from model*/
+        $list = $this->Permintaan_stok_unit->get_datatables();
+        
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">
+                        <label class="pos-rel">
+                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_permintaan_inst.'"/>
+                            <span class="lbl"></span>
+                        </label>
+                      </div>';
+            $row[] = '';
+            $row[] = $row_list->id_tc_permintaan_inst;
+            if( $row_list->status_acc != 1 ){
+                $row[] = '<div class="center">
+                            <div class="btn-group">
+                                <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                                    <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-inverse">
+                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','R',$row_list->id_tc_permintaan_inst,67).'</li>
+                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','U',$row_list->id_tc_permintaan_inst,67).'</li>
+                                <li>'.$this->authuser->show_button('purchasing/pendistribusian/Permintaan_stok_unit','D',$row_list->id_tc_permintaan_inst,6).'</li>
+                                </ul>
+                            </div>
+                        </div>';
+            }else{
+                $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'".base_url().'purchasing/pendistribusian/Permintaan_stok_unit/print_preview/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".', '."'PERMINTAAN PEMBELIAN'".', 1000, 550)" ><i class="fa fa-print bigger-150 inverse"></a></div>';
+            }
+            $row[] = '<div class="center">'.$row_list->id_tc_permintaan_inst.'</div>';
+            // $row[] = $row_list->nomor_permintaan;
+            
+            // Determine label based on flag parameter
+            $flag = isset($_GET['flag']) ? $_GET['flag'] : '';
+            if ($flag == 'medis') {
+                $label_flag = '<span style="color: green; font-weight: bold">Medis</span>';
+            } elseif ($flag == 'non_medis') {
+                $label_flag = '<span style="color: blue; font-weight: bold">Non Medis</span>';
+            } else {
+                $label_flag = '';
+            }
+
+            $jenis_permintaan = ($row_list->jenis_permintaan==0)?'Rutin':'Cito';
+            $row[] = $this->tanggal->formatDateDmy($row_list->tgl_permintaan).'<br>'.$label_flag.' - '.ucfirst($jenis_permintaan).'';
+            $row[] = '<div class="left">'.ucwords($row_list->bagian_minta).'</div>';
+            $row[] = '<div class="left">'.ucfirst($row_list->nama_user_input).'</div>';
+            $row[] = '<div class="left">'.$row_list->catatan.'</div>';
+            $tgl_acc = ($row_list->tgl_acc ==null) ? '<i class="fa fa-exclamation-triangle bigger-150 orange"></i>' : $this->tanggal->formatDateDmy($row_list->tgl_acc);
+            $acc_by = ($row_list->acc_by ==null) ? '<i class="fa fa-exclamation-triangle bigger-150 orange"></i>' : $row_list->acc_by;
+            $row[] = '<div class="center">'.$tgl_acc.'</div>';
+            $row[] = '<div class="center">'.$acc_by.'</div>';
+            if($row_list->tgl_acc == null)
+            {
+                $style_status = '<span style="width: 100% !important" class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Belum diverifikasi</span>';
+            }else{
+                $style_status = ($row_list->status_acc == 1) ? '<span class="label label-success" style="width: 100% !important"><i class="fa fa-check"></i> Disetujui</span>' :'<span style="width: 100% !important" class="label label-danger"><i class="fa fa-times"></i> Tidak disetujui</span>';
+            }
+            
+            $row[] = '<div class="center">'.$style_status.'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_pengiriman).'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_input_terima).'</div>';
+            $row[] = '<div class="center">'.ucfirst($row_list->yg_terima).'</div>';
+            $btn_kirim_permintaan = ($row_list->status_acc == null) ? '<a href="#" onclick="kirim_permintaan('."'".$row_list->id_tc_permintaan_inst."'".')" title="Kirim Permintaan" class="label label-xs label-primary"><i class="fa fa-paper-plane"></i> Kirim</a>' : '';
+            if($row_list->send_to_verify == 1){
+                $btn_kirim_permintaan = '<i class="fa fa-check bigger-150 green" title="Terkirim"></i>';
+            }
+            $row[] = '<div class="center">'.$btn_kirim_permintaan.'</div>';
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Permintaan_stok_unit->count_all(),
+                        "recordsFiltered" => $this->Permintaan_stok_unit->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
     }
 
     public function form_pengiriman_unit()
@@ -82,35 +193,14 @@ class Pengiriman_unit extends MX_Controller {
         $this->load->view('pendistribusian/Pengiriman_unit/form_pengiriman_unit', $data);
     }
 
-    public function show_penerimaan_brg()
-    {
-        $id = $_GET['ID'];
-        $t_penerimaan = ($_GET['flag']=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
-        $data['string'] = isset($_GET['flag'])?$_GET['flag']:'';
-        $data['id_penerimaan_existing'] = $id;
-        $data['value'] = $this->db->get_where($t_penerimaan, array('id_penerimaan' => $id) )->row();
-        /*load form view*/
-        $this->load->view('penerimaan/Penerimaan_brg/view_penerimaan_brg', $data);
-    }
-
-    public function show_detail_brg()
-    {
-        $result = $this->Pengiriman_unit->get_penerimaan_brg($_GET['flag'], $_GET['ID']);
-        // print_r($this->db->last_query());die;
-        $data['id'] = $_GET['ID'];
-        $data['flag'] = $_GET['flag'];
-        $data['value'] = $result;
-        /*load form view*/
-        $this->load->view('pendistribusian/Pengiriman_unit/view_detail_brg', $data);
-    }
-    
-    public function process()
+    public function process_edit_brg()
     {
         // print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
-        $val->set_rules('kode_bagian_minta', 'Bagian/Unit', 'trim|required');
+        $val->set_rules('kode_brg_revisi', 'Kode Barang', 'trim|required');
+        $val->set_rules('qtyBrg', 'Jumlah Revisi Barang', 'trim|required');
         $val->set_rules('catatan', 'Catatan', 'trim');
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -124,88 +214,15 @@ class Pengiriman_unit extends MX_Controller {
         {                       
             $this->db->trans_begin();
 
-            // nama bagian
-            $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $val->set_value('kode_bagian_minta') ) );
-            
-            $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
-            $kode_bagian = ($_POST['flag']=='medis')?'060201':'070101';
-
+            $table = ($_POST['flag']=='medis')?'tc_permintaan_inst_det':'tc_permintaan_inst_nm_det';
+            $is_bhp = isset($_POST['is_bhp']) ? 1 : 0 ;
             $dataexc = array(
-                'tgl_permintaan' => date('Y-m-d'),
-                'nomor_permintaan' => $this->regex->_genRegex($this->master->format_nomor_permintaan($_POST['flag']),'RGXQSL'),
-                'kode_bagian_minta' => $this->regex->_genRegex($val->set_value('kode_bagian_minta'),'RGXQSL'),
-                'kode_bagian_kirim' => $this->regex->_genRegex($kode_bagian,'RGXQSL'),
-                'jenis_permintaan' => $this->regex->_genRegex(0,'RGXQSL'),
-                'catatan' => $this->regex->_genRegex($val->set_value('catatan'),'RGXQSL'),
+                'rev_kode_brg' => $this->regex->_genRegex($val->set_value('kode_brg_revisi'),'RGXQSL'),
+                'rev_qty' => $this->regex->_genRegex($_POST['qtyBrg'],'RGXINT'),
+                'is_bhp' => $this->regex->_genRegex($is_bhp,'RGXINT'),
             );
-            // print_r($dataexc);die;
-            $dataexc['created_date'] = date('Y-m-d H:i:s');
-            $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-            $newId = $this->Pengiriman_unit->save($table, $dataexc);
-            /*save logs*/
-            $this->logs->save($table, $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_permintaan_inst');
+            $this->Pengiriman_unit->update($table, ['id_tc_permintaan_inst_det' => $_POST['id_det']], $dataexc);
             
-
-            foreach( $_POST['kode_brg'] as $row_brg ){
-
-                // insert detail barang
-                $dt_detail = array(
-                    'id_tc_permintaan_inst' => $this->regex->_genRegex($newId,'RGXINT'),
-                    'jumlah_permintaan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
-                    'kode_brg' => $this->regex->_genRegex($row_brg,'RGXQSL'),
-                    'satuan' => $this->regex->_genRegex($_POST['satuan'][$row_brg],'RGXQSL'),
-                    'tgl_kirim' => $this->regex->_genRegex(date('Y-m-d H:i:s'),'RGXQSL'),
-                    'tgl_input' => $this->regex->_genRegex(date('Y-m-d H:i:s'),'RGXQSL'),
-                    'jumlah_penerimaan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
-                    'kekurangan' => $this->regex->_genRegex(0,'RGXQSL'),
-                    'jml_acc_atasan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
-                    'jml_acc_umu' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
-                );
-                
-                $dt_detail['created_date'] = date('Y-m-d H:i:s');
-                $dt_detail['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                $id_permintaan_inst_det = $this->Pengiriman_unit->save($table.'_det', $dt_detail);
-                /*save logs*/
-                $this->logs->save($table.'_det', $id_permintaan_inst_det, 'insert new record on '.$this->title.' module', json_encode($dt_detail),'id_tc_permintaan_inst_det');
-                
-                // kurang stok gudang
-                $this->stok_barang->stock_process($row_brg, $_POST['total_dikirim'][$row_brg], $kode_bagian, 3 ," ".$nama_bagian." ", 'reduce');
-
-                // tambah stok depo
-                $this->stok_barang->stock_process_depo($row_brg, $_POST['total_dikirim'][$row_brg], $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
-
-                
-                // update header permintaan_inst
-                $dt_upd_permintaan = array(
-                    'kode_bagian_kirim' => $kode_bagian,
-                    'status_batal' => 0,
-                    'nomor_pengiriman' => $newId,
-                    'tgl_input' => date('Y-m-d H:i:s'),
-                    'tgl_pengiriman' => date('Y-m-d H:i:s'),
-                    'yg_serah' => $this->session->userdata('user')->fullname,
-                    'yg_terima' => 'Staf '.$nama_bagian,
-                    'tgl_input_terima' => date('Y-m-d H:i:s'),
-                    'keterangan_kirim' => 'Distribusi langsung dari penerimaan barang',
-                    'status_selesai' => 4,
-                    'jenis_permintaan' => 0,
-                    // 'jml_acc_atasan' => $_POST['total_dikirim'][$row_brg],
-                    // 'jml_acc_umu' => $_POST['total_dikirim'][$row_brg],
-                    'no_kirim' => $newId,
-                    'no_urut' => $newId,
-                    'no_acc' => 'ACC/'.$newId.'',
-                    'tgl_acc' => date('Y-m-d H:i:s'),
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
-                );
-                
-                $this->Pengiriman_unit->update($table, array('id_tc_permintaan_inst' => $newId), $dt_upd_permintaan );
-                /*save logs*/
-                $this->logs->save($table, $newId, 'update record on '.$this->title.' module', json_encode($dt_upd_permintaan),'id_tc_permintaan_inst');
-
-                $this->db->trans_commit();
-
-            }
-
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -214,7 +231,7 @@ class Pengiriman_unit extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
             }
         }
     }
@@ -225,9 +242,9 @@ class Pengiriman_unit extends MX_Controller {
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
-        $val->set_rules('kode_bagian_minta', 'Bagian/Unit', 'trim|required');
-        $val->set_rules('tgl_pengiriman', 'Tanggal', 'trim');
+        $val->set_rules('tgl_distribusi', 'Tanggal Distribusi', 'trim');
         $val->set_rules('catatan', 'Catatan', 'trim');
+        $val->set_rules('yang_menyerahkan', 'Yang Menyerahkan', 'trim|required');
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -240,111 +257,44 @@ class Pengiriman_unit extends MX_Controller {
         {                       
             $this->db->trans_begin();
 
-            // nama bagian
-            $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $val->set_value('kode_bagian_minta') ) );
             
-            $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
-            $mt_depo_stok = ($_POST['flag']=='medis')?'mt_depo_stok':'mt_depo_stok_nm';
+            $table = ($_POST['flag_cart']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
+            $mt_depo_stok = ($_POST['flag_cart']=='medis')?'mt_depo_stok':'mt_depo_stok_nm';
+            $kode_gudang = ($_POST['flag_cart']=='medis')?'060201':'070101';
+            $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $_POST['kode_bagian_minta']));
 
-            $cart_data = $this->Pengiriman_unit->get_cart_data($_POST['flag_form']);
-            $kode_bagian_kirim = isset($cart_data[0]->kode_bagian)?$cart_data[0]->kode_bagian:0;
+            $dataexc = array(
+                'tgl_pengiriman' => $val->set_value('tgl_distribusi').' '.date(' H:i:s '),
+                'keterangan_kirim' => $this->regex->_genRegex($val->set_value('catatan'),'RGXQSL'),
+                'yg_serah' => $this->regex->_genRegex($val->set_value('yang_menyerahkan'),'RGXQSL'),
+                'updated_date' => date('Y-m-d H:i:s'),
+                'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
+            );
+            // echo "<pre>";print_r($dataexc);die;
+            $newId = $this->Pengiriman_unit->update($table, ['id_tc_permintaan_inst' => $_POST['id']], $dataexc);
 
-            if( $kode_bagian_kirim != 0 ) :
-
-                $dataexc = array(
-                    'tgl_permintaan' => date('Y-m-d'),
-                    'nomor_permintaan' => $this->regex->_genRegex($this->master->format_nomor_permintaan($_POST['flag']),'RGXQSL'),
-                    'kode_bagian_minta' => $this->regex->_genRegex($val->set_value('kode_bagian_minta'),'RGXQSL'),
-                    'kode_bagian_kirim' => $this->regex->_genRegex($kode_bagian_kirim,'RGXQSL'),
-                    'jenis_permintaan' => $this->regex->_genRegex(0,'RGXQSL'),
-                    'catatan' => $this->regex->_genRegex($val->set_value('catatan'),'RGXQSL'),
-                );
-                // print_r($dataexc);die;
-                $dataexc['created_date'] = date('Y-m-d H:i:s');
-                $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                $newId = $this->Pengiriman_unit->save($table, $dataexc);
-                /*save logs*/
-                $this->logs->save($table, $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_permintaan_inst');
+            $cart_data = $this->Pengiriman_unit->get_cart_data_by_id($_POST['flag_cart'], $_POST['selected_id']);
+            // echo "<pre>";print_r($cart_data);die;
+            // update stok gudang
+            foreach( $cart_data as $row_brg ){
                 
-                // print_r($cart_data);die;
-                foreach( $cart_data as $row_brg ){
+                // kurang stok gudang
+                $kode_brg = ($row_brg->rev_kode_brg != NULL || !empty($row_brg->rev_kode_brg) ) ? $row_brg->rev_kode_brg : $row_brg->kode_brg ;
+                $qty_brg = ($row_brg->rev_qty != NULL || !empty($row_brg->rev_qty) ) ? $row_brg->rev_qty : $row_brg->qty ;
 
-                    // insert detail barang
-                    $dt_detail = array(
-                        'id_tc_permintaan_inst' => $this->regex->_genRegex($newId,'RGXINT'),
-                        'jumlah_permintaan' => $this->regex->_genRegex($row_brg->qty,'RGXINT'),
-                        'jumlah_penerimaan' => $this->regex->_genRegex($row_brg->qty,'RGXINT'),
-                        'kode_brg' => $this->regex->_genRegex($row_brg->kode_brg,'RGXQSL'),
-                        'satuan' => $this->regex->_genRegex($row_brg->satuan,'RGXQSL'),
-                        'tgl_kirim' => $this->regex->_genRegex(date('Y-m-d H:i:s'),'RGXQSL'),
-                        'tgl_input' => $this->regex->_genRegex(date('Y-m-d H:i:s'),'RGXQSL'),
-                        'kekurangan' => $this->regex->_genRegex(0,'RGXINT'),
-                        'jml_acc_atasan' => $this->regex->_genRegex($row_brg->qty,'RGXINT'),
-                        'jml_acc_umu' => $this->regex->_genRegex($row_brg->qty,'RGXINT'),
-                    );
-                    
-                    $dt_detail['created_date'] = date('Y-m-d H:i:s');
-                    $dt_detail['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                    $id_permintaan_inst_det = $this->Pengiriman_unit->save($table.'_det', $dt_detail);
+                // update status verif di detail permintaan
+                $update_detail = array(
+                    'tgl_kirim' => date('Y-m-d H:i:s'),
+                    'jumlah_kirim' => $qty_brg,
+                    'petugas_kirim' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'),
+                );
+                // update table permintaan detail
+                $this->Pengiriman_unit->update($table.'_det', ['id_tc_permintaan_inst_det' => $row_brg->id_tc_permintaan_inst_det], $update_detail);
+                // proses stok
+                $this->stok_barang->stock_process($kode_brg, $qty_brg, $kode_gudang, 3 ," ".$nama_bagian." &nbsp; [".$_POST['id']."] ", 'reduce');
+                $this->db->trans_commit();
 
-                    /*save logs*/
-                    $this->logs->save($table.'_det', $id_permintaan_inst_det, 'insert new record on '.$this->title.' module', json_encode($dt_detail),'id_tc_permintaan_inst_det');
-                    
-                    // kurang stok gudang
-                    if(in_array($row_brg->kode_bagian, array('060201', '070101') )){
-                        $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, $row_brg->kode_bagian, 3 ," ".$nama_bagian." ", 'reduce');
-                    }else{
-                        // kurang stok depo kirim
-                        $this->stok_barang->kurang_stok_depo($row_brg->kode_brg, $row_brg->qty, $val->set_value('kode_bagian_minta'), 5 ," ".$nama_bagian." ", 'reduce', $row_brg->kode_bagian);
-                    }
-
-                    if($row_brg->is_bhp == 1){
-                        // jika bhp maka langsung di mutasi stok nya tambah stok depo dan kurang
-                        $this->stok_barang->stock_process_depo_bhp($row_brg->kode_brg, $row_brg->qty, $row_brg->kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
-                    }else{
-                        // tambah stok depo minta
-                        $nama_bagian_kirim = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $val->set_value('kode_bagian_minta') ) );
-                        $jenis_kartu_stok = (in_array($row_brg->kode_bagian, array('060201', '070101') )) ? 3 : 5 ;
-                        $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $row_brg->kode_bagian, $jenis_kartu_stok ," ".$nama_bagian_kirim." ", 'restore', $val->set_value('kode_bagian_minta'));
-
-                    }
-                    
-                    // update status aktif depo unit
-                    $this->db->update($mt_depo_stok, array('is_active' => 1), array('kode_brg' => $row_brg->kode_brg, 'kode_bagian' => $row_brg->kode_bagian) );
-
-                    // update header permintaan_inst
-                    $dt_upd_permintaan = array(
-                        'kode_bagian_kirim' => $row_brg->kode_bagian,
-                        'status_batal' => 0,
-                        'nomor_pengiriman' => $newId,
-                        'tgl_input' => date('Y-m-d H:i:s'),
-                        'tgl_pengiriman' => date('Y-m-d H:i:s'),
-                        'yg_serah' => $this->session->userdata('user')->fullname,
-                        'yg_terima' => 'Staf '.$nama_bagian,
-                        'tgl_input_terima' => date('Y-m-d H:i:s'),
-                        'keterangan_kirim' => 'Transaksi pengiriman barang dari gudang ke unit',
-                        'status_selesai' => 4,
-                        'jenis_permintaan' => 0,
-                        'no_kirim' => $newId,
-                        'no_urut' => $newId,
-                        'no_acc' => 'ACC/'.$newId.'',
-                        'tgl_acc' => date('Y-m-d H:i:s'),
-                        'created_date' => date('Y-m-d H:i:s'),
-                        'created_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
-                    );
-                    
-                    $this->Pengiriman_unit->update($table, array('id_tc_permintaan_inst' => $newId), $dt_upd_permintaan );
-                    /*save logs*/
-                    $this->logs->save($table, $newId, 'update record on '.$this->title.' module', json_encode($dt_upd_permintaan),'id_tc_permintaan_inst');
-
-                    $this->db->trans_commit();
-
-                }
-
-                // delete cart session
-                $this->db->delete('tc_permintaan_inst_cart_log', array('user_id_session' => $this->session->userdata('user')->user_id, 'flag_form' => 'distribusi') );
-
-            endif; 
+            }
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -354,8 +304,101 @@ class Pengiriman_unit extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag_cart'], 'id' => $newId));
             }
+        }
+    }
+
+    public function get_detail_cart()
+    {
+        /*get data from model*/
+        $list = $this->Pengiriman_unit->get_cart_data();
+        // echo '<pre>';print_r($list);die;
+        
+        $data = array();
+        $arr_count = array();
+        $no=0;
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+
+            if($row_list->status_verif == 1){
+                if($row_list->jumlah_kirim == $row_list->jml_acc_atasan){
+                    $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
+                }else{
+                    $row[] = '<div class="center">
+                        <label class="pos-rel">
+                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_permintaan_inst_det.'"/>
+                            <span class="lbl"></span>
+                        </label>
+                      </div>';   
+                      $arr_count[] = 1; 
+                }
+            }else{
+                $row[] = '<div class="center"><i class="fa fa-times red"></i></div>';
+            }
+            
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="left">'.$row_list->kode_brg.'</div>';
+            $nama_brg = ($row_list->brg_revisi == null) ? $row_list->nama_brg : '<s style="color: red">'.$row_list->nama_brg.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->brg_revisi;
+            $qty = ($row_list->qty_revisi == null) ? $row_list->qty : '<s style="color: red">'.$row_list->qty.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->qty_revisi;
+
+            $stok_gudang = ($row_list->stok_gdg_revisi == null) ? $row_list->jumlah_stok_gudang : '<s style="color: red">'.$row_list->jumlah_stok_gudang.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->stok_gdg_revisi;
+            $row[] = '<div class="left">'.$nama_brg.'</div>';
+            $row[] = '<div class="center">'.$row_list->satuan.'</div>';
+            $row[] = '<div class="center">'.$row_list->jumlah_stok_sebelumnya.'</div>';
+            $row[] = '<div class="center">'.$qty.'</div>';
+            $row[] = '<div class="center">'.$row_list->jml_acc_atasan.'</div>';
+            $row[] = '<div class="center">'.$row_list->jumlah_kirim.'</div>';
+            $row[] = '<div class="center">'.$stok_gudang.'</div>';
+            $row[] = '<div class="center">'.$row_list->keterangan_verif.'</div>';
+            $row[] = '<div style="text-align: right">'.number_format($row_list->harga).'</div>';
+
+            if($row_list->status_verif == 1){
+                if($row_list->jumlah_kirim > 0){
+                    $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
+                }else{
+                    $row[] = '<div style="text-align: center"><a class="label label-xs label-success" onclick="edit_brg('.$row_list->id_tc_permintaan_inst_det.', '."'Penyesuaian Permintaan Barang x Distribusi'".')" href="#"><span><i class="fa fa-pencil"></i></span></a></div>';
+                }
+            }else{
+                $row[] = '<div class="center">-</div>';
+            }
+   
+            $data[] = $row;
+        }
+
+        $output = array(
+            "total_belum_didistribusi" => array_sum($arr_count),
+            "data" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function delete_cart()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        if($id!=null){
+            if($this->db->where(array('kode_brg' => $id, 'user_id_session' => $this->session->userdata('user')->user_id))->delete('tc_permintaan_inst_cart_log')){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan' ));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
+
+    public function show_cart(){
+        $data = array();
+        $data['cart_data'] = $this->Pengiriman_unit->get_cart_data_log($_GET['form']);
+        $data['form'] = ($_GET['form']=='retur')?$_GET['form']:'distribusi';
+        // print_r($data);die;
+        if($_GET['form'] == 'retur'){
+            $this->load->view('pendistribusian/Pengiriman_unit/form_cart_retur', $data);
+        }else{
+            $this->load->view('pendistribusian/Pengiriman_unit/form_cart', $data);
         }
     }
 
@@ -409,7 +452,7 @@ class Pengiriman_unit extends MX_Controller {
             $this->logs->save('tc_retur_unit', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_retur_unit');
             
             // get data from cart
-            $cart_data = $this->Pengiriman_unit->get_cart_data($_POST['flag_form']);
+            $cart_data = $this->Pengiriman_unit->get_cart_data_log($_POST['flag_form']);
             // echo '<pre>';print_r($cart_data);die;
             
             foreach( $cart_data as $row_brg ){
@@ -540,44 +583,6 @@ class Pengiriman_unit extends MX_Controller {
             }
         }
     }
-    
-    public function delete_row_brg()
-    {
-        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
-        $table = ($_POST['flag']=='medis')?'tc_permintaan_inst_det':'tc_permintaan_inst_nm_det';
-        if($id!=null){
-            if($this->Pengiriman_unit->delete_brg_permintaan($table, $id)){
-                $this->logs->save($table, $id, 'delete record', '', 'id_tc_permintaan_inst_det');
-                $ttl = $this->Pengiriman_unit->get_brg_permintaan($_POST['flag'], $_POST['id_tc_permintaan_inst']);
-                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan', 'total_brg' => count($ttl) ));
-
-            }else{
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
-            }
-        }else{
-            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
-        }
-        
-    }
-
-    public function show_cart(){
-        $data = array();
-        $data['cart_data'] = $this->Pengiriman_unit->get_cart_data($_GET['form']);
-        $data['form'] = ($_GET['form']=='retur')?$_GET['form']:'distribusi';
-        // print_r($data);die;
-        if($_GET['form'] == 'retur'){
-            $this->load->view('pendistribusian/Pengiriman_unit/form_cart_retur', $data);
-        }else{
-            $this->load->view('pendistribusian/Pengiriman_unit/form_cart', $data);
-        }
-    }
-
-    public function form_input_qty(){
-        $barcode = $this->Pengiriman_unit->checkBarcode($_GET['barcode'], $_GET['flag']);
-        $data = array();
-        $data['barcode'] = $_GET['barcode'];
-        $this->load->view('pendistribusian/Pengiriman_unit/form_input_qty', $data);
-    }
 
     public function insert_cart_log(){
         // print_r($_POST);die;
@@ -623,40 +628,6 @@ class Pengiriman_unit extends MX_Controller {
 
     }
 
-    public function check_barcode(){
-
-        $barcode = $this->Pengiriman_unit->checkBarcode();
-        $data = array();
-        $data['result'] = $barcode;
-        // print_r($data);die;
-        $html = $this->load->view('Templates/templates/detail_item_pengiriman_brg', $data, true);
-
-        if ( count($barcode) < 1 ) {
-
-            echo json_encode( array('status' => 300, 'message' => 'Barang tidak ditemukan') ); exit;
-
-        }else{
-
-            echo json_encode(array('status' => 200, 'message' => 'Sukses', 'flag' => $_POST['flag'], 'html' => $html, 'count' => count($barcode), 'data_brg' => $barcode[0]));
-
-        }
-
-    }
-
-    public function delete_cart()
-    {
-        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
-        if($id!=null){
-            if($this->db->where(array('kode_brg' => $id, 'user_id_session' => $this->session->userdata('user')->user_id, 'flag_form' => $_POST['flag_form']))->delete('tc_permintaan_inst_cart_log')){
-                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan' ));
-            }else{
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
-            }
-        }else{
-            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
-        }
-        
-    }
 
 
 }
