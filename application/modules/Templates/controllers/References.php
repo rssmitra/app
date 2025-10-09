@@ -2875,4 +2875,22 @@ class References extends MX_Controller {
 		}
 	}
 
+	public function verify_code() {
+        $this->load->library('bcrypt');
+        $code = $this->input->post('pin');
+        $type = $this->input->post('type');
+        // Cek ke tabel user_approval_modul
+        $this->db->where('function_modul', $type);
+        $this->db->where('secret_code', $code);
+        $this->db->where('is_active', 'Y');
+        $userApproval = $this->db->get('user_approval_modul')->row();
+
+        if (empty($userApproval)) {
+            echo json_encode(['status' => 401, 'message' => 'PIN verifikasi salah']);
+            exit;
+        }
+
+        echo json_encode(['status' => 200, 'message' => 'PIN sesuai']);
+    }
+
 }

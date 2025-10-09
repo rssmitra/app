@@ -732,7 +732,7 @@ class Global_report extends MX_Controller {
 
         // $query_data = $this->Global_report->get_data();
         $sql_ugd = $this->Global_report->vsql_ugd();
-        echo $this->db->last_query();die;
+        // echo $this->db->last_query();die;
         $sql_spesialis = $this->Global_report->vsql_spesialis();
         $sql_luar = $this->Global_report->vsql_luar();
         $sql_inap = $this->Global_report->vsql_inap();

@@ -1446,7 +1446,7 @@ class Billing extends MX_Controller {
         $password = $this->input->post('password');
         $no_registrasi = $this->input->post('no_registrasi');
         // Cek ke tabel user_approval_modul
-        $this->db->where('function', 'cashier');
+        $this->db->where('function_modul', 'cashier');
         $this->db->where('secret_code', $code);
         $this->db->join('tmp_user', 'tmp_user.user_id = user_approval_modul.user_id');
         $userApproval = $this->db->get('user_approval_modul')->row();

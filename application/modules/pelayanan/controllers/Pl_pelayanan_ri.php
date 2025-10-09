@@ -1178,6 +1178,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function delete_cppt()
     {
+        // echo "<pre>";print_r($this->session->all_userdata());die;
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
         if($id!=null){
             $table = ($_POST['flag'] == 'resume')?'th_riwayat_pasien':'th_cppt';
@@ -1186,10 +1187,10 @@ class Pl_pelayanan_ri extends MX_Controller {
             $data = $this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan = '.$table.'.no_kunjungan','left')->get_where($table, [$kode => $id])->row();
             
             // cek jika user dokter tidak boleh menghapus data
-            if( $data->kode_dokter != '' AND $data->kode_dokter != $this->session->userdata('sess_kode_dokter') ){
-                echo json_encode(array('status' => 301, 'message' => 'Anda tidak memiliki akses untuk menghapus data'));
-                exit;
-            }
+            // if( $data->kode_dokter != '' AND $data->kode_dokter != $this->session->userdata('sess_kode_dokter') ){
+            //     echo json_encode(array('status' => 301, 'message' => 'Anda tidak memiliki akses untuk menghapus data'));
+            //     exit;
+            // }
             
             if($this->db->where($kode, $id)->delete($table)){
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));

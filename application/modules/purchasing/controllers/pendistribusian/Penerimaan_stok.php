@@ -192,7 +192,7 @@ class Penerimaan_stok extends MX_Controller {
                 $this->Pengiriman_unit->update($table.'_det', ['id_tc_permintaan_inst_det' => $row_brg->id_tc_permintaan_inst_det], $update_detail);
 
                 // tambah stok depo
-                $this->stok_barang->stock_process_depo($kode_brg, $qty_brg, $kode_gudang, 3 ," ".$nama_bagian." &nbsp; [ ".$_POST['id']." ]", 'restore', $_POST['kode_bagian_minta']);
+                $this->stok_barang->stock_process_depo($kode_brg, $qty_brg, $kode_gudang, 3 ," ".$nama_bagian." &nbsp; [ ".$_POST['id']." ]", 'restore', $_POST['kode_bagian_minta'],'');
 
                 $this->db->trans_commit();
 
