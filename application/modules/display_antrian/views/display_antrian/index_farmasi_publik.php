@@ -45,9 +45,9 @@
       background: #fff;
       border-radius: 1rem;
       box-shadow: 0 2px 12px rgba(0,102,159,0.08);
-      flex: 1 1 320px;
-      min-width: 280px;
-      max-width: 350px;
+      /* flex: 1 1 320px; */
+      /* min-width: 280px;
+      max-width: 350px; */
       display: flex;
       flex-direction: column;
       align-items: stretch;
