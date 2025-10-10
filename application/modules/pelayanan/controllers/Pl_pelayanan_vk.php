@@ -82,6 +82,35 @@ class Pl_pelayanan_vk extends MX_Controller {
         $this->load->view('Pl_pelayanan_vk/form', $data);
     }
 
+    public function form_main($id, $no_kunjungan)
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_vk/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_vk->get_by_id($id);
+        //print_r($this->db->last_query());
+        // echo '<pre>';print_r($data);die;
+        $data['riwayat'] = $this->Pl_pelayanan_vk->get_riwayat_pasien_by_id($no_kunjungan);
+        $kunjungan = $this->Reg_pasien->get_detail_kunjungan_by_no_kunjungan($no_kunjungan);
+        //$data['transaksi'] = $this->Pl_pelayanan_vk->get_transaksi_pasien_by_id($no_kunjungan);
+        /*variable*/
+         /*type*/
+        $kode_klas = $data['value']->kode_klas;
+
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['id'] = $id;
+        $data['kode_klas'] = $kode_klas;
+        $data['kode_profit'] = 2000;
+        $data['no_kunjungan'] = $no_kunjungan;
+        // echo '<pre>';print_r($data);die;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_vk/form_main', $data);
+    }
+
     public function tindakan($id='', $no_kunjungan='')
     {
          /*breadcrumbs for edit*/
@@ -695,6 +724,46 @@ class Pl_pelayanan_vk extends MX_Controller {
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan' ) );
         }
         
+    }
+
+    public function get_list_pasien()
+    {
+        /*akan di filter berdasarkan pasien pada klinik masing2*/
+        /*get data from model*/
+        $list = $this->Pl_pelayanan_vk->get_list_data();
+        // echo "<pre>"; print_r($list);die;
+        $data = array();
+        $no=0;
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            /*color of type Ruangan RI*/
+            
+            /*LB*/
+            if ( in_array($row_list->bag_pas, array('030101','031401','031301','030801','030401','031601') ) ) {
+                $color = 'red';
+            /*LA*/
+            }elseif( in_array($row_list->bag_pas,  array('030701','030301','030601','030201') )){
+                $color = 'green';
+            /*VK Ruang Bersalin*/
+            }elseif( in_array($row_list->bag_pas,  array('031201','031701','030501') )){
+                $color = 'blue';
+            }else{
+                $color = 'black';
+            }
+            // get umur from tgl lahir
+            $umur = $this->tanggal->AgeWithYearMonthDay($row_list->tgl_lhr);
+            // $row[] = '<li><span style="color:'.$color.'" onclick="getMenu('."'pelayanan/Pl_pelayanan_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</span></li>';
+            $penjamin = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = array('no_kunjungan' => $row_list->no_kunjungan, 'kode_ri' => $row_list->kode_ri, 'no_mr' => $row_list->no_mr, 'nama_pasien' => strtoupper($row_list->nama_pasien), 'color_txt' => $color, 'penjamin' => $penjamin,'kode_dokter' => trim($row_list->dr_merawat), 'dokter' => $row_list->nama_pegawai, 'kelas' => $row_list->nama_klas, 'kamar' => $row_list->nama_bagian, 'no_kamar' => $row_list->no_kamar_vk, 'kode_perusahaan' => $row_list->kode_perusahaan, 'jk' => $row_list->jen_kelamin, 'umur' => $umur, 'id_pasien_vk' => $row_list->id_pasien_vk );
+            $data[] = $row;
+        }
+
+        // echo "<pre>"; print_r($data);die;
+
+        $output = array("data" => $data );
+        //output to json format
+        echo json_encode($output);
     }
 
 

@@ -1215,7 +1215,8 @@ class Pl_pelayanan extends MX_Controller {
                 /*get tarif mulitiple kode dokter*/
                 $tarifDokter = $this->tarif->getTarifMultipleDokter( $this->input->post('pl_kode_dokter_hidden') );
 
-                $tarifInsert = $this->tarif->getTarifForinsert($_POST['is_paket']);
+                $is_paket = (isset($_POST['is_paket']))?$_POST['is_paket']:'';
+                $tarifInsert = $this->tarif->getTarifForinsert($is_paket);
 
                 $mergeData = array_merge($dataexc, $tarifDokter, $tarifInsert);
 

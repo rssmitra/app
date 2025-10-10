@@ -32,8 +32,6 @@
 
     }); 
 
-
-
     // DEFAULT 
     $('#btn_observasi_harian_keperawatan').click();
     // getMenuTabsHtml("billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI", 'tabs_form_pelayanan');
@@ -277,8 +275,6 @@
     });
 
 })
-
-
 
 function edit_diagnosa() {
   $('#btn_submit_diagnosa').show('fast');

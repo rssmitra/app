@@ -2,61 +2,61 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
 
 <script type="text/javascript">
-function openSlidePanel(html) {
-  preventDefault();
-  document.getElementById('slidePanelContent').innerHTML = html;
-  document.getElementById('slidePanel').classList.add('open');
-  document.getElementById('slidePanelBg').classList.add('active');
-}
-function closeSlidePanel() {
-  document.getElementById('slidePanel').classList.remove('open');
-  document.getElementById('slidePanelBg').classList.remove('active');
-}
-// Optional: close panel if background clicked
-document.getElementById('slidePanelBg').onclick = closeSlidePanel;
+  function openSlidePanel(html) {
+    preventDefault();
+    document.getElementById('slidePanelContent').innerHTML = html;
+    document.getElementById('slidePanel').classList.add('open');
+    document.getElementById('slidePanelBg').classList.add('active');
+  }
+  function closeSlidePanel() {
+    document.getElementById('slidePanel').classList.remove('open');
+    document.getElementById('slidePanelBg').classList.remove('active');
+  }
+  // Optional: close panel if background clicked
+  document.getElementById('slidePanelBg').onclick = closeSlidePanel;
 </script>
 
 <style>
-.slide-panel {
-  position: fixed;
-  top: 0;
-  right: -500px;
-  width: 400px;
-  height: 100vh;
-  background: #fff;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.2);
-  z-index: 9999;
-  transition: right 0.4s cubic-bezier(.4,0,.2,1);
-  overflow-y: auto;
-  padding: 24px 20px 20px 20px;
-}
-.slide-panel.open {
-  right: 0;
-}
-.slide-panel .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 2em;
-  color: #888;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 10001;
-}
-.slide-panel-content {
-  margin-top: 40px;
-}
-.slide-panel-bg {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.2);
-  z-index: 9998;
-}
-.slide-panel-bg.active {
-  display: block;
-}
+  .slide-panel {
+    position: fixed;
+    top: 0;
+    right: -500px;
+    width: 400px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    z-index: 9999;
+    transition: right 0.4s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+    padding: 24px 20px 20px 20px;
+  }
+  .slide-panel.open {
+    right: 0;
+  }
+  .slide-panel .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2em;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10001;
+  }
+  .slide-panel-content {
+    margin-top: 40px;
+  }
+  .slide-panel-bg {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.2);
+    z-index: 9998;
+  }
+  .slide-panel-bg.active {
+    display: block;
+  }
 </style>
 
 
@@ -315,6 +315,7 @@ function print_resume(no_registrasi){
 
 
 <div class="slide-panel-bg" id="slidePanelBg"></div>
+
 <div class="slide-panel" id="slidePanel">
   <button class="close-btn" type="button" onclick="closeSlidePanel()">&times;</button>
   <div class="slide-panel-content" id="slidePanelContent">

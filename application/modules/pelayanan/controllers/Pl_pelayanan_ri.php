@@ -526,8 +526,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     if($row_list->tipe == 'RI'){
                         $btn_monitoring = '<a href="#" class="btn btn-xs btn-primary" onclick="show_modal('."'pelayanan/Pl_pelayanan_ri/observasi_harian_keperawatan_view_only/".$row_list->reff_id."/".$row_list->no_kunjungan."?type=Ranap&kode_bag=".$row_list->kode_bagian_tujuan."&tipe_monitoring=UMUM'".', '."'Monitoring Observasi Keperawatan Harian Pasien'".')"><i class="fa fa-folder"></i> Monitoring Observasi Keperawatan Harian Pasien</a>';
                     }
-                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>'.$btn_monitoring.'<br>
-                    <a href="#" onclick="openSlidePanel('."'OK'".')">e-Resep</a>';
+                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>'.$btn_monitoring.'';
                 }
     
                 $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;

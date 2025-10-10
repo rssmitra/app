@@ -891,8 +891,9 @@ final class Tanggal {
             $hours = floor($second / 3600);
             $minutes = floor(($second % 3600) / 60);
             $seconds = $second % 60;
+            $minutesx = floor($second/60);
 
-            if($minutes > $max_layan){
+            if($minutesx > $max_layan){
                 $color = 'red';
             }else{
                 $color = 'green';
@@ -908,10 +909,11 @@ final class Tanggal {
             $start_ts = strtotime($start);
             $end_ts = strtotime($end);
             $diff = $end_ts - $start_ts;
+            $minutesx = floor($diff/60);
             $hours = floor($diff / 3600);
             $minutes = floor(($diff % 3600) / 60);
             $seconds = $diff % 60;
-            if($minutes > $max_layan){
+            if($minutesx > $max_layan){
                 $color = 'red';
             }else{
                 $color = 'green';
