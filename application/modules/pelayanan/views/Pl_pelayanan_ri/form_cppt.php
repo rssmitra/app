@@ -2,245 +2,357 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
 <script type="text/javascript">
 
-jQuery(function($) {  
+  jQuery(function($) {  
 
-  $('.date-picker').datepicker({    
+    $('.date-picker').datepicker({    
 
-    autoclose: true,    
+      autoclose: true,    
 
-    todayHighlight: true    
+      todayHighlight: true    
 
-  })  
+    })  
 
-  //show datepicker when clicking on the icon
+    //show datepicker when clicking on the icon
 
-  .next().on(ace.click_event, function(){    
+    .next().on(ace.click_event, function(){    
 
-    $(this).prev().focus();    
+      $(this).prev().focus();    
 
-  });  
+    });  
 
-  $('#timepicker1, #timepicker2').timepicker({
-    minuteStep: 1,
-    showSeconds: true,
-    showMeridian: false,
-    disableFocus: true,
-    icons: {
-      up: 'fa fa-chevron-up',
-      down: 'fa fa-chevron-down'
-    }
-  }).on('focus', function() {
-    $('#timepicker1').timepicker('showWidget');
-    $('#timepicker2').timepicker('showWidget');
-  }).next().on(ace.click_event, function(){
-    $(this).prev().focus();
+    $('#timepicker1, #timepicker2').timepicker({
+      minuteStep: 1,
+      showSeconds: true,
+      showMeridian: false,
+      disableFocus: true,
+      icons: {
+        up: 'fa fa-chevron-up',
+        down: 'fa fa-chevron-down'
+      }
+    }).on('focus', function() {
+      $('#timepicker1').timepicker('showWidget');
+      $('#timepicker2').timepicker('showWidget');
+    }).next().on(ace.click_event, function(){
+      $(this).prev().focus();
+    });
+      
+
   });
-    
 
-});
+  $(document).ready(function() {
+    //initiate dataTables plugin
+      oTableCppt = $('#table-cppt').DataTable({ 
+            
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "ordering": false,
+        "searching": false,
+        "bPaginate": false,
+        "bInfo": false,
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>",
+            "type": "POST"
+        },
 
-$(document).ready(function() {
-  //initiate dataTables plugin
-    oTableCppt = $('#table-cppt').DataTable({ 
-          
-      "processing": true, //Feature control the processing indicator.
-      "serverSide": true, //Feature control DataTables' server-side processing mode.
-      "ordering": false,
-      "searching": false,
-      "bPaginate": false,
-      "bInfo": false,
-      // Load data for the table's content from an Ajax source
-      "ajax": {
-          "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>",
-          "type": "POST"
-      },
-
-    });
-
-    // proses add cppt
-    $('#btn_add_cppt').click(function (e) {   
-      e.preventDefault();
-      $.ajax({
-          url: $('#form_pelayanan').attr('action'),
-          data: $('#form_pelayanan').serialize(),            
-          dataType: "json",
-          type: "POST",
-          complete: function(xhr) {             
-            var data=xhr.responseText;        
-            var jsonResponse = JSON.parse(data);        
-            if(jsonResponse.status === 200){          
-              $.achtung({message: jsonResponse.message, timeout:5});     
-              $('#section_form_cppt').hide('fast');
-              $('#section_history_cppt').show('fast');
-
-              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>').load();
-              // reset form
-              $('#cppt_id').val('');
-              $('#subjective').val('');
-              $('#objective').val('');
-              $('#assesment').val('');
-              $('#plan').val('');
-            }else{           
-              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-            }        
-            achtungHideLoader();        
-          } 
       });
-    });
 
-    // btn upload file rm
-    $('#btn_add_file_rm').click(function (e) {   
-      e.preventDefault();
-      $.ajax({
-          url: $('#form_pelayanan').attr('action'),
-          data: $('#form_pelayanan').serialize(),            
-          dataType: "json",
-          type: "POST",
-          complete: function(xhr) {             
-            var data=xhr.responseText;        
-            var jsonResponse = JSON.parse(data);        
-            if(jsonResponse.status === 200){          
-              $.achtung({message: jsonResponse.message, timeout:5});     
-              $('#section_form_cppt').hide('fast');
-              $('#section_form_upload_file_rm').hide('fast');
-              $('#section_history_cppt').show('fast');
-            }else{           
-              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-            }        
-            achtungHideLoader();        
-          } 
-      });
-    });
-
-    $('#btn_search_data_cppt').click(function (e) {
-        
+      // proses add cppt
+      $('#btn_add_cppt').click(function (e) {   
         e.preventDefault();
         $.ajax({
-        url: $('#form_search').attr('action'),
+            url: $('#form_pelayanan').attr('action'),
+            data: $('#form_pelayanan').serialize(),            
+            dataType: "json",
+            type: "POST",
+            complete: function(xhr) {             
+              var data=xhr.responseText;        
+              var jsonResponse = JSON.parse(data);        
+              if(jsonResponse.status === 200){          
+                $.achtung({message: jsonResponse.message, timeout:5});     
+                $('#section_form_cppt').hide('fast');
+                $('#section_history_cppt').show('fast');
+
+                oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>').load();
+                // reset form
+                $('#cppt_id').val('');
+                $('#subjective').val('');
+                $('#objective').val('');
+                $('#assesment').val('');
+                $('#plan').val('');
+              }else{           
+                $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+              }        
+              achtungHideLoader();        
+            } 
+        });
+      });
+
+      // btn upload file rm
+      $('#btn_add_file_rm').click(function (e) {   
+        e.preventDefault();
+        $.ajax({
+            url: $('#form_pelayanan').attr('action'),
+            data: $('#form_pelayanan').serialize(),            
+            dataType: "json",
+            type: "POST",
+            complete: function(xhr) {             
+              var data=xhr.responseText;        
+              var jsonResponse = JSON.parse(data);        
+              if(jsonResponse.status === 200){          
+                $.achtung({message: jsonResponse.message, timeout:5});     
+                $('#section_form_cppt').hide('fast');
+                $('#section_form_upload_file_rm').hide('fast');
+                $('#section_history_cppt').show('fast');
+              }else{           
+                $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+              }        
+              achtungHideLoader();        
+            } 
+        });
+      });
+
+      $('#btn_search_data_cppt').click(function (e) {
+          
+          e.preventDefault();
+          $.ajax({
+          url: $('#form_search').attr('action'),
+          type: "post",
+          data: $('#form_search').serialize(),
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          success: function(data) {
+            achtungHideLoader();
+            find_data_reload(data,base_url);
+          }
+        });
+      });
+
+      $('#btn_reset_data_cppt').click(function (e) {
+              e.preventDefault();
+              reset_table();
+      });
+
+    $('#btn_export_pdf_cppt').click(function (e) {
+      var url_search = $('#form_search').attr('action');
+      e.preventDefault();
+      $.ajax({
+        url: url_search,
         type: "post",
         data: $('#form_search').serialize(),
         dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        success: function(data) {
-          achtungHideLoader();
-          find_data_reload(data,base_url);
+        success: function(result) {
+          window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&'+result.data+'','_blank'); 
         }
       });
     });
 
-    $('#btn_reset_data_cppt').click(function (e) {
-            e.preventDefault();
-            reset_table();
-    });
 
-  $('#btn_export_pdf_cppt').click(function (e) {
-    var url_search = $('#form_search').attr('action');
-    e.preventDefault();
-    $.ajax({
-      url: url_search,
-      type: "post",
-      data: $('#form_search').serialize(),
-      dataType: "json",
-      success: function(result) {
-        window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&'+result.data+'','_blank'); 
-      }
-    });
   });
 
-
-});
-
-function delete_cppt(myid, flag){
-  preventDefault();
-  if(confirm('Are you sure?')){
-    $.ajax({
-        url: 'pelayanan/Pl_pelayanan_ri/delete_cppt',
-        type: "post",
-        data: {ID:myid, flag: flag},
-        dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-        },
-        complete: function(xhr) {     
-          var data=xhr.responseText;
-          var jsonResponse = JSON.parse(data);
-          if(jsonResponse.status === 200){
-            $.achtung({message: jsonResponse.message, timeout:5});
-            oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>').load();
-          }else{
-            $.achtung({message: jsonResponse.message, timeout:5});
+  function delete_cppt(myid, flag){
+    preventDefault();
+    if(confirm('Are you sure?')){
+      $.ajax({
+          url: 'pelayanan/Pl_pelayanan_ri/delete_cppt',
+          type: "post",
+          data: {ID:myid, flag: flag},
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          uploadProgress: function(event, position, total, percentComplete) {
+          },
+          complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+              $.achtung({message: jsonResponse.message, timeout:5});
+              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>').load();
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5});
+            }
+            achtungHideLoader();
           }
-          achtungHideLoader();
-        }
 
-      });
+        });
 
-  }else{
-    return false;
-  }
-  
-}
-
-function verif_dpjp(cppt_id, value){
-    
-    if( $('#is_verified_' + cppt_id).is(":checked") ){
-      var status = 1;
     }else{
-      var status = 0;
+      return false;
+    }
+    
+  }
+
+  function verif_dpjp(cppt_id, value){
+      
+      if( $('#is_verified_' + cppt_id).is(":checked") ){
+        var status = 1;
+      }else{
+        var status = 0;
+      }
+
+      $.ajax({
+          url: 'pelayanan/Pl_pelayanan_ri/verif_cppt',
+          data: {ID : cppt_id, status_verif : status},            
+          dataType: "json",
+          type: "POST",
+          complete: function (xhr) {
+            if(status != 0){
+              $('#verif_id_'+cppt_id+'').html('<?php echo $this->session->userdata('user')->fullname?><br><?php echo $this->tanggal->formatDateTime(date('Y-m-d H:i:s'))?>');
+            }else{
+              $('#verif_id_'+cppt_id+'').html('');
+
+            }
+            return false;
+          }
+      });
+      
+  }
+
+  function add_cppt(){
+    preventDefault();
+    $('#section_form_cppt').show('fast');
+    $('#section_form_upload_file_rm').hide('fast');
+    $('#section_history_cppt').hide('fast');
+    $("#section_form_cppt_sidebar").show();
+    loadCpptSidebarHistory();
+  }
+
+  function upload_file_rm(){
+    preventDefault();
+    $('#section_form_cppt').hide('fast');
+    $('#section_form_upload_file_rm').show('fast');
+    $('#section_history_cppt').hide('fast');
+  }
+
+  function show_edit(myid, type, no_kunjungan, reff_id){
+    preventDefault();
+    $("#section_form_cppt_sidebar").show();
+    loadCpptSidebarHistory();
+    if(type == 'RJ'){
+      $('#form_edit_resume_rj').show();
+      $('#section_history_cppt').hide('fast');
+      $('#form_edit_resume_rj').load('pelayanan/Pl_pelayanan/diagnosa_dr_edit_from_cppt/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_bag=');
+    }else{
+      $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
+        // show data
+        $('#section_form_cppt').show('fast');
+        $('#section_history_cppt').hide('fast');
+        $('#cppt_id').val(response.id);
+        var subjective = response.subjective;
+        $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
+        var objective = response.objective;
+        $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
+        var assesment = response.assesment;
+        $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
+        var plan = response.planning;
+        $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
+      }); 
+    }
+    
+  }
+
+  function find_data_reload(result, base_url){
+    var data = result.data;    
+    oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>&"+data).load();
+    // $("html, body").animate({ scrollTop: "400px" });
+  }
+
+  function reset_table(){
+    oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>").load();
+    // $("html, body").animate({ scrollTop: "400px" });
+  }
+
+  function reload_table(){
+  oTableCppt.ajax.reload(); //reload datatable ajax 
+  }
+
+  function hapus_file(a, b)
+  {
+
+    if(b != 0){
+      $.getJSON("<?php echo base_url('posting/delete_file') ?>/" + b, '', function(data) {
+          document.getElementById("file"+a).innerHTML = "";
+          greatComplate(data);
+      });
+    }else{
+      y = a ;
+      x = a+1;
+      document.getElementById("file"+a).innerHTML = "";
     }
 
+  }
+
+  counterfile = <?php $j=1;echo $j.";";?>
+
+  function tambah_file()
+  {
+
+    counternextfile = counterfile + 1;
+
+    counterIdfile = counterfile + 1;
+
+    document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='col-md-2'>&nbsp;</label><div class='col-md-3'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><div class='col-md-4'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1' style='margin-left:-2.5%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\" style='padding-top: 3px'></div>";
+
+    counterfile++;
+
+  }
+
+  function openSlidePanel(html) {
+    preventDefault();
+    document.getElementById('slidePanelContent').innerHTML = html;
+    document.getElementById('slidePanel').classList.add('open');
+    document.getElementById('slidePanelBg').classList.add('active');
+  }
+  function closeSlidePanel() {
+    document.getElementById('slidePanel').classList.remove('open');
+    document.getElementById('slidePanelBg').classList.remove('active');
+  }
+  // Optional: close panel if background clicked
+  document.getElementById('slidePanelBg').onclick = closeSlidePanel;
+
+  function loadCpptSidebarHistory() {
     $.ajax({
-        url: 'pelayanan/Pl_pelayanan_ri/verif_cppt',
-        data: {ID : cppt_id, status_verif : status},            
-        dataType: "json",
-        type: "POST",
-        complete: function (xhr) {
-          if(status != 0){
-            $('#verif_id_'+cppt_id+'').html('<?php echo $this->session->userdata('user')->fullname?><br><?php echo $this->tanggal->formatDateTime(date('Y-m-d H:i:s'))?>');
-          }else{
-            $('#verif_id_'+cppt_id+'').html('');
-
-          }
-          return false;
+      url: "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>",
+      type: "GET",
+      dataType: "json",
+      success: function(response) {
+        var html = "";
+        // DataTables server-side response: response.data is array of arrays, columns order as in table
+        // Adjust if your server returns differently
+        var rows = response.data || [];
+        if(rows.length > 0) {
+          $.each(rows, function(i, row) {
+            // Example: [No, Tanggal/Jam/PPA, SOAP, Verifikasi, Action]
+            // We'll use columns 1 (Tanggal/Jam/PPA) and 2 (SOAP)
+            if(row[7] == '' || row[7] == null){ 
+              html += "<tr>";
+              html += "<td>"+(i+1)+"</td>";
+              // Escape double quotes in SOAP text
+              var soapText = row[2] ? row[2].replace(/\"/g, '&quot;') : '';
+              html += "<td>"+row[1]+"<br>"+row[2]+"<br><a href='#' class='label label-primary' onclick='copy_soap("+row[5]+")'><i class='fa fa-copy'></i> Copy SOAP</a></td>";
+              html += "</tr>";
+            }
+            
+          });
+        } else {
+          html = "<tr><td colspan='2' class='text-center'>Tidak ada data CPPT sebelumnya</td></tr>";
         }
+        $("#cppt_sidebar_history").html(html);
+      }
     });
-    
-}
+  }
 
-function add_cppt(){
-  preventDefault();
-  $('#section_form_cppt').show('fast');
-  $('#section_form_upload_file_rm').hide('fast');
-  $('#section_history_cppt').hide('fast');
-  $("#section_form_cppt_sidebar").show();
-  loadCpptSidebarHistory();
-}
+  // Fungsi Copy SOAP ke form
+  function copy_soap(cppt_id) {
 
-function upload_file_rm(){
-  preventDefault();
-  $('#section_form_cppt').hide('fast');
-  $('#section_form_upload_file_rm').show('fast');
-  $('#section_history_cppt').hide('fast');
-}
-
-function show_edit(myid, type, no_kunjungan, reff_id){
-  preventDefault();
-  $("#section_form_cppt_sidebar").show();
-  loadCpptSidebarHistory();
-  if(type == 'RJ'){
-    $('#form_edit_resume_rj').show();
-    $('#section_history_cppt').hide('fast');
-    $('#form_edit_resume_rj').load('pelayanan/Pl_pelayanan/diagnosa_dr_edit_from_cppt/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_bag=');
-  }else{
-    $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
+    preventDefault();
+    $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: cppt_id} , function (response) {    
       // show data
       $('#section_form_cppt').show('fast');
       $('#section_history_cppt').hide('fast');
-      $('#cppt_id').val(response.id);
       var subjective = response.subjective;
       $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
       var objective = response.objective;
@@ -250,62 +362,66 @@ function show_edit(myid, type, no_kunjungan, reff_id){
       var plan = response.planning;
       $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
     }); 
+
   }
-  
-}
-
-function find_data_reload(result, base_url){
-  var data = result.data;    
-  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>&"+data).load();
-  // $("html, body").animate({ scrollTop: "400px" });
-}
-
-function reset_table(){
-  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>").load();
-  // $("html, body").animate({ scrollTop: "400px" });
-}
-
-function reload_table(){
- oTableCppt.ajax.reload(); //reload datatable ajax 
-}
-
-function hapus_file(a, b)
-
-{
-
-  if(b != 0){
-    $.getJSON("<?php echo base_url('posting/delete_file') ?>/" + b, '', function(data) {
-        document.getElementById("file"+a).innerHTML = "";
-        greatComplate(data);
-    });
-  }else{
-    y = a ;
-    x = a+1;
-    document.getElementById("file"+a).innerHTML = "";
-  }
-
-}
-
-counterfile = <?php $j=1;echo $j.";";?>
-
-function tambah_file()
-
-{
-
-  counternextfile = counterfile + 1;
-
-  counterIdfile = counterfile + 1;
-
-  document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='col-md-2'>&nbsp;</label><div class='col-md-3'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><div class='col-md-4'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1' style='margin-left:-2.5%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\" style='padding-top: 3px'></div>";
-
-  counterfile++;
-
-}
 
 </script>
 
-<div class="row">
-  <div class="col-md-8" id="section_form_cppt" style="display: none">
+<style>
+  .slide-panel {
+    position: fixed;
+    top: 0;
+    right: -500px;
+    width: 400px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    z-index: 9999;
+    transition: right 0.4s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+    padding: 24px 20px 20px 20px;
+  }
+  .slide-panel.open {
+    right: 0;
+  }
+  .slide-panel .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2em;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10001;
+  }
+  .slide-panel-content {
+    margin-top: 40px;
+  }
+  .slide-panel-bg {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.2);
+    z-index: 9998;
+  }
+  .slide-panel-bg.active {
+    display: block;
+  }
+</style>
+
+<div class="slide-panel-bg" id="slidePanelBg"></div>
+
+<div class="slide-panel" id="slidePanel">
+  <button class="close-btn" type="button" onclick="closeSlidePanel()">&times;</button>
+  <div class="slide-panel-content" id="slidePanelContent">
+    <!-- Konten detail akan dimuat di sini -->
+  </div>
+</div>
+
+<div class="row" id="section_form_cppt" style="display: none">
+
+  <div class="col-md-8" >
 
     <div class="center"><span style="font-size: 14px"><b>FORM CPPT</b></span><br><small>(Dilengkapi setelah PPA melakukan Assesment)</small></div>
     <br>
@@ -413,7 +529,8 @@ function tambah_file()
     <br>
     <hr>
   </div>
-  <div class="col-md-4" id="section_form_cppt_sidebar" style="display: none">
+
+  <div class="col-md-4" id="section_form_cppt_sidebar">
     <div class="panel panel-default">
       <div class="panel-heading"><b>Riwayat CPPT Sebelumnya</b></div>
       <div class="panel-body" style="max-height: 900px; overflow-y: auto;">
@@ -431,60 +548,7 @@ function tambah_file()
       </div>
     </div>
   </div>
-  <script>
-    function loadCpptSidebarHistory() {
-      $.ajax({
-        url: "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>",
-        type: "GET",
-        dataType: "json",
-        success: function(response) {
-          var html = "";
-          // DataTables server-side response: response.data is array of arrays, columns order as in table
-          // Adjust if your server returns differently
-          var rows = response.data || [];
-          if(rows.length > 0) {
-            $.each(rows, function(i, row) {
-              // Example: [No, Tanggal/Jam/PPA, SOAP, Verifikasi, Action]
-              // We'll use columns 1 (Tanggal/Jam/PPA) and 2 (SOAP)
-              if(row[7] == '' || row[7] == null){ 
-                html += "<tr>";
-                html += "<td>"+(i+1)+"</td>";
-                // Escape double quotes in SOAP text
-                var soapText = row[2] ? row[2].replace(/\"/g, '&quot;') : '';
-                html += "<td>"+row[1]+"<br>"+row[2]+"<br><a href='#' class='label label-primary' onclick='copy_soap("+row[5]+")'><i class='fa fa-copy'></i> Copy SOAP</a></td>";
-                html += "</tr>";
-              }
-              
-            });
-          } else {
-            html = "<tr><td colspan='2' class='text-center'>Tidak ada data CPPT sebelumnya</td></tr>";
-          }
-          $("#cppt_sidebar_history").html(html);
-        }
-      });
-    }
-
-    // Fungsi Copy SOAP ke form
-    function copy_soap(cppt_id) {
-
-      preventDefault();
-      $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: cppt_id} , function (response) {    
-        // show data
-        $('#section_form_cppt').show('fast');
-        $('#section_history_cppt').hide('fast');
-        var subjective = response.subjective;
-        $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
-        var objective = response.objective;
-        $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
-        var assesment = response.assesment;
-        $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
-        var plan = response.planning;
-        $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
-      }); 
-
-    }
-
-  </script>
+  
 </div>
 
 <div class="row">

@@ -715,7 +715,9 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_registrasi.kode_dokter','left');
 		$this->db->where("tc_registrasi.no_mr='".$mr."'");
-		$this->db->where("tc_registrasi.kode_bagian_masuk ='".$kode_spesialis."'");
+		if($kode_spesialis != ''){
+			$this->db->where("tc_registrasi.kode_bagian_masuk ='".$kode_spesialis."'");
+		}
 		$this->db->where("tc_registrasi.status_batal is null");
 		$this->db->where("tc_registrasi.kode_perusahaan=120");
 		$this->db->where("SUBSTRING(tc_registrasi.kode_bagian_masuk, 1,2)='01'");

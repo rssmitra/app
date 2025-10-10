@@ -151,7 +151,7 @@ function find_pasien_by_keyword(keyword){
 
             $('#total_kunjungan').text(obj.total_kunjungan);
 
-            $('#full_pasien_data').text(obj.no_mr+' - '+obj.nama_pasien+' ('+obj.jen_kelamin+') | TL. '+getFormattedDate(obj.tgl_lhr)+' ('+ umur_pasien+' Thn)');
+            $('#full_pasien_data').text(obj.no_mr+' - '+obj.nama_pasien+' ('+obj.jen_kelamin+') | TL. '+getFormattedDate(obj.tgl_lhr)+' ('+ umur_pasien+')');
 
 
             $("#myTab li").removeClass("active");

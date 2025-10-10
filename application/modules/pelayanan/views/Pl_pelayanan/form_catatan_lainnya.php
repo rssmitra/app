@@ -1,3 +1,139 @@
+<!-- Modal Verifikasi PIN -->
+<div class="modal fade" id="modal-verifikasi-pin" tabindex="-1" role="dialog" aria-labelledby="modalVerifPinLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVerifPinLabel">Verifikasi PIN</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="position: relative; margin-bottom: 10px;">
+          <label for="input_pin_verif">Masukan PIN : </label>
+          <div class="input-group">
+            <input type="password" class="form-control" id="input_pin_verif" placeholder="Masukkan PIN" autocomplete="off">
+            <span class="input-group-addon" id="toggle-pin-verif" style="cursor: pointer; background: transparent; border-left: none;">
+              <i class="fa fa-eye" id="icon-eye-pin"></i>
+            </span>
+          </div>
+          <span id="pinVerifErrorMsg" style="color:red;display:none;"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-xs btn-danger" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-xs btn-primary" id="btnSubmitPinVerif">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Toggle show/hide PIN
+$(document).on('mousedown', '#toggle-pin-verif', function() {
+  $('#input_pin_verif').attr('type', 'text');
+  $('#icon-eye-pin').removeClass('fa-eye').addClass('fa-eye-slash');
+});
+$(document).on('mouseup mouseleave', '#toggle-pin-verif', function() {
+  $('#input_pin_verif').attr('type', 'password');
+  $('#icon-eye-pin').removeClass('fa-eye-slash').addClass('fa-eye');
+});
+
+// Handler submit PIN
+$(document).off('click', '#btnSubmitPinVerif').on('click', '#btnSubmitPinVerif', function() {
+  var pin = $('#input_pin_verif').val();
+  if(!pin) {
+    $('#pinVerifErrorMsg').text('PIN harus diisi!').show();
+    return;
+  }
+  // Verifikasi PIN ke server
+  $.ajax({
+    url: 'templates/References/verify_code', // Ganti dengan URL endpoint verifikasi PIN yang benar
+    type: "post",
+    data: {pin: pin, type: 'cppt'},
+    dataType: "json",
+    beforeSend: function() {
+      $('#btnSubmitPinVerif').prop('disabled', true);
+    },
+    success: function(response) {
+      
+      if(response.status === 200) {
+        $('#modal-verifikasi-pin').modal('hide');
+        // Lanjutkan proses hapus
+        var myid = window._deleteCpptParams.myid;
+        var flag = window._deleteCpptParams.flag;
+        $.ajax({
+          url: 'pelayanan/Pl_pelayanan_ri/delete_cppt',
+          type: "post",
+          data: {ID:myid, flag: flag},
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+              $.achtung({message: jsonResponse.message, timeout:5});
+              oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&type=catatan_pengkajian").load();
+              $('#cppt_id').val('');
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFailed'});
+            }
+            achtungHideLoader();
+          }
+        });
+      } else {
+        $('#pinVerifErrorMsg').text(response.message || 'PIN salah!').show();
+      }
+
+    },
+    error: function() {
+      $('#pinVerifErrorMsg').text('Terjadi kesalahan saat verifikasi PIN.').show();
+    },
+    complete: function() {
+      $('#btnSubmitPinVerif').prop('disabled', false);
+    }
+  });
+});
+</script>
+
+<style>
+  /* Custom modal for better appearance */
+  #modal-verifikasi-pin .modal-dialog {
+    margin-top: 10vh;
+    max-width: 300px;
+  }
+  #modal-verifikasi-pin .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    border: none;
+  }
+  #modal-verifikasi-pin .modal-header {
+    border-bottom: 1px solid #eee;
+    background: #f7f7f7;
+    border-radius: 10px 10px 0 0;
+    padding: 16px 24px 12px 24px;
+  }
+  #modal-verifikasi-pin .modal-title {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  #modal-verifikasi-pin .modal-body {
+    padding: 20px 24px 10px 24px;
+  }
+  #modal-verifikasi-pin .form-group label {
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  #modal-verifikasi-pin .form-control {
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  #modal-verifikasi-pin .modal-footer {
+    border-top: 1px solid #eee;
+    padding: 12px 24px 16px 24px;
+    border-radius: 0 0 10px 10px;
+    background: #f7f7f7;
+  }
+</style>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
 
@@ -191,39 +327,15 @@ $(document).ready(function() {
 
 });
 
+
 function delete_cppt(myid, flag){
-  preventDefault();
-  if(confirm('Are you sure?')){
-    $.ajax({
-        url: 'pelayanan/Pl_pelayanan_ri/delete_cppt',
-        type: "post",
-        data: {ID:myid, flag: flag},
-        dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-        },
-        complete: function(xhr) {     
-          var data=xhr.responseText;
-          var jsonResponse = JSON.parse(data);
-          if(jsonResponse.status === 200){
-            $.achtung({message: jsonResponse.message, timeout:5});
-            oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&type=catatan_pengkajian").load();
-            $('#cppt_id').val('');
-          }else{
-            $.achtung({message: jsonResponse.message, timeout:5});
-          }
-          achtungHideLoader();
-        }
-
-      });
-
-  }else{
-    return false;
-  }
-  
+  // Simpan parameter untuk digunakan setelah verifikasi PIN
+  window._deleteCpptParams = {myid: myid, flag: flag};
+  $('#inputPinVerifikasi').val('');
+  $('#pinErrorMsg').hide();
+  $('#modal-verifikasi-pin').modal('show');
 }
+
 
 function verif_dpjp(cppt_id, value){
     
@@ -376,6 +488,8 @@ function showModalTTD()
     $("#modalTTDPasien").modal();
   }
 }
+
+
 
 
 </script>

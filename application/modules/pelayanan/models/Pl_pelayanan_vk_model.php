@@ -53,7 +53,7 @@ class Pl_pelayanan_vk_model extends CI_Model {
 					$this->db->where('DATEDIFF(Day, ri_pasien_vk_v.tgl_masuk, getdate()) <= 30');	
 				}else{
 					// $this->db->where("flag_vk", 0);
-					$this->db->where("ri_pasien_vk_v.tgl_keluar is null OR flag_vk=0");
+					$this->db->where("ri_pasien_vk_v.tgl_keluar is null");
 				}
 			}
 		}
@@ -86,6 +86,19 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		$this->_get_datatables_query();
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function get_list_data()
+	{
+		$this->_main_query();
+		if(isset($_GET['dokter']) && $_GET['dokter']!=''){
+			$this->db->where('ri_pasien_vk_v.dr_merawat', $_GET['dokter']);
+		}
+		$this->db->where("ri_pasien_vk_v.tgl_keluar is null");
+		$this->db->order_by('nama_pasien', 'ASC');
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

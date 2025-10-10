@@ -526,8 +526,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     if($row_list->tipe == 'RI'){
                         $btn_monitoring = '<a href="#" class="btn btn-xs btn-primary" onclick="show_modal('."'pelayanan/Pl_pelayanan_ri/observasi_harian_keperawatan_view_only/".$row_list->reff_id."/".$row_list->no_kunjungan."?type=Ranap&kode_bag=".$row_list->kode_bagian_tujuan."&tipe_monitoring=UMUM'".', '."'Monitoring Observasi Keperawatan Harian Pasien'".')"><i class="fa fa-folder"></i> Monitoring Observasi Keperawatan Harian Pasien</a>';
                     }
-                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>'.$btn_monitoring.'<br>
-                    <a href="#" onclick="openSlidePanel('."'OK'".')">e-Resep</a>';
+                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>'.$btn_monitoring.'';
                 }
     
                 $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
@@ -1178,6 +1177,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function delete_cppt()
     {
+        // echo "<pre>";print_r($this->session->all_userdata());die;
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
         if($id!=null){
             $table = ($_POST['flag'] == 'resume')?'th_riwayat_pasien':'th_cppt';
@@ -1186,10 +1186,10 @@ class Pl_pelayanan_ri extends MX_Controller {
             $data = $this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan = '.$table.'.no_kunjungan','left')->get_where($table, [$kode => $id])->row();
             
             // cek jika user dokter tidak boleh menghapus data
-            if( $data->kode_dokter != '' AND $data->kode_dokter != $this->session->userdata('sess_kode_dokter') ){
-                echo json_encode(array('status' => 301, 'message' => 'Anda tidak memiliki akses untuk menghapus data'));
-                exit;
-            }
+            // if( $data->kode_dokter != '' AND $data->kode_dokter != $this->session->userdata('sess_kode_dokter') ){
+            //     echo json_encode(array('status' => 301, 'message' => 'Anda tidak memiliki akses untuk menghapus data'));
+            //     exit;
+            // }
             
             if($this->db->where($kode, $id)->delete($table)){
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));

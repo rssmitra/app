@@ -197,7 +197,7 @@ class Reg_klinik extends MX_Controller {
         $last_visit = $this->Reg_pasien->cek_last_visit( $no_mr );
         // cek konsul internal
         $data_konsul_internal = $this->Reg_pasien->cek_konsul_internal( $no_mr, $tgl_kunjungan );
-        // echo '<pre>'; print_r($data_konsul_internal);die;
+        // echo '<pre>'; print_r($last_visit);die;
 
         $data = array(
 

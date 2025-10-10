@@ -196,7 +196,7 @@ class Service extends MX_Controller {
         // check token
         $checkToken = $this->checkToken($this->input->request_headers());
 
-        $year = date('Y') - 1;
+        $year = date('Y') - 3;
 		$no_mr = (string)$post->nomr;
         $limit = isset($post->limit)?$post->limit:20;
         // riwayat medis
@@ -266,6 +266,7 @@ class Service extends MX_Controller {
                 'flag_mr' => $row_rm->flag,
                 'ppa' => $row_rm->ppa,
                 'nama_ppa' => $row_rm->nama_ppa,
+                'spesialis' => $row_rm->spesialis,
                 'subjective' => $row_rm->subjective,
                 'objective' => $row_rm->objective,
                 'assesment' => $row_rm->assesment,

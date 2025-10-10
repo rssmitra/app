@@ -265,7 +265,7 @@
                 <div class="col-sm-3 no-padding">
                   <div class="widget-box">
                     <div class="widget-header widget-header-flat" style="padding: 10px">
-                      <h4 class="widget-title center" style="text-align: center !important; font-size: 3em">PROSES RACIKAN</h4>
+                      <h4 class="widget-title center" style="text-align: center !important; font-size: 3em">OBAT RACIKAN</h4>
                     </div>
 
                     <div class="widget-body">
@@ -322,7 +322,7 @@
                 <div class="col-sm-3">
                   <div class="widget-box">
                     <div class="widget-header widget-header-flat" style="padding: 10px">
-                      <h4 class="widget-title center" style="text-align: center !important; font-size: 3em">PROSES ETIKET</h4>
+                      <h4 class="widget-title center" style="text-align: center !important; font-size: 3em">ETIKET</h4>
                     </div>
 
                     <div class="widget-body">

@@ -161,7 +161,7 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
         $this->db->update('tc_kartu_stok', array('is_retur' => 1, 'retur_date' => date('Y-m-d H:i:s'), 'retur_by' => $mutasi['nama_petugas']), array('id_kartu' => $_POST['ID']) );
         // update mt_depo_stok
         $this->db->update('mt_depo_stok', array('jml_sat_kcl' => $stok_akhir), array('kode_bagian' => $row->kode_bagian, 'kode_brg' => $row->kode_brg) );
-
+        // 
         echo json_encode(array('status' => 200, 'message' => 'Proses berhasil dilakukan'));
 
     }

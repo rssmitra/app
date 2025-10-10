@@ -30,9 +30,29 @@ jQuery(function($) {
 
 $(document).ready(function(){
 
+    // list pasien
+    get_list_pasien();
+
     /*when page load find pasien by mr*/
     find_pasien_by_keyword('<?php echo $no_mr?>');
-    getMenuTabs('pelayanan/Pl_pelayanan_vk/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501', 'tabs_form_pelayanan');
+
+    $('#div_main_form').load('pelayanan/Pl_pelayanan_vk/form_main/<?php echo $id; ?>/<?php echo $no_kunjungan; ?>');
+
+    window.filter = function(element)
+    {
+      var value = $(element).val().toUpperCase();
+      $(".list-group > li").each(function() 
+      {
+        if ($(this).text().toUpperCase().search(value) > -1){
+          $(this).show();
+        }
+        else {
+          $(this).hide();
+        }
+      });
+    }
+
+    // getMenuTabs('pelayanan/Pl_pelayanan_vk/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501', 'tabs_form_pelayanan');
 
     /*focus on form input pasien*/
     $('#form_cari_pasien').focus();    
@@ -215,23 +235,6 @@ function formatDate(date) {
 function find_pasien_by_keyword(keyword){  
 
     $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien_by_mr') ?>?keyword=" + keyword, '', function (data) {      
-          achtungHideLoader();          
-
-          /*if cannot find data show alert*/
-          if( data.count == 0){
-
-            $('#div_load_after_selected_pasien').hide('fast');
-
-            $('#div_riwayat_pasien').hide('fast');
-            
-            $('#div_penangguhan_pasien').hide('fast');
-
-            /*reset all field data*/
-            $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
-
-            alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
-
-          }
 
           /*if count data = 1*/
           if( data.count == 1 )     {
@@ -239,15 +242,17 @@ function find_pasien_by_keyword(keyword){
             var obj = data.result[0];
 
             var pending_data_pasien = data.pending; 
-            var umur_pasien = hitung_usia(obj.tgl_lhr);
-            console.log(pending_data_pasien);
-            console.log(hitung_usia(obj.tgl_lhr));
+            var umur_pasien = getAge(obj.tgl_lhr, 1);
 
             $('#no_mr').text(obj.no_mr);
 
             $('#noMrHidden').val(obj.no_mr);
 
             $('#no_ktp').text(obj.no_ktp);
+            // tambahan
+            $('#nikPasien').val(obj.no_ktp);
+            $('#hpPasien').val(obj.no_hp);
+            $('#noTelpPasien').val(obj.tlp_almt_ttp);
 
             $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
 
@@ -269,6 +274,8 @@ function find_pasien_by_keyword(keyword){
 
             $('#catatan_pasien').text(obj.keterangan);
 
+            $('#ttd_pasien').attr('src', obj.ttd);
+
             $('#noKartuBpjs').val(obj.no_kartu_bpjs);
 
             if( obj.url_foto_pasien ){
@@ -289,17 +296,17 @@ function find_pasien_by_keyword(keyword){
 
             }
 
-            
-            
             if( obj.kode_perusahaan==120){
 
               $('#form_sep').show('fast'); 
-
+              $('#no_kartu_bpjs_txt').text('('+obj.no_kartu_bpjs+')');
+              
               //showModalFormSep(obj.no_kartu_bpjs,obj.no_mr);
-
+              
             }else{
-
+              
               $('#form_sep').hide('fast'); 
+              $('#no_kartu_bpjs_txt').text('');
 
             }
 
@@ -317,58 +324,13 @@ function find_pasien_by_keyword(keyword){
 
             $('#total_kunjungan').text(obj.total_kunjungan);
 
-            /*for tabs riwayat*/
-            // $('#tabs_riwayat_kunjungan_id').attr('data-id', obj.no_mr);
-            // $('#tabs_riwayat_transaksi_id').attr('data-id', obj.no_mr);
-            // $('#tabs_riwayat_perjanjian_id').attr('data-id', obj.no_mr);
-            // $('#tabs_riwayat_booking_online_id').attr('data-id', obj.no_mr);
+            $('#full_pasien_data').text(obj.no_mr+' - '+obj.nama_pasien+' ('+obj.jen_kelamin+') | TL. '+getFormattedDate(obj.tgl_lhr)+' ('+ umur_pasien+')');
+
 
             $("#myTab li").removeClass("active");
-            // $("#tabs_detail_pasien").html("<div class='alert alert-block alert-success center'><p><strong><i class='ace-icon fa fa-glass bigger-150'></i><br>Selamat Datang!</strong><br>Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !</p></div>");
-
-            // if(data.count_pending > 0){
-
-            //   /*show pending data pasien*/
-              
-            //   // $('#div_penangguhan_pasien').show('fast');
-
-            //   $('#div_load_after_selected_pasien').hide('fast');
-
-            //   $('#div_riwayat_pasien').show('fast');
-
-            //   $('#result_penangguhan_pasien tbody').remove();
-
-            //   $.each(pending_data_pasien, function (x, y) {                  
-
-            //       dt = new Date(y.tgl_masuk);
-                  
-            //       formatDt = formatDate(dt);
-                  
-            //       if(y.total_ditangguhkan > 0){
-            //         status = 'Total Ditangguhkan '+y.total_ditangguhkan+'';
-            //       }else{
-            //         status = '<label class="label label-danger">Belum dipulangkan</label>';
-            //       }
-            //       $('<tr><td>'+y.no_kunjungan+'</td><td>'+y.no_registrasi+'</td><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td>'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
-
-            //   }); 
 
 
-            // }else{
-
-            //   $('#div_penangguhan_pasien').hide('fast');
-
-            //   $('#result_penangguhan_pasien tbody').remove();
-
-            //   /*show detail form */
-
-            //   $('#div_load_after_selected_pasien').show('fast');
-
-            //   $('#div_riwayat_pasien').show('fast');
-
-            // }
-
-          }             
+          }            
 
     }); 
 
@@ -483,6 +445,69 @@ function cancel_visit(no_registrasi, no_kunjungan){
 function reload_page(){
   getMenu('pelayanan/Pl_pelayanan_vk/form/'+$('#id_pasien_vk').val()+'/'+$('#no_kunjungan').val()+'')
 }
+
+function get_list_pasien(dokter_filter = ''){  
+
+  $('#box_list_pasien').html('Loading...');
+  
+  var is_icu = ( $('#bag_pas').val() == '031001' ) ? 'Y' : '';
+  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_vk/get_list_pasien?is_icu=') ?>"+is_icu+"&dokter="+dokter_filter+"", '', function (response) {    
+    var html = '';
+    html += '<div style="padding-top: 1px; padding-bottom: 10px;">';
+    html += '<b>Cari pasien rawat inap:</b> <br>';
+    html += '<input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);">';
+    html += '<select id="dokter_filter" class="form-control" style="margin-top:4px;margin-bottom:4px;" onchange="get_list_pasien(this.value)">';
+    html += '<option value="">-- Semua Dokter --</option>';
+    
+    // Buat list dokter unik dari response
+    var dokterList = {};
+    $.each(response.data, function(i, v) {
+      var obj = v[0];
+      if(obj.dokter) dokterList[obj.kode_dokter] = obj.dokter;
+    });
+
+    console.log(dokter_filter);
+
+    $.each(dokterList, function(key, val) {
+      html += '<option value="'+key+'"'+(key==dokter_filter?' selected':'')+'>'+val+'</option>';
+    });
+    html += '</select>';
+    html += '<a style="margin-top:4px" href="#" onclick="get_list_pasien()" class="btn btn-block btn-primary">Refresh</a></div>';
+    html += '<ol class="list-group list-group-unbordered" id="list_pasien" style="overflow: scroll; max-height: 500px;">';
+    $.each(response.data, function( i, v ) {
+      var obj = v[0];
+      // Filter dokter jika dipilih
+      // if(dokter_filter && obj.kode_dokter != dokter_filter) return true; // Use return true to continue $.each
+      html += '<li class="list-group-item" id="list_group_'+obj.no_mr+'">';
+        html += '<address onclick="form_main('+"'pelayanan/Pl_pelayanan_vk/form_main/"+obj.id_pasien_vk+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')" style="cursor: pointer;">';
+        html += '<b>'+obj.nama_pasien+'</b><br>';
+        html += obj.no_mr+'/ '+obj.jk+'<br>'+obj.umur+'<br>';
+        html += obj.kelas+'/ Kamar '+obj.kamar+' No. '+obj.no_kamar+'<br>';
+        html += obj.dokter+'<br>';
+        if(obj.kode_perusahaan==120){
+          html += '<span style="color: white; background: green; padding: 2px">'+obj.penjamin+'</span>';
+        }else{
+          html += '<span style="color: white; background: blue; padding: 2px">'+obj.penjamin+'</span>';
+        }
+        html += '</address>';
+      html += '</li>';
+    });
+    html += '</ol>';
+    $('#box_list_pasien').html(html);
+    // Set value dokter_filter jika belum ada
+    if(!$('#dokter_filter').length){
+      $('#box_list_pasien').prepend('<select id="dokter_filter" class="form-control" style="margin-bottom:4px;" onchange="get_list_pasien()"></select>');
+    }
+  }); 
+
+}
+
+function form_main(url, no_mr){
+  find_pasien_by_keyword(no_mr);
+  $('#div_main_form').html('<span style="padding: 100px; float: left; width: 100% !important">Loading...</span>');
+  $('#div_main_form').load(url);
+}
+
 </script>
 
 <style type="text/css">
@@ -530,217 +555,20 @@ function reload_page(){
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
           
           <!-- profile Pasien -->
-          <div class="col-md-2" >
-            <div class="box box-primary" id='box_identity'>
-                <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
-
-                <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
-
-                <ul class="list-group list-group-unbordered">
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">Nama Pasien: </small><div id="nama_pasien"></div>
-                      </li>
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">NIK: </small><div id="no_ktp"></div>
-                      </li>
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">Tgl Lahir: </small><div id="tgl_lhr"></div>
-                      </li>
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">Umur: </small><div id="umur"></div>
-                      </li>
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">Alamat: </small><div id="alamat"></div>
-                      </li>
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">No Telp/HP: </small>
-                        <div id="hp"></div>
-                        <div id="no_telp"></div>
-                      </li>
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div>
-                      </li>
-                      <li class="list-group-item">
-                        <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>
-                      </li>
-                  </ul>
-
-                <a href="#" id="btn_search_pasien" class="btn btn-inverse btn-block">Tampilkan Pasien</a>
-              <!-- /.box-body -->
-            </div>
+          <div class="col-md-2">
+            <div class="box box-primary" id='box_list_pasien'></div><br>
+            <!-- <label class="label label-xs label-success">&nbsp;&nbsp;</label> LA (Lantai Atas)<br>
+            <label class="label label-xs label-danger">&nbsp;&nbsp;</label> LB (Lantai Bawah)<br>
+            <label class="label label-xs label-primary">&nbsp;&nbsp;</label> VK (Ruang Bersalin dan Nifas)<br>
+            <label class="label label-xs label-inverse">&nbsp;&nbsp;</label> Lain-lain<br> -->
           </div>
 
           <!-- form pelayanan -->
           <div class="col-md-10 no-padding">
-
-            <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
-                <div class="center">
-                  <ul class="nav nav-list">
-
-                    <li class="hover">
-                      <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=RI&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> <?php echo INPUT_DIAGNOSA?> </span></a><b class="arrow"></b>
-                    </li>
-
-                    <li class="hover">
-                      <a id="tabs_bayi" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501&no_mr_ibu=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan_vk/form_bayi/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-edit"></i><span class="menu-text"> <?php echo INPUT_DATA_LAHIR?> </span></a><b class="arrow"></b>
-                    </li>
-
-                    <li class="hover">
-                      <a data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
-                      <i class="menu-icon fa fa-leaf"></i><span class="menu-text"> <?php echo ERESEP?> </span></a><b class="arrow"></b>
-                    </li>
-
-                    <li class="hover">
-                      <!-- <a href="#" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> <?php echo RIWAYAT_MEDIS?> </span></a><b class="arrow"></b> -->
-                      <a href="#" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_ri/riwayat_medis/<?php echo $value->kode_ri?>/<?php echo $value->no_kunjungan?>?type=Ranap&kode_bag=030501" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> <?php echo RIWAYAT_MEDIS?> </span></a><b class="arrow"></b>
-                    </li>
-
-                    
-                    <li class="hover">
-                      <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-eye"></i>
-                        <span class="menu-text"> Rujuk Internal </span>
-
-                        <b class="arrow fa fa-angle-down"></b>
-                      </a>
-
-                      <b class="arrow"></b>
-
-                      <ul class="submenu can-scroll ace-scroll scroll-disabled" style="">
-                        <li class="hover">
-                          
-                          <a style="text-align: left" data-id="<?php echo $value->kode_ri?>" data-url="pelayanan/Pl_pelayanan_ri/pesan/<?php echo $value->kode_ri?>/<?php echo $value->no_registrasi?>" id="tabs_pesan" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-caret-right"></i> Kamar Bedah/ VK/ Pindah Ruangan </span></a><b class="arrow"></b>
-
-                        </li>
-
-                        <li class="hover">
-                          <a style="text-align: left" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/030501/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-caret-right"></i> <?php echo EORDER?> </span></a><b class="arrow"></b>
-                        </li>
-                      </ul><div class="scroll-track scroll-detached no-track scroll-thin scroll-margin scroll-visible" style="display: none; top: 69px; left: 183px;"><div class="scroll-bar" style="top: 0px;"></div></div>
-                    </li>
-
-                    <li class="hover">
-                      <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-money"></i>
-                        <span class="menu-text"> <?php echo RESUME_BILLING?> </span>
-
-                        <b class="arrow fa fa-angle-down"></b>
-                      </a>
-
-                      <b class="arrow"></b>
-
-                      <ul class="submenu can-scroll ace-scroll scroll-disabled" style="">
-                        <li class="hover">
-                          
-                          <a href="#" style="text-align: left" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-caret-right"></i> <?php echo RESUME_BILLING?></a>
-                          <b class="arrow"></b>
-                        </li>
-
-                        <li class="hover">
-                          <a id="tabs_tindakan" style="text-align: left" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-caret-right"></i> <?php echo INPUT_BILL?> </span></a><b class="arrow"></b>
-                        </li>
-                      </ul><div class="scroll-track scroll-detached no-track scroll-thin scroll-margin scroll-visible" style="display: none; top: 69px; left: 183px;"><div class="scroll-bar" style="top: 0px;"></div></div>
-                    </li>
-
-                    <?php 
-                      $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir(isset($value->no_registrasi)?$value->no_registrasi:'',isset($value->no_kunjungan)?$value->no_kunjungan:'');
-                      $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
-                    ?>
-                    <li class="hover">
-                      <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="rollback(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>, <?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>, '<?php echo $flag_rollback?>')"><i class="menu-icon fa fa-undo"></i><span class="menu-text"> Rollback Status  </span></a><b class="arrow"></b>
-                    </li>
-                    
-
-                  </ul><!-- /.nav-list -->
-                </div>
-            </div>
-
-            <!-- end action form  -->
-            <div class="pull-right" style="margin-bottom:1%">
-              <?php if(empty($value->tgl_keluar_vk)) :?>
-              <a href="#" class="btn btn-xs btn-primary" id="btn_selesai_igd" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
-              <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-              <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_vk'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
-              <a href="#" class="btn btn-xs btn-danger" id="btn_cetak_meninggal" onclick="cetak_surat_kematian(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>)" <?php echo isset($meninggal)?'':'style="display:none"' ?> ><i class="fa fa-file"></i> Cetak Surat Kematian</a>
-              <a href="#" class="btn btn-xs btn-danger" id="cetak_keracunan" onclick="cetak_surat_keracunan()" <?php echo isset($keracunan->id_cetak_racun)?'':'style="display:none"'?>><i class="fa fa-file"></i> Cetak Surat Keracunan </a>
-            </div>
-            <br>
-            <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
-            <table class="table table-bordered">
-              <tr style="background-color:#f4ae11">
-                <th width="120px">No Kunjungan</th>
-                <th width="120px">No Registrasi</th>
-                <th>Tanggal Daftar</th>
-                <th>Dokter</th>
-                <th>Penjamin</th>
-                <th>Ruang/Kelas</th>
-                <th>Petugas</th>
-                <th></th>
-              </tr>
-
-              <tr>
-                <td><a href="#" style="font-weight: bold; color: blue" onclick="getMenu('pelayanan/Pl_pelayanan_vk/form/<?php echo $id?>/<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>')" ><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
-                <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td>
-                <td><?php echo isset($value->tgl_masuk)?$this->tanggal->formatDateTime($value->tgl_masuk):''?></td>
-                <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
-                <td>
-                  <?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
-                  <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?>
-                </td>
-                <td><?php echo isset($value->nama_bagian)?$value->nama_bagian:'';?>/ <?php echo isset($value->nama_klas)?$value->nama_klas:'';?></td>
-                <td><?php echo isset($value->fullname)?$value->fullname:$this->session->userdata('user')->fullname?></td>
-                <td align="center"><a href="#" onclick="reload_page()"><i class="fa fa-refresh green bigger-120"></i></a></td>
-              </tr>
-
-            </table>
+            <!-- informasi pendaftaran pasien -->
+            <span class="pull-left" style="font-size: 20px; font-weight: bold; color: #0d5280" id="full_pasien_data"></span><br>
             
-            <?php if(isset($value) AND $value->status_batal==1) :?>
-              <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal</span>
-            <?php else:?>
-              <?php if(isset($value) AND $value->tgl_keluar_vk!=NULL) :?>
-              <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
-              <?php endif;?>  
-            <?php endif;?>
-
-            <!-- hidden form -->
-            <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
-            <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
-            <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
-            <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" id="kode_perusahaan_val">
-            <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
-            <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
-            <input type="hidden" class="form-control" name="umur_saat_pelayanan_hidden" id="umur_saat_pelayanan_hidden">
-            <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->bag_pas:''?>">
-            <input type="hidden" class="form-control" name="kode_bagian" value="030501" id="kode_bagian_val">
-            <!-- <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val"> -->
-            <input type="hidden" class="form-control" name="dr_merawat" id="dr_merawat" value="<?php echo isset($value->dr_merawat)?$value->dr_merawat:''?>">
-
-            
-
-            <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
-              <div class="tabbable">  
-                <div class="tab-content">   
-                  <!-- form default pelayanan pasien -->
-                  <div class="col-md-12 no-padding" style="padding-bottom: 10px !important">
-                    <label style="font-weigth: bold !important"><b>Hak Kelas Pasien :</b> </label><br>
-                    <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1), 'order_by' => array('no_urut' => 'ASC')), isset($kode_klas)?$kode_klas:'' , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
-                  </div>
-                  <div id="tabs_form_pelayanan">
-
-                    <div class="alert alert-block alert-success">
-                        <p>
-                          <strong>
-                            <i class="ace-icon fa fa-check"></i>
-                            Selamat Datang!
-                          </strong> 
-                          Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !
-                        </p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            <div id="div_main_form"></div>
           </div>
 
 
