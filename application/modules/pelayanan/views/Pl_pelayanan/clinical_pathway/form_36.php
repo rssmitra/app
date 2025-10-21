@@ -521,6 +521,63 @@ jQuery(function($) {
     </tr>
     <?php endfor;?>
 </table>
-<br><br>
-<hr>
-<?php echo $footer; ?>
+<br>
+<table class="table" style="width: 100%; border:1px solid #000; border-collapse:collapse;">
+  <tbody>
+    <tr>
+      <!-- Kolom Perawat yang Menyerahkan -->
+      <td style="width:50%; text-align:center; border:1px solid #000; padding:10px;">
+        PERAWAT YANG MENYERAHKAN
+        <br><br>
+        <span class="ttd-btn" data-role="perawat_menyerahkan" id="ttd_perawat_menyerahkan" style="cursor: pointer;">
+          <i class="fa fa-pencil blue"></i>
+        </span>
+        <br>
+        <img id="img_ttd_perawat_menyerahkan" src="" style="display:none; max-width:250px; max-height:40px; margin-top:2px;">
+        <br><br>
+        <input type="text" class="input_type" name="form_117[nama_perawat_menyerahkan]" id="nama_perawat_menyerahkan" placeholder="Nama Perawat" style="width:70%; text-align:center;">
+        <input type="hidden" name="form_117[ttd_perawat_menyerahkan]" id="ttd_input_perawat_menyerahkan">
+      </td>
+
+      <!-- Kolom Perawat yang Menerima -->
+      <td style="width:50%; text-align:center; border:1px solid #000; padding:10px;">
+        PERAWAT YANG MENERIMA
+        <br><br>
+        <span class="ttd-btn" data-role="perawat_menerima" id="ttd_perawat_menerima" style="cursor: pointer;">
+          <i class="fa fa-pencil blue"></i>
+        </span>
+        <br>
+        <img id="img_ttd_perawat_menerima" src="" style="display:none; max-width:250px; max-height:40px; margin-top:2px;">
+        <br><br>
+        <input type="text" class="input_type" name="form_117[nama_perawat_menerima]" id="nama_perawat_menerima" placeholder="Nama Perawat" style="width:70%; text-align:center;">
+        <input type="hidden" name="form_117[ttd_perawat_menerima]" id="ttd_input_perawat_menerima">
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!---- MODAL TANDA TANGAN DIGITAL ---->
+<div class="modal fade" id="ttdModal" tabindex="-1" role="dialog" aria-labelledby="ttdModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background:#2a3f54; color:#fff;">
+        <h4 class="modal-title" id="ttdModalLabel">Tanda Tangan Digital</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" style="color:white;">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <canvas id="ttd-canvas" style="border:1px solid #ccc; touch-action:none;" width="350" height="120"></canvas>
+        <br>
+        <button type="button" class="btn btn-warning btn-sm" id="clear-ttd">Bersihkan</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-xs btn-default" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-xs btn-primary" id="save-ttd">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+<?php // echo $footer; ?>
