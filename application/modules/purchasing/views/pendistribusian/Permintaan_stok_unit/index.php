@@ -395,14 +395,14 @@ function print_data(myid){
   });
 }
 
-function kirim_permintaan(myid){
+function kirim_permintaan(myid, flag){
   if(confirm('Apakah Anda yakin akan mengirim permintaan ini?')){
     $.ajax({
         url: base_url+'/kirim_permintaan',
         type: "post",
         data: {
           ID: myid,
-          flag: $('input[name=flag]:checked').val()
+          flag: flag,
         },
         dataType: "json",
         beforeSend: function() {
