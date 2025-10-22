@@ -736,7 +736,7 @@
           <div style="font-weight:600;margin-bottom:6px;">Saksi Keluarga</div>
             <div>
             <div>
-              <button type="button" class="ttd-btn btn btn-outline-primary btn-sm" data-role="saksi" id="ttd_saksi">Tandatangani</button>
+              <button type="button" class="ttd-btn btn btn-outline-primary btn-sm" data-role="saksi" id="ttd_saksi">Ttd</button>
               <i class="fa fa-times-circle-o red" id="clear_ttd_saksi" style="display:none; cursor: pointer"></i>
 
               <input type="hidden" id="ttd_data_saksi" name="form_56[ttd_saksi]" value="">
@@ -754,7 +754,7 @@
           <br><br><br>
           <div style="font-weight:600;margin-bottom:6px;">Petugas Pendaftaran</div>
           <div>
-            <button type="button" class="ttd-btn btn btn-outline-primary btn-sm" data-role="petugas" id="ttd_petugas">Tandatangani</button>
+            <button type="button" class="ttd-btn btn btn-outline-primary btn-sm" data-role="petugas" id="ttd_petugas">Ttd</button>
             <i class="fa fa-times-circle-o red" id="clear_ttd_petugas" style="display:none; cursor: pointer"></i>
             <input type="hidden" id="ttd_data_petugas" name="form_56[ttd_petugas]" value="">
           </div>
@@ -768,7 +768,7 @@
           <div style="text-align:center;">
             <div>Jakarta, <input type="text" name="form_56[tanggal_ttd_pasien]" id="tanggal_ttd_pasien" class="form-control no-border" onchange="fillthis('tanggal_ttd_pasien')" style="width: 120px; display:inline-block; text-align:left;" value="<?php echo date('d/m/Y')?>"></div>
             <div style="font-weight:600;margin-top:8px;">Yang menyatakan</div>
-            <div style="margin-top:8px;"><button type="button" class="ttd-btn btn btn-outline-primary btn-sm" data-role="pasien" id="ttd_pasien">Tandatangani</button>
+            <div style="margin-top:8px;"><button type="button" class="ttd-btn btn btn-outline-primary btn-sm" data-role="pasien" id="ttd_pasien">Ttd</button>
             <i class="fa fa-times-circle-o red" id="clear_ttd_pasien" style="display:none; cursor: pointer"></i>
             <input type="hidden" id="ttd_data_pasien" name="form_56[ttd_pasien]" value="">
             

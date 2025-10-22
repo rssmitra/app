@@ -2885,6 +2885,8 @@ class References extends MX_Controller {
         $this->db->where('is_active', 'Y');
         $userApproval = $this->db->get('user_approval_modul')->row();
 
+		// echo $this->db->last_query();exit;
+
         if (empty($userApproval)) {
             echo json_encode(['status' => 401, 'message' => 'PIN verifikasi salah']);
             exit;

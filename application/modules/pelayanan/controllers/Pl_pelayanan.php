@@ -2655,7 +2655,11 @@ class Pl_pelayanan extends MX_Controller {
             // get data khusus
             $data['data_cppt'] = $this->db->get_where('th_cppt', ['no_kunjungan' => $no_kunjungan, 'jenis_form' => $id])->row();
             // echo '<pre>';print_r($data);die;
-            $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data);
+            if(!isset($_GET['layout'])){
+                echo json_encode(array('html' => '<div class="alert alert-danger"><b>Pemberitahuan !</b> Form <i>General Consent</i> hanya dapat dibuka pada Modul Registrasi Pasien Rawat Inap</div>'));
+            }else{
+                $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data);
+            }
         }else{
             $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data, true);
             echo json_encode(array('html' => $html));

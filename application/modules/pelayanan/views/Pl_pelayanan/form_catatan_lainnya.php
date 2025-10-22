@@ -318,6 +318,7 @@ $(document).ready(function() {
           $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val() + '/'+$('#no_registrasi').val(), '', function (data) {
             $('#editor_html_pengkajian').html(data.html);
             $('#cppt_id').val('');
+            
           });
       } else {
         $('#editor_html_pengkajian').html('');
