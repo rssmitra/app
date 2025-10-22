@@ -1562,46 +1562,52 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function get_cppt_dt(){
 
-        $query = $this->db->get_where('view_cppt', array('id' => $_GET['id']))->row();
-        //  echo "<pre>"; print_r($query);die;
-        $this->load->module('Templates/Templates.php');
-        $temp = new Templates;
-        $result = json_decode($this->Csm_billing_pasien->getDetailData($query->no_registrasi));
-        $result->nama_ppa = $result->reg_data->nama_pegawai;
-        $result->kode_dr = $result->reg_data->kode_dokter;
-        $data = [];
-        // header cppt
-        $header = $temp->setGlobalProfileCppt($result);
-        $footer = $temp->setGlobalFooterCppt($result);
-        
+        if(isset($_GET['id']) && $_GET['id'] !='') : 
 
-        // echo "<pre>"; print_r($query);die;
-        // echo "<pre>"; print_r($convert_to_array);die;
-        if($query->flag == 'cppt'){
-            if($query->jenis_form != null){
-                $convert_to_array = explode('|', $query->value_form);
-                for($i=0; $i < count($convert_to_array ); $i++){
-                    $key_value = explode('=', $convert_to_array [$i]);
-                    $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+            $query = $this->db->get_where('view_cppt', array('id' => $_GET['id']))->row();
+            //  echo "<pre>"; print_r($query);die;
+            $this->load->module('Templates/Templates.php');
+            $temp = new Templates;
+            $result = json_decode($this->Csm_billing_pasien->getDetailData($query->no_registrasi));
+            $result->nama_ppa = $result->reg_data->nama_pegawai;
+            $result->kode_dr = $result->reg_data->kode_dokter;
+            $data = [];
+            // header cppt
+            $header = $temp->setGlobalProfileCppt($result);
+            $footer = $temp->setGlobalFooterCppt($result);
+            
+
+            // echo "<pre>"; print_r($query);die;
+            // echo "<pre>"; print_r($convert_to_array);die;
+            if($query->flag == 'cppt'){
+                if($query->jenis_form != null){
+                    $convert_to_array = explode('|', $query->value_form);
+                    for($i=0; $i < count($convert_to_array ); $i++){
+                        $key_value = explode('=', $convert_to_array [$i]);
+                        $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+                    }
+                    $data = [
+                        "cppt_id" => $_GET['id'],
+                        "value_form" => $end_array,
+                        "result" => $query,
+                        "jenis_form" => 'form_'.$query->jenis_form,
+                    ];
+                    $data['header'] = $header;
+                    $data['footer'] = $footer;
+                    // echo "<pre>"; print_r($data);die;
+                    $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$query->jenis_form.'', $data, true);
+                    echo json_encode(array('html' => $html, 'result' => $query, 'value_form' => $end_array));
+                }else{
+                    echo json_encode($query);
                 }
-                $data = [
-                    "cppt_id" => $_GET['id'],
-                    "value_form" => $end_array,
-                    "result" => $query,
-                    "jenis_form" => 'form_'.$query->jenis_form,
-                ];
-                $data['header'] = $header;
-                $data['footer'] = $footer;
-                // echo "<pre>"; print_r($data);die;
-                $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$query->jenis_form.'', $data, true);
-                echo json_encode(array('html' => $html, 'result' => $query, 'value_form' => $end_array));
+                
             }else{
                 echo json_encode($query);
             }
-            
-        }else{
-            echo json_encode($query);
-        }
+
+        else :
+            return;
+        endif;
     }
 
     public function get_ews_dt(){

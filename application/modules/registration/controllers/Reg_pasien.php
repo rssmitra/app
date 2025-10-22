@@ -188,7 +188,7 @@ class Reg_pasien extends MX_Controller {
             }
 
             if( substr($row_list->kode_bagian_tujuan, 0,2) == '03' ){
-                $btn_input_general_consent = '<li><a href="#" onclick="getMenuTabs('."'pelayanan/Pl_pelayanan/catatan_lainnya/".$row_list->no_registrasi."/".$row_list->no_kunjungan."?type=Ranap&no_mr=".$row_list->no_mr."&form_no=56'".', '."'div_load_after_selected_pasien'".')">General Consent</a></li>';
+                $btn_input_general_consent = '<li><a href="'.base_url().'pelayanan/Pl_pelayanan/switch_template_form/56/'.$row_list->no_kunjungan.'/'.$row_list->no_registrasi.'?type=Ranap&no_mr='.$row_list->no_mr.'&form_no=56&layout=full" target="_blank">Form General Consent</a></li>';
             }
 
             $btn_perjanjian = ( $subs_kode_bag == '01') ? '<li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian_tujuan."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=".$row_list->no_sep."'".')">Surat Kontrol Pasien</a></li>' : '';

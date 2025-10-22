@@ -380,8 +380,6 @@ function show_edit(myid){
       $('#'+i).val(text);
     });
     $('#anatomi_tagging_28').val(response.anatomi_tagging);
-    // $('#ifr_img_tagging').attr('src', '<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/'+$('#no_kunjungan').val()+'?cppt_id='+myid+'');
-    // $('#cppt_id_img_tag').val(myid);
 
   }); 
 }
