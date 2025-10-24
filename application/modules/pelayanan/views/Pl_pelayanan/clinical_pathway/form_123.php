@@ -6,19 +6,19 @@
 <body>
 
 <div style="text-align: center; font-size: 16px;">
-  <b>KRITERIA PASIEN MASUK DAN KELUAR PICU</b>
+  <b>KRITERIA PASIEN MASUK DAN KELUAR NICU</b>
 </div>
 <br>
-<!-- KRITERIA PASIEN MASUK DAN KELUAR PICU -->
+<!-- KRITERIA PASIEN MASUK DAN KELUAR NICU -->
 <div style="font-size: 12px; font-weight: bold; margin-bottom: 10px;">
-  I. KRITERIA PASIEN MASUK DAN KELUAR PICU
+  II. KRITERIA PASIEN MASUK DAN KELUAR NICU
 </div>
 
 <table border="0" width="100%" style="border-collapse: collapse; font-size: 12px; text-align: left;">
   <tr>
-    <!-- Tabel Kiri: Masuk PICU -->
+    <!-- Tabel Kiri: Masuk NICU -->
     <td style="vertical-align: top; width: 50%;">
-      <table border="1" width="90%" style="font-size: 1wpx; margin-right: 15px;">
+      <table border="1" width="90%" style="font-size: 12px; margin-right: 15px;">
         <thead style="text-align:center; font-weight:bold; background-color:#e9e9e9;">
           <tr>
             <th style="width:30px;vertical-align:middle; text-align: center;">No.</th>
@@ -29,77 +29,64 @@
         <tbody>
           <tr>
             <td style="text-align:center;padding:5px;">1</td>
-            <td style="padding:5px;">Post operasi memerlukan pemantauan</td>
+            <td style="padding:5px;">Bayi dengan risiko henti napas (apnea)</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="post_operasi" onclick="checkthis('post_operasi')" name="form_122[masuk][]" value="1"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="apnea" onclick="checkthis('apnea')" name="form_123[masuk][]" value="1"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">2</td>
-            <td style="padding:5px;">Anak dengan kejang lama atau berulang</td>
+            <td style="padding:5px;">Bayi dengan kejang lama atau berulang</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="kejang_lama" onclick="checkthis('kejang_lama')" name="form_122[masuk][]" value="2"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="kejang_berulang" onclick="checkthis('kejang_berulang')" name="form_123[masuk][]" value="2"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">3</td>
             <td style="padding:5px;">Memerlukan bantuan ventilasi mekanik</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="ventilasi_mekanik" onclick="checkthis('ventilasi_mekanik')" name="form_122[masuk][]" value="3"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="ventilasi" onclick="checkthis('ventilasi')" name="form_123[masuk][]" value="3"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">4</td>
-            <td style="padding:5px;">Gangguan kesadaran (GCS ≤ 8)</td>
+            <td style="padding:5px;">Bayi dengan asfiksia berat</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="gcs8" onclick="checkthis('gcs8')" name="form_122[masuk][]" value="4"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="asfiksia" onclick="checkthis('asfiksia')" name="form_123[masuk][]" value="4"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">5</td>
-            <td style="padding:5px;">Post CPR</td>
+            <td style="padding:5px;">Bayi dengan shock</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="post_cpr" onclick="checkthis('post_cpr')" name="form_122[masuk][]" value="5"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="shock" onclick="checkthis('shock')" name="form_123[masuk][]" value="5"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">6</td>
-            <td style="padding:5px;">Hemodinamik tidak stabil</td>
+            <td style="padding:5px;">Bayi dengan pemakaian obat inotropic</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="hemodinamik_tidak_stabil" onclick="checkthis('hemodinamik_tidak_stabil')" name="form_122[masuk][]" value="6"> <span class="lbl"></span></label>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align:center;padding:5px;">7</td>
-            <td style="padding:5px;">Anak dengan shock / risiko perdarahan</td>
-            <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="shock_perdarahan" onclick="checkthis('shock_perdarahan')" name="form_122[masuk][]" value="7"> <span class="lbl"></span></label>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align:center;padding:5px;">8</td>
-            <td style="padding:5px;">Anak dengan pemakaian obat inotropic</td>
-            <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="obat_inotropik" onclick="checkthis('obat_inotropik')" name="form_122[masuk][]" value="8"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="inotropik" onclick="checkthis('inotropik')" name="form_123[masuk][]" value="6"> <span class="lbl"></span></label>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <br>
+      <br><br>
       <div style="font-size:13px;">
-        Tanggal masuk PICU : 
-        <!-- <input type="text" class="input_type" name="form_122[tgl_masuk]" id="tgl_masuk" style="width:20px;"> /
-        <input type="text" class="input_type" name="form_122[bln_masuk]" id="bln_masuk" style="width:20px;"> /
-        <input type="text" class="input_type" name="form_122[thn_masuk]" id="thn_masuk" style="width:50px;"> -->
-        <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_122[tgl_masuk]" id="tgl_masuk" onchange="fillthis('tgl_masuk')" value="<?php echo isset($value_form['tgl_masuk'])?$value_form['tgl_operasi']:date('Y-m-d')?>"> 
-        <br>Pukul : <input type="text" class="input_type" name="form_122[jam_masuk]" id="jam_masuk" style="width:100px;">
+        Tanggal masuk NICU : 
+        <!-- <input type="text" class="input_type" name="form_123[tgl_masuk]" id="tgl_masuk" style="width:20px;"> /
+        <input type="text" class="input_type" name="form_123[bln_masuk]" id="bln_masuk" style="width:20px;"> /
+        <input type="text" class="input_type" name="form_123[thn_masuk]" id="thn_masuk" style="width:50px;"> -->
+        <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_123[tgl_masuk]" id="tgl_masuk" onchange="fillthis('tgl_masuk')" value="<?php echo isset($value_form['tgl_masuk'])?$value_form['tgl_masuk']:date('Y-m-d')?>"> 
+        <br>Pukul : <input type="text" class="input_type" name="form_123[jam_masuk]" id="jam_masuk" style="width:100px;">
+        
       </div>
     </td>
 
-    <!-- Tabel Kanan: Keluar PICU -->
+    <!-- Tabel Kanan: Keluar NICU -->
     <td style="vertical-align: top; width: 50%;">
-      <table border="1" width="90%" style="border-collapse: collapse; font-size: 13px; margin-left: 15px;">
+      <table border="1" width="90%" style="border-collapse: collapse; font-size: 12px; margin-left: 15px;">
         <thead style="text-align:center; font-weight:bold; background-color:#e9e9e9;">
           <tr>
             <th style="width:30px;vertical-align:middle; text-align: center;">No.</th>
@@ -112,59 +99,60 @@
             <td style="text-align:center;padding:5px;">1</td>
             <td style="padding:5px;">Tidak perlu obat vasoaktif</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="tanpa_vasoaktif" onclick="checkthis('tanpa_vasoaktif')" name="form_122[keluar][]" value="1"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="tanpa_vasoaktif" onclick="checkthis('tanpa_vasoaktif')" name="form_123[keluar][]" value="1"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">2</td>
             <td style="padding:5px;">Tidak perlu bantuan ventilasi mekanik</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="tanpa_ventilasi" onclick="checkthis('tanpa_ventilasi')" name="form_122[keluar][]" value="2"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="tanpa_ventilasi" onclick="checkthis('tanpa_ventilasi')" name="form_123[keluar][]" value="2"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">3</td>
             <td style="padding:5px;">Hemodinamik stabil</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="hemodinamik_stabil" onclick="checkthis('hemodinamik_stabil')" name="form_122[keluar][]" value="3"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="hemodinamik_stabil" onclick="checkthis('hemodinamik_stabil')" name="form_123[keluar][]" value="3"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">4</td>
             <td style="padding:5px;">Perbaikan penyakit</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="perbaikan_penyakit" onclick="checkthis('perbaikan_penyakit')" name="form_122[keluar][]" value="4"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="perbaikan_penyakit" onclick="checkthis('perbaikan_penyakit')" name="form_123[keluar][]" value="4"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">5</td>
-            <td style="padding:5px;">Menolak perawatan lebih lanjut di PICU / DNR</td>
+            <td style="padding:5px;">Menolak perawatan lebih lanjut di NICU / DNR</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="menolak_perawatan" onclick="checkthis('menolak_perawatan')" name="form_122[keluar][]" value="5"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="menolak_perawatan" onclick="checkthis('menolak_perawatan')" name="form_123[keluar][]" value="5"> <span class="lbl"></span></label>
             </td>
           </tr>
           <tr>
             <td style="text-align:center;padding:5px;">6</td>
             <td style="padding:5px;">Meninggal</td>
             <td style="text-align:center;padding:5px;">
-              <label><input type="checkbox" class="ace" id="meninggal" onclick="checkthis('meninggal')" name="form_122[keluar][]" value="6"> <span class="lbl"></span></label>
+              <label><input type="checkbox" class="ace" id="meninggal" onclick="checkthis('meninggal')" name="form_123[keluar][]" value="6"> <span class="lbl"></span></label>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <br> <br> <br> 
+      <br>
       <div style="font-size:13px;">
-        Tanggal keluar PICU : 
-        <!-- <input type="text" class="input_type" name="form_122[tgl_keluar]" id="tgl_keluar" style="width:20px;"> /
-        <input type="text" class="input_type" name="form_122[bln_keluar]" id="bln_keluar" style="width:20px;"> /
-        <input type="text" class="input_type" name="form_122[thn_keluar]" id="thn_keluar" style="width:50px;"> -->
-        <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_122[tgl_keluar]" id="tgl_keluar" onchange="fillthis('tgl_keluar')" value="<?php echo isset($value_form['tgl_keluar'])?$value_form['tgl_operasi']:date('Y-m-d')?>"> 
-        <br>Pukul : <input type="text" class="input_type" name="form_122[jam_keluar]" id="jam_keluar" style="width:100px;">
+        Tanggal keluar NICU : 
+        <!-- <input type="text" class="input_type" name="form_123[tgl_keluar]" id="tgl_keluar" style="width:20px;"> /
+        <input type="text" class="input_type" name="form_123[bln_keluar]" id="bln_keluar" style="width:20px;"> /
+        <input type="text" class="input_type" name="form_123[thn_keluar]" id="thn_keluar" style="width:50px;"> -->
+        <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_123[tgl_keluar]" id="tgl_keluar" onchange="fillthis('tgl_keluar')" value="<?php echo isset($value_form['tgl_keluar'])?$value_form['tgl_operasi']:date('Y-m-d')?>"> 
+        <br>Pukul : <input type="text" class="input_type" name="form_123[jam_keluar]" id="jam_keluar" style="width:100px;">
       </div>
     </td>
   </tr>
 </table>
+
 
 <br>
 <!-- TANDA TANGAN -->
@@ -181,7 +169,7 @@
         <br>
         <img id="img_ttd_dokter_igd" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" name="form_122[nama_dokter_igd]" id="nama_dokter_igd" class="input_type" placeholder="Nama Dokter" style="width:150px; text-align:center;">
+        <input type="text" name="form_123[nama_dokter_igd]" id="nama_dokter_igd" class="input_type" placeholder="Nama Dokter" style="width:150px; text-align:center;">
         <br>
         (Tanda Tangan dan Nama Jelas)
       </td>
@@ -196,7 +184,7 @@
         <br>
         <img id="img_ttd_dpjp" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" name="form_122[nama_dpjp]" id="nama_dpjp" class="input_type" placeholder="Nama Dokter" style="width:150px; text-align:center;">
+        <input type="text" name="form_123[nama_dpjp]" id="nama_dpjp" class="input_type" placeholder="Nama Dokter" style="width:150px; text-align:center;">
         <br>
         (Tanda Tangan dan Nama Jelas)
       </td>
@@ -350,7 +338,7 @@ jQuery(function($) {
       var imgId = '#img_ttd_' + role;
       $(imgId).attr('src', dataUrl).show();
       // Tambahkan input hidden untuk menyimpan data URL
-      var hiddenInputName = 'form_122[ttd_' + role + ']';
+      var hiddenInputName = 'form_123[ttd_' + role + ']';
       if ($('input[name="' + hiddenInputName + '"]').length === 0) {
         $('<input>').attr({
           type: 'hidden',

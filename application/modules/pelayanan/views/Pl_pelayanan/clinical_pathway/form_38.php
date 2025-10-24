@@ -85,11 +85,6 @@ jQuery(function($) {
 });
 
 </script>
-<style>
-    table{
-        border : 1px solid #d7d7d7 !important;
-    }
-</style>
 <?php echo $header; ?>
 <hr>
 <br>
@@ -102,14 +97,14 @@ jQuery(function($) {
 
 <table border="1" width="100%">
     <tr>
-        <td style="font-weight: bold; width:20%">  Diagnosis : <input type="text" style="text-align: center; width: 70px"   name="form_38[a1]" id="a1" onchange="fillthis('a1')" class="input_type" value=""></td>
-        <td style="font-weight: bold; width:60%"> DPJP : <input type="text" style="text-align: center"  name="form_38[a2]" id="a2" onchange="fillthis('a2')" class="input_type" value=""></td>
-        <td style="font-weight: bold; width:20%"> Tanggal : <input type="text" style="text-align: center; width: 70px"  name="form_38[a3]" id="a3" onchange="fillthis('a3')" class="input_type" value=""></td>
+        <td style="font-weight: bold; width:20%;padding:4px;">  Diagnosis : <input type="text" style="text-align: center; width: 70px"   name="form_38[a1]" id="a1" onchange="fillthis('a1')" class="input_type" value=""></td>
+        <td style="font-weight: bold; width:50%;padding:4px;"> DPJP : <input type="text" style="text-align: center"  name="form_38[a2]" id="a2" onchange="fillthis('a2')" class="input_type" value=""></td>
+        <td style="font-weight: bold; width:30%;padding:4px;"> Tanggal : <input type="text" style="text-align: center; width: 80px"  name="form_38[a3]" id="a3" onchange="fillthis('a3')" class="input_type" value=""></td>
     </tr>
     
     </table>
     <table border="1" width="100%">
-        <tr>
+        <tr style="background-color: #c7cccb;">
             <td style="font-weight: bold;text-align:center;height: 50px" valign="center" width="1%"> No.</td>
             <td style="font-weight: bold;text-align:center;height: 50px" valign="center" width="10%"> Tindakan</td>
             <td style="font-weight: bold;text-align:center;height: 50px" valign="top" width="3%"> Ya <br> (V)</td>
@@ -675,6 +670,176 @@ jQuery(function($) {
 
 <!--END MAIN CONTENT -->
 
+<!-- TANDA TANGAN -->
+<table class="table" style="width: 100%; border-collapse:collapse;">
+  <tbody>
+    <tr>
+      <!-- Kolom TTD -->
+      <td style="width:50%; text-align:center;">
+        Yang menyerahkan,
+        <br><br>
+        <span class="ttd-btn" data-role="menyerahkan" id="ttd_menyerahkan" style="cursor:pointer;">
+          <i class="fa fa-pencil blue"></i>
+        </span>
+        <br>
+        <img id="img_ttd_menyerahkan" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
+        <br><br>
+        <input type="text" name="form_38[nama_menyerahkan]" id="nama_menyerahkan" class="input_type" placeholder="Nama" style="width:150px; text-align:center;">
+        <br>
+        (Tanda Tangan dan Nama Jelas)
+      </td>
+
+      <!-- Kolom Perawat Sirkuler -->
+      <td style="width:50%; text-align:center;">
+        Yang menerima,
+        <br><br>
+        <span class="ttd-btn" data-role="menerima" id="ttd_menerima" style="cursor:pointer;">
+          <i class="fa fa-pencil blue"></i>
+        </span>
+        <br>
+        <img id="img_ttd_menerima" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
+        <br><br>
+        <input type="text" name="form_38[nama_menerima]" id="nama_menerima" class="input_type" placeholder="Nama" style="width:150px; text-align:center;">
+        <br>
+        (Tanda Tangan dan Nama Jelas)
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 <br><br>
+
+<!-- Modal Tanda Tangan Digital -->
+<div class="modal fade" id="ttdModal" tabindex="-1" role="dialog" aria-labelledby="ttdModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="ttdModalLabel" style="color: white;">Tanda Tangan Digital</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <canvas id="ttd-canvas" style="border:1px solid #ccc; touch-action:none;" width="350" height="120"></canvas>
+        <br>
+        <button type="button" class="btn btn-warning btn-sm" id="clear-ttd">Bersihkan</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-xs btn-default" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-xs btn-primary" id="save-ttd">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
 <hr>
-<?php echo $footer; ?>
+<?php //echo $footer; ?>
+
+<script>
+jQuery(function($) {  
+
+  $('.date-picker').datepicker({    
+    autoclose: true,    
+    todayHighlight: true    
+  })  
+  //show datepicker when clicking on the icon
+  .next().on(ace.click_event, function(){    
+    $(this).prev().focus();    
+  });  
+  
+  var ttdCanvas = null, ttdCtx = null, drawing = false, lastPos = {x:0, y:0};
+  var currentTtdTarget = null;
+  
+  function getPos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    if (evt.touches && evt.touches.length > 0) {
+      return {
+        x: evt.touches[0].clientX - rect.left,
+        y: evt.touches[0].clientY - rect.top
+      };
+    } else {
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
+  }
+
+  function initTtdCanvas() {
+    ttdCanvas = document.getElementById('ttd-canvas');
+    ttdCtx = ttdCanvas.getContext('2d');
+    ttdCtx.clearRect(0, 0, ttdCanvas.width, ttdCanvas.height);
+    drawing = false;
+    lastPos = {x:0, y:0};
+
+    ttdCanvas.onmousedown = function(e) {
+      drawing = true;
+      lastPos = getPos(ttdCanvas, e);
+    };
+    ttdCanvas.onmouseup = function(e) {
+      drawing = false;
+    };
+    ttdCanvas.onmousemove = function(e) {
+      if (!drawing) return;
+      var pos = getPos(ttdCanvas, e);
+      ttdCtx.beginPath();
+      ttdCtx.moveTo(lastPos.x, lastPos.y);
+      ttdCtx.lineTo(pos.x, pos.y);
+      ttdCtx.stroke();
+      lastPos = pos;
+    };
+    // Touch events
+    ttdCanvas.addEventListener('touchstart', function(e) {
+      drawing = true;
+      lastPos = getPos(ttdCanvas, e);
+    });
+    ttdCanvas.addEventListener('touchend', function(e) {
+      drawing = false;
+    });
+    ttdCanvas.addEventListener('touchmove', function(e) {
+      if (!drawing) return;
+      var pos = getPos(ttdCanvas, e);
+      ttdCtx.beginPath();
+      ttdCtx.moveTo(lastPos.x, lastPos.y);
+      ttdCtx.lineTo(pos.x, pos.y);
+      ttdCtx.stroke();
+      lastPos = pos;
+      e.preventDefault();
+    });
+    // Clear button
+    $('#clear-ttd').off('click').on('click', function() {
+      ttdCtx.clearRect(0, 0, ttdCanvas.width, ttdCtx.height);
+    });
+  }
+
+  // Open modal on click
+  $('.ttd-btn').off('click').on('click', function() {
+    currentTtdTarget = $(this);
+    $('#ttdModal').modal('show');
+    setTimeout(initTtdCanvas, 300);
+  });
+
+  // Save signature
+  $('#save-ttd').off('click').on('click', function() {
+    if (!ttdCanvas) return;
+    var dataUrl = ttdCanvas.toDataURL('image/png');
+    if (currentTtdTarget) {
+      var role = currentTtdTarget.data('role');
+      var imgId = '#img_ttd_' + role;
+      $(imgId).attr('src', dataUrl).show();
+      // Tambahkan input hidden untuk menyimpan data URL
+      var hiddenInputName = 'form_38[ttd_' + role + ']';
+      if ($('input[name="' + hiddenInputName + '"]').length === 0) {
+        $('<input>').attr({
+          type: 'hidden',
+          id: 'ttd_data_' + role,
+          name: hiddenInputName,
+          value: dataUrl
+        }).appendTo('form');
+      } else {
+        $('input[name="' + hiddenInputName + '"]').val(dataUrl);
+      }
+    }
+    $('#ttdModal').modal('hide');
+  });
+});
+</script>

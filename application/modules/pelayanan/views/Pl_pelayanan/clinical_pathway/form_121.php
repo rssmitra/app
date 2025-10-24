@@ -638,7 +638,7 @@ jQuery(function($) {
       var imgId = '#img_ttd_' + role;
       $(imgId).attr('src', dataUrl).show();
       // Tambahkan input hidden untuk menyimpan data URL
-      var hiddenInputName = 'form_114[ttd_' + role + ']';
+      var hiddenInputName = 'form_121[ttd_' + role + ']';
       if ($('input[name="' + hiddenInputName + '"]').length === 0) {
         $('<input>').attr({
           type: 'hidden',
