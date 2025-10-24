@@ -2646,13 +2646,24 @@ class Pl_pelayanan extends MX_Controller {
         $data['footer'] = $footer;
         $data['jenis_form'] = 'form_'.$id.'';
         $data['no_kunjungan'] = $no_kunjungan;
+        $data['no_registrasi'] = $no_registrasi;
         $data['data_pasien'] = $this->Pl_pelayanan->get_detail_kunjungan($no_kunjungan);
         $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
         $data['result'] = $result;
         
-        // echo '<pre>';print_r($data);die;
-        $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data, true);
-        echo json_encode(array('html' => $html));
+        if(in_array($id, [56])){
+            // get data khusus
+            $data['data_cppt'] = $this->db->get_where('th_cppt', ['no_kunjungan' => $no_kunjungan, 'jenis_form' => $id])->row();
+            // echo '<pre>';print_r($data);die;
+            if(!isset($_GET['layout'])){
+                echo json_encode(array('html' => '<div class="alert alert-danger"><b>Pemberitahuan !</b> Form <i>General Consent</i> hanya dapat dibuka pada Modul Registrasi Pasien Rawat Inap</div>'));
+            }else{
+                $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data);
+            }
+        }else{
+            $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data, true);
+            echo json_encode(array('html' => $html));
+        }
 
     }
 
@@ -2660,8 +2671,8 @@ class Pl_pelayanan extends MX_Controller {
 
         // echo '<pre>';print_r($_POST);die;
         // form validation
-        $this->form_validation->set_rules('jenis_form_catatan', 'Subjective', 'trim');
-        $this->form_validation->set_rules('catatan_pengkajian', 'Subjective', 'trim');
+        $this->form_validation->set_rules('jenis_form_catatan', 'Jenis Form', 'trim');
+        $this->form_validation->set_rules('catatan_pengkajian', 'Content', 'trim');
                
 
         // set message error
@@ -2726,6 +2737,81 @@ class Pl_pelayanan extends MX_Controller {
             {
                 $this->db->trans_commit();
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'catatan_pengkajian'));
+            }
+        
+        }
+
+    }
+
+    public function processSaveGeneralConsent(){
+
+        // echo '<pre>';print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('jenis_form_catatan', 'Jenis Form', 'trim');
+        $this->form_validation->set_rules('catatan_pengkajian', 'Content', 'trim');
+               
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $cppt_id = isset($_POST['cppt_id'])?$_POST['cppt_id']:0;
+            $tgl_jam = date('Y-m-d H:i:s');
+
+            $queryString = $_POST['form_values'];
+            $value_form = []; // Initialize an empty array to store the parsed query parameters
+            parse_str($queryString, $value_form);
+            $value_data = $this->master->assoc_to_kv_string($value_form[$_POST['jenis_form_catatan']]);
+            $row_data = $value_form[$_POST['jenis_form_catatan']];
+            $jenis_form = str_replace('form_', '', $_POST['jenis_form_catatan']);
+
+            // echo '<pre>';print_r($row_data);die;
+
+            $dataexc = array(
+                'cppt_tgl_jam' => $this->regex->_genRegex($tgl_jam,'RGXQSL'), 
+                'cppt_ppa' => $this->regex->_genRegex('pasien','RGXQSL'), 
+                'cppt_nama_ppa' => $this->regex->_genRegex($row_data['nama'],'RGXQSL'), 
+                'jenis_form' => $this->regex->_genRegex($jenis_form,'RGXINT'), 
+                'catatan_pengkajian' => $this->input->post('catatan_pengkajian'), 
+                'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXQSL'), 
+                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
+                'value_form' => $value_data, 
+            );
+
+            if( $cppt_id == 0 ){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->insert('th_cppt', $dataexc);
+                $newId = $this->db->insert_id();
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->where('cppt_id', $cppt_id)->update('th_cppt', $dataexc);
+                $newId = $cppt_id;
+            }
+
+            // echo '<pre>';print_r($dataexc);die;
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'cppt_id' => $newId));
             }
         
         }
