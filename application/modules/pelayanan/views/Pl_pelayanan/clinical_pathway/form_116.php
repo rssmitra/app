@@ -293,7 +293,7 @@ jQuery(function($) {
       >
     </td>
   </tr>
-  <tr>
+  <!--<tr>
     <td>28 Weeks of Pregnancy</td>
     <td>:
       <input 
@@ -302,11 +302,11 @@ jQuery(function($) {
         style="width: 200px !important;" 
         name="form_116[pregnancy_28]" 
         id="pregnancy_28" 
-        value="<?php echo isset($value_form['pregnancy_28']) ? $value_form['pregnancy_28'] : ''; ?>"
+        value="<?php //echo isset($value_form['pregnancy_28']) ? $value_form['pregnancy_28'] : ''; ?>"
       >
     </td>
-  </tr>
-  <tr>
+  </tr>-->
+  <!--<tr>
     <td>32 Weeks of Pregnancy</td>
     <td>:
       <input 
@@ -315,10 +315,10 @@ jQuery(function($) {
         style="width: 200px !important;" 
         name="form_116[pregnancy_32]" 
         id="pregnancy_32" 
-        value="<?php echo isset($value_form['pregnancy_32']) ? $value_form['pregnancy_32'] : ''; ?>"
+        value="<?php //echo isset($value_form['pregnancy_32']) ? $value_form['pregnancy_32'] : ''; ?>"
       >
     </td>
-  </tr>
+  </tr>-->
   <tr>
     <td>EDD (Estimated Due Date)</td>
     <td>:
