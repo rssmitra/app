@@ -78,7 +78,7 @@
 						Jakarta, <?php $date_kui = $_GET['tgl']; echo $this->tanggal->formatDate($date_kui); ?><br><span style="font-weight: bolder;"><?php echo COMP_FULL;?></span>
             <br >
             <?php //echo $this->master->get_ttd('ttd_kabag_keu');?>
-            (<span style="margin-top: 30mm; margin-bottom: 3px; display: inline-block; font-weight: bolder;">&nbsp;Cumanto, SE.&nbsp;</span>)
+            (<span style="margin-top: 30mm; margin-bottom: 3px; display: inline-block; font-weight: bolder;">&nbsp;Rita Rosalina Singgih, S.E., M.M.&nbsp;</span>)
             <br/>
             <span>Kepala Bagian Keuangan</span>
             <br/>
