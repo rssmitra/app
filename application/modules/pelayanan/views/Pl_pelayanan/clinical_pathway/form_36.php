@@ -1,5 +1,4 @@
 <script>
-
 jQuery(function($) {  
 
   $('.date-picker').datepicker({    
@@ -11,79 +10,127 @@ jQuery(function($) {
     $(this).prev().focus();    
   });  
 
-    $('#dokter_igd').typeahead({
+  $('#diagnosis').typeahead({
       source: function (query, result) {
           $.ajax({
-              url: "templates/references/getAllDokter",
-              data: { keyword:query },            
+              url: "templates/references/getICD10",
+              data: 'keyword=' + query,            
               dataType: "json",
               type: "POST",
               success: function (response) {
                 result($.map(response, function (item) {
-                    return item;
-                }));
+                      return item;
+                  }));
+                
               }
           });
       },
       afterSelect: function (item) {
         // do what is needed with item
-        var val_item=item.split(':')[0];
         var label_item=item.split(':')[1];
-        console.log(val_item);
-        $('#dokter_igd').val(label_item);
-      }
-    });
-
-    $('#dokter_dpjp').typeahead({
-      source: function (query, result) {
-          $.ajax({
-              url: "templates/references/getAllDokter",
-              data: { keyword:query },            
-              dataType: "json",
-              type: "POST",
-              success: function (response) {
-                result($.map(response, function (item) {
-                    return item;
-                }));
-              }
-          });
-      },
-      afterSelect: function (item) {
-        // do what is needed with item
         var val_item=item.split(':')[0];
-        var label_item=item.split(':')[1];
         console.log(val_item);
-        $('#dokter_dpjp').val(label_item);
+        $('#diagnosis').val(label_item);
       }
+
+  });
+  
+  var ttdCanvas = null, ttdCtx = null, drawing = false, lastPos = {x:0, y:0};
+  var currentTtdTarget = null;
+  
+  function getPos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    if (evt.touches && evt.touches.length > 0) {
+      return {
+        x: evt.touches[0].clientX - rect.left,
+        y: evt.touches[0].clientY - rect.top
+      };
+    } else {
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
+  }
+
+  function initTtdCanvas() {
+    ttdCanvas = document.getElementById('ttd-canvas');
+    ttdCtx = ttdCanvas.getContext('2d');
+    ttdCtx.clearRect(0, 0, ttdCanvas.width, ttdCanvas.height);
+    drawing = false;
+    lastPos = {x:0, y:0};
+
+    ttdCanvas.onmousedown = function(e) {
+      drawing = true;
+      lastPos = getPos(ttdCanvas, e);
+    };
+    ttdCanvas.onmouseup = function(e) {
+      drawing = false;
+    };
+    ttdCanvas.onmousemove = function(e) {
+      if (!drawing) return;
+      var pos = getPos(ttdCanvas, e);
+      ttdCtx.beginPath();
+      ttdCtx.moveTo(lastPos.x, lastPos.y);
+      ttdCtx.lineTo(pos.x, pos.y);
+      ttdCtx.stroke();
+      lastPos = pos;
+    };
+    // Touch events
+    ttdCanvas.addEventListener('touchstart', function(e) {
+      drawing = true;
+      lastPos = getPos(ttdCanvas, e);
     });
-
-    $('#diagnosa_utama_form_36').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "templates/references/getICD10",
-                data: 'keyword=' + query,            
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                    result($.map(response, function (item) {
-                        return item;
-                    }));
-                    
-                }
-            });
-        },
-        afterSelect: function (item) {
-            // do what is needed with item
-            var label_item=item.split(':')[1];
-            var val_item=item.split(':')[0];
-            console.log(val_item);
-            $('#diagnosa_utama_form_36').val(label_item);
-        }
-
+    ttdCanvas.addEventListener('touchend', function(e) {
+      drawing = false;
     });
+    ttdCanvas.addEventListener('touchmove', function(e) {
+      if (!drawing) return;
+      var pos = getPos(ttdCanvas, e);
+      ttdCtx.beginPath();
+      ttdCtx.moveTo(lastPos.x, lastPos.y);
+      ttdCtx.lineTo(pos.x, pos.y);
+      ttdCtx.stroke();
+      lastPos = pos;
+      e.preventDefault();
+    });
+    // Clear button
+    $('#clear-ttd').off('click').on('click', function() {
+      ttdCtx.clearRect(0, 0, ttdCanvas.width, ttdCtx.height);
+    });
+  }
 
+  // Open modal on click
+  $('.ttd-btn').off('click').on('click', function() {
+    currentTtdTarget = $(this);
+    $('#ttdModal').modal('show');
+    setTimeout(initTtdCanvas, 300);
+  });
+
+  // Save signature
+  $('#save-ttd').off('click').on('click', function() {
+    if (!ttdCanvas) return;
+    var dataUrl = ttdCanvas.toDataURL('image/png');
+    if (currentTtdTarget) {
+      var role = currentTtdTarget.data('role');
+      var imgId = '#img_ttd_' + role;
+      $(imgId).attr('src', dataUrl).show();
+      // Tambahkan input hidden untuk menyimpan data URL
+      var hiddenInputName = 'form_36[ttd_' + role + ']';
+      if ($('input[name="' + hiddenInputName + '"]').length === 0) {
+        $('<input>').attr({
+          type: 'hidden',
+          id: 'ttd_data_' + role,
+          name: hiddenInputName,
+          value: dataUrl
+        }).appendTo('form');
+      } else {
+        $('input[name="' + hiddenInputName + '"]').val(dataUrl);
+      }
+    }
+    $('#ttdModal').modal('hide');
+  });
 });
-
 </script>
 
 <?php echo $header; ?>
@@ -525,23 +572,12 @@ jQuery(function($) {
 <table class="table" style="width: 100%; border:1px solid #000; border-collapse:collapse;">
   <tbody>
     <tr>
-      <!-- Kolom Perawat yang Menyerahkan -->
+    <!-- Kolom Perawat yang Menerima -->
       <td style="width:50%; text-align:center; border:1px solid #000; padding:10px;">
-        PERAWAT YANG MENYERAHKAN
-        <br><br>
-        <span class="ttd-btn" data-role="perawat_menyerahkan" id="ttd_perawat_menyerahkan" style="cursor: pointer;">
-          <i class="fa fa-pencil blue"></i>
-        </span>
+        <input type="text" class="input_type"  name="form_36[tanggal_menerima]" style="width:20%; text-align:center;" id="tanggal_menerima" placeholder="Tanggal" onchange="fillthis('tanggal_menerima')">
+        Jam <input type="text" class="input_type"  name="form_36[jam_menerima]" style="width:10%; text-align:left;" id="jam_menerima" onchange="fillthis('jam_menerima')">
         <br>
-        <img id="img_ttd_perawat_menyerahkan" src="" style="display:none; max-width:250px; max-height:40px; margin-top:2px;">
-        <br><br>
-        <input type="text" class="input_type" name="form_117[nama_perawat_menyerahkan]" id="nama_perawat_menyerahkan" placeholder="Nama Perawat" style="width:70%; text-align:center;">
-        <input type="hidden" name="form_117[ttd_perawat_menyerahkan]" id="ttd_input_perawat_menyerahkan">
-      </td>
-
-      <!-- Kolom Perawat yang Menerima -->
-      <td style="width:50%; text-align:center; border:1px solid #000; padding:10px;">
-        PERAWAT YANG MENERIMA
+        Nama Dokter / Perawat yang menerima
         <br><br>
         <span class="ttd-btn" data-role="perawat_menerima" id="ttd_perawat_menerima" style="cursor: pointer;">
           <i class="fa fa-pencil blue"></i>
@@ -549,8 +585,24 @@ jQuery(function($) {
         <br>
         <img id="img_ttd_perawat_menerima" src="" style="display:none; max-width:250px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" class="input_type" name="form_117[nama_perawat_menerima]" id="nama_perawat_menerima" placeholder="Nama Perawat" style="width:70%; text-align:center;">
-        <input type="hidden" name="form_117[ttd_perawat_menerima]" id="ttd_input_perawat_menerima">
+        <input type="text" class="input_type" name="form_36[nama_perawat_menerima]" id="nama_perawat_menerima" placeholder="TTD dan Nama Lengkap" style="width:70%; text-align:center;">
+        <input type="hidden" name="form_36[ttd_perawat_menerima]" id="ttd_input_perawat_menerima">
+      </td>
+
+    <!-- Kolom Perawat yang Menyerahkan -->
+      <td style="width:50%; text-align:center; border:1px solid #000; padding:10px;">
+        Jakarta, <input type="text" class="input_type"  name="form_36[tanggal_menyerahkan]" style="width:20%; text-align:left;" id="tanggal_menyerahkan" placeholder="Tanggal" onchange="fillthis('tanggal_menyerahkan')">
+        <br>
+        Nama Dokter / Perawat yang menyerahkan
+        <br><br>
+        <span class="ttd-btn" data-role="perawat_menyerahkan" id="ttd_perawat_menyerahkan" style="cursor: pointer;">
+          <i class="fa fa-pencil blue"></i>
+        </span>
+        <br>
+        <img id="img_ttd_perawat_menyerahkan" src="" style="display:none; max-width:250px; max-height:40px; margin-top:2px;">
+        <br><br>
+        <input type="text" class="input_type" name="form_36[nama_perawat_menyerahkan]" id="nama_perawat_menyerahkan" placeholder="TTD dan Nama Lengkap" style="width:70%; text-align:center;">
+        <input type="hidden" name="form_36[ttd_perawat_menyerahkan]" id="ttd_input_perawat_menyerahkan">
       </td>
     </tr>
   </tbody>
