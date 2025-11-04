@@ -173,7 +173,7 @@ th, td {
           <br>
           <br>
           <br>
-          (<span style="font-weight: bolder;">&nbsp;Cumanto, SE&nbsp;</span>)
+          (<span style="font-weight: bolder;">&nbsp;Rita Rosalina Singgih, S.E., M.M.&nbsp;</span>)
           <br>
           <span>Kepala Bagian Keuangan</span>
           <!-- <?php echo $this->master->get_ttd('ttd_kabag_keu');?> -->
