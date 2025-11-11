@@ -29,175 +29,146 @@
         <tr>
             <th align="center" colspan="2">PENILAIAN TINGKAT NYERI SKALA FLACC</th>
             <th width="30px">Score</th>
-            <th style="width : 80px">Tgl/Jam</th>
-            <th style="width : 80px">Tgl/Jam</th>
-            <th style="width : 80px">Tgl/Jam</th>
-            <th style="width : 80px">Tgl/Jam</th>
-            <th style="width : 80px">Tgl/Jam</th>
+            <th style="width:80px">Tgl/Jam 1</th>
+            <th style="width:80px">Tgl/Jam 2</th>
+            <th style="width:80px">Tgl/Jam 3</th>
+            <th style="width:80px">Tgl/Jam 4</th>
+            <th style="width:80px">Tgl/Jam 5</th>
         </tr>
     </thead>
     <tbody>
+        <!-- WAJAH -->
+        <tr><td align="center" rowspan="4">Wajah</td></tr>
         <tr>
-            <td align="center" rowspan="4">Wajah</td>
-        </tr>
-        <tr>
-            <td>Tidak ada ekspresi yang khusus (seperti senyum)</td>
+            <td>Tidak ada ekspresi khusus (seperti senyum)</td>
             <td align="center">0</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[wajah_0_<?=$i?>]" id="wajah_0_<?=$i?>" class="input_type" onchange="fillthis('wajah_0_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
-            <td>Kadang meringis atau mengerutkan dahi, menarik diri</td>
+            <td>Kadang meringis/mengerutkan dahi, menarik diri</td>
             <td align="center">1</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[wajah_1_<?=$i?>]" id="wajah_1_<?=$i?>" class="input_type" onchange="fillthis('wajah_1_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
             <td>Sering terus menerus mengerutkan dahi, rahang mengatup, dagu bergetar</td>
             <td align="center">2</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[wajah_2_<?=$i?>]" id="wajah_2_<?=$i?>" class="input_type" onchange="fillthis('wajah_2_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
-        <tr>
-            <td align="center" rowspan="4">Ekstremitas</td>
-        </tr>
+
+        <!-- EKSTREMITAS -->
+        <tr><td align="center" rowspan="4">Ekstremitas</td></tr>
         <tr>
             <td>Posisi normal/rileks</td>
             <td align="center">0</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[ekstremitas_0_<?=$i?>]" id="ekstremitas_0_<?=$i?>" class="input_type" onchange="fillthis('ekstremitas_0_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
             <td>Tidak tenang, gelisah, tegang</td>
             <td align="center">1</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[ekstremitas_1_<?=$i?>]" id="ekstremitas_1_<?=$i?>" class="input_type" onchange="fillthis('ekstremitas_1_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
             <td>Menendang atau menarik kaki</td>
             <td align="center">2</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[ekstremitas_2_<?=$i?>]" id="ekstremitas_2_<?=$i?>" class="input_type" onchange="fillthis('ekstremitas_2_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
-        <tr>
-            <td align="center" rowspan="4">Gerakan</td>
-        </tr>
+
+        <!-- GERAKAN -->
+        <tr><td align="center" rowspan="4">Gerakan</td></tr>
         <tr>
             <td>Berbaring tenang, posisi normal, bergerak mudah</td>
             <td align="center">0</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[gerakan_0_<?=$i?>]" id="gerakan_0_<?=$i?>" class="input_type" onchange="fillthis('gerakan_0_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
             <td>Menggeliat-geliat, bolak balik berpindah, tegang</td>
             <td align="center">1</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[gerakan_1_<?=$i?>]" id="gerakan_1_<?=$i?>" class="input_type" onchange="fillthis('gerakan_1_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
-            <td>Posisi tubuh meringkuk, kuku/spasme atau menyentak</td>
+            <td>Posisi tubuh meringkuk, spasme atau menyentak</td>
             <td align="center">2</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[gerakan_2_<?=$i?>]" id="gerakan_2_<?=$i?>" class="input_type" onchange="fillthis('gerakan_2_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
-        <tr>
-            <td align="center" rowspan="4">Menangis</td>
-        </tr>
+
+        <!-- MENANGIS -->
+        <tr><td align="center" rowspan="4">Menangis</td></tr>
         <tr>
             <td>Tidak menangis</td>
             <td align="center">0</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[menangis_0_<?=$i?>]" id="menangis_0_<?=$i?>" class="input_type" onchange="fillthis('menangis_0_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
             <td>Merintih, merengek, kadang mengeluh</td>
             <td align="center">1</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[menangis_1_<?=$i?>]" id="menangis_1_<?=$i?>" class="input_type" onchange="fillthis('menangis_1_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
-            <td>Menangis tersedu-sedu, terisak-isak, menjerit</td>
+            <td>Menangis tersedu, terisak, menjerit</td>
             <td align="center">2</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[menangis_2_<?=$i?>]" id="menangis_2_<?=$i?>" class="input_type" onchange="fillthis('menangis_2_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
-        <tr>
-            <td align="center" rowspan="4">Kemampuan ditenangkan</td>
-        </tr>
+
+        <!-- KEMAMPUAN DITENANGKAN -->
+        <tr><td align="center" rowspan="4">Kemampuan ditenangkan</td></tr>
         <tr>
             <td>Senang rileks</td>
             <td align="center">0</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[tenang_0_<?=$i?>]" id="tenang_0_<?=$i?>" class="input_type" onchange="fillthis('tenang_0_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
-            <td>Dapat ditenangkan dengan sentuhan, pelukan, atau berbicara, dapat dialihkan</td>
+            <td>Dapat ditenangkan dengan sentuhan/pelukan/berbicara, dapat dialihkan</td>
             <td align="center">1</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[tenang_1_<?=$i?>]" id="tenang_1_<?=$i?>" class="input_type" onchange="fillthis('tenang_1_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
         <tr>
-            <td>Sulit/tidak dapat ditenangkan dengan pelukan, sentuhan atau distraksi</td>
+            <td>Sulit/tidak dapat ditenangkan</td>
             <td align="center">2</td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <?php for($i=1;$i<=5;$i++){ ?>
+                <td><input type="text" name="form_23[tenang_2_<?=$i?>]" id="tenang_2_<?=$i?>" class="input_type" onchange="fillthis('tenang_2_<?=$i?>')" style="width:80px;text-align:center;"></td>
+            <?php } ?>
         </tr>
+
+        <!-- TOTAL -->
         <tr>
-            <td align="center" colspan="2"> <b>TOTAL SCORE</b></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
-            <td valign="bottom"><input type="text" style="width: 80px; text-align: center" name="a1" id="a1" onchange="fillthis('a1')" class="input_type"></td>
+            <td align="center" colspan="3"><b>TOTAL SCORE</b></td>
+            <td colspan="6" align="center">
+                <?php for($i=1;$i<=5;$i++){ ?>
+                    <input type="text" name="form_23[total_<?=$i?>]" id="total_<?=$i?>" class="input_type" onchange="fillthis('total_<?=$i?>')" style="width:80px;text-align:center;margin:0 2px;">
+                <?php } ?>
+            </td>
         </tr>
     </tbody>
 </table>
+
 
 <p style="text-align: justify">
     Penatalaksanaan dari manajemen nyeri :
