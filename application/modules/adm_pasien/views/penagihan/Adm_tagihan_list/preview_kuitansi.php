@@ -33,7 +33,17 @@
   </style>
 </head>
 <body>
-	<div class="row" style="margin-top: 37mm;"> 
+
+<table width="100%" >
+	<tr>
+	<td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td>
+	<td valign="bottom" width="320px"><b><span style="font-size: 18px"><?php echo COMP_FULL; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
+	<td align="right"><div id="barcodeTarget" class="barcodeTarget"></div></td>
+	</tr>
+</table>
+<hr>
+
+	<div class="row" style="margin-top: 5mm;"> 
 		<div class="col-xs-8">
 			<table style="font-size:13px" border="0">
 				<tr> 
