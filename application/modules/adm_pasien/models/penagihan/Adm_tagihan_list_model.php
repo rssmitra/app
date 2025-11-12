@@ -129,22 +129,22 @@ class Adm_tagihan_list_model extends CI_Model {
 	}
 
 	public function get_invoice_detail($id_tagih, $kode_tc_trans_kasir=''){
-		$this->db->select('a.kode_tc_trans_kasir, a.no_mr, a.no_registrasi, a.nama_pasien, a.id_tc_tagih, CAST(a.jumlah_dijamin as INT) as jumlah_tagih_int, CAST(a.jumlah_tagih as INT) as beban_pasien_int, b.no_invoice_tagih, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1, b.tr_yg_diskon as rp_diskon, b.diskon, e.tgl_jam_keluar, a.penyesuaian, c.tgl_jam, c.seri_kuitansi');
+		$this->db->select('a.kode_tc_trans_kasir, a.no_mr, a.no_registrasi, a.nama_pasien, a.id_tc_tagih, CAST(a.jumlah_dijamin as INT) as jumlah_tagih_int, CAST(a.jumlah_tagih as INT) as beban_pasien_int, b.no_invoice_tagih, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1, b.tr_yg_diskon as rp_diskon, b.diskon, e.tgl_jam_keluar, a.penyesuaian, a.tgl_jam, a.seri_kuitansi');
 		$this->db->from('(
 							SELECT DISTINCT 
-								kode_tc_trans_kasir,
-								no_mr,
-								no_registrasi,
-								nama_pasien,
+								tc_tagih_det.kode_tc_trans_kasir,
+								tc_tagih_det.no_mr,
+								tc_tagih_det.no_registrasi,
+								tc_tagih_det.nama_pasien,
 								id_tc_tagih,
 								jumlah_dijamin,
 								jumlah_tagih,
-								penyesuaian
+								penyesuaian, tgl_jam, seri_kuitansi
 							FROM tc_tagih_det
+							LEFT JOIN tc_trans_kasir ON tc_trans_kasir.kode_tc_trans_kasir = tc_tagih_det.kode_tc_trans_kasir
 							WHERE id_tc_tagih = '.$id_tagih.'
 						) a');
 		$this->db->join('tc_tagih b', 'b.id_tc_tagih=a.id_tc_tagih','left');
-		$this->db->join('tc_trans_kasir c', 'c.no_registrasi=a.no_registrasi','left');
 		$this->db->join('mt_perusahaan d','d.kode_perusahaan=b.id_tertagih','left');
 		$this->db->join('tc_registrasi e','e.no_registrasi=a.no_registrasi','left');
 		if($kode_tc_trans_kasir != ''){
