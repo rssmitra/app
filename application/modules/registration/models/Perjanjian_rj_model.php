@@ -74,7 +74,9 @@ class Perjanjian_rj_model extends CI_Model {
 			}
 		} else {
 			// Default: hari ini
-			$this->db->where('CAST(tc_pesanan.input_tgl as DATE) = ', date('Y-m-d'));
+			// Default: next 3 months (including today)
+			$this->db->where('CAST(tc_pesanan.input_tgl as DATE) >=', date('Y-m-d', strtotime('-3 month')));
+			// $this->db->where('CAST(tc_pesanan.input_tgl as DATE) <=', date('Y-m-d', strtotime('+3 months')));
 		}
 	}
 

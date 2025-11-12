@@ -147,7 +147,7 @@ class Reg_pasien extends MX_Controller {
         $data = array();
         $output = array();
 
-        $column = array('tc_kunjungan.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_perusahaan','tc_kunjungan.tgl_masuk','mt_dokter_v.nama_pegawai','mt_bagian.nama_bagian','tc_kunjungan.tgl_keluar','tc_kunjungan.kode_bagian_tujuan','mt_perusahaan.nama_perusahaan','tc_kunjungan.no_kunjungan', 'tc_kunjungan.kode_dokter', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.no_mr');
+        $column = array('tc_kunjungan.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_perusahaan','tc_kunjungan.tgl_masuk','mt_dokter_v.nama_pegawai','mt_bagian.nama_bagian','tc_kunjungan.tgl_keluar','tc_kunjungan.kode_bagian_tujuan','mt_perusahaan.nama_perusahaan','tc_kunjungan.no_kunjungan', 'tc_kunjungan.kode_dokter', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.no_mr', 'jeniskunjunganbpjs', 'referensi_no_kunjungan');
 
         $list = $this->Reg_pasien->get_riwayat_pasien( $column, $mr ); 
         // echo "<pre>";print_r($list);die;
@@ -155,7 +155,6 @@ class Reg_pasien extends MX_Controller {
 
         $atts = array('width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
             );
-        $btn_input_general_consent = '';
 
         foreach ($list as $row_list) {
             
@@ -187,10 +186,6 @@ class Reg_pasien extends MX_Controller {
                 $btn_print_out_checklist_mcu = '<li><a href="#" onclick="PopupCenter('."'registration/Reg_mcu/print_checklist_mcu?kode_tarif=".$dt_trans_mcu->kode_tarif."&nama=".$dt_trans_mcu->nama_pasien_layan."&no_mr=".$dt_trans_mcu->no_mr."&no_reg=".$row_list->no_registrasi."'".', '."'FORM CHEKLIST MCU'".', 850, 500)">Cetak Form Cheklist MCU</a></li>';
             }
 
-            if( substr($row_list->kode_bagian_tujuan, 0,2) == '03' ){
-                $btn_input_general_consent = '<li><a href="'.base_url().'pelayanan/Pl_pelayanan/switch_template_form/56/'.$row_list->no_kunjungan.'/'.$row_list->no_registrasi.'?type=Ranap&no_mr='.$row_list->no_mr.'&form_no=56&layout=full" target="_blank">Form General Consent</a></li>';
-            }
-
             $btn_perjanjian = ( $subs_kode_bag == '01') ? '<li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian_tujuan."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=".$row_list->no_sep."'".')">Surat Kontrol Pasien</a></li>' : '';
 
             $btn_cetak_sep = ($row_list->kode_perusahaan == 120)?'<li><a href="#" onclick="getMenuTabs('."'ws_bpjs/Ws_index/view_sep/".$row_list->no_sep."?no_antrian=".$row_list->no_antrian."'".', '."'divLoadSEP'".')">Cetak SEP</a></li>':'';
@@ -211,7 +206,7 @@ class Reg_pasien extends MX_Controller {
             
             if( $row_list->status_batal == 1 ){
                 $row[] = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
-                $is_batal = '<span style="font-weight: bold; color: red">Batal Berobat</span>';
+                $is_batal = '<br><span style="font-weight: bold; color: red">Batal Berobat</span>';
             }else{
                 $row[] = '<div class="center">'.$status_icon.'</div>';
                 $is_batal = '';
@@ -228,7 +223,6 @@ class Reg_pasien extends MX_Controller {
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_edit_dokter/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".' ,'."'UBAH DOKTER PEMERIKSA'".')">Ubah Dokter Pemeriksa</a></li>
                             '.$btn_view_hasil_pm.'
                             '.$btn_print_out_checklist_mcu.'
-                            '.$btn_input_general_consent.'
                             '.$btn_cetak_sep.'
                             <li><a href="#" onclick="PopupCenter('."'registration/Reg_klinik/print_bukti_pendaftaran_pasien_small?nama=".$row_list->nama_pasien."&no_mr=".$row_list->no_mr."&no_reg=".$row_list->no_registrasi."&poli=".$row_list->nama_bagian."&dokter=".$row_list->nama_pegawai."&nasabah=".$penjamin."'".', '."'FORM BUKTI PENDAFTARAN PASIEN'".', 950, 550)">Cetak Bukti Pendaftaran</a></li>
                             <li class="divider"></li>
@@ -239,7 +233,15 @@ class Reg_pasien extends MX_Controller {
             $no_antrian = (substr($row_list->kode_bagian_tujuan, 0,2) == '01') ? '<br> No. Antrian : <b style="font-size:12px">'.$row_list->no_antrian.'</b>' : '';
             $nama_dokter = ($row_list->nama_pegawai != '') ? $row_list->nama_pegawai.'<br>' : '' ;
             
-            $row[] = $row_list->no_registrasi.' - '.$penjamin.'<br>'.ucfirst($row_list->nama_bagian).'<br>'.$nama_dokter.'<small style="font-size:11px">'.$this->tanggal->formatDateTime($row_list->tgl_masuk).' s/d '.$this->tanggal->formatDateTime($row_list->tgl_keluar).'</small>'.$no_antrian.' '.$tipe_daftar.'<br>'.$is_batal;
+            // jeniskunjunganbpjs
+            if( $row_list->jeniskunjunganbpjs == 2 ){
+                $jenis_kunjungan = '<br><a href="#" class="label label-warning" onclick="show_referensi_kunjungan('.$row_list->referensi_no_kunjungan.')"> Rujukan Internal </span></a>';
+            }
+            else{
+                $jenis_kunjungan = '';
+            }
+
+            $row[] = $row_list->no_registrasi.' - '.$penjamin.'<br>'.ucfirst($row_list->nama_bagian).'<br>'.$nama_dokter.'<small style="font-size:11px">'.$this->tanggal->formatDateTime($row_list->tgl_masuk).' s/d '.$this->tanggal->formatDateTime($row_list->tgl_keluar).'</small>'.$no_antrian.' '.$tipe_daftar.''.$is_batal.''.$jenis_kunjungan;
             
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
             
@@ -364,9 +366,11 @@ class Reg_pasien extends MX_Controller {
 
         $output = array();
 
-        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id, tc_pesanan.kode_perusahaan, no_kartu_bpjs, jeniskunjunganjkn');
+        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id, tc_pesanan.kode_perusahaan, no_kartu_bpjs, referensi_no_kunjungan, jeniskunjunganjkn');
 
         $list = $this->Reg_pasien->get_riwayat_perjanjian( $column, $mr ); 
+
+        // echo "<pre>";print_r($list);die;
 
         $no = 0;
 
@@ -397,11 +401,14 @@ class Reg_pasien extends MX_Controller {
                 }else{
                     $tgl = $this->tanggal->formatDate($row_list->tgl_pesanan);
                 }
-                $penjamin = ($row_list->nama_perusahaan==NULL)?'<span style="background: green; padding: 2px; color: white">Pribadi/Umum</span>':'<span style="background: blue; padding: 2px; color: white">'.$row_list->nama_perusahaan.'</span>';
+                $penjamin = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
+
+                // referensi no kunjungan
+                if( $row_list->jeniskunjunganjkn != NULL AND $row_list->jeniskunjunganjkn == 2 ){
+                    $penjamin .= '<a href="#" onclick="show_referensi_kunjungan('.$row_list->referensi_no_kunjungan.')" class="label label-warning">Rujukan Internal</a>';
+                }
 
                 $label_code = ($row_list->tgl_masuk == NULL) ? '<div class="pull-right"><span class="red" style="font-weight: bold; font-size: 16px;">'.$row_list->unique_code_counter.'</span></div>' : '<div class="pull-right"><span class="green" style="font-weight: bold; font-size: 16px; cursor: pointer">'.$row_list->unique_code_counter.'</span></div>';
-
-                $jeniskunjungan = ($row_list->jeniskunjunganjkn==2)?'<span style="background: darkorange; padding: 2px; color: white">'.$row_list->namajeniskunjungan.'</span>':'<span style="background: blue; padding: 2px; color: white">'.$row_list->namajeniskunjungan.'</span>';
 
                 $row[] = '<div class="center">
                             <label class="pos-rel">
@@ -421,7 +428,7 @@ class Reg_pasien extends MX_Controller {
                             </ul>
                         </div></div>';
                 if( $row_list->kode_perusahaan == 120){
-                    $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.' '.$jeniskunjungan.'<hr><small class="pull-right">Kode Booking : </small><br><a href="#" onclick="changeModulRjFromPerjanjianBPJS('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
+                    $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.'<br><small class="pull-right">Kode Booking : </small><br><a href="#" onclick="changeModulRjFromPerjanjianBPJS('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
                 }else{
                     $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.'<a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
                 }
@@ -587,36 +594,14 @@ class Reg_pasien extends MX_Controller {
 
     public function form_modal_edit_penjamin($no_registrasi, $no_kunjungan){
         
-        $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan);
-        $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($no_registrasi, $no_kunjungan);
-        // eresep
+        $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
 
         $data = [
-            'result' => $resume,
-            'penunjang' => $resume['penunjang'],
+            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi),
             'no_registrasi' => $no_registrasi,
-            'trans_kasir' => $trans_kasir,
+            'no_kunjungan' => $no_kunjungan,
         ];
-        $userDob = $data['result']['registrasi']->tgl_lhr;
- 
-        //Create a DateTime object using the user's date of birth.
-        $dob = new DateTime($userDob);
-     
-        //We need to compare the user's date of birth with today's date.
-        $now = new DateTime();
-
-        //Calculate the time difference between the two dates.
-        $difference = $now->diff($dob);
-
-        //Get the difference in years, as we are looking for the user's age.
-        $umur = $difference->format('%y');
-
-        $data['umur'] = $umur;
         
-        // echo '<pre>';print_r($resume);die;
-        $html = $this->load->view('pelayanan/Pl_pelayanan/view_resume_medis', $data, true);
-        $data['html'] = $html;
-        // echo '<pre>';print_r($data);die;
         /*load form view*/
         
         $this->load->view('Reg_pasien/form_modal_edit_penjamin', $data);
@@ -715,10 +700,28 @@ class Reg_pasien extends MX_Controller {
     {
         
         $data = array();
+        
+        /*if id is not null then will show form edit*/
+        
+        //$data_pasien = $this->Input_pasien_baru->get_by_mr($noMr);
+
+        /*echo '<pre>'; print_r($data_pasien);*/
+
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'registration/Input_pasien_baru/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
+
         $data['flag'] = "update";
+
         $data['breadcrumbs'] = '';
-        $data['title'] = 'Tanda Tangan Pasien';
+
+        $data['title'] = 'Edit data pasien';
+
         $data['value'] = $this->Input_pasien_baru->get_by_mr($noMr);
+        //echo '<pre>';print_r($data);die;
+        /*load form view*/
+        
+        //$this->load->view('Input_pasien_baru/form', $data);
+
         $this->load->view('Reg_pasien/form_modal_ttd', $data);
     
     }
@@ -893,7 +896,6 @@ class Reg_pasien extends MX_Controller {
             'no_mr' => $no_mr,
             'pasien' => $this->Reg_pasien->get_by_mr($no_mr),
             );
-            // echo "<pre>"; print_r($data);die;
         $this->load->view('Reg_pasien/barcode_pasien', $data);
 
     }
@@ -972,7 +974,6 @@ class Reg_pasien extends MX_Controller {
          $val->set_rules('jenis_instalasi', 'Instalasi', 'trim|required');
          $val->set_rules('keterangan', 'Keterangan', 'trim');
          $val->set_rules('jenis_penjamin', 'Jenis Penjamin', 'trim|required');
-         $val->set_rules('jeniskunjungan', 'Jenis Kunjungan', 'trim|required');
  
          if($_POST['jenis_instalasi']=='BD'){
              $val->set_rules('tanggal_perjanjian_bedah', 'Tanggal Perjanjian', 'trim|required');
@@ -1038,7 +1039,7 @@ class Reg_pasien extends MX_Controller {
             $string = $kode_faskes.$this->input->post('nama_pasien').$this->input->post('no_mr');
             $unique_code_max = date('my').$this->master->generateRandomString($string, 6);
 
-            $ket_rujukan_internal = isset($_POST['jeniskunjungan']) ? ($_POST['jeniskunjungan'] == 2) ? 'Rujukan Internal - ' : '' : '';
+            $ket_rujukan_internal = isset($_POST['jenis_perjanjian']) ? ($_POST['jenis_perjanjian'] == 1) ? 'Rujukan Internal - ' : '' : '';
             $dataexc = array(
                 'nama' => $this->regex->_genRegex($this->input->post('nama_pasien'), 'RGXQSL'),
                 'keterangan' => $ket_rujukan_internal.$this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
@@ -1052,8 +1053,8 @@ class Reg_pasien extends MX_Controller {
                 'no_telp' => $this->input->post('no_telp'),
                 'no_hp' => $this->input->post('no_hp'),
                 'jd_id' => $this->input->post('jd_id'),
-                'jeniskunjunganjkn' => $this->input->post('jeniskunjungan'),
                 'is_bridging' => $is_bridging,
+                'jeniskunjunganjkn' => isset($_POST['jeniskunjungan'])?$_POST['jeniskunjungan']:'',
             );
 
             if($dataexc['no_poli'] != '50201'){
@@ -1068,22 +1069,22 @@ class Reg_pasien extends MX_Controller {
                 $dataexc['no_sep_lama'] = $this->input->post('no_sep_lama');
             }
 
-            if($this->input->post('jenis_penjamin')=='Jaminan Perusahaan'){
-            $dataexc['kode_perusahaan'] = $this->regex->_genRegex($val->set_value('kode_perusahaan'), 'RGXINT');
-            }
+             if($this->input->post('jenis_penjamin')=='Jaminan Perusahaan'){
+                $dataexc['kode_perusahaan'] = $this->regex->_genRegex($val->set_value('kode_perusahaan'), 'RGXINT');
+             }
+ 
+             if($_POST['jenis_instalasi']=='BD'){
+                 $dataexc['flag']='bedah';
+                 $dataexc['diagnosa']=$this->regex->_genRegex($val->set_value('diagnosa_perjanjian_bedah'), 'RGXQSL');
+                 $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_bedah'), 'RGXQSL');
+             }
+             
+             if($_POST['jenis_instalasi']=='PM'){
+                $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_pm'), 'RGXQSL');
+                $dataexc['bulan_kunjungan'] = $this->regex->_genRegex($this->input->post('bulan_kunjungan'), 'RGXQSL');
+             }
 
-            if($_POST['jenis_instalasi']=='BD'){
-                $dataexc['flag']='bedah';
-                $dataexc['diagnosa']=$this->regex->_genRegex($val->set_value('diagnosa_perjanjian_bedah'), 'RGXQSL');
-                $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_bedah'), 'RGXQSL');
-            }
-            
-            if($_POST['jenis_instalasi']=='PM'){
-            $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_pm'), 'RGXQSL');
-            $dataexc['bulan_kunjungan'] = $this->regex->_genRegex($this->input->post('bulan_kunjungan'), 'RGXQSL');
-            $dataexc['referensi_no_kunjungan'] = $this->input->post('no_kunjungan');
-            }
-
+             $dataexc['referensi_no_kunjungan'] = $this->input->post('no_kunjungan');
             //  print_r($dataexc);die;
              if($id==0){
                 $kode_perjanjian = ($ex_no_surat_kontrol != 0) ? $ex_no_surat_kontrol : $kode_faskes.$unique_code_max;
@@ -1096,13 +1097,12 @@ class Reg_pasien extends MX_Controller {
                 }
 
                 // add antrian to mobile jkn
-                // $dataexc['jampraktek'] = str_replace(' s/d ', '-', $_POST['selected_time']);
-                // $dataexc['rujukan_internal'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
-                // $dataexc['no_ktp'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
-                // $dataexc['nomorkartubpjs'] = isset($_POST['no_kartu_bpjs'])?$_POST['no_kartu_bpjs']:'';
-                // $dataexc['jeniskunjungan'] = isset($_POST['jeniskunjungan'])?$_POST['jeniskunjungan']:'';
-                // $dataexc['no_sep_lama'] =isset( $_POST['no_sep_lama'])? $_POST['no_sep_lama']:'';
-                // $dataexc['nomorreferensi'] = (!empty($_POST['no_surat_kontrol']))?$_POST['no_surat_kontrol']:0;
+                $dataexc['jampraktek'] = str_replace(' s/d ', '-', $_POST['selected_time']);
+                $dataexc['rujukan_internal'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
+                $dataexc['no_ktp'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
+                $dataexc['nomorkartubpjs'] = isset($_POST['no_kartu_bpjs'])?$_POST['no_kartu_bpjs']:'';
+                $dataexc['no_sep_lama'] =isset( $_POST['no_sep_lama'])? $_POST['no_sep_lama']:'';
+                $dataexc['nomorreferensi'] = (!empty($_POST['no_surat_kontrol']))?$_POST['no_surat_kontrol']:0;
                 
              }else{
                  /*update record*/
@@ -1141,6 +1141,7 @@ class Reg_pasien extends MX_Controller {
         $data['jenis_printer'] = $this->db->get_where('global_parameter', array('flag' => 'printer_booking'))->result();
         $this->load->view('Reg_pasien/surat_kontrol', $data);
     }
+    
 
     public function surat_kontrol_popup(){
         
@@ -1275,7 +1276,7 @@ class Reg_pasien extends MX_Controller {
             $this->db->update('pl_tc_poli', $dataexc, array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
 
             // update ri_tc_rawatinap
-            // $this->db->update('ri_tc_rawatinap', array('dr_merawat' => $val->set_value('kode_edit_dokter_hidden') ) , array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
+            $this->db->update('ri_tc_rawatinap', array('dr_merawat' => $val->set_value('kode_edit_dokter_hidden') ) , array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
 
             // update ri_tc_rawatinap
             $this->db->update('tc_trans_pelayanan', array('kode_dokter1' => $val->set_value('kode_edit_dokter_hidden') ) , array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
@@ -1459,6 +1460,14 @@ class Reg_pasien extends MX_Controller {
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan' ) );
         }
         
+    }
+
+    function show_referensi_kunjungan()
+    {
+        $data = array();
+        $data['value'] = $this->Pl_pelayanan->get_by_no_kunjungan($_GET['no_kunjungan']);
+        // echo "<pre>"; print_r($data['kunjungan']); echo "</pre>";
+        $this->load->view('Reg_pasien/form_referensi_kunjungan', $data);
     }
 
 }

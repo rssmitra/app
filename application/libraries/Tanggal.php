@@ -706,7 +706,7 @@ final class Tanggal {
                 return $num;
         }
     }
-    
+
     /*function umur($tgl_lahir,$delimiter='-') {
     
         list($hari,$bulan,$tahun) = explode($delimiter, $tgl_lahir);

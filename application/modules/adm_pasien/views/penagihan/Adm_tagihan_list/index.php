@@ -298,6 +298,7 @@
               <th class="center">Status</th>
               <th class="center">INV</th>
               <th class="center">KWI</th>
+              <th class="center">SP</th>
               <th class="center">Hapus</th>
             </tr>
           </thead>

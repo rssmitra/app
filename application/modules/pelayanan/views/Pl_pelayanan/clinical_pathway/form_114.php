@@ -143,12 +143,12 @@ jQuery(function($) {
 </div>
 <br>
 
-<table style="width: 100%; border-collapse: collapse; border: 1px solid black; font-size: 13px;">
+<table style="width: 100%; border-collapse: collapse; border: 1px solid #dddddd; font-size: 13px;">
   <tbody>
 
     <!-- BAYI PULANG -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>BAYI PULANG:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[bayi_pulang][]" id="bayi_ijin_dokter" onclick="checkthis('bayi_ijin_dokter')" value="Dengan ijin dokter"><span class="lbl"> Dengan ijin dokter</span></label></div>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[bayi_pulang][]" id="bayi_permintaan_keluarga" onclick="checkthis('bayi_permintaan_keluarga')" value="Permintaan keluarga"><span class="lbl"> Permintaan keluarga</span></label></div>
@@ -159,7 +159,7 @@ jQuery(function($) {
 
     <!-- KEADAAN WAKTU PULANG -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>KEADAAN WAKTU PULANG:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[keadaan_pulang][]" id="keadaan_baik" onclick="checkthis('keadaan_baik')" value="Baik"><span class="lbl"> Baik</span></label></div>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[keadaan_pulang][]" id="keadaan_tidak_baik" onclick="checkthis('keadaan_tidak_baik')" value="Tidak baik"><span class="lbl"> Tidak baik</span></label></div>
@@ -168,7 +168,7 @@ jQuery(function($) {
 
     <!-- JENIS KELAMIN -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>JENIS KELAMIN:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[jenis_kelamin][]" id="jk_l" onclick="checkthis('jk_l')" value="Laki-laki"><span class="lbl"> Laki-laki</span></label></div>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[jenis_kelamin][]" id="jk_p" onclick="checkthis('jk_p')" value="Perempuan"><span class="lbl"> Perempuan</span></label></div>
@@ -178,7 +178,7 @@ jQuery(function($) {
 
     <!-- BERAT BADAN -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>BERAT BADAN:</b><br>
         Berat badan lahir : 
         <input type="text" class="input_type" style="width: 80px; text-align: center;" 
@@ -194,7 +194,7 @@ jQuery(function($) {
 
     <!-- KULIT -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>KULIT:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[kulit][]" id="kulit_ikterik" onclick="checkthis('kulit_ikterik')" value="Ikterik"><span class="lbl"> Ikterik; Bilirubin </span></label>
         <input type="text" class="input_type" style="width: 60px; text-align: center;" name="form_114[kulit_bilirubin]" id="kulit_bilirubin" onchange="fillthis('kulit_bilirubin')"></div>
@@ -207,7 +207,7 @@ jQuery(function($) {
 
     <!-- TALI PUSAT -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>TALI PUSAT:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[tali_pusat][]" id="pusat_kering" onclick="checkthis('pusat_kering')" value="Kering"><span class="lbl"> Kering</span></label></div>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[tali_pusat][]" id="pusat_basah" onclick="checkthis('pusat_basah')" value="Basah"><span class="lbl"> Basah</span></label></div>
@@ -219,7 +219,7 @@ jQuery(function($) {
 
     <!-- MINUM -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>MINUM:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[minum][]" id="minum_asi" onclick="checkthis('minum_asi')" value="ASI"><span class="lbl"> ASI</span></label></div>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[minum][]" id="minum_pasi" onclick="checkthis('minum_pasi')" value="PASI"><span class="lbl"> PASI</span></label></div>
@@ -228,7 +228,7 @@ jQuery(function($) {
 
     <!-- MIKSI -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>MIKSI:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[miksi][]" id="miksi_normal" onclick="checkthis('miksi_normal')" value="Normal"><span class="lbl"> Normal</span></label></div>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[miksi][]" id="miksi_tidak_normal" onclick="checkthis('miksi_tidak_normal')" value="Tidak normal"><span class="lbl"> Tidak normal</span></label></div>
@@ -237,7 +237,7 @@ jQuery(function($) {
 
     <!-- DEFEKASI -->
     <tr>
-      <td colspan="2" style="border: 1px solid black; padding: 5px;">
+      <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
         <b>DEFEKASI:</b><br>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[defekasi][]" id="defekasi_normal" onclick="checkthis('defekasi_normal')" value="Normal"><span class="lbl"> Normal</span></label></div>
         <div class="checkbox"><label><input type="checkbox" class="ace" name="form_114[defekasi][]" id="defekasi_tidak_normal" onclick="checkthis('defekasi_tidak_normal')" value="Tidak normal"><span class="lbl"> Tidak normal</span></label></div>
@@ -246,7 +246,7 @@ jQuery(function($) {
 
    <!-- KELAINAN
 <tr>
-  <td colspan="2" style="border: 1px solid black; padding: 5px;">
+  <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
     <b>Kelainan :</b><br>
     <textarea class="textarea-type"
               name="form_114[kelainan]"
@@ -258,7 +258,7 @@ jQuery(function($) {
 
 <!-- KELAINAN -->
 <tr>
-  <td colspan="2" style="border: 1px solid black; padding: 5px; vertical-align: top;">
+  <td colspan="2" style="border: 1px solid #dddddd; padding: 5px; vertical-align: top;">
     <b>Kelainan :</b><br>
     <div contenteditable="true"
          class="input_type"
@@ -273,7 +273,7 @@ jQuery(function($) {
 
 <!-- OBAT-OBAT -->
 <!-- <tr>
-  <td colspan="2" style="border: 1px solid black; padding: 5px;">
+  <td colspan="2" style="border: 1px solid #dddddd; padding: 5px;">
     <b>Obat-obat yang dibawa pulang :</b><br>
     <textarea class="textarea-type"
               name="form_114[obat_pulang]"
@@ -284,7 +284,7 @@ jQuery(function($) {
 </tr> -->
 
 <tr>
-  <td colspan="2" style="border: 1px solid black; padding: 5px; vertical-align: top;">
+  <td colspan="2" style="border: 1px solid #dddddd; padding: 5px; vertical-align: top;">
     <b>Obat-obat yang dibawa pulang :</b><br>
     <div contenteditable="true"
          class="input_type"
@@ -304,7 +304,7 @@ jQuery(function($) {
 
 <br>
 
-<table class="table" style="width: 100%; border:1px solid #000; border-collapse:collapse;">
+<table style="width: 100%;">
   <tbody>
     <tr>
       <td style="width:33%; text-align:center;">
@@ -314,9 +314,9 @@ jQuery(function($) {
           <i class="fa fa-pencil blue"></i>
         </span>
         <br>
-        <img id="img_ttd_petugas" src="" style="display:none; max-width:150px; max-height:40px; margin-top:2px;">
+        <img id="img_ttd_petugas" src="" style="display:none; max-width:250px; max-height:40px; margin-top:2px;">
         <br><br>
-        <input type="text" class="input_type" name="form_114[nama_petugas]" id="nama_petugas" placeholder="Nama Jelas" style="width:33%; text-align:center;">
+        <input type="text" class="input_type" name="form_114[nama_petugas]" id="nama_petugas" placeholder="Nama Jelas" style="width:50%; text-align:center;">
       </td>
 
       <td colspan="2">

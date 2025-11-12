@@ -511,6 +511,12 @@ function delete_diagnosa(myid){
           </a>
         </li>
 
+        <li>
+          <a data-toggle="tab" id="tab_obat_bhp" href="#" data-id="<?php echo $no_kunjungan?>?type=<?php echo $type?>&kode_bag=<?php echo isset($kode_bagian)?$kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan_ri/obat_bhp/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+            Input BHP
+          </a>
+        </li>
+
         <li class="dropdown">
           <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true">
           Rujuk Internal &nbsp;

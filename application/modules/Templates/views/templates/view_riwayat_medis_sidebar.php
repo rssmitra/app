@@ -188,7 +188,6 @@ hr {
               <?php echo $value->dokter_pemeriksa?><br>
               <?php echo ucwords($value->nama_bagian)?> (<?php echo $value->tipe?>)
               <?php echo (!in_array($value->cara_keluar_pasien, [null, 'Atas Persetujuan Dokter', 'Atas Permintaan Sendiri']))?'<br><span class="label label-primary">'.$value->cara_keluar_pasien.'</span>':'';?>&nbsp;
-              <?php echo ($lembar_konsul == 1)?'<span class="label label-warning">Konsul Internal</span>':'';?>
             </div>
           </a>
         </h4>
@@ -295,6 +294,7 @@ hr {
                 <label for="form-field-8"><b>Tgl Kontrol Kembali : </b></label><br>
                 <?php echo isset($value->tgl_kontrol_kembali)?$this->tanggal->formatDate($value->tgl_kontrol_kembali):''?><br>
                 <?php echo isset($value->catatan_kontrol_kembali)?$value->catatan_kontrol_kembali:''?>
+                <?php echo ($lembar_konsul == 1)?'<br><span class="label label-warning">Rujukan Internal</span>':'';?>
             </div>
             <br>
             <span style="font-weight: bold; font-style: italic; color: blue">(e-Resep)</span><br>

@@ -100,7 +100,9 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['kode_klas'] = ($data['value']->pasien_titipan == 1) ? $data['value']->kelas_titipan : $data['value']->kelas_pas;
         $data['klas_titipan'] = ($data['value']->kelas_titipan!=NULL)?$data['value']->kelas_titipan:0;
         $data['kode_profit'] = 2000;
+        $data['type'] = 'ranap';
         $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_bagian'] = $data['value']->bag_pas;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -2681,7 +2683,26 @@ class Pl_pelayanan_ri extends MX_Controller {
         }
     }
 
-    
+    public function obat_bhp($id='', $no_kunjungan='')
+    {
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_bedah/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        // echo "<pre>"; print_r($data);die;
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['reff_id'] = $id;
+        $data['sess_kode_bag'] = isset($_GET['kode_bag']) ? $_GET['kode_bag'] : $data['value']->bag_pas;
+        $data['type'] = 'Ranap';
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_obat_bhp', $data);
+    }
 
 }
 

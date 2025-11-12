@@ -105,6 +105,7 @@ class Adm_tagihan_list extends MX_Controller {
             $row[] = '<div class="center">'.$status.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/penagihan/Adm_tagihan_list/preview_invoice?ID=".$row_list->id_tc_tagih."&".$qry_url."'".','."'Preview Invoice'".',900,650);"><i class="fa fa-print green bigger-150"></i></a></div>';
             $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/penagihan/Adm_tagihan_list/preview_kuitansi?nm=".$row_list->nama_tertagih."&inv=".$row_list->no_invoice_tagih."&tgl=".$row_list->tgl_tagih."&jml=".$setelah_diskon."'".','."'Preview Kuitansi'".',900,650);"><i class="fa fa-print blue bigger-150"></i></a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/penagihan/Adm_tagihan_list/preview_surat_penagihan?ID=".$row_list->id_tc_tagih."&".$qry_url."'".','."'Preview Invoice'".',900,650);"><i class="fa fa-print orange bigger-150"></i></a></div>';
             $row[] = '<div class="center"><a href="#" onclick="delete_data('.$row_list->id_tc_tagih.')"><i class="fa fa-remove red bigger-150"></a></div>';
             $data[] = $row;
               
@@ -187,6 +188,17 @@ class Adm_tagihan_list extends MX_Controller {
         // echo "<pre>"; print_r($data); die;
         
         $this->load->view('penagihan/Adm_tagihan_list/preview_invoice', $data);
+    }
+
+    public function preview_surat_penagihan(){
+        $data = array();
+        // $perusahaan = $this->Adm_tagihan_list->get_tagihan_perusahaan($_GET['ID']);
+        $list = $this->Adm_tagihan_list->get_invoice_detail($_GET['ID']);
+        $data['perusahaan'] = $list[0]->nama_tertagih;
+        $data['result'] = $list;
+        // echo "<pre>"; print_r($data); die;
+        
+        $this->load->view('penagihan/Adm_tagihan_list/preview_surat_penagihan', $data);
     }
 
     public function preview_kuitansi(){

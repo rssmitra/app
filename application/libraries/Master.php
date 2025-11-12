@@ -1796,6 +1796,32 @@ final Class Master {
 
 	}
 
+	function assoc_to_kv_string(array $arr, $sep = ' | ', $kv_sep = ' = ', $skipEmpty = false) {
+		$parts = [];
+		foreach ($arr as $key => $value) {
+			// Convert value to string in a safe/readable way
+			if (is_array($value) || is_object($value)) {
+				$val = json_encode($value, JSON_UNESCAPED_UNICODE);
+			} elseif (is_bool($value)) {
+				$val = $value ? 'true' : 'false';
+			} elseif (is_null($value)) {
+				$val = '';
+			} else {
+				$val = (string) $value;
+			}
+
+			if ($skipEmpty && $val === '') {
+				continue; // skip entries with empty value
+			}
+
+			$parts[] = $key . $kv_sep . $val;
+		}
+
+		return implode($sep, $parts);
+	}
+
+
+
 
 }
 

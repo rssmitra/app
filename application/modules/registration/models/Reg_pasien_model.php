@@ -296,6 +296,7 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_bagian as bagian_asal','bagian_asal.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
+		$this->db->join('tc_pesanan','tc_pesanan.id_tc_pesanan=tc_registrasi.id_tc_pesanan','left');
 		if($mr != ''){
 			$this->db->where( 'tc_kunjungan.no_mr', $mr );
 		}

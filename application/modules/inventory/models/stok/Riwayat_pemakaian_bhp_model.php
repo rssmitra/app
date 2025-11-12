@@ -20,7 +20,7 @@ class Riwayat_pemakaian_bhp_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('mt_barang', 'mt_barang.kode_brg='.$this->table.'.kode_brg','left');
 		$kode_bagian = isset($_GET['kode_bagian'])?$_GET['kode_bagian']:'060201';
-		$this->db->where('tc_kartu_stok.kode_bagian', $kode_bagian);
+		// $this->db->where('tc_kartu_stok.kode_bagian', $kode_bagian);
 		$this->db->where('jenis_transaksi', 7);
 		$this->db->where('is_retur is null');
 		

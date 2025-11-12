@@ -1814,7 +1814,8 @@ class Pl_pelayanan extends MX_Controller {
                 if($cek_tarif_konsultasi == 0){
                     /*tarif konsultasi*/
                     $dataexc['kode_dokter1'] = $_POST['kode_dokter_poli'];
-                    $tarif_konsultasi = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 12);
+                    $jeniskunjunganbpjs = isset($_POST['jeniskunjunganbpjs']) ? $_POST['jeniskunjunganbpjs'] : 0;
+                    $tarif_konsultasi = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 12, $jeniskunjunganbpjs);
                 }
             }
 

@@ -35,7 +35,7 @@
         $db = $CI->load->database('default', TRUE);
         $CI->load->library('master');
 
-        $id_kartu = $CI->master->get_max_number($data['table_kartu_flag'], 'id_kartu');
+        $id_kartu = $CI->master->get_max_number($data['table'], 'id_kartu');
         $jenis_transaksi = $db->get_where('mt_jenis_kartu_stok', array('jenis_transaksi' => $jenisKartuStok))->row();
 
         $field=array();
@@ -50,9 +50,8 @@
         $field["keterangan"] = $jenis_transaksi->nama_jenis;
         $field["nama_petugas"] = $data['petugas'];
         $field["tgl_input"]= date('Y-m-d H:i:s');
-        $field["agenda_so_id"]= $data['agenda_so_id'];
-
-        $db->insert($data['table_kartu_flag'], $field);
+        $field["agenda_so_id"]= isset($data['agenda_so_id'])?$data['agenda_so_id']:null;
+        $db->insert($data['table'], $field);
 
         return $id_kartu;
         
@@ -80,6 +79,33 @@
         
     }
 
+    function create_depo_stok($params) {
+
+        // restore => untuk mengembalikan stok ke jumlah sebelumnya
+        // reduce => untuk mengurangi stok sesuai dengan jumlah yang dikirim
+
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        $CI->load->library('master');
+        
+        $t_depo_stok = ($params['flag']=='medis') ? 'mt_depo_stok' : 'mt_depo_stok_nm' ;
+
+        $dataexc=array();
+        $dataexc['kode_brg'] = $params['kode_brg'];
+        $dataexc['jml_sat_kcl'] = 0;
+        $dataexc['stok_minimum'] = 0;
+        $dataexc['stok_maksimum'] = 0;
+        $dataexc['kode_bagian'] = $params['kode_bagian'];
+        $dataexc['id_kartu'] = $params['id_kartu'];
+        $dataexc['stok_akhir'] = 0;
+        $dataexc['created_date'] = date('Y-m-d H:i:s');
+        $db->insert($t_depo_stok, $dataexc);
+
+        return $dataexc;
+                        
+    }
+
+    
 
 }
 

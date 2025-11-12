@@ -749,6 +749,7 @@ function show_icare() {
       <input type="hidden" name="kodebookingantrol" class="form-control" value="<?php echo isset($value->kodebookingantrol)?$value->kodebookingantrol:''?>" id="kodebookingantrol" readonly>
       <input type="hidden" name="taskId" class="form-control" value="4" id="taskId" readonly>
       <input type="hidden" name="noKartuBpjs" class="form-control" id="noKartuBpjs" value="<?php echo $value->no_kartu_bpjs?>" readonly>
+      <input type="hiddenxx" name="jeniskunjunganbpjs" class="form-control" id="jeniskunjunganbpjs" value="<?php echo $value->jeniskunjunganbpjs?>" readonly>
     
       <!-- profile Pasien -->
       <div class="col-md-2">
@@ -825,7 +826,14 @@ function show_icare() {
               <span id="nama_pasien"><?php echo isset($value->nama_pasien)?$value->nama_pasien:'';?> (<?php echo isset($value->jen_kelamin)?$value->jen_kelamin:'';?>)</span><br>
               Tgl Lhr. <span id="tgl_lhr"><?php echo isset($value->tgl_lhr)?$this->tanggal->formatDate($value->tgl_lhr):''?></span> (<span id="umur"><?php echo isset($value->umur)?$value->umur:'';?></span>)
             </td>
-            <td><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
+            <td>
+              <?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?>
+              <?php 
+                  if($value->jeniskunjunganbpjs == 2){
+                    echo '<br><span class="label label-warning">Rujukan Internal</span>';
+                  }
+              ?>
+            </td>
             <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
             <td><?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' ':'';?>
             <?php echo isset($value->nama_perusahaan)?'<br>['.$value->nama_perusahaan.']':'';?></td>

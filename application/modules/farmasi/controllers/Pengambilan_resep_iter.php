@@ -176,8 +176,8 @@ class Pengambilan_resep_iter extends MX_Controller {
             }
 
             // drop cefore create
-            $this->db->where('kode_trans_far', $kode_trans_far)->delete('fr_tc_far_detail');
-            $this->db->where('kode_trans_far', $kode_trans_far)->delete('fr_tc_far_detail_log');
+            // $this->db->where('kode_trans_far', $kode_trans_far)->delete('fr_tc_far_detail');
+            // $this->db->where('kode_trans_far', $kode_trans_far)->delete('fr_tc_far_detail_log');
 
             $kd_tr_resep = $this->master->get_max_number('fr_tc_far_detail', 'kd_tr_resep');
             foreach ($_POST['selected_id'] as $key => $value) {
@@ -192,6 +192,7 @@ class Pengambilan_resep_iter extends MX_Controller {
                 $biaya_tebus = $harga_jual * $isset_jml_tebus ;
 
                 $data_farmasi_detail[] = array(
+                    'id_iter' => $_POST['id_iter'],
                     'jumlah_pesan' => $isset_jml_tebus,
                     'jumlah_tebus' => $isset_jml_tebus,
                     'sisa' => 0,
@@ -215,9 +216,9 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'created_by' => json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                 );
 
-
                 /*params log*/
                 $data_log[] = array(
+                    'id_iter' => $_POST['id_iter'],
                     'kode_brg' => $this->regex->_genRegex($_POST['kode_brg_'.$value.''], 'RGXQSL'),
                     'nama_brg' => $this->regex->_genRegex($_POST['nama_brg_'.$value.''], 'RGXQSL'),
                     'kode_trans_far' => $kode_trans_far,
@@ -240,18 +241,36 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'satuan_obat' => $this->regex->_genRegex($ex_dt->satuan_obat, 'RGXQSL'),
                     'anjuran_pakai' => $this->regex->_genRegex($ex_dt->anjuran_pakai, 'RGXQSL'),
                 );
-                
+
+                /*params log prb*/
+                $data_log_prb[] = array(
+                    'id_iter' => $_POST['id_iter'],
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'kode_brg' =>  $this->regex->_genRegex($_POST['kode_brg_'.$value.''], 'RGXQSL'),
+                    'nama_brg' => $this->regex->_genRegex($_POST['nama_brg_'.$value.''], 'RGXQSL'),
+                    'satuan_kecil' => $ex_dt->satuan_kecil,
+                    'jumlah' =>  $isset_jml_tebus,
+                    'harga_satuan' => isset($ex_dt->harga_jual_satuan)?$ex_dt->harga_jual_satuan:0,
+                    'sub_total' => $biaya_tebus,
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname, 'RGXQSL'),
+                    'updated_date' => date('Y-m-d H:i:s'),
+                    'updated_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname, 'RGXQSL'),
+                    'kode_trans_far' => $kode_trans_far,
+                    'kd_tr_resep' => $this->regex->_genRegex($kd_tr_resep, 'RGXQSL'),
+                );
 
             }
 
-            echo '<pre>';print_r($data_farmasi_detail);die;
-            echo '<pre>';print_r($data_log);die;
+            // echo '<pre>';print_r($data_farmasi_detail);die;
+            // echo '<pre>';print_r($data_log);die;
 
             $this->db->insert_batch('fr_tc_far_detail', $data_farmasi_detail);
             $this->db->insert_batch('fr_tc_far_detail_log', $data_log);
+            $this->db->insert_batch('fr_tc_far_detail_log_prb', $data_log);
             foreach ($data_log as $k => $v) {
                 // potong stok biasa
-                $this->stok_barang->stock_process($v['kode_brg'], $v['jumlah_tebus'],'060101', 14, " Transaksi Iter : ".$v['kode_trans_far']."", 'reduce');
+                $this->stok_barang->stock_process($v['kode_brg'], $v['jumlah_tebus'], '060101', 14, " Transaksi Iter : ".$v['kode_trans_far']."", 'reduce');
             }
 
             // update jumlah itter

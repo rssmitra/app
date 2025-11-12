@@ -372,7 +372,7 @@ final class Tarif extends AvObjects {
 
     }
 
-    public function insert_tarif_by_jenis_tindakan($data, $jenis_tindakan){
+    public function insert_tarif_by_jenis_tindakan($data, $jenis_tindakan, $jeniskunjunganbpjs=''){
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
 
@@ -425,7 +425,14 @@ final class Tarif extends AvObjects {
         $tarif_data['nama_tindakan'] = ($row_data->nama_tarif)?$row_data->nama_tarif:'';
         $tarif_data['kode_master_tarif_detail'] = ($row_data->kode_master_tarif_detail)?$row_data->kode_master_tarif_detail:'';
         $tarif_data['bill_rs'] = ($row_data->bill_rs)?$row_data->bill_rs:'';
-        $tarif_data['bill_dr1'] = ($row_data->bill_dr1)?$row_data->bill_dr1:'';
+
+        // rujukan internal
+        if($jeniskunjunganbpjs == 2){
+            $tarif_data['bill_dr1'] = $row_data->bill_dr1 / 2;
+        }else{
+            $tarif_data['bill_dr1'] = ($row_data->bill_dr1)?$row_data->bill_dr1:'';
+        }
+        
         $tarif_data['pendapatan_rs'] = ($row_data->pendapatan_rs)?$row_data->pendapatan_rs:'';
         $tarif_data['created_date'] = date('Y-m-d H:i:s');
         $tarif_data['created_by'] = $CI->session->userdata('user')->fullname;

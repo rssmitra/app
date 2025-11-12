@@ -31,6 +31,7 @@ $(document).on('mousedown', '#toggle-pin-verif', function() {
   $('#input_pin_verif').attr('type', 'text');
   $('#icon-eye-pin').removeClass('fa-eye').addClass('fa-eye-slash');
 });
+
 $(document).on('mouseup mouseleave', '#toggle-pin-verif', function() {
   $('#input_pin_verif').attr('type', 'password');
   $('#icon-eye-pin').removeClass('fa-eye-slash').addClass('fa-eye');
@@ -315,6 +316,8 @@ $(document).ready(function() {
 
   $('#jenis_form_catatan').change(function () {
       if ($(this).val()) {
+          // set text jenis form
+          $('#txt_jenis_form').html('Form No. '+$(this).val());
           $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val() + '/'+$('#no_registrasi').val(), '', function (data) {
             $('#editor_html_pengkajian').html(data.html);
             $('#cppt_id').val('');
@@ -555,8 +558,9 @@ function showModalTTD()
 
 
     <hr>
-
+    <span id="txt_jenis_form" style="float: right">Form No. </span>
     <div id="editor_html_pengkajian"><?php echo $template?></div>
+
     <input type="hidden" name="catatan_pengkajian" value="" />
 					
     <div class="center">

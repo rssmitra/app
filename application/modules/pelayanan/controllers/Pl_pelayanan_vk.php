@@ -101,7 +101,9 @@ class Pl_pelayanan_vk extends MX_Controller {
         $data['id'] = $id;
         $data['kode_klas'] = $kode_klas;
         $data['kode_profit'] = 2000;
+        $data['type'] = 'vk';
         $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_bagian'] = '030501'; // default kode bagian VK
         // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;

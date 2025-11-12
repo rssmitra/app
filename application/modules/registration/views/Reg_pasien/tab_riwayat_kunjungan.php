@@ -139,6 +139,11 @@
 
   }
 
+  function show_referensi_kunjungan(no_kunjungan='') {
+    var url = 'registration/Reg_pasien/show_referensi_kunjungan?no_kunjungan='+no_kunjungan;
+    show_modal_small(url, 'Referensi Kunjungan Rujukan Internal');
+  }
+
 
 </script>
 

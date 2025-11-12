@@ -167,10 +167,6 @@ jQuery(function($) {
   width: 250px;
   box-sizing: border-box;
 }
-td {
-  padding: 6px 0px;  /* atas-bawah 6px, kiri-kanan 4px */
-  vertical-align: top;
-}
 </style>
 <br>
 <div style="text-align: center; font-size: 14px;"><b>DIISI OLEH DOKTER YANG MERAWAT</b></div>

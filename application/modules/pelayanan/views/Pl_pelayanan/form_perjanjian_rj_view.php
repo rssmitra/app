@@ -272,6 +272,7 @@ function createSuratKontrol(){
 
           <!-- hidden form  -->
           <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
+          <input type="hidden" name="no_kunjungan" value="<?php echo $_GET['no_kunjungan']?>" id="no_kunjungan">
           <input type="hidden" name="no_ktp" value="<?php echo $value->no_ktp?>" id="no_ktp">
           <input type="hidden" name="no_kartu_bpjs" value="<?php echo $value->no_kartu_bpjs?>" id="no_kartu_bpjs">
           <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">

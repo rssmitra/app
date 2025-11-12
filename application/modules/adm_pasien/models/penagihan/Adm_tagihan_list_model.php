@@ -129,7 +129,7 @@ class Adm_tagihan_list_model extends CI_Model {
 	}
 
 	public function get_invoice_detail($id_tagih, $kode_tc_trans_kasir=''){
-		$this->db->select('a.kode_tc_trans_kasir, a.no_mr, a.no_registrasi, a.nama_pasien, a.id_tc_tagih, CAST(a.jumlah_dijamin as INT) as jumlah_tagih_int, CAST(a.jumlah_tagih as INT) as beban_pasien_int, b.no_invoice_tagih, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1, b.tr_yg_diskon as rp_diskon, b.diskon, e.tgl_jam_masuk, a.penyesuaian');
+		$this->db->select('a.kode_tc_trans_kasir, a.no_mr, a.no_registrasi, a.nama_pasien, a.id_tc_tagih, CAST(a.jumlah_dijamin as INT) as jumlah_tagih_int, CAST(a.jumlah_tagih as INT) as beban_pasien_int, b.no_invoice_tagih, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1, b.tr_yg_diskon as rp_diskon, b.diskon, e.tgl_jam_keluar, a.penyesuaian, c.tgl_jam, c.seri_kuitansi');
 		$this->db->from('tc_tagih_det a');
 		$this->db->join('tc_tagih b', 'b.id_tc_tagih=a.id_tc_tagih','left');
 		$this->db->join('tc_trans_kasir c', 'c.no_registrasi=a.no_registrasi','left');
@@ -139,7 +139,7 @@ class Adm_tagihan_list_model extends CI_Model {
 		if($kode_tc_trans_kasir != ''){
 			$this->db->where('a.kode_tc_trans_kasir',$kode_tc_trans_kasir);
 		}
-    	$this->db->group_by('a.kode_tc_trans_kasir,	a.no_mr,	a.no_registrasi,	a.nama_pasien,	a.id_tc_tagih,	CAST ( a.jumlah_dijamin AS INT ),	CAST ( a.jumlah_tagih AS INT ),	b.no_invoice_tagih,	b.tgl_tagih,	b.tgl_jt_tempo,	b.nama_tertagih,	d.alamat,	d.telpon1,	b.tr_yg_diskon,	b.diskon,	e.tgl_jam_masuk, a.penyesuaian ');
+    	$this->db->group_by('a.kode_tc_trans_kasir,	a.no_mr,	a.no_registrasi,	a.nama_pasien,	a.id_tc_tagih,	CAST ( a.jumlah_dijamin AS INT ),	CAST ( a.jumlah_tagih AS INT ),	b.no_invoice_tagih,	b.tgl_tagih,	b.tgl_jt_tempo,	b.nama_tertagih,	d.alamat,	d.telpon1,	b.tr_yg_diskon,	b.diskon,	e.tgl_jam_keluar, a.penyesuaian, c.tgl_jam, c.seri_kuitansi');
 		$this->db->order_by('kode_tc_trans_kasir', 'ASC');
 		$query = $this->db->get()->result();
 		// print_r($this->db->last_query());die;

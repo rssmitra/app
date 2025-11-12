@@ -111,12 +111,12 @@ $(document).ready(function(){
         }       
     });  
 
-
+    // by default unit farmasi, unit dapat mencari stok yang ada di farmasi
     $('#inputKeyBarang').typeahead({
       source: function (query, result) {
           $.ajax({
               url: "templates/References/getItemBarangByUnit",
-              data: { keyword:query, flag: $("input[name='flag_gudang']:checked"). val(), unit: $('#dari_unit').val() },            
+              data: { keyword:query, flag: $("input[name='flag_gudang']:checked"). val(), unit: '060101' },            
               dataType: "json",
               type: "POST",
               success: function (response) {
@@ -178,6 +178,11 @@ function getDetailBarang(kode_brg){
   $.getJSON('Templates/References/getItemBarangDetailByUnit?kode_brg=' + kode_brg + '&flag='+$("input[name='flag_gudang']:checked").val()+'&from_unit='+$('#dari_unit').val()+'', '', function (response) {
       // detail barang
       var dt_brg = response.data;
+      if(dt_brg == 0){
+        $('#stock_card').val( 0 );
+      }else{
+        $('#stock_card').val( 1 );
+      }
       $('#kode_brg_hidden').val(kode_brg);
       $('#nama_brg_hidden').val(dt_brg.nama_brg);
       $('#satuan_brg_hidden').val(dt_brg.satuan_kecil);
@@ -241,6 +246,7 @@ function insert_cart_log(){
     is_bhp : $('input[name=is_bhp]:checked').val(),
     flag_form : 'permintaan_stok_unit',
     type_tbl : $('#type_tbl').val(),
+    stock_card : $('#stock_card').val(),
 
   };
   $.ajax({ //Process the form using $.ajax()
@@ -366,8 +372,9 @@ th, td {
 
           <input class="form-control" type="hidden" name="id" id="id" value="<?php echo isset($value->id_tc_permintaan_inst)?$value->id_tc_permintaan_inst:''?>">
           <input class="form-control" type="hidden" name="id_tc_permintaan_inst_det" id="id_tc_permintaan_inst_det" value="<?php echo isset($value->id_tc_permintaan_inst_det)?$value->id_tc_permintaan_inst_det:''?>">
-
+          
           <input class="form-control" type="hidden" name="type_tbl" id="type_tbl" value="<?php echo isset($value->id_tc_permintaan_inst) ? 'tc_permintaan_inst' : 'cart_log'?>">
+          <input class="form-control" type="hidden" name="stock_card" id="stock_card" value="">
           
           <div class="col-md-9">
             <a href="#" onclick="getMenu('purchasing/pendistribusian/Permintaan_stok_unit')" class="btn btn-xs btn-default">

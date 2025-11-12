@@ -217,10 +217,11 @@ class Permintaan_stok_unit_model extends CI_Model {
 
 	public function get_cart_data(){
 
+		$mt_barang = (isset($_GET['flag']) && $_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
+		$table = (isset($_GET['flag']) && $_GET['flag']=='non_medis')?$this->table_nm:$this->table;
+		$join_3 = (isset($_GET['flag']) && $_GET['flag']=='non_medis')?'mt_depo_stok_nm':'mt_depo_stok';
+		
 		if(isset($_GET['id']) && $_GET['id'] != ''){
-			$mt_barang = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
-			$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
-			$join_3 = ($_GET['flag']=='non_medis')?'mt_depo_stok_nm':'mt_depo_stok';
 
 			$this->db->select('a.id_tc_permintaan_inst_det, e.kode_bagian_minta as kode_bagian, jumlah_permintaan as qty, jumlah_penerimaan , a.kode_brg, c.nama_brg, c.content as rasio, c.satuan_kecil as satuan, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.nama_bagian, CAST(c.harga_beli as INT) as harga, CAST(e.catatan as NVARCHAR(1000)) as catatan, e.tgl_acc, e.acc_by, e.status_acc, e.no_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, a.is_bhp, a.keterangan_permintaan, a.tgl_kirim, a.jumlah_kirim, a.petugas_kirim, '."'tc_permintaan_inst'".' as type_tbl');
 			$this->db->from(''.$table.'_det a');
@@ -235,8 +236,9 @@ class Permintaan_stok_unit_model extends CI_Model {
 			$cart_data = $this->db->get()->result();
 			return $cart_data;
 		}else{
-			$this->db->select('kode_brg, nama_brg, qty, satuan, cast(harga as int) as harga, flag, nama_bagian, qtyBefore as jumlah_stok_sebelumnya, reff_kode, retur_type, is_bhp, is_restock, tc_permintaan_inst_cart_log.kode_bagian, keterangan as keterangan_permintaan, id as id_tc_permintaan_inst_det, '."'cart_log'".' as type_tbl');
+			$this->db->select('tc_permintaan_inst_cart_log.kode_brg, brg.nama_brg, qty, brg.satuan_kecil as satuan, cast(brg.harga_beli as int) as harga, flag, nama_bagian, qtyBefore as jumlah_stok_sebelumnya, reff_kode, retur_type, is_bhp, is_restock, tc_permintaan_inst_cart_log.kode_bagian, keterangan as keterangan_permintaan, id as id_tc_permintaan_inst_det, '."'cart_log'".' as type_tbl');
 			$this->db->from('tc_permintaan_inst_cart_log');
+			$this->db->join($mt_barang. ' as brg', 'brg.kode_brg=tc_permintaan_inst_cart_log.kode_brg');
 			$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_permintaan_inst_cart_log.kode_bagian');
 			$this->db->where('user_id_session', $this->session->userdata('user')->user_id);
 			$this->db->where('flag_form', 'permintaan_stok_unit');

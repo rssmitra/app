@@ -19,6 +19,8 @@ class Permintaan_stok_unit extends MX_Controller {
         $this->load->model('purchasing/pendistribusian/Permintaan_stok_unit_model', 'Permintaan_stok_unit');
         /*enable profiler*/
         $this->output->enable_profiler(false);
+        // load library inventory
+        $this->load->library('Inventory_lib');
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
@@ -38,6 +40,7 @@ class Permintaan_stok_unit extends MX_Controller {
     public function form($id='')
     {
         $flag = isset($_GET['flag'])?$_GET['flag']:'medis';
+
         $data['flag_type'] = $flag; 
         /*if id is not null then will show form edit*/
         if( $id != '' ){
@@ -153,7 +156,7 @@ class Permintaan_stok_unit extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
+        
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
@@ -249,6 +252,7 @@ class Permintaan_stok_unit extends MX_Controller {
         $total = $_POST['qty'] * (float)$_POST['harga'];
         $kode_bagian = isset($_POST['dari_unit'])?$_POST['dari_unit']:'';
         $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
+        $tc_kartu_stok = ($_POST['flag']=='medis')?'tc_kartu_stok':'tc_kartu_stok_nm';
 
         if($_POST['id_tc_permintaan_inst'] !=''){
 
@@ -264,7 +268,7 @@ class Permintaan_stok_unit extends MX_Controller {
             );
             $dt_detail['created_date'] = date('Y-m-d H:i:s');
             $dt_detail['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-            // echo "<pre>";print_r($dt_detail);die;
+            
             if($_POST['id_tc_permintaan_inst_det'] != ''){
                 $this->Permintaan_stok_unit->update($table.'_det', ['id_tc_permintaan_inst_det' => $_POST['id_tc_permintaan_inst_det']], $dt_detail);
                 $id_permintaan_inst_det = $_POST['id_tc_permintaan_inst_det'];
@@ -293,6 +297,14 @@ class Permintaan_stok_unit extends MX_Controller {
             );
             // print_r($dataexc);die;
             $this->db->insert('tc_permintaan_inst_cart_log', $dataexc);
+
+            if($_POST['stock_card'] == 0){
+                // create kartu stok
+                $id_kartu = $this->inventory_lib->write_kartu_stok(['table' => $tc_kartu_stok, 'kode_brg' => $_POST['kode_brg'], 'last_stok' => 0, 'new_stok' => 0, 'kode_bagian' => $kode_bagian, 'petugas' => $this->session->userdata('user')->fullname ], 0, 'pemasukan', 9);
+                // create depo stok
+                $this->inventory_lib->create_depo_stok(['id_kartu' => $id_kartu, 'kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $kode_bagian, 'flag' => $_POST['flag']]);
+            }
+            
             $this->db->trans_commit();
         }
 
@@ -469,7 +481,7 @@ class Permintaan_stok_unit extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Permintaan_stok_unit->get_cart_data();
-        // echo '<pre>';print_r($list);die;
+        // echo '<pre>';print_r($this->db->last_query());die;
         
         $data = array();
         $no=0;

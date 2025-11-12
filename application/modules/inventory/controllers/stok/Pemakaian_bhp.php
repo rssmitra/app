@@ -396,7 +396,7 @@ class Pemakaian_bhp extends MX_Controller {
         {                       
             $this->db->trans_begin();
             
-            $kode_bagian = $_POST['kode_bagian'];
+            $kode_bagian = $_POST['kode_bagian_depo'];
             $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $kode_bagian ) );
             // kurang stok depo
             $this->stok_barang->stock_process_depo($_POST['kode_brg'], $_POST['pl_jumlah_obat'], $kode_bagian, 7 ," ".$nama_bagian." ", 'reduce', $kode_bagian, $_POST['no_kunjungan']);

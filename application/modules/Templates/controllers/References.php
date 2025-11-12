@@ -2296,7 +2296,12 @@ class References extends MX_Controller {
 		$this->db->where('a.kode_bagian', $_GET['from_unit']);
 		$result = $this->db->get()->row();
 
-		// echo $this->db->last_query();
+		// echo "<pre>";print_r($this->db->last_query());die;
+		if(!$result){
+			echo json_encode( array('data' => 0, 'html' => '<div class="alert alert-danger"><b>Pemberitahuan!</b><br>Kartu Stok belum tersedia</div>' ) );
+			return;
+		}
+
 		$html = '';
 		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;
 		$warning_stok = ($result->jml_sat_kcl <= 0) ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '' ;

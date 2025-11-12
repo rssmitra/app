@@ -637,6 +637,7 @@ class Reg_klinik extends MX_Controller {
             $kode_dokter = $this->regex->_genRegex($_POST['reg_dokter_rajal'],'RGXINT');
             $kode_bagian_masuk = $this->regex->_genRegex($_POST['reg_klinik_rajal'],'RGXQSL');
             $jd_id =  $this->input->post('jd_id');
+            $id_tc_pesanan = ($this->input->post('id_tc_pesanan')) ? $this->input->post('id_tc_pesanan') : NULL;
 
             if(empty($query)){
                 
@@ -666,10 +667,16 @@ class Reg_klinik extends MX_Controller {
                 $this->Reg_klinik->save('pl_tc_poli', $datapoli);
                 $this->db->trans_commit();
 
+                if($id_tc_pesanan != NULL){
+                    // update tc_registrasi
+                    $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['id_tc_pesanan' => $id_tc_pesanan ]);
+                    $this->db->trans_commit();
+                }
+
             }else{
                 $no_registrasi = $query->no_registrasi;
                 // update tc_registrasi
-                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['jd_id' => $_POST['jd_id'], 'kode_bagian_masuk' => $_POST['reg_klinik_rajal'], 'kode_dokter' => $_POST['reg_dokter_rajal'], 'tgl_jam_masuk' => $tgl_registrasi]);
+                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['jd_id' => $_POST['jd_id'], 'kode_bagian_masuk' => $_POST['reg_klinik_rajal'], 'kode_dokter' => $_POST['reg_dokter_rajal'], 'tgl_jam_masuk' => $tgl_registrasi, 'id_tc_pesanan' => $id_tc_pesanan ]);
                 $this->db->trans_commit();
             }
 

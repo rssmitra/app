@@ -913,7 +913,7 @@ function show_icare() {
                         <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><span class="menu-text"> Billing Pasien</span></a><b class="arrow"></b>
                     </li>
                     <li class="hover" style="text-align: left">
-                      <a href="#" data-toggle="tab"  data-id="<?php echo $id?>" data-url="registration/perjanjian_rj/get_by_mr/<?php echo $value->no_mr?>" id="tabs_perjanjian" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><span class="menu-text"> Riwayat Perjanjian </span></a><b class="arrow"></b>
+                      <a href="#" data-toggle="tab"  data-id="<?php echo $id?>" data-url="registration/perjanjian_rj/get_by_mr_ontab/<?php echo $value->no_mr?>" id="tabs_perjanjian" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id')+'?return=html', 'section_rekam_medis')"><span class="menu-text"> Riwayat Perjanjian </span></a><b class="arrow"></b>
                     </li>
 
                     <!-- <li class="hover" style="text-align: left">

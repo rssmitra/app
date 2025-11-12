@@ -498,6 +498,7 @@ class Process_entry_resep extends MX_Controller {
                         'kode_pesan_resep' => $kode_pesan_resep,
                         'no_sep' => isset($_POST['no_sep'])?$_POST['no_sep']:'',
                         'no_kunjungan' => isset($_POST['no_kunjungan'])?$_POST['no_kunjungan']:'',
+                        'kode_trans_far' => isset($ID)?$ID:'',
                     ];
                 }
                 $this->db->insert_batch('fr_tc_resep_iter', $iter);

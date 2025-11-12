@@ -41,8 +41,17 @@ class Perjanjian_rj extends MX_Controller {
             'breadcrumbs' => $this->breadcrumbs->show(),
             'no_mr' => $no_mr
         );
-        /*load view index*/
         $this->load->view('Perjanjian_rj/index_by_mr', $data);
+    }
+
+    public function get_by_mr_ontab($no_mr) { 
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'no_mr' => $no_mr
+        );
+        $this->load->view('Perjanjian_rj/index_by_mr_ontab', $data);
     }
     
     public function get_data()
@@ -59,7 +68,7 @@ class Perjanjian_rj extends MX_Controller {
                 $no++;
                 $row = array();
                 $html = '';
-                $jeniskunjungan = ($row_list->jeniskunjunganjkn == null) ? 'Kontrol Rutin' : $row_list->namajeniskunjungan;
+                $jeniskunjungan = $row_list->namajeniskunjungan;
 
                 if( isset($_GET['no_mr']) AND $_GET['no_mr'] != '' ){
                     // $html .= '<li><a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">Daftarkan Pasien</a></li>';
@@ -67,12 +76,7 @@ class Perjanjian_rj extends MX_Controller {
                     $html .= '<li><a href="#" onclick="getMenu('."'registration/Reg_klinik?idp=".$row_list->id_tc_pesanan."&kode_dokter=".$row_list->kode_dokter."&poli=".$row_list->no_poli."&kode_perjanjian=".$row_list->kode_perjanjian."&no_mr=".$row_list->no_mr."'".')">Daftarkan Pasien</a></li>';
                 }
                 
-                $row[] = '<div class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_pesanan.'"/>
-                                <span class="lbl"></span>
-                            </label>
-                          </div>';
+                $row[] = '<div class="center">'.$no.'</div>';
                 if(isset($_GET['no_mr'])){
                     $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="getMenuTabs('."'registration/Reg_pasien/surat_control?id_tc_pesanan=".$row_list->id_tc_pesanan."&jd_id=".$row_list->jd_id."'".', '."'tabs_form_pelayanan'".')">Cetak Surat Kontrol</a></li>' : '';
                 }else{

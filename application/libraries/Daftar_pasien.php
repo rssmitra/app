@@ -20,27 +20,27 @@ final Class Daftar_pasien {
         $stat_pasien = $CI->master->check_pasien_lama_baru($no_mr); 
 
         /*save logs*/
-    	  $data = array(
-          'no_registrasi' => $no_registrasi,
-          'no_mr' => $no_mr,
-          'kode_perusahaan' => $kode_perusahaan,
-          'kode_kelompok' => $kode_kelompok,
-          'kode_dokter' => $kode_dokter,
-          'tgl_jam_masuk' => ($tgl_registrasi == '') ? date('Y-m-d H:i:s') : $tgl_registrasi,
-          'stat_pasien' => $stat_pasien,
-          'kode_bagian_masuk' => $kode_bagian_masuk,
-          'status_registrasi' => 0,
-          'umur' => $umur_saat_pelayanan,
-          'no_sep' => $no_sep,
-          'sirs_v1' => 1,
-          'jd_id' => $jd_id,
-          'kode_faskes' => $kode_faskes,
-          'norujukan' => $nomorrujukan,
-          'jeniskunjunganbpjs' => $jeniskunjunganbpjs,
-          'less_then_min_visit' => ($_POST['less_then_min_visit'])?$_POST['less_then_min_visit']:'',
-          'no_induk' => isset($CI->session->userdata('user')->user_id)?$CI->session->userdata('user')->user_id:0,
-          'created_date' => date('Y-m-d H:i:s'),
-          'updated_date' => date('Y-m-d H:i:s'),
+        $data = array(
+            'no_registrasi' => $no_registrasi,
+            'no_mr' => $no_mr,
+            'kode_perusahaan' => $kode_perusahaan,
+            'kode_kelompok' => $kode_kelompok,
+            'kode_dokter' => $kode_dokter,
+            'tgl_jam_masuk' => ($tgl_registrasi == '') ? date('Y-m-d H:i:s') : $tgl_registrasi,
+            'stat_pasien' => $stat_pasien,
+            'kode_bagian_masuk' => $kode_bagian_masuk,
+            'status_registrasi' => 0,
+            'umur' => $umur_saat_pelayanan,
+            'no_sep' => $no_sep,
+            'sirs_v1' => 1,
+            'jd_id' => $jd_id,
+            'kode_faskes' => $kode_faskes,
+            'norujukan' => $nomorrujukan,
+            'jeniskunjunganbpjs' => $jeniskunjunganbpjs,
+            'less_then_min_visit' => isset($_POST['less_then_min_visit'])?$_POST['less_then_min_visit']:'',
+            'no_induk' => isset($CI->session->userdata('user')->user_id)?$CI->session->userdata('user')->user_id:0,
+            'created_date' => date('Y-m-d H:i:s'),
+            'updated_date' => date('Y-m-d H:i:s'),
         );
         
         /*print_r($data);die;*/
