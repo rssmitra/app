@@ -182,7 +182,7 @@ th, td {
       </tbody>
     </table>
     <p>
-      Berikut ini kami lampirkan dokumen pendukung klaim sesuai ketentuan pihak asuransi. Untuk proses pembayaran, mohon agar dapat ditransfer ke rekening berikut dengan menyertakan no incoice kwitansi kami, dan bukti pembayaran diharapkan emai ke admpasienrssm@gmail.com 
+      Berikut ini kami lampirkan dokumen pendukung klaim sesuai ketentuan pihak asuransi. Untuk proses pembayaran, mohon agar dapat ditransfer ke rekening berikut dengan menyertakan nomor/kwitansi kami, dan bukti pembayaran diharapkan emai ke admpasienrssm@gmail.com 
       <table style="font-weight: bold" class="table">
         <tr>
           <td>Bank</td>
