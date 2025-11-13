@@ -167,7 +167,7 @@ class Etiket_obat_model extends CI_Model {
 		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN a.kd_tr_resep ELSE a.id_tc_far_racikan END as relation_id", false);
 		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN 'biasa' ELSE 'racikan' END as flag_resep", false);
 		$this->db->select('a.kd_tr_resep, a.kode_trans_far, a.kode_brg, a.id_tc_far_racikan, 
-		a.jumlah_tebus, a.jumlah_retur, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, a.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, e.created_by, e.no_resep, f.nama_bagian, c.satuan_kecil as satuan_brg, a.harga_r as jasa_r, e.kode_pesan_resep, b.resep_ditangguhkan, c.harga_beli as harga_beli_master, e.resep_diantar, g.no_sep');
+		a.jumlah_tebus, a.jumlah_retur, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, a.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, e.created_by, e.no_resep, f.nama_bagian, c.satuan_kecil as satuan_brg, a.harga_r as jasa_r, e.kode_pesan_resep, b.resep_ditangguhkan, c.harga_beli as harga_beli_master, e.resep_diantar, g.no_sep, e.id_iter');
 		$this->db->select('(SELECT TOP 1 diagnosa_akhir FROM th_riwayat_pasien WHERE no_kunjungan = e.no_kunjungan ) AS diagnosa_akhir');
 		$this->db->from('fr_tc_far_detail a');
 		$this->db->join('fr_tc_far_detail_log b','(a.kd_tr_resep=b.relation_id)','left');

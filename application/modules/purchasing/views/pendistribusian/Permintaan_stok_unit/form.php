@@ -6,7 +6,7 @@
 <script>
 jQuery(function($) {
 
-  $('#flag_cart').val($("input[name='flag_gudang']:checked"). val());
+  $('#flag_cart').val($("input[name='flag_gudang']:checked").val());
 
   $('.date-picker').datepicker({
     autoclose: true,
@@ -112,11 +112,12 @@ $(document).ready(function(){
     });  
 
     // by default unit farmasi, unit dapat mencari stok yang ada di farmasi
+    
     $('#inputKeyBarang').typeahead({
       source: function (query, result) {
           $.ajax({
               url: "templates/References/getItemBarangByUnit",
-              data: { keyword:query, flag: $("input[name='flag_gudang']:checked"). val(), unit: '060101' },            
+              data: { keyword:query, flag: $("input[name='flag_gudang']:checked").val(), unit: '060101' },            
               dataType: "json",
               type: "POST",
               success: function (response) {
@@ -154,7 +155,6 @@ $(document).ready(function(){
 
     $('input[name=flag_gudang]').change(function(){
       var value = $( 'input[name=flag_gudang]:checked' ).val();
-      // Update flag_cart sesuai flag_gudang
       $('#flag_cart').val(value);
     });
 
@@ -262,7 +262,8 @@ function insert_cart_log(){
         var jsonResponse = JSON.parse(data);
 
         if(jsonResponse.status === 200){
-          cartData.ajax.reload();
+          
+          cartData.ajax.url("purchasing/pendistribusian/Permintaan_stok_unit/get_detail_cart?flag="+jsonResponse.flag+"&id="+$('#id').val()).load();
           // reset form input
           $('#inputKeyBarang').val('');         
           $('#kode_brg_hidden').val('');         

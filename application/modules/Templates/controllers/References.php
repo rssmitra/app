@@ -2001,6 +2001,7 @@ class References extends MX_Controller {
 	{
 		// print_r($_POST);die;
 		$table = ($_POST['flag']=='non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
+		$kode_bagian = ($_POST['flag']=='non_medis') ? '070101' : $_POST['unit'] ;
 		$join = ($_POST['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
 
 		$this->db->from($table.' as a');
@@ -2008,7 +2009,7 @@ class References extends MX_Controller {
 		$this->db->like('b.kode_brg', $_POST['keyword']);
 		$this->db->or_like('b.nama_brg', $_POST['keyword']);
 		$this->db->where('a.is_active', 1);
-		$this->db->where('a.kode_bagian', $_POST['unit']);
+		$this->db->where('a.kode_bagian', $kode_bagian);
 		$result = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
 		$arrResult = [];

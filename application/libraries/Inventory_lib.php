@@ -90,7 +90,12 @@
         
         $t_depo_stok = ($params['flag']=='medis') ? 'mt_depo_stok' : 'mt_depo_stok_nm' ;
 
+        $kode_depo_stok = $CI->regex->_genRegex($CI->master->get_max_number($t_depo_stok, 'kode_depo_stok'),'RGXINT');
+
         $dataexc=array();
+        if($params['flag']=='non_medis'){
+            $dataexc['kode_depo_stok'] = $kode_depo_stok;
+        }
         $dataexc['kode_brg'] = $params['kode_brg'];
         $dataexc['jml_sat_kcl'] = 0;
         $dataexc['stok_minimum'] = 0;

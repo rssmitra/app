@@ -161,7 +161,6 @@ class Pengambilan_resep_iter extends MX_Controller {
             // print_r($prev_dt_detail);die;
 
             if( $cek_existing == false ){
-
                 $kode_trans_far = $this->master->get_max_number('fr_tc_far', 'kode_trans_far', array());
                 /*update existing*/
                 $data_farmasi['iter'] = 1;
@@ -180,6 +179,7 @@ class Pengambilan_resep_iter extends MX_Controller {
             // $this->db->where('kode_trans_far', $kode_trans_far)->delete('fr_tc_far_detail_log');
 
             $kd_tr_resep = $this->master->get_max_number('fr_tc_far_detail', 'kd_tr_resep');
+
             foreach ($_POST['selected_id'] as $key => $value) {
                 # code...
                 $kd_tr_resep++;
@@ -193,8 +193,8 @@ class Pengambilan_resep_iter extends MX_Controller {
 
                 $data_farmasi_detail[] = array(
                     'id_iter' => $_POST['id_iter'],
-                    'jumlah_pesan' => $isset_jml_tebus,
-                    'jumlah_tebus' => $isset_jml_tebus,
+                    'jumlah_pesan' => 0,
+                    'jumlah_tebus' => 0,
                     'sisa' => 0,
                     'kode_brg' => $this->regex->_genRegex($_POST['kode_brg_'.$value.''], 'RGXQSL'),
                     'harga_beli' => isset($ex_dt->harga_jual_satuan)?$ex_dt->harga_jual_satuan:0,
@@ -207,7 +207,7 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'biaya_tebus' => $biaya_tebus,
                     'tgl_input' => date('Y-m-d H:i:s'),
                     'urgensi' => $this->regex->_genRegex('biasa', 'RGXQSL'),
-                    'jumlah_obat_23' => 0,
+                    'jumlah_obat_23' => $isset_jml_tebus,
                     'prb_ditangguhkan' => 0,
                     'resep_ditangguhkan' => 0,
                     'kd_tr_resep' => $kd_tr_resep,
@@ -215,7 +215,7 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'created_date' => date('Y-m-d H:i:s'),
                     'created_by' => json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                 );
-
+                
                 /*params log*/
                 $data_log[] = array(
                     'id_iter' => $_POST['id_iter'],
@@ -226,8 +226,9 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'kode_pesan_resep' => 0,
                     'nama_brg' => $ex_dt->nama_brg,
                     'satuan_kecil' => $ex_dt->satuan_kecil,
-                    'jumlah_pesan' => $isset_jml_tebus,
-                    'jumlah_tebus' => $isset_jml_tebus,
+                    'jumlah_pesan' =>0,
+                    'jumlah_tebus' =>0,
+                    'jumlah_obat_23' => $isset_jml_tebus,
                     'sisa' => 0,
                     'status_tebus' => 1,
                     'harga_jual_satuan' => isset($ex_dt->harga_jual_satuan)?$ex_dt->harga_jual_satuan:0,
@@ -241,6 +242,8 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'satuan_obat' => $this->regex->_genRegex($ex_dt->satuan_obat, 'RGXQSL'),
                     'anjuran_pakai' => $this->regex->_genRegex($ex_dt->anjuran_pakai, 'RGXQSL'),
                 );
+
+                
 
                 /*params log prb*/
                 $data_log_prb[] = array(
@@ -259,15 +262,25 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'kode_trans_far' => $kode_trans_far,
                     'kd_tr_resep' => $this->regex->_genRegex($kd_tr_resep, 'RGXQSL'),
                 );
+                
 
             }
 
-            // echo '<pre>';print_r($data_farmasi_detail);die;
-            // echo '<pre>';print_r($data_log);die;
+            
+            $this->db->trans_begin();
 
             $this->db->insert_batch('fr_tc_far_detail', $data_farmasi_detail);
+            $this->db->trans_commit();
+
             $this->db->insert_batch('fr_tc_far_detail_log', $data_log);
-            $this->db->insert_batch('fr_tc_far_detail_log_prb', $data_log);
+            $this->db->trans_commit();
+
+            $this->db->insert_batch('fr_tc_far_detail_log_prb', $data_log_prb);
+            $this->db->trans_commit();
+
+            // echo '<pre>';print_r($data_farmasi_detail);die;
+            // echo '<pre>';print_r($data_log_prb);die;
+
             foreach ($data_log as $k => $v) {
                 // potong stok biasa
                 $this->stok_barang->stock_process($v['kode_brg'], $v['jumlah_tebus'], '060101', 14, " Transaksi Iter : ".$v['kode_trans_far']."", 'reduce');

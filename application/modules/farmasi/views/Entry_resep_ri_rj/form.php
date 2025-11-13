@@ -1317,11 +1317,11 @@ $('#lampiran_lab').click(function (e) {
             <br>
             <i><span>Apakah ada Hasil Laboratorium yang dilampirkan untuk kebutuhan Klaim?</span><br></i>
             <label>
-              <input type="checkbox" class="ace" name="lampiran_lab" id="lampiran_lab" value="1" <?php echo ($trans_farmasi->lampiran_lab_kode_penunjang > 0) ? 'checked' : '' ?> >
+              <input type="checkbox" class="ace" name="lampiran_lab" id="lampiran_lab" value="1" <?php echo (isset($trans_farmasi->lampiran_lab_kode_penunjang) && $trans_farmasi->lampiran_lab_kode_penunjang > 0) ? 'checked' : '' ?> >
               <span class="lbl" > &nbsp; Ya</span>
             </label>
             <br>
-            <div id="hasil_penunjang_lab" <?php echo ($trans_farmasi->lampiran_lab_kode_penunjang > 0) ? '' : 'style="display: none"' ?> >
+            <div id="hasil_penunjang_lab" <?php echo (isset($trans_farmasi->lampiran_lab_kode_penunjang) && $trans_farmasi->lampiran_lab_kode_penunjang > 0) ? '' : 'style="display: none"' ?> >
               <span style="font-style: italic">Silahkan pilih (ceklis) hasil laboratorium yang akan dilampirkan!</span>
               <table class="table table-bordered table-hover" style="width: 80% !important">
                 <thead>
@@ -1375,7 +1375,7 @@ $('#lampiran_lab').click(function (e) {
             <br>
             <i><span>Untuk kebutuhan lampiran Dokumen Klaim, mohon dilampirkan Memo Intoleran untuk pengambilan Resep Candesartan</span><br></i>
             <label>
-                <input type="checkbox" class="ace" name="lampiran_memo_inhibitor" id="lampiran_memo_inhibitor" value="1" <?php echo ($trans_farmasi->lampiran_memo_inhibitor == 1) ? 'checked' : '' ?>>
+                <input type="checkbox" class="ace" name="lampiran_memo_inhibitor" id="lampiran_memo_inhibitor" value="1" <?php echo (isset($trans_farmasi->lampiran_memo_inhibitor) && $trans_farmasi->lampiran_memo_inhibitor == 1) ? 'checked' : '' ?>>
                 <span class="lbl" > &nbsp; Lampirkan Memo</span>
               </label>
           </div>

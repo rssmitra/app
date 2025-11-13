@@ -14,7 +14,7 @@
       <div class="col-xs-<?php echo (count($resep_kronis) > 0) ? 6 : 12 ?>">
           <center>
             <span style="font-size: 12px;"><strong><u>TRANSAKSI FARMASI</u></strong><br>
-            No. <?php echo $kode_trans_far; ?> - <?php echo strtoupper($resep[0]['no_resep'])?>
+            No. <?php echo $kode_trans_far; ?> - <?php echo strtoupper($resep[0]['no_resep'])?>.<?php echo strtoupper($resep[0]['id_iter'])?>
             </span>
             <div class="pull-right">
               <button onclick="PopupCenter('farmasi/Process_entry_resep/nota_farmasi/<?php echo $kode_trans_far; ?>')" class="btn btn-xs btn-warning" title="Nota Farmasi">
