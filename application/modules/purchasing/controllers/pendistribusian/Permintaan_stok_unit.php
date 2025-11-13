@@ -308,7 +308,7 @@ class Permintaan_stok_unit extends MX_Controller {
             $this->db->trans_commit();
         }
 
-        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'kode_brg' => $_POST['kode_brg'], 'nama_brg' => $_POST['nama_brg']));
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'kode_brg' => $_POST['kode_brg'], 'nama_brg' => $_POST['nama_brg'], 'id' => ''));
 
     }
 

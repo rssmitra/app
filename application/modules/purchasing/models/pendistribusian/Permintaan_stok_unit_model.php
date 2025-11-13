@@ -193,7 +193,7 @@ class Permintaan_stok_unit_model extends CI_Model {
 		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian, CAST(c.harga_beli as INT), CAST(e.catatan as NVARCHAR(1000)), e.no_acc, e.tgl_acc, e.acc_by, e.status_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, acc_note, status_verif, keterangan_verif, a.is_bhp, a.keterangan_permintaan, a.jml_acc_atasan, h.nama_brg, a.rev_kode_brg, a.rev_qty, a.jumlah_kirim, a.petugas_kirim, a.petugas_terima, a.jumlah_penerimaan');
 		$this->db->order_by('c.nama_brg ASC');
 		$query = $this->db->get()->result();
-		// print_r($this->db->last_query());die;
+		print_r($this->db->last_query());die;
 		return $query;
 	}
 

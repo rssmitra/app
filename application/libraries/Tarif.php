@@ -428,7 +428,11 @@ final class Tarif extends AvObjects {
 
         // rujukan internal
         if($jeniskunjunganbpjs == 2){
-            $tarif_data['bill_dr1'] = $row_data->bill_dr1 / 2;
+            if($data['kode_bagian'] != '013401'){
+                $tarif_data['bill_dr1'] = $row_data->bill_dr1 / 2;
+            }else{
+                $tarif_data['bill_dr1'] = ($row_data->bill_dr1)?$row_data->bill_dr1:'';
+            }
         }else{
             $tarif_data['bill_dr1'] = ($row_data->bill_dr1)?$row_data->bill_dr1:'';
         }

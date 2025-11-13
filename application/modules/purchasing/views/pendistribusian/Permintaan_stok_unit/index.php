@@ -71,7 +71,6 @@ if(!ace.vars['touch']) {
 
 $('input[name=flag]').change(function(){
   var value = $( 'input[name=flag]:checked' ).val();
-  // Update flag_cart sesuai flag_gudang
   $('#dynamic-table').attr('data-id', 'flag=' + value);
 });
 

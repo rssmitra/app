@@ -117,7 +117,7 @@ $(document).ready(function(){
       source: function (query, result) {
           $.ajax({
               url: "templates/References/getItemBarangByUnit",
-              data: { keyword:query, flag: $("input[name='flag_gudang']:checked").val(), unit: '060101' },            
+              data: { keyword:query, flag: $("input[name='flag_gudang']:checked").val(), unit: '060201' },            
               dataType: "json",
               type: "POST",
               success: function (response) {
