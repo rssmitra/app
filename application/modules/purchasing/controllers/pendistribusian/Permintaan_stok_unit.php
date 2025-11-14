@@ -156,7 +156,7 @@ class Permintaan_stok_unit extends MX_Controller {
 
     public function process()
     {
-        
+        // echo "<pre>";print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
@@ -176,7 +176,7 @@ class Permintaan_stok_unit extends MX_Controller {
             $this->db->trans_begin();
             // nama bagian
             $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
-            // echo "<pre>";print_r($cart_data);die;
+            
             $id = isset($_POST['id'])?$_POST['id']:0;
             $dataexc = array(
                 'id_dd_user' => $this->session->userdata('user')->user_id,
@@ -200,9 +200,8 @@ class Permintaan_stok_unit extends MX_Controller {
             
             if($id == 0){
                 $cart_data = $this->Permintaan_stok_unit->get_cart_data($_POST['flag_form']);
-                // print_r($cart_data);die;
+                // print_r($this->db->last_query());die;
                 foreach( $cart_data as $row_brg ){
-
                     // insert detail barang
                     $dt_detail = array(
                         'id_dd_user' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'),
@@ -214,14 +213,12 @@ class Permintaan_stok_unit extends MX_Controller {
                         'is_bhp' => $this->regex->_genRegex($row_brg->is_bhp,'RGXINT'),
                         'tgl_input' => $this->regex->_genRegex(date('Y-m-d H:i:s'),'RGXQSL'),
                     );
-                    
                     $dt_detail['created_date'] = date('Y-m-d H:i:s');
                     $dt_detail['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                     $id_permintaan_inst_det = $this->Permintaan_stok_unit->save($table.'_det', $dt_detail);
 
                     $this->db->trans_commit();
                 }
-
                 // delete cart session
                 $this->db->delete('tc_permintaan_inst_cart_log', array('user_id_session' => $this->session->userdata('user')->user_id, 'flag_form' => 'permintaan_stok_unit') );
             }

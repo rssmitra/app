@@ -193,7 +193,7 @@ class Permintaan_stok_unit_model extends CI_Model {
 		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian, CAST(c.harga_beli as INT), CAST(e.catatan as NVARCHAR(1000)), e.no_acc, e.tgl_acc, e.acc_by, e.status_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, acc_note, status_verif, keterangan_verif, a.is_bhp, a.keterangan_permintaan, a.jml_acc_atasan, h.nama_brg, a.rev_kode_brg, a.rev_qty, a.jumlah_kirim, a.petugas_kirim, a.petugas_terima, a.jumlah_penerimaan');
 		$this->db->order_by('c.nama_brg ASC');
 		$query = $this->db->get()->result();
-		print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query;
 	}
 
@@ -238,8 +238,8 @@ class Permintaan_stok_unit_model extends CI_Model {
 		}else{
 			$this->db->select('tc_permintaan_inst_cart_log.kode_brg, brg.nama_brg, qty, brg.satuan_kecil as satuan, cast(brg.harga_beli as int) as harga, flag, nama_bagian, qtyBefore as jumlah_stok_sebelumnya, reff_kode, retur_type, is_bhp, is_restock, tc_permintaan_inst_cart_log.kode_bagian, keterangan as keterangan_permintaan, id as id_tc_permintaan_inst_det, '."'cart_log'".' as type_tbl');
 			$this->db->from('tc_permintaan_inst_cart_log');
-			$this->db->join($mt_barang. ' as brg', 'brg.kode_brg=tc_permintaan_inst_cart_log.kode_brg');
-			$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_permintaan_inst_cart_log.kode_bagian');
+			$this->db->join($mt_barang. ' as brg', 'brg.kode_brg=tc_permintaan_inst_cart_log.kode_brg','LEFT');
+			$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_permintaan_inst_cart_log.kode_bagian', 'LEFT');
 			$this->db->where('user_id_session', $this->session->userdata('user')->user_id);
 			$this->db->where('flag_form', 'permintaan_stok_unit');
 			$this->db->order_by('tc_permintaan_inst_cart_log.id', 'ASC');

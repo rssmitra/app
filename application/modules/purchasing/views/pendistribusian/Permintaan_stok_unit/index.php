@@ -347,7 +347,7 @@ function reload_table(){
 function delete_data(myid){
   if(confirm('Are you sure?')){
     $.ajax({
-        url: base_url+'/delete?'+params,
+        url: base_url+'/delete?flag='+$( 'input[name=flag]:checked' ).val(),
         type: "post",
         data: {ID:myid},
         dataType: "json",
