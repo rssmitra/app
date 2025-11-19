@@ -15,16 +15,16 @@
     });
   });
 
+  // Reload semua tabel setiap 1 menit
+  function reloadAllTables() {
+    oTableResepDiterima.ajax.reload();
+    oTableProsesRacikan.ajax.reload();
+    oTableProsesEtiket.ajax.reload();
+    oTableSiapDiambil.ajax.reload();
+    oTableSelesai.ajax.reload();
+  }
+  
   $(document).ready(function() {
-
-    // Reload semua tabel setiap 1 menit
-    function reloadAllTables() {
-      oTableResepDiterima.ajax.reload();
-      oTableProsesRacikan.ajax.reload();
-      oTableProsesEtiket.ajax.reload();
-      oTableSiapDiambil.ajax.reload();
-      oTableSelesai.ajax.reload();
-    }
 
     setInterval(reloadAllTables, 30000);
 
@@ -39,7 +39,7 @@
       "lengthChange" : false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": $('#tbl_resep_diterima').attr('base-url'),
+          "url": $('#tbl_resep_diterima').attr('base-url')+"&tanggal="+$('#tanggal').val()+"",
           "type": "POST"
       },
       drawCallback: function( settings ) {
@@ -103,7 +103,7 @@
       "lengthChange" : false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": $('#tbl_proses_racikan').attr('base-url'),
+          "url": $('#tbl_proses_racikan').attr('base-url')+"&tanggal="+$('#tanggal').val()+"",
           "type": "POST"
       },
       drawCallback: function( settings ) {
@@ -167,7 +167,7 @@
       "lengthChange" : false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": $('#tbl_proses_etiket').attr('base-url'),
+          "url": $('#tbl_proses_etiket').attr('base-url')+"&tanggal="+$('#tanggal').val()+"",
           "type": "POST"
       },
       drawCallback: function( settings ) {
@@ -231,7 +231,7 @@
       "lengthChange" : false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": $('#tbl_siap_diambil').attr('base-url'),
+          "url": $('#tbl_siap_diambil').attr('base-url')+"&tanggal="+$('#tanggal').val()+"",
           "type": "POST"
       },
       drawCallback: function( settings ) {
@@ -295,7 +295,7 @@
       "lengthChange" : false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": $('#tbl_selesai').attr('base-url'),
+          "url": $('#tbl_selesai').attr('base-url')+"&tanggal="+$('#tanggal').val()+"",
           "type": "POST"
       },
       drawCallback: function( settings ) {
@@ -376,7 +376,11 @@
   });
 
   function find_data_reload(result){
-      reloadAllTables();
+    oTableResepDiterima.ajax.url($('#tbl_resep_diterima').attr('base-url')+"&"+result.data).load();
+    oTableProsesRacikan.ajax.url($('#tbl_proses_racikan').attr('base-url')+"&"+result.data).load();
+    oTableProsesEtiket.ajax.url($('#tbl_proses_etiket').attr('base-url')+"&"+result.data).load();
+    oTableSiapDiambil.ajax.url($('#tbl_siap_diambil').attr('base-url')+"&"+result.data).load();
+    oTableSelesai.ajax.url($('#tbl_selesai').attr('base-url')+"&"+result.data).load();
   }
 
   function exc_process(kode_trans_far, flag_code, jenis_resep, status_ambil=0) {

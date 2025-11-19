@@ -29,7 +29,9 @@ class Permintaan_stok_unit extends MX_Controller {
     public function index() { 
         // echo '<pre>';print_r($this->session->all_userdata());
         /*define variable data*/
+        $flag = isset($_GET['flag'])?$_GET['flag']:'medis';
         $data = array(
+            'flag' => $flag,
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
         );

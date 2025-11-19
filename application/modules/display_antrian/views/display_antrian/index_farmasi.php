@@ -454,28 +454,18 @@
               <i>Rata-rata Waktu Tunggu Obat : </i> 
               <?php
                 // Hitung rata-rata waktu tunggu obat
-                $total_selesai = 0;
-                $total_detik = 0;
+                $arr_seconds = [];
                 if (isset($resep) && is_array($resep)) {
                   foreach($resep as $row) {
                     if($row->log_time_5 != null && $row->log_time_1 != null) {
-                      $total_selesai++;
-                      $start = strtotime($row->log_time_1);
-                      $end = strtotime($row->log_time_5);
-                      $row_total_detik = ($end - $start);
-                      $total_detik += ($row_total_detik > 3600) ? 3600 : $row_total_detik; // maksimal 1 jam (3600 detik)
+                      $arr_seconds[] = $this->tanggal->diffHourMinuteReturnSecond($row->log_time_1, $row->log_time_5);
                     }
                   }
                 }
-                $rata2 = '-';
-                // echo $total_selesai.' resep selesai, '.$total_detik.' detik total';
-
-                if($total_selesai > 0 && $total_detik > 0) {
-                  $avg = $total_detik / $total_selesai;
-                  $jam = floor($avg / 3600);
-                  $menit = floor(($avg % 3600) / 60);
-                  $detik = $avg % 60;
-                  $rata2 = sprintf('%02d:%02d:%02d', $jam, $menit, $detik);
+                if (count($arr_seconds) > 0) {
+                  $rata2 = $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds));
+                } else {
+                  $rata2 = '00:00:00';
                 }
               ?>
               <br>

@@ -160,7 +160,7 @@ $('input[name=flag]').change(function(){
 
       <hr class="separator">
       <div style="margin-top:-25px">
-        <table id="dynamic-table" base-url="purchasing/pendistribusian/Permintaan_stok_unit" data-id="flag=<?php echo isset($flag)?$flag:'medis'?>" url-detail="purchasing/pendistribusian/Permintaan_stok_unit/get_detail" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="purchasing/pendistribusian/Permintaan_stok_unit" data-id="flag=<?php echo $flag?>" url-detail="purchasing/pendistribusian/Permintaan_stok_unit/get_detail" class="table table-bordered table-hover">
           <thead>
             <tr>  
               <th width="30px" class="center">
