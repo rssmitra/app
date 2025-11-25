@@ -137,6 +137,11 @@ jQuery(function($) {
 <hr>
 <br>
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
+
+<div style="text-align:center; font-size:18px;">
+  <b>MONITORING DI RUANG PEMULIHAN</b><br>
+</div>
+<br>
 <table width="100%" border="1" style="border-collapse:collapse; font-size:13px;">
   <tr>
     <td style="width:15%; padding:5px;">Jam Masuk</td>

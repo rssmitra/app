@@ -112,7 +112,6 @@ th, td {
     
     <p>
       Dengan hormat,<br>
-      <br>
       Bersama surat ini kami sampaikan berkas penagihan klaim asuransi kesehatan untuk peserta asuransi <b><?php echo $result[0]->nama_tertagih?></b> yang telah mendapatkan pelayanan di Rumah Sakit kami.
       <br>
       Berikut data pasien yang kami ajukan : 
@@ -182,7 +181,7 @@ th, td {
       </tbody>
     </table>
     <p>
-      Berikut ini kami lampirkan dokumen pendukung klaim sesuai ketentuan pihak asuransi. Untuk proses pembayaran, mohon agar dapat ditransfer ke rekening berikut dengan menyertakan nomor/kwitansi kami, dan bukti pembayaran diharapkan emai ke admpasienrssm@gmail.com 
+      Berikut ini kami lampirkan dokumen pendukung klaim sesuai ketentuan pihak asuransi. Untuk proses pembayaran, mohon agar dapat ditransfer ke rekening berikut dengan menyertakan nomor invoice/kwitansi kami, dan bukti pembayaran diharapkan email ke admpasienrssm@gmail.com 
       <table style="font-weight: bold" class="table">
         <tr>
           <td>Bank</td>
@@ -205,7 +204,7 @@ th, td {
     <table style="width: 100% !important; text-align: center">
       <tr>
         <td style="text-align: left; width: 30%">
-          <span>Jakarta, <?php echo $this->tanggal->formatDate($result[0]->tgl_tagih); ?></span><br><br>
+          <span>Jakarta, <?php echo $this->tanggal->formatDate($result[0]->tgl_tagih); ?></span><br>
 
           Hormat Kami,<br>
           <span style="font-size: 14px"><b><?php echo COMP_FULL; ?></b></span><br>
