@@ -19,12 +19,12 @@
     getMenu('inventory/stok/Riwayat_pemakaian_bhp/detail/'+kode_brg+'/'+$('#kode_bagian').val()+'');
   }
 
-  function rollback_stok_bhp(id_kartu){
+  function rollback_stok_bhp(id_kartu, kodeBag, kode_barang){
     if(confirm('Are you sure?')){
       $.ajax({
           url: 'inventory/stok/Riwayat_pemakaian_bhp/rollback_stok_bhp',
           type: "post",
-          data: {ID:id_kartu, kode_bagian : $('#kode_bagian').val()},
+          data: {ID:id_kartu, kode_bagian : kodeBag, kode_brg : kode_barang},
           dataType: "json",
           beforeSend: function() {
             achtungShowLoader();  

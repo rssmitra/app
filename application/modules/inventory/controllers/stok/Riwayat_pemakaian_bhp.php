@@ -49,7 +49,14 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
             $row[] = '<div class="center">'.number_format($row_list->pengeluaran).'</div>';
             $row[] = $row_list->keterangan;
             if($row_list->is_rollback == null){
-                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="rollback_stok_bhp('.$row_list->id_kartu.')">Rollback</a></div>';
+            $row[] = '<div class="center">
+                <a href="#" class="btn btn-xs btn-danger"
+                   onclick="rollback_stok_bhp('
+                   .$row_list->id_kartu.', '
+                   ."'".$row_list->kode_bagian."', "
+                   ."'".$row_list->kode_brg."'"
+                   .')">Rollback</a>
+              </div>';
             }else{
                 $row[] = '<div class="center" style="color: red; font-weight: bold">n/a</div>';
             }
@@ -136,13 +143,29 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
         
         // select kartu stok
         $row = $this->db->where('id_kartu', $_POST['ID'])->from('tc_kartu_stok')->get()->row();
+
+        // query get last stok
+        //$row = $this->db->where('kode_brg', $_POST['kode_brg'])->from('tc_kartu_stok')->get()->row();
+
+        //$row = select * from tc_kartu_stok where kode_brg = $_POST['kode_brg'] AND kode_bagian = $_POST['kode_bagian'] ORDER BY id_kartu DESC
+
+        $row2 = $this->db->where('kode_brg', $_POST['kode_brg'])
+                 ->where('kode_bagian', $_POST['kode_bagian'])
+                 ->order_by('id_kartu', 'DESC')
+                 ->limit(1)
+                 ->get('tc_kartu_stok')
+                 ->row();
+                 //echo $this->db->last_query(); die;
+
         // restore stok
-        $stok_akhir = $row->stok_akhir + $row->pengeluaran;
+        //$stok_akhir = $row->stok_akhir + $row->pengeluaran;
+        $stok_akhir = $row2->stok_akhir + $row->pengeluaran;
+
         $mutasi = array(
             'id_kartu' => $this->master->get_max_number('tc_kartu_stok','id_kartu'),
             'tgl_input' => date('Y-m-d H:i:s'),
             'kode_brg' => $row->kode_brg,
-            'stok_awal' => $row->stok_akhir,
+            'stok_awal' => $row2->stok_akhir,
             'pemasukan' => $row->pengeluaran,
             'pengeluaran' => 0,
             'stok_akhir' => $stok_akhir,
