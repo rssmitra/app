@@ -194,6 +194,11 @@ class Penerimaan_stok extends MX_Controller {
                 // tambah stok depo
                 $this->stok_barang->stock_process_depo($kode_brg, $qty_brg, $kode_gudang, 3 ," ".$nama_bagian." &nbsp; [ ".$_POST['id']." ]", 'restore', $_POST['kode_bagian_minta'],'');
 
+                if($row_brg->is_bhp == 1){
+                    // kurangi stok bhp
+                    $this->stok_barang->stock_process_depo($kode_brg, $qty_brg, $kode_gudang, 7 ," ".$nama_bagian." &nbsp; [ ".$_POST['id']." ]", 'reduce', $_POST['kode_bagian_minta'],'');
+                }
+
                 $this->db->trans_commit();
 
             }

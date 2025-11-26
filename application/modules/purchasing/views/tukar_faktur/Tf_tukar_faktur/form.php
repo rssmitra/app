@@ -162,7 +162,7 @@ function hitungSubtotalTrx(){
               </div>
               <label class="control-label col-md-1">PPN (%)</label>
               <div class="col-md-1">
-                <input name="ppn" id="ppn" value="0" onchange="hitungSubtotalTrx()" class="form-control" type="text" readonly>
+                <input name="ppn" id="ppn" value="0" onchange="hitungSubtotalTrx()" class="form-control" type="text">
               </div>
             </div>
             <div class="form-group">
@@ -250,7 +250,9 @@ function hitungSubtotalTrx(){
                       <td colspan="6" align="right">PPN</td>
                       <td align="right">
                         <?php $ppn = 0;?>
-                        <span id="rp_ppn"><?php echo number_format(0)?></span>
+                        <span id="rp_ppn">
+                          <?php echo number_format(0)?>
+                        </span>
                       </td>
                   </tr>
                   <tr>

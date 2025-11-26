@@ -1457,7 +1457,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'no_mr' => $this->form_validation->set_value('no_mr'),
                 'nama_pasien' => $this->input->post('nama_pasien_layan'),
                 'kode_bagian' => $this->form_validation->set_value('kode_bagian'),
-                'tgl_periksa' => $_POST['tgl_keluar'],
+                'tgl_periksa' => $_POST['tgl_keluar'].' '.date('H:i:s'),
                 'kategori_tindakan' => 3,
                 'dokter_pemeriksa' => $this->input->post('dr_merawat'),
                 'kode_bagian' => $this->input->post('kode_bagian_asal'),

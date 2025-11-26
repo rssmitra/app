@@ -137,17 +137,19 @@ class Tf_riwayat_tukar_faktur extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Tf_riwayat_tukar_faktur->get_penerimaan_detail($id_penerimaan, $_GET['flag']);
+        // echo '<pre>';print_r($list);die;
         $no = 0;
         foreach ($list as $key => $value) {
             $no++;
-            $arr_subtotal[] = $value->dpp;
+            $arr_subtotal[] = $value->jumlah_harga;
             $getData[] = array(
                 'count_num' => $no,
                 'nama_brg' => $value->nama_brg,
                 'jml_kirim' => $value->jumlah_kirim_decimal,
+                'discount' => $value->disc,
                 'satuan' => $value->satuan_besar,
-                'harga_satuan' => $value->harga_net,
-                'subtotal' => $value->dpp,
+                'harga_satuan' => $value->harga,
+                'subtotal' => $value->jumlah_harga,
             );
         }
         echo json_encode(array('data' => $getData, 'kode_penerimaan' => $list[0]->kode_penerimaan, 'tgl_penerimaan' => $this->tanggal->formatDateDmy($list[0]->tgl_penerimaan), 'total' => array_sum($arr_subtotal)));
@@ -156,8 +158,8 @@ class Tf_riwayat_tukar_faktur extends MX_Controller {
     public function preview_ttf(){
         $data = array();
         $list = $this->Tf_riwayat_tukar_faktur->get_log_data($_GET['ID']);
+        // echo '<pre>';print_r($list);die;
         $data['result'] = $list;
-        // echo '<pre>';print_r($data);die;
         $this->load->view('tukar_faktur/Tf_riwayat_tukar_faktur/preview_ttf', $data);
     }
 

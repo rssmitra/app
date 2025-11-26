@@ -117,13 +117,13 @@ $(document).ready(function(){
   <div id="section_pemeriksaan_lab">
     <div class="tabbable">
       <ul class="nav nav-tabs" id="myTab">
-        <li class="active">
+        <li class="<?php echo ($kunjungan->kode_perusahaan == 120) ? 'active' : ''; ?>">
           <a data-toggle="tab" href="#tab_lab_bpjs">
             BPJS Kesehatan
           </a>
         </li>
 
-        <li>
+        <li class="<?php echo ($kunjungan->kode_perusahaan == 120) ? '' : 'active'; ?>">
           <a data-toggle="tab" href="#tab_lab_umum">
             Umum & Asuransi
           </a>
@@ -131,7 +131,7 @@ $(document).ready(function(){
       </ul>
 
       <div class="tab-content">
-        <div id="tab_lab_bpjs" class="tab-pane fade in active">
+        <div id="tab_lab_bpjs" class="tab-pane fade <?php echo ($kunjungan->kode_perusahaan == 120) ? 'in active' : ''; ?>">
 
           <!-- HEMATOLOGI -->
           <table style="font-size: 10px; width: 100%">
@@ -661,7 +661,7 @@ $(document).ready(function(){
           
         </div>
 
-        <div id="tab_lab_umum" class="tab-pane fade">
+        <div id="tab_lab_umum" class="tab-pane fade <?php echo ($kunjungan->kode_perusahaan == 120) ? '' : 'in active'; ?>">
           <!-- HEMATOLOGI -->
           <table style="font-size: 10px; width: 100%">
             <tr style="color: white; background: darkgreen; font-weight: bold;">

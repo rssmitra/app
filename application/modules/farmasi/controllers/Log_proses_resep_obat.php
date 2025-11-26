@@ -18,6 +18,7 @@ class Log_proses_resep_obat extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Log_proses_resep_obat_model', 'Log_proses_resep_obat');
+        $this->load->model('Turn_around_time_model', 'Turn_around_time');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -48,12 +49,13 @@ class Log_proses_resep_obat extends MX_Controller {
         // if(isset($_GET['search']) AND $_GET['search']==TRUE){
         //     $this->find_data(); exit;
         // }
+
         $data = array();
         $no = $_POST['start'];
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
         );
         $max_layan = (isset($_GET['max_layan']) && is_numeric($_GET['max_layan'])) ? (int)$_GET['max_layan'] : 45;
-        $arr_seconds = array();
+        
         foreach ($list as $row_list) {
             $no++;
             // $flag = $this->regex->_genRegex($row_list->no_resep, 'RQXAZ');
@@ -64,7 +66,23 @@ class Log_proses_resep_obat extends MX_Controller {
             $row[] = $row_list->kode_pesan_resep;
             $row[] = '<div class="center">'.$no.'</div>';
 
-            $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=1'".')">'.$row_list->kode_trans_far.'</a></b></div>';
+            // jika kondisi bagian asal ada maka tampilkan nama bagian asal
+            $bagian_asal = '';
+            if (!empty($row_list->kode_bagian_asal)) {
+                $kode_bagian_asal = substr($row_list->kode_bagian_asal, 0, 2);
+                if ($kode_bagian_asal === '02') {
+                    $bagian_asal = 'IGD';
+                } elseif ($kode_bagian_asal === '01') {
+                    $bagian_asal = 'Poliklinik';
+                } elseif ($kode_bagian_asal === '03') {
+                    $bagian_asal = 'RI';
+                } else {
+                    // fallback: tampilkan kode asli jika tidak cocok
+                    $bagian_asal = $row_list->kode_bagian_asal;
+                }
+            }
+
+            $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=1'".')">'.$row_list->kode_trans_far.'</a></b><br>['.$bagian_asal.']</div>';
 
             // $row[] = '<div class="center">'.$row_list->no_resep.'</div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</div>';
@@ -113,30 +131,28 @@ class Log_proses_resep_obat extends MX_Controller {
             // selisih log_time_1 sampai dengan log_time_6 tanpa library tanggal, gunakan fungsi PHP
             if ($row_list->log_time_5 != null && strtotime($row_list->log_time_1) !== false && strtotime($row_list->log_time_5) !== false) {
                 
-                $start = new DateTime($row_list->log_time_1);
-                $end = new DateTime($row_list->log_time_5);
-                $diff = $start->diff($end);
-                $hours = $diff->h + ($diff->days * 24);
-                $minutes = $diff->i;
-                $total_minutes = ($hours * 60) + $minutes;
-                $color = ($total_minutes < $max_layan) ? 'green' : 'red';
-                $row[] = '<div class="center"><span style="color:'.$color.'; font-weight: bold; font-size: 14px">'.sprintf('%02d:%02d', $hours, $minutes).'</span></div>';
+                $tat = $this->tanggal->diffHourMinuteReturnSecond($row_list->log_time_1, $row_list->log_time_5);
+                $tat = $this->tanggal->convertHourMinutesSecond($tat, $max_layan);
+                $color = ($tat < $max_layan) ? 'green' : 'red';
+                $row[] = '<div class="center"><span style="color:'.$color.'; font-weight: bold; font-size: 14px">'.$tat.'</span></div>';
             } else {
                 $row[] = '';
             }
 
-            if($_GET['flag'] == 'selesai'){
-                $arr_seconds[] = $this->tanggal->diffHourMinuteReturnSecond($row_list->log_time_1, $row_list->log_time_5);
-            }
-            
             $data[] = $row;
         }
 
+        $querytat = $this->Turn_around_time->get_datatables();
+        $arr_seconds = [];
+        foreach ($querytat as $row_tat) {
+            $arr_seconds[] = $this->tanggal->diffHourMinuteReturnSecond($row_tat->log_time_1, $row_tat->log_time_5);
+        }
+        $avgTat = (count($arr_seconds) > 0) ? array_sum($arr_seconds)/count($arr_seconds) : 0;
         $output = array(
                         "draw" => $_POST['draw'],
                         "data" => $data,
                         "count_data" => count($list),
-                        "tat" => (count($arr_seconds) > 0) ? $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds), $max_layan) : '00:00:00',
+                        "tat" => $this->tanggal->convertHourMinutesSecond($avgTat, $max_layan),
                         "count_selesai" => (count($arr_seconds) > 0) ? count($arr_seconds) : '00:00:00',
         );
         //output to json format

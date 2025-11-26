@@ -78,6 +78,9 @@ th, td {
         <span style="font-size: 18px"><b><?php echo $result[0]->no_terima_faktur?></b></span><br>
         <span>Tanggal. <?php echo $this->tanggal->formatDatedmY($result[0]->tgl_faktur); ?></span><br>
         Tanggal jatuh tempo pembayaran.<br><?php echo $this->tanggal->formatDatedmY($result[0]->tgl_rencana_bayar); ?>
+        <br>
+        No. Seri Faktur Pajak :<br>
+        <b><?php echo $result[0]->no_seri_pajak?></
       </td>
       <td width="50%" valign="top">
         Supplier :<br>
@@ -124,6 +127,16 @@ th, td {
               </td>
             </tr>
             <tr>
+              <td colspan="3" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">PPN </td>
+              <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
+                <?php
+                  $total_ppn = $result[0]->total_ppn; 
+                  echo number_format($total_ppn);
+                ?>
+              </td>
+            </tr>
+
+            <tr>
               <td colspan="3" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Materai </td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
                 <?php
@@ -136,11 +149,12 @@ th, td {
               <td colspan="3" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
                 <?php
-                  $total = $subtotal + $biaya_materai;
+                  $total = $subtotal + $total_ppn + $biaya_materai;
                   echo number_format($total);
                 ?>
               </td>
             </tr>
+
             <tr>
             <td colspan="4" style="text-align:right; border: 1px solid black; border-collapse: collapse">Terbilang : 
             <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($total))?> Rupiah"</i></b>

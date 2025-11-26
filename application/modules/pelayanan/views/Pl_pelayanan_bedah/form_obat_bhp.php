@@ -140,37 +140,38 @@ function reset_table(){
     oTableObat.ajax.url('inventory/stok/Riwayat_pemakaian_bhp/get_data_bhp_unit?kode_bagian=<?php echo ($sess_kode_bag)?$sess_kode_bag:0?>&jenis=obat&kode=<?php echo $no_kunjungan?>&id_pesan_bedah=<?php echo $id_pesan_bedah?>').load();
 }
 
-function rollback_stok_bhp(id_kartu){
-  if(confirm('Are you sure?')){
-    $.ajax({
-        url: 'inventory/stok/Riwayat_pemakaian_bhp/rollback_stok_bhp',
-        type: "post",
-        data: {ID:id_kartu, kode_bagian : $('#kode_bagian').val()},
-        dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-        },
-        complete: function(xhr) {     
-          var data=xhr.responseText;
-          var jsonResponse = JSON.parse(data);
-          if(jsonResponse.status === 200){
-            $.achtung({message: jsonResponse.message, timeout:5});
-            reload_table();
-          }else{
-            $.achtung({message: jsonResponse.message, timeout:5});
+function rollback_stok_bhp(id_kartu, kodeBag, kode_barang){
+    if(confirm('Are you sure?')){
+      $.ajax({
+          url: 'inventory/stok/Riwayat_pemakaian_bhp/rollback_stok_bhp',
+          type: "post",
+          data: {ID:id_kartu, kode_bagian : kodeBag, kode_brg : kode_barang},
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          uploadProgress: function(event, position, total, percentComplete) {
+          },
+          complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+              $.achtung({message: jsonResponse.message, timeout:5});
+              reset_table();
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+            }
+            achtungHideLoader();
           }
-          achtungHideLoader();
-        }
 
-      });
+        });
 
-  }else{
-    return false;
+    }else{
+      return false;
+    }
+    
   }
   
-}
 
 
 </script>

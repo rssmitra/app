@@ -110,11 +110,13 @@ class Pl_pelayanan_bedah extends MX_Controller {
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_bedah/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_bedah->get_by_id($id);
+        // get data kunjungan
+        $kunjungan = $this->db->get_where('tc_kunjungan', array('no_kunjungan' => $no_kunjungan))->row();
         /*mr*/
-        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_mr'] = $kunjungan->no_mr;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['id_pesan_bedah'] = $id;
-        $data['sess_kode_bag'] = '030901';
+        $data['sess_kode_bag'] = $kunjungan->kode_bagian_tujuan;
         $data['type']='Ranap';
         /*title header*/
         $data['title'] = $this->title;

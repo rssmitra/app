@@ -178,10 +178,10 @@
 
       $.each(response.data, function (i, o) {
           if(o.subtotal > 0){
-            $('<tr><td align="center">'+o.count_num+'</td><td>'+o.nama_brg+'</td><td>'+o.jml_kirim+' '+o.satuan+'</td><td align="right">'+formatMoney(o.harga_satuan)+'</td><td align="right">'+formatMoney(o.subtotal)+'</td></tr>').appendTo($('#dt_detail_penerimaan_'+id_tc_hutang_supplier_inv+''));            
+            $('<tr><td align="center">'+o.count_num+'</td><td>'+o.nama_brg+'</td><td>'+o.jml_kirim+' '+o.satuan+'</td><td>'+o.discount+'</td><td align="right">'+formatMoney(o.harga_satuan)+'</td><td align="right">'+formatMoney(o.subtotal)+'</td></tr>').appendTo($('#dt_detail_penerimaan_'+id_tc_hutang_supplier_inv+''));            
           }
       });
-      $('<tr><td align="right" colspan="4">Subtotal</td><td align="right">'+formatMoney(response.total)+'</td></tr>').appendTo($('#dt_detail_penerimaan_'+id_tc_hutang_supplier_inv+'')); 
+      $('<tr><td align="right" colspan="5">Subtotal</td><td align="right">'+formatMoney(response.total)+'</td></tr>').appendTo($('#dt_detail_penerimaan_'+id_tc_hutang_supplier_inv+'')); 
       
     });
   }

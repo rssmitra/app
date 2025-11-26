@@ -425,7 +425,7 @@ class Pl_pelayanan extends MX_Controller {
     {
         // get master lab
         $master_tindakan = $this->Pl_pelayanan_pm->get_master_tindakan($_GET['kode_bag']);
-
+        $kunjungan = $this->Pl_pelayanan->get_detail_kunjungan($no_kunjungan);
         // get last order
         $getOrder = [];
         if(isset($id_pm_tc_penunjang)){
@@ -442,6 +442,7 @@ class Pl_pelayanan extends MX_Controller {
         /*mr*/
         $data['id_pm_tc_penunjang'] = isset($id_pm_tc_penunjang)?$id_pm_tc_penunjang:'';
         $data['header_order'] = isset($order_lab[0])?$order_lab[0]:[];
+        $data['kunjungan'] = isset($kunjungan)?$kunjungan:[];
         $data['last_order'] = $getOrder;
         $data['no_mr'] = $_GET['no_mr'];
         $data['no_kunjungan'] = isset($penunjang->no_kunjungan)?$penunjang->no_kunjungan:'';

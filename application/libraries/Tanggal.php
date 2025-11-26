@@ -707,6 +707,41 @@ final class Tanggal {
         }
     }
 
+    public  function getNumOfTheDay($day) {
+        switch ($day) {
+            case 'senin':
+                return "1";
+                break;
+            
+            case 'selasa':
+                return "2";
+                break;
+            
+            case 'rabu':
+                return "3";
+                break;
+            
+            case 'kamis':
+                return "4";
+                break;
+            
+            case 'jumat':
+                return "5";
+                break;
+            
+            case 'sabtu':
+                return "6";
+                break;
+            
+            case 'minggu':
+                return "0";
+                break;
+            
+           default :
+                return $day;
+        }
+    }
+
     /*function umur($tgl_lahir,$delimiter='-') {
     
         list($hari,$bulan,$tahun) = explode($delimiter, $tgl_lahir);
@@ -887,21 +922,31 @@ final class Tanggal {
     }
 
     public function convertHourMinutesSecond($second, $max_layan=45) {
-        if ($second) {
+        // guard: require a numeric, positive seconds value
+        if (!is_numeric($second) || $second <= 0) {
+            return '-';
+        }else{
+            // normalize inputs
+            $second = (int) $second;
+            if (!is_numeric($max_layan) || $max_layan <= 0) {
+                // if max_layan is invalid, set to a very large number to avoid any conditional issues
+                $max_layan = PHP_INT_MAX;
+            } else {
+                $max_layan = (int) $max_layan;
+            }
+
+            // safe arithmetic with constant divisors
             $hours = floor($second / 3600);
             $minutes = floor(($second % 3600) / 60);
             $seconds = $second % 60;
-            $minutesx = floor($second/60);
+            $minutesx = floor($second / 60);
 
-            if($minutesx > $max_layan){
-                $color = 'red';
-            }else{
-                $color = 'green';
-            }
+            $color = ($minutesx > $max_layan) ? 'red' : 'green';
 
-           return '<span style="color: '.$color.'; font-weight: bold">'.sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds).'</span>';
+            return '<span style="color: '.$color.'; font-weight: bold">'.sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds).'</span>';
         }
-        return '-';
+
+        
     }
 
     public function diffHourMinute($start, $end, $max_layan=45) {

@@ -469,7 +469,7 @@
                 }
               ?>
               <br>
-              <span id="avg-waktu-tunggu" style="font-size: 3em; font-weight: bold; color: #ffeb3b"><?php echo $rata2; ?></span>
+              <span id="avg-waktu-tunggu" style="font-size: 3em; font-weight: bold; padding: 5px; background-color: #ffffff !important"><?php echo $avg_tat; ?></span>
             </span>
         </div>
       </div>

@@ -39,7 +39,11 @@
           $kode_brg = ($row_dt->rev_kode_brg != null && $row_dt->rev_kode_brg != '') ? '<s style="color: red">'.$row_dt->kode_brg.'</s> &nbsp; '.$row_dt->rev_kode_brg : $row_dt->kode_brg;
           $nama_brg = ($row_dt->rev_kode_brg != null && $row_dt->rev_kode_brg != '') ? '<s style="color: red">'.$row_dt->nama_brg.'</s> &nbsp; '.$row_dt->revisi_nama_brg : $row_dt->nama_brg;
           $qty = ($row_dt->rev_kode_brg != null && $row_dt->rev_kode_brg != '') ? '<s style="color: red">'.$row_dt->jumlah_permintaan.'</s> &nbsp; '.$row_dt->rev_qty : $row_dt->jumlah_permintaan;
-          $txt_verif = ($row_dt->status_verif == 1) ? '' : '<span style="color: red">[Ditolak]</span><br>';
+          if($row_dt->status_verif == null){
+            $txt_verif = '<span style="color: red">[Belum diverifikasi]</span><br>';
+          }else{
+            $txt_verif = ($row_dt->status_verif == 1) ? '' : '<span style="color: red">[Ditolak]</span><br>';
+          }
         ?>
           <tr <?php echo ($row_dt->status_verif != 1) ? 'style="background-color: #efdad3ff"' : '' ?>>
             <td class="center"><?php echo $no?></td>

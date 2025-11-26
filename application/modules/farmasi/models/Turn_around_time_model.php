@@ -70,6 +70,18 @@ class Turn_around_time_model extends CI_Model {
 		return $query->result();
 	}
 
+	function get_data()
+	{
+		$this->_main_query();
+		if(isset($_GET['tanggal'])){
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".$_GET['tanggal']."'".'');
+		}else{
+			$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
+		}
+		$query = $this->db->get();
+		return $query->result();
+	}
+
 
 	private function _main_query_dt_pending(){
 

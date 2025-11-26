@@ -6,7 +6,7 @@ class Tf_tukar_faktur_model extends CI_Model {
 	var $table_nm = 'tc_penerimaan_barang_nm';
 	var $table = 'tc_penerimaan_barang';
 	var $column = array('a.kode_penerimaan','a.no_po');
-	var $select = 'a.kode_penerimaan, a.no_po, a.id_tc_po, a.tgl_penerimaan, a.keterangan, a.no_faktur, a.dikirim, a.id_penerimaan, c.namasupplier, c.alamat, total_brg.jml_diterima, a.status_tukar_faktur, a.petugas, c.kodesupplier';
+	var $select = 'a.kode_penerimaan, a.no_po, a.id_tc_po, a.tgl_penerimaan, a.keterangan, a.no_faktur, a.dikirim, a.id_penerimaan, c.namasupplier, c.alamat, a.status_tukar_faktur, a.petugas, c.kodesupplier';
 	var $order = array('a.id_penerimaan' => 'DESC');
 
 	public function __construct()
@@ -18,12 +18,13 @@ class Tf_tukar_faktur_model extends CI_Model {
 	private function _main_query(){
 
 		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
+		$tc_po = ($_GET['flag']=='non_medis')?'tc_po_nm':'tc_po';
 		$this->db->select($this->select);
-		$this->db->select('SUM(dpp) as total');
+		$this->db->select('SUM(jumlah_harga) as total');
 		$this->db->from(''.$table.' a');
 		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
-		$this->db->join('(SELECT id_penerimaan, count(kode_detail_penerimaan_barang)as jml_diterima FROM tc_penerimaan_barang_detail GROUP BY id_penerimaan) as total_brg','total_brg.id_penerimaan=a.id_penerimaan', 'left');
 		$this->db->join($table.'_detail d', 'd.id_penerimaan=a.id_penerimaan', 'left');
+		$this->db->join($tc_po.'_det e','e.id_tc_po_det=d.id_tc_po_det', 'left');
 		// $this->db->where('a.status_tukar_faktur IS NULL');
 		$this->db->group_by($this->select);
 

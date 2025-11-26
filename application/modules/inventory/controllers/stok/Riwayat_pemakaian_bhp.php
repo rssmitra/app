@@ -91,7 +91,15 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
             $total = $row_list->pengeluaran * $row_list->harga_beli;
             $row[] = '<div class="center">'.number_format($total).'</div>';
             if($row_list->is_retur == null){
-                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="rollback_stok_bhp('.$row_list->id_kartu.')">Rollback</a></div>';
+                $row[] = '<div class="center">
+                <a href="#" class="btn btn-xs btn-danger"
+                   onclick="rollback_stok_bhp('
+                   .$row_list->id_kartu.', '
+                   ."'".$row_list->kode_bagian."', "
+                   ."'".$row_list->kode_brg."'"
+                   .')">Rollback</a>
+                </div>';
+                
             }else{
                 $row[] = '<div class="center"><span style="font-weight: bold; color: red">Retur</span><br><small>'.$row_list->retur_by.'<br>'.$this->tanggal->formatDateTimeFormDmy($row_list->retur_date).'</small></div>';
             }

@@ -10,6 +10,7 @@ class Display_antrian extends MX_Controller {
  
         $this->load->model('Display_antrian_model','display_antrian'); 
         $this->load->model('farmasi/Log_proses_resep_obat_model', 'Log_proses_resep_obat');
+        $this->load->model('farmasi/Turn_around_time_model', 'Turn_around_time');
         $this->load->model('farmasi/E_resep_rj_model', 'E_resep_rj');
         $this->load->model('antrian/loket_model','loket');
 
@@ -29,11 +30,18 @@ class Display_antrian extends MX_Controller {
         $data = array();
         $date = isset($_GET['tanggal'])?$_GET['tanggal']:date('Y-m-d');
         $resep_diterima = $this->E_resep_rj->get_data_resep_diterima();
-        // echo '<pre>';print_r($this->db->last_query());die;
         $resep = $this->Log_proses_resep_obat->get_data();
+        // echo '<pre>';print_r($resep);die;
         $data['resep_diterima'] = $resep_diterima;
         $data['resep'] = $resep;
         $data['text_hide'] = ['NY.','AN.','BY.', ', NY.',', AN.', ', TN.','TN.', ',NY'];
+
+        $querytat = $this->Turn_around_time->get_data();
+        $arr_seconds = [];
+        foreach ($querytat as $row_tat) {
+            $arr_seconds[] = $this->tanggal->diffHourMinuteReturnSecond($row_tat->log_time_1, $row_tat->log_time_5);
+        }
+        $data['avg_tat'] = (count($arr_seconds) > 0) ? $this->tanggal->convertHourMinutesSecond(array_sum($arr_seconds)/count($arr_seconds), 45) : '00:00:00';
         $this->load->view('display_antrian/index_farmasi', $data);
     }
 

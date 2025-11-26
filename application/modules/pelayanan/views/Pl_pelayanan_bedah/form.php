@@ -255,7 +255,7 @@ function find_pasien_by_keyword(keyword){
             $('#nama_pasien_hidden').val(obj.nama_pasien);
             $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
             $('#jk').text(obj.jen_kelamin);
-            $('#umur').text(umur_pasien+' Tahun');          
+            $('#umur').text(umur_pasien);          
             $('#umur_saat_pelayanan_hidden').val(umur_pasien);
             $('#alamat').text(obj.almt_ttp_pasien);
             $('#noKartuBpjs').val(obj.no_kartu_bpjs);

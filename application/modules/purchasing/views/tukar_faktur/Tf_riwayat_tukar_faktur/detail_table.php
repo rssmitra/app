@@ -29,12 +29,16 @@
         <td align="right"><?php echo number_format(array_sum($arr_total))?></td>
       </tr>
       <tr>
+        <td colspan="3" align="right">PPN</td>
+        <td align="right"><?php echo number_format($result[0]->total_ppn)?></td>
+      </tr>
+      <tr>
         <td colspan="3" align="right">Materai</td>
         <td align="right"><?php echo number_format($result[0]->biaya_materai)?></td>
       </tr>
       <tr>
         <td colspan="3" align="right">Total</td>
-        <td align="right"><b><?php $total = array_sum($arr_total) + $result[0]->biaya_materai; echo number_format($total)?></b></td>
+        <td align="right"><b><?php $total = array_sum($arr_total) + $result[0]->total_ppn + $result[0]->biaya_materai; echo number_format($total)?></b></td>
       </tr>
     </tbody>
 </table>
@@ -48,6 +52,7 @@
           <th width="30px">No</th>
           <th>Nama Barang</th>
           <th>Qty</th>
+          <th>Disc</th>
           <th>Harga</th>
           <th width="100px">Subtotal (Rp.)</th>
         </tr>

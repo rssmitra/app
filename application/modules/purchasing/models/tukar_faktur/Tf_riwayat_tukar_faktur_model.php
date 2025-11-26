@@ -134,14 +134,16 @@ class Tf_riwayat_tukar_faktur_model extends CI_Model {
 	}
 
 	public function get_penerimaan_detail($id_penerimaan, $flag){
+		$tc_po = ( $flag == 'medis' ) ? 'tc_po' : 'tc_po_nm' ;
 		$tc_penerimaan_barang = ( $flag == 'medis' ) ? 'tc_penerimaan_barang' : 'tc_penerimaan_barang_nm' ;
 		$tc_penerimaan_barang_detail = ( $flag == 'medis' ) ? 'tc_penerimaan_barang_detail' : 'tc_penerimaan_barang_nm_detail' ;
 		$mt_barang = ( $flag == 'medis' ) ? 'mt_barang' : 'mt_barang_nm' ;
 
-		$this->db->select('a.*, c.tgl_penerimaan, b.nama_brg, b.satuan_besar');
+		$this->db->select('a.*, c.tgl_penerimaan, b.nama_brg, b.satuan_besar, d.jumlah_harga');
 		$this->db->from(''.$tc_penerimaan_barang_detail.' a');
 		$this->db->join(''.$tc_penerimaan_barang.' c', 'c.id_penerimaan=a.id_penerimaan','left');
 		$this->db->join(''.$mt_barang.' b', 'b.kode_brg=a.kode_brg','left');
+		$this->db->join(''.$tc_po.'_det d', 'd.id_tc_po_det=a.id_tc_po_det','left');
 		$this->db->where('a.id_penerimaan', $id_penerimaan);
 		$this->db->order_by('kode_detail_penerimaan_barang', 'ASC');
 		$query = $this->db->get()->result();

@@ -26,7 +26,7 @@
   
   $(document).ready(function() {
 
-    setInterval(reloadAllTables, 30000);
+    // setInterval(reloadAllTables, 30000);
 
     //initiate dataTables plugin
     oTableResepDiterima = $('#tbl_resep_diterima').DataTable({ 
@@ -57,9 +57,9 @@
 
     });
 
-    $('#tbl_resep_diterima tbody').on('click', 'td.details-control', function () {
+    $('#tbl_resep_diterima tbody').on('click', 'td.details-control', function (e) {
         var url_detail = 'farmasi/Farmasi_pesan_resep/getDetail';
-        preventDefault();
+        e.preventDefault();
         var tr = $(this).closest('tr');
         var row = oTableResepDiterima.row( tr );
         var data = oTableResepDiterima.row( $(this).parents('tr') ).data();
@@ -121,9 +121,9 @@
 
     });
 
-    $('#tbl_proses_racikan tbody').on('click', 'td.details-control', function () {
+    $('#tbl_proses_racikan tbody').on('click', 'td.details-control', function (e) {
         var url_detail = 'farmasi/Farmasi_pesan_resep/getDetail';
-        preventDefault();
+        e.preventDefault();
         var tr = $(this).closest('tr');
         var row = oTableProsesRacikan.row( tr );
         var data = oTableProsesRacikan.row( $(this).parents('tr') ).data();
@@ -185,9 +185,9 @@
 
     });
 
-    $('#tbl_proses_etiket tbody').on('click', 'td.details-control', function () {
+    $('#tbl_proses_etiket tbody').on('click', 'td.details-control', function (e) {
         var url_detail = 'farmasi/Farmasi_pesan_resep/getDetail';
-        preventDefault();
+        e.preventDefault();
         var tr = $(this).closest('tr');
         var row = oTableProsesEtiket.row( tr );
         var data = oTableProsesEtiket.row( $(this).parents('tr') ).data();
@@ -237,6 +237,7 @@
       drawCallback: function( settings ) {
            var response = settings.json;
            $('#total_siap_diambil').html(response.count_data);
+           $('#avg-tat-info').html(response.tat);
       },
       "columnDefs": [
           { 
@@ -249,9 +250,9 @@
 
     });
 
-    $('#tbl_siap_diambil tbody').on('click', 'td.details-control', function () {
+    $('#tbl_siap_diambil tbody').on('click', 'td.details-control', function (e) {
         var url_detail = 'farmasi/Farmasi_pesan_resep/getDetail';
-        preventDefault();
+        e.preventDefault();
         var tr = $(this).closest('tr');
         var row = oTableSiapDiambil.row( tr );
         var data = oTableSiapDiambil.row( $(this).parents('tr') ).data();
@@ -301,7 +302,6 @@
       drawCallback: function( settings ) {
            var response = settings.json;
            $('#total_selesai').html(response.count_data);
-           $('#avg-tat-info').html(response.tat);
            $('#count_selesai').html(response.count_selesai+' Resep');
       },
       "columnDefs": [
@@ -315,9 +315,9 @@
 
     });
 
-    $('#tbl_selesai tbody').on('click', 'td.details-control', function () {
+    $('#tbl_selesai tbody').on('click', 'td.details-control', function (e) {
         var url_detail = 'farmasi/Farmasi_pesan_resep/getDetail';
-        preventDefault();
+        e.preventDefault();
         var tr = $(this).closest('tr');
         var row = oTableSelesai.row( tr );
         var data = oTableSelesai.row( $(this).parents('tr') ).data();
@@ -384,7 +384,6 @@
   }
 
   function exc_process(kode_trans_far, flag_code, jenis_resep, status_ambil=0) {
-    preventDefault();
     $.ajax({
         url: 'farmasi/Log_proses_resep_obat/process',
         type: "post",

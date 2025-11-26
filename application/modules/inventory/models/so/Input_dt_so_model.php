@@ -213,6 +213,7 @@ class Input_dt_so_model extends CI_Model {
 			'kode_brg' => $_POST['kode_brg'],
 			'table_depo_flag' => 'mt_depo_stok_nm',
 			'table_kartu_flag' => 'tc_kartu_stok_nm',
+			'table' => 'tc_kartu_stok_nm',
 			'petugas' => $this->session->userdata('session_input_so')['nama_pegawai'],
 		);
 		/*catat kartu stok*/
@@ -275,6 +276,7 @@ class Input_dt_so_model extends CI_Model {
 				'kode_brg' => $_POST['kode_brg'],
 				'table_depo_flag' => 'mt_depo_stok',
 				'table_kartu_flag' => 'tc_kartu_stok',
+				'table' => 'tc_kartu_stok',
 				'petugas' => $this->session->userdata('session_input_so')['nama_pegawai'],
 			);
 			/*catat kartu stok*/

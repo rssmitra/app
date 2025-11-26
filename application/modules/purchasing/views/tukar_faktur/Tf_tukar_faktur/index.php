@@ -136,7 +136,7 @@ $(document).ready(function() {
             var searchIDs = $("#dynamic-table input:checkbox:checked").map(function(){
             return $(this).val();
             }).toArray();
-            if(searchIDs.length <= 1){
+            if(searchIDs.length < 0){
                 alert('Tidak ada item yang dipilih!'); return false;
             }
             tukar_faktur(searchIDs);

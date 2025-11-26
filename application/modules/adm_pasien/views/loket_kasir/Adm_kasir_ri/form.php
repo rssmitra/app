@@ -202,7 +202,7 @@ function find_pasien_by_keyword(keyword){
 
             $('#jk').text(obj.jen_kelamin);
 
-            $('#umur').text(umur_pasien+' Tahun');
+            $('#umur').text(umur_pasien);
 
             $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
             

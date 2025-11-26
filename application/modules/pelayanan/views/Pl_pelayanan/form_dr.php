@@ -749,7 +749,7 @@ function show_icare() {
       <input type="hidden" name="kodebookingantrol" class="form-control" value="<?php echo isset($value->kodebookingantrol)?$value->kodebookingantrol:''?>" id="kodebookingantrol" readonly>
       <input type="hidden" name="taskId" class="form-control" value="4" id="taskId" readonly>
       <input type="hidden" name="noKartuBpjs" class="form-control" id="noKartuBpjs" value="<?php echo $value->no_kartu_bpjs?>" readonly>
-      <input type="hiddenxx" name="jeniskunjunganbpjs" class="form-control" id="jeniskunjunganbpjs" value="<?php echo $value->jeniskunjunganbpjs?>" readonly>
+      <input type="hidden" name="jeniskunjunganbpjs" class="form-control" id="jeniskunjunganbpjs" value="<?php echo $value->jeniskunjunganbpjs?>" readonly>
     
       <!-- profile Pasien -->
       <div class="col-md-2">

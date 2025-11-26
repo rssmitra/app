@@ -326,7 +326,7 @@ function find_pasien_by_keyword(keyword){
 
             $('#jk').text(obj.jen_kelamin);
 
-            $('#umur').text(umur_pasien+' Tahun');
+            $('#umur').text(umur_pasien);
 
             $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
             
@@ -816,9 +816,9 @@ function show_icare() {
                   <a href="#" data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&form=billing_entry" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> S O A P </span></a><b class="arrow"></b>
                 </li>
 
-                <li class="hover">
-                  <a href="#" data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Tindakan </span></a><b class="arrow"></b>
-                </li>
+                <!-- <li class="hover">
+                  <a href="#" data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Tindakan</span></a><b class="arrow"></b>
+                </li> -->
 
                 <li class="hover" id="li_tabs_farmasi">
                   <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#tabs_pesan_resep" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-glass"></i><span class="menu-text"> e-Resep </span></a><b class="arrow"></b>
@@ -833,6 +833,31 @@ function show_icare() {
                     <i class="menu-icon fa fa-folder"></i><span class="menu-text"> Form Rekam Medis </span><b class="arrow"></b>
                   </a>
                 </li>
+
+                <li class="hover">
+                  <a href="#" data-toggle="tab" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-money"></i>
+                    <span class="menu-text">
+                      Input Billing
+                    </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                  </a>
+
+                  <b class="arrow"></b>
+
+                  <ul class="submenu">
+                    <li class="hover" style="text-align: left">
+                      <a href="#" data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text"> Input Tindakan</span></a><b class="arrow"></b>
+                    </li>
+
+                    <li class="hover" style="text-align: left">
+                        <a data-toggle="tab" id="tab_obat_bhp" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($kode_bagian)?$kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan_bedah/obat_bhp/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                          <i class="menu-icon fa fa-caret-right"></i><span class="menu-text"> Input BHP</span></a><b class="arrow"></b>
+                      </li>
+                    
+                  </ul>
+                </li>
+
 
                 <li class="hover">
                   <a href="#" data-toggle="tab" class="dropdown-toggle">

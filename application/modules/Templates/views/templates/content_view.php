@@ -830,38 +830,45 @@
       }
 
       function hitung_usia(DOB){
-
-        var today = new Date(); 
-          var d = DOB;
-          if (!/\d{4}\-\d{2}\-\d{2}/.test(d)) {   // check valid format
+        var today = new Date();
+        var d = DOB;
+        if (!/\d{4}\-\d{2}\-\d{2}/.test(d)) {   // check valid format
           return false;
-          }
-          d = d.split("-");
+        }
+        d = d.split("-");
+        var byr = parseInt(d[0]);
+        var bmth = parseInt(d[1],10)-1;
+        var bdy = parseInt(d[2],10);
 
-          var byr = parseInt(d[0]); 
-          var nowyear = today.getFullYear();
-          if (byr >= nowyear || byr < 1900) {  // check valid year
+        var nowyear = today.getFullYear();
+        var nowmonth = today.getMonth();
+        var nowday = today.getDate();
+
+        if (byr >= nowyear || byr < 1900) {  // check valid year
           return false;
-          }
-
-          var bmth = parseInt(d[1],10)-1;  
-          if (bmth<0 || bmth>11) {  // check valid month 0-11
+        }
+        if (bmth<0 || bmth>11) {  // check valid month 0-11
           return false;
-          }
-
-          var bdy = parseInt(d[2],10); 
-          if (bdy<1 || bdy>31) {  // check valid date according to month
+        }
+        if (bdy<1 || bdy>31) {  // check valid date according to month
           return false;
-          }
+        }
 
-          var age = nowyear - byr;
-          var nowmonth = today.getMonth();
-          var nowday = today.getDate();
-          if (bmth > nowmonth) {age = age - 1}  // next birthday not yet reached
-          else if (bmth == nowmonth && nowday < bdy) {age = age - 1}
+        var ageYear = nowyear - byr;
+        var ageMonth = nowmonth - bmth;
+        var ageDay = nowday - bdy;
 
-          return age;
-          //alert('You are ' + age + ' years old'); 
+        if (ageDay < 0) {
+          ageMonth--;
+          var prevMonth = new Date(nowyear, nowmonth, 0).getDate();
+          ageDay += prevMonth;
+        }
+        if (ageMonth < 0) {
+          ageYear--;
+          ageMonth += 12;
+        }
+
+        return ageYear + " th " + ageMonth + " bln " + ageDay + " hr";
       }
 
       function getAge(paramsDate, style) {
