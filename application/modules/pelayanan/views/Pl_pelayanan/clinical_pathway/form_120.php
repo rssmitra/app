@@ -76,7 +76,27 @@
 
       <td><input type="text" name="form_120[frek_dja_<?php echo $i?>]" id="frek_dja_<?php echo $i?>" class="input_type" style="width:80%; text-align: center"></td>
 
-      <td><textarea name="form_120[catatan_<?php echo $i?>]" id="catatan_<?php echo $i?>" class="input_type" style="width:80%; height:50px !important"></textarea></td>
+      <!-- perbaikan form by amelia yahya 26 November 2025 -->
+      <!-- <td><textarea name="form_120[catatan_<?php echo $i?>]" id="catatan_<?php echo $i?>" class="input_type" style="width:80%; height:50px !important"></textarea></td> -->
+
+      <td style="padding:5px; vertical-align:top; text-align:left;">
+  <div contenteditable="true"
+       class="input_type"
+       id="catatan_<?php echo $i?>"
+       onchange="fillthis('catatan_<?php echo $i?>')"
+       style="width:80%; min-height:40px; border:1px solid #ccc; padding:5px;">
+    <?php 
+      echo isset($value_form['catatan_'.$i]) 
+        ? nl2br($value_form['catatan_'.$i]) 
+        : ''; 
+    ?>
+  </div>
+
+  <!-- hidden input supaya ikut terkirim -->
+  <input type="hidden"
+         name="form_120[catatan_<?php echo $i?>]"
+         id="hidden_catatan_<?php echo $i?>">
+</td>
 
       <td style="text-align:center;">
         <span class="ttd-btn" data-role="perawat_<?php echo $i?>" id="ttd_perawat_<?php echo $i?>" style="cursor:pointer;">

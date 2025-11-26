@@ -13,31 +13,91 @@
 </div>
 <br>
 
-<table border="1" width="100%" class="table" style="border-collapse: collapse; font-size: 13px; text-align: center;">
-  <thead style="font-weight: bold;">
-    <tr>
-      <th style="width:40px; vertical-align: middle; text-align: center;">No</th>
-      <th style="width:80px; vertical-align: middle; text-align: center;">Jam</th>
-      <th style="width:180px; vertical-align: middle; text-align: center;">Data Fokus</th>
-      <th style="width:50px; vertical-align: middle; text-align: center;">No Dx</th>
-      <th style="width:200px; vertical-align: middle; text-align: center;">Diagnosis Keperawatan</th>
-      <th style="width:150px; vertical-align: middle; text-align: center;">Tujuan</th>
-      <th style="width:350px; vertical-align: middle; text-align: center;">Rencana Tindakan</th>
-      <th style="width:100px; vertical-align: middle; text-align: center;">Paraf</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Baris pertama (Rencana tindakan digabung 10 baris) -->
-    <tr>
-      <td>1</td>
-      <td><input type="text" name="form_118[jam_1]" id="jam_1" class="input_type" style="width:100%;"></td>
-      <td><input type="text" name="form_118[data_fokus_1]" id="data_fokus_1" class="input_type" style="width:100%;"></td>
-      <td><input type="text" name="form_118[no_dx_1]" id="no_dx_1" class="input_type" style="width:100%;"></td>
-      <td><textarea name="form_118[diagnosis_1]" id="diagnosis_1" class="input_type" style="width:100%; height:50px;"></textarea></td>
-      <td><textarea name="form_118[tujuan_1]" id="tujuan_1" class="input_type" style="width:100%; height:50px;"></textarea></td>
+<!-- perbaikan form by amelia yahya 26 November 2025 -->
+<table border="1" width="100%" class="table"
+       style="border-collapse:collapse; font-size:13px; text-align:center;">
 
-      <!-- Rencana tindakan rowspan 10 -->
-      <td rowspan="10" style="text-align:left; vertical-align:top; padding:5px;">
+<thead>
+<tr>
+  <th style="width:40px;">No</th>
+  <th style="width:80px;">Jam</th>
+  <th style="width:180px;">Data Fokus</th>
+  <th style="width:60px;">No Dx</th>
+  <th style="width:200px;">Diagnosis Keperawatan</th>
+  <th style="width:150px;">Tujuan</th>
+  <th style="width:350px;">Rencana Tindakan</th>
+  <th style="width:120px;">Paraf</th>
+</tr>
+</thead>
+
+<tbody>
+<?php for($i=1; $i<=10; $i++): ?>
+<tr>
+  <td style="vertical-align:top;"><?php echo $i; ?></td>
+
+  <!-- JAM -->
+  <td style="padding:5px; vertical-align:top; text-align:left;">
+    <div contenteditable="true" class="input_type"
+         id="jam_<?php echo $i?>"
+         onchange="fillthis('jam_<?php echo $i?>')"
+         style="min-height:60px; border:1px solid #ccc; padding:5px;">
+      <?php echo isset($value_form['jam_'.$i]) ? $value_form['jam_'.$i] : ''; ?>
+    </div>
+    <input type="hidden" name="form_118[jam_<?php echo $i?>]"
+           id="hidden_jam_<?php echo $i?>">
+  </td>
+
+  <!-- DATA FOKUS -->
+  <td style="padding:5px; vertical-align:top; text-align:left;">
+    <div contenteditable="true" class="input_type"
+         id="data_fokus_<?php echo $i?>"
+         onchange="fillthis('data_fokus_<?php echo $i?>')"
+         style="min-height:60px; border:1px solid #ccc; padding:5px;">
+      <?php echo isset($value_form['data_fokus_'.$i]) ? nl2br($value_form['data_fokus_'.$i]) : ''; ?>
+    </div>
+    <input type="hidden" name="form_118[data_fokus_<?php echo $i?>]"
+           id="hidden_data_fokus_<?php echo $i?>">
+  </td>
+
+  <!-- NO DX -->
+  <td style="padding:5px; vertical-align:top; text-align:left;">
+    <div contenteditable="true" class="input_type"
+         id="no_dx_<?php echo $i?>"
+         onchange="fillthis('no_dx_<?php echo $i?>')"
+         style="min-height:60px; border:1px solid #ccc; padding:5px;">
+      <?php echo isset($value_form['no_dx_'.$i]) ? $value_form['no_dx_'.$i] : ''; ?>
+    </div>
+    <input type="hidden" name="form_118[no_dx_<?php echo $i?>]"
+           id="hidden_no_dx_<?php echo $i?>">
+  </td>
+
+  <!-- DIAGNOSIS -->
+  <td style="padding:5px; vertical-align:top; text-align:left;">
+    <div contenteditable="true" class="input_type"
+         id="diagnosis_<?php echo $i?>"
+         onchange="fillthis('diagnosis_<?php echo $i?>')"
+         style="min-height:60px; border:1px solid #ccc; padding:5px;">
+      <?php echo isset($value_form['diagnosis_'.$i]) ? nl2br($value_form['diagnosis_'.$i]) : ''; ?>
+    </div>
+    <input type="hidden" name="form_118[diagnosis_<?php echo $i?>]"
+           id="hidden_diagnosis_<?php echo $i?>">
+  </td>
+
+  <!-- TUJUAN -->
+  <td style="padding:5px; vertical-align:top; text-align:left;">
+    <div contenteditable="true" class="input_type"
+         id="tujuan_<?php echo $i?>"
+         onchange="fillthis('tujuan_<?php echo $i?>')"
+         style="min-height:60px; border:1px solid #ccc; padding:5px;">
+      <?php echo isset($value_form['tujuan_'.$i]) ? nl2br($value_form['tujuan_'.$i]) : ''; ?>
+    </div>
+    <input type="hidden" name="form_118[tujuan_<?php echo $i?>]"
+           id="hidden_tujuan_<?php echo $i?>">
+  </td>
+
+  <!-- RENCANA TINDAKAN -->
+  <?php if($i==1): ?>
+  <td rowspan="10" style="text-align:left; vertical-align:top; padding:5px;">
         <b>RENCANA TINDAKAN:</b><br>
         1. Keringkan bayi<br>
         2. Nilai apgar 1 dan 5 menit pertama setelah lahir<br>
@@ -69,38 +129,37 @@
         &nbsp;&nbsp;&bull; Pemeriksaan laboratorium bilirubin total, TSH dan golongan darah hari ketiga<br>
         20. Pemberian tetes polio sebelum pulang
       </td>
+  <?php endif; ?>
 
-      <td style="text-align:center;">
-        <span class="ttd-btn" data-role="perawat_1" id="ttd_perawat_1" style="cursor:pointer;">
-          <i class="fa fa-pencil blue"></i>
-        </span><br>
-        <img id="img_ttd_perawat_1" src="" style="display:none; max-width:100px; max-height:30px; margin-top:2px;"><br>
-        <input type="text" class="input_type" name="form_118[nama_perawat_1]" id="nama_perawat_1" placeholder="Nama" style="width:90%; text-align:center;">
-        <input type="hidden" name="form_118[ttd_perawat_1]" id="ttd_input_perawat_1">
-      </td>
-    </tr>
+  <!-- PARAF -->
+  <td style="text-align:center; vertical-align:top;">
+    <span class="ttd-btn"
+          data-role="perawat_<?php echo $i?>"
+          id="ttd_perawat_<?php echo $i?>" style="cursor:pointer;">
+      <i class="fa fa-pencil blue"></i>
+    </span><br>
+    <img id="img_ttd_perawat_<?php echo $i?>"
+         style="display:none; max-width:100px; max-height:30px;"><br>
 
-    <!-- Baris 2–10 tanpa kolom rencana tindakan -->
-    <?php for($i=2; $i<=10; $i++) : ?>
-    <tr>
-      <td><?php echo $i; ?></td>
-      <td><input type="text" name="form_118[jam_<?php echo $i?>]" id="jam_<?php echo $i?>" class="input_type" style="width:100%;"></td>
-      <td><input type="text" name="form_118[data_fokus_<?php echo $i?>]" id="data_fokus_<?php echo $i?>" class="input_type" style="width:100%;"></td>
-      <td><input type="text" name="form_118[no_dx_<?php echo $i?>]" id="no_dx_<?php echo $i?>" class="input_type" style="width:100%;"></td>
-      <td><textarea name="form_118[diagnosis_<?php echo $i?>]" id="diagnosis_<?php echo $i?>" class="input_type" style="width:100%; height:50px;"></textarea></td>
-      <td><textarea name="form_118[tujuan_<?php echo $i?>]" id="tujuan_<?php echo $i?>" class="input_type" style="width:100%; height:50px;"></textarea></td>
-      <td style="text-align:center;">
-        <span class="ttd-btn" data-role="perawat_<?php echo $i?>" id="ttd_perawat_<?php echo $i?>" style="cursor:pointer;">
-          <i class="fa fa-pencil blue"></i>
-        </span><br>
-        <img id="img_ttd_perawat_<?php echo $i?>" src="" style="display:none; max-width:120px; max-height:40px; margin-top:2px;"><br>
-        <input type="text" class="input_type" name="form_118[nama_perawat_<?php echo $i?>]" id="nama_perawat_<?php echo $i?>" placeholder="Nama" style="width:90%; text-align:center;">
-        <input type="hidden" name="form_118[ttd_perawat_<?php echo $i?>]" id="ttd_input_perawat_<?php echo $i?>">
-      </td>
-    </tr>
-    <?php endfor; ?>
-  </tbody>
+    <div contenteditable="true" class="input_type"
+         id="nama_perawat_<?php echo $i?>"
+         onchange="fillthis('nama_perawat_<?php echo $i?>')"
+         style="min-height:40px; border:1px solid #ccc; padding:5px; text-align:center;">
+      <?php echo isset($value_form['nama_perawat_'.$i]) ? $value_form['nama_perawat_'.$i] : ''; ?>
+    </div>
+
+    <input type="hidden" name="form_118[nama_perawat_<?php echo $i?>]"
+           id="hidden_nama_perawat_<?php echo $i?>">
+    <input type="hidden" name="form_118[ttd_perawat_<?php echo $i?>]"
+           id="ttd_input_perawat_<?php echo $i?>">
+  </td>
+
+</tr>
+<?php endfor; ?>
+</tbody>
 </table>
+
+
 
 <br>
 <hr>
