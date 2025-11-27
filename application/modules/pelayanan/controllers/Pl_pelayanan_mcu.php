@@ -1030,23 +1030,6 @@ class Pl_pelayanan_mcu extends MX_Controller {
 
         $data['pasien'] = $this->Reg_pasien->get_by_mr($data['kunjungan']->no_mr);
 
-        $userDob = $data['pasien']->tgl_lhr;
- 
-        //Create a DateTime object using the user's date of birth.
-        $dob = new DateTime($userDob);
-     
-        //We need to compare the user's date of birth with today's date.
-        $now = new DateTime();
-
-        //Calculate the time difference between the two dates.
-        $difference = $now->diff($dob);
-
-        //Get the difference in years, as we are looking for the user's age.
-        $umur = $difference->format('%y');
-
-        $data['pasien']->umur = $umur;
-
-
         /*parameter */
         $data['param_agama'] = $this->Pl_pelayanan_mcu->get_param('mst_religion','religion_name as label,religion_id as value',array('is_active' => 'Y'));
         $data['param_perkawinan'] = $this->Pl_pelayanan_mcu->get_param('mst_marital_status','ms_name as label,ms_id as value',array('is_active' => 'Y'));
@@ -1089,8 +1072,8 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $pdf->SetAuthor(COMP_FULL);
         $pdf->SetTitle(''.$filename.'');
 
-        $PDF_HEADER_LOGO = "logo_rssm_default.png";//any image file. check correct path.
-        $PDF_HEADER_LOGO_WIDTH = "25";
+        $PDF_HEADER_LOGO = "logo_rssm_new.png";//any image file. check correct path.
+        $PDF_HEADER_LOGO_WIDTH = "15";
         $PDF_HEADER_TITLE = COMP_LONG;
         $PDF_HEADER_STRING = COMP_ADDRESS;
         $PDF_FONT_NAME_MAIN = "helvetica";

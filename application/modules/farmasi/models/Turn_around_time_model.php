@@ -25,6 +25,7 @@ class Turn_around_time_model extends CI_Model {
 		$this->db->where('e_resep', 1);
 		$this->db->where('fr_tc_pesan_resep.status_batal is null');
 		$this->db->where('log_time_5 is not null');
+		$this->db->where('SUBSTRING(fr_tc_pesan_resep.kode_bagian_asal, 1,2) !=', '03'); // exc rawap inap
 
 	}
 
@@ -38,7 +39,6 @@ class Turn_around_time_model extends CI_Model {
 		}else{
 			$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
 		}
-
 
 		$i = 0;
 	

@@ -646,7 +646,7 @@ class Templates extends MX_Controller {
                 </tr>
                 <tr>
                     <td width="100px">Umur</td>
-                    <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
+                    <td width="180px">: '.$data->reg_data->umur_lengkap.'</td>
                     <td width="100px">Tanggal Periksa</td>
                     <td align="left" width="350px">: '.$this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk).'</td>
                     
@@ -702,7 +702,7 @@ class Templates extends MX_Controller {
                         </tr>
                         <tr>
                             <td width="100px">Umur</td>
-                            <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
+                            <td width="180px">: '.$data->reg_data->umur_lengkap.'</td>
                             
                         </tr>
                         <tr>
@@ -740,7 +740,7 @@ class Templates extends MX_Controller {
                     </tr>
                     <tr>
                         <td width="100px">Umur</td>
-                        <td width="300px">: '.$data->reg_data->umur.' Tahun</td>
+                        <td width="300px">: '.$data->reg_data->umur_lengkap.'</td>
                         <td width="120px">Tanggal Masuk</td>
                         <td align="left" width="300px">: '.$this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk).'</td>
                         
@@ -973,7 +973,7 @@ class Templates extends MX_Controller {
                 </tr>
                 <tr>
                     <td width="100px">Umur</td>
-                    <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
+                    <td width="180px">: '.$data->reg_data->umur_lengkap.'</td>
                     <td width="100px">Tanggal Periksa</td>
                     <td align="left" width="350px">: '.$this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk).'</td>
                     
@@ -1984,7 +1984,7 @@ class Templates extends MX_Controller {
                         </tr>
                         <tr>
                             <td width="100px">Umur</td>
-                            <td width="250px">: '.$data->reg_data->umur.' Tahun</td>
+                            <td width="250px">: '.$data->reg_data->umur_lengkap.'</td>
                             <td width="150px">Tanggal Pemeriksaan</td>
                             <td align="left" width="200px">: '.$this->tanggal->formatDateTime($data_pm->tgl_periksa).'</td>
                             
@@ -2003,7 +2003,7 @@ class Templates extends MX_Controller {
             $pm_ = $pm;
             $no_mr = $data->reg_data->no_mr;
             $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
-            $umur = $data->reg_data->umur;
+            $umur = $data->reg_data->umur_lengkap;
             $jk_ = $jk;
             $tgl_daftar = $this->tanggal->formatDateTime($data_pm->tgl_masuk);
             $tgl_periksa = $tgl_pemeriksaan;
@@ -2027,7 +2027,7 @@ class Templates extends MX_Controller {
                             <td width="150px">Tanggal Pendaftaran</td>
                             <td align="left" width="250px">: '.$tgl_daftar.'</td>
                             <td width="100px">Umur</td>
-                            <td width="200px">: '.$umur.' Tahun</td>     
+                            <td width="200px">: '.$umur.' </td>     
                         </tr>
 
                         <tr>

@@ -115,6 +115,7 @@ class Csm_verifikasi_costing extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Csm_verifikasi_costing->get_datatables();
+        // echo $this->db->last_query(); die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {

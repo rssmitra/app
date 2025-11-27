@@ -314,7 +314,7 @@ class Process_entry_resep extends MX_Controller {
         $kode_bagian = '060101'; // kode bagian farmasi
         
         $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
-        // echo '<pre>';print_r($this->db->last_query());die;
+        // echo '<pre>';print_r($trans_dt);die;
 
 
         foreach ($trans_dt as $k => $v) {
@@ -392,8 +392,7 @@ class Process_entry_resep extends MX_Controller {
                     "jenis_tindakan" => 11,
                     "nama_tindakan" => $nama_barang_tindakan ,
                     "bill_rs" => $total_harga,
-                    // "kode_ri" => isset($_POST['kode_ri'])?$_POST['kode_ri']:0,
-                    // "kode_poli" => isset($_POST['kode_poli'])?$_POST['kode_poli']:0,
+                    "harga_satuan" => $row_dt->harga_beli,
                     "jumlah" => $row_dt->jumlah_tebus,
                     "kode_barang" => (string)$kode_brg,
                     "kode_trans_far" => $row_dt->kode_trans_far,
@@ -401,7 +400,7 @@ class Process_entry_resep extends MX_Controller {
                     "kode_bagian_asal" => $row_dt->kode_bagian_asal,
                     "kode_profit" => $_POST['kode_profit'],
                     "kd_tr_resep" => $row_dt->relation_id,
-                    "no_kunjungan" => (in_array($_POST['kode_profit'], array(1000 , 2000) )) ?$row_dt->no_kunjungan : 0,
+                    "no_kunjungan" => isset($row_dt->no_kunjungan) ? $row_dt->no_kunjungan : 0,
                     "status_selesai" => 2,
                     "status_nk" => (in_array($_POST['kode_kelompok'], array(10 , 3) )) ? 1 : 0,
                     "status_karyawan" => ( $row_dt->flag_trans == 'RK' ) ? 1 : 0,

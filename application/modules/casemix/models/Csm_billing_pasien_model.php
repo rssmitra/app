@@ -22,6 +22,7 @@ class Csm_billing_pasien_model extends CI_Model {
         
         $year = date('Y') - 1;
         $this->db->select($this->select);
+        $this->db->select('dbo.fn_HitungUmur(CAST(mt_master_pasien.tgl_lhr as DATE), CAST(tc_registrasi.tgl_jam_masuk as DATE)) as umur_lengkap');
         $this->db->from($this->table);
         $this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr='.$this->table.'.no_mr', 'left');
         $this->db->join('mt_bagian', 'mt_bagian.kode_bagian='.$this->table.'.kode_bagian_masuk', 'left');

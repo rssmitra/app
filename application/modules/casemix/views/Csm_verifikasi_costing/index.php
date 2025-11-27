@@ -225,12 +225,13 @@ function format ( data ) {
 }
 
 function delete_row_dok_klaim(myid){
+  console.log(myid);
   if(confirm('Are you sure?')){
     preventDefault();
     $.ajax({
         url: 'casemix/Csm_verifikasi_costing/delete_dok_klaim',
-        type: "post",
-        data: {ID:myid},
+        type: "POST",
+        data: {ID: myid},
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  

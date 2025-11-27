@@ -1149,8 +1149,6 @@ function find_pasien_by_keyword(keyword){
             var pending_data_pasien = data.pending; 
             
             var umur_pasien = hitung_usia(obj.tgl_lhr);
-            // console.log(pending_data_pasien);
-            // console.log(hitung_usia(obj.tgl_lhr));
 
             $('#no_mr').text(obj.no_mr);
             $('#noMrHidden').val(obj.no_mr);

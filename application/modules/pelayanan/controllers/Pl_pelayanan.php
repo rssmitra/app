@@ -2638,6 +2638,8 @@ class Pl_pelayanan extends MX_Controller {
         $this->load->module('Templates/Templates.php');
         $temp = new Templates;
         $result = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
+
+        // echo '<pre>';print_r($result);die;
         $result->nama_ppa = $result->reg_data->nama_pegawai;
         $result->kode_dr = $result->reg_data->kode_dokter;
         $data = [];

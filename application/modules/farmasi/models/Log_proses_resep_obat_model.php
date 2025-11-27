@@ -23,6 +23,8 @@ class Log_proses_resep_obat_model extends CI_Model {
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_pesan_resep.kode_bagian_asal','left');
 		$this->db->where('status_terima NOT IN (1,2)');
 		$this->db->where('flag_trans', 'RJ');
+		
+		$this->db->where('SUBSTRING(fr_tc_pesan_resep.kode_bagian_asal, 1,2) !=', '03'); // exc rawap inap
 
 	}
 
@@ -56,6 +58,7 @@ class Log_proses_resep_obat_model extends CI_Model {
 				$this->db->order_by('log_time_6', 'ASC');
 			}
 		}
+
 
 		$i = 0;
 	

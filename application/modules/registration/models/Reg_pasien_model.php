@@ -24,6 +24,7 @@ class Reg_pasien_model extends CI_Model {
 		
 		$this->db->select($this->select);
 		$this->db->select('CAST(tgl_lhr as DATE) as tgl_lahir');
+		$this->db->select('dbo.fn_HitungUmur(CAST(tgl_lhr as DATE), GETDATE()) as umur_lengkap');
 		
 		$this->db->from($this->table);
 

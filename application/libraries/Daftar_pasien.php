@@ -19,6 +19,8 @@ final Class Daftar_pasien {
 
         $stat_pasien = $CI->master->check_pasien_lama_baru($no_mr); 
 
+        $umur = explode(' ', $umur_saat_pelayanan);
+
         /*save logs*/
         $data = array(
             'no_registrasi' => $no_registrasi,
@@ -30,7 +32,8 @@ final Class Daftar_pasien {
             'stat_pasien' => $stat_pasien,
             'kode_bagian_masuk' => $kode_bagian_masuk,
             'status_registrasi' => 0,
-            'umur' => $umur_saat_pelayanan,
+            'umur' => $umur[0],
+            'umur_lengkap' => $umur_saat_pelayanan,
             'no_sep' => $no_sep,
             'sirs_v1' => 1,
             'jd_id' => $jd_id,

@@ -32,26 +32,6 @@
 </head>
 <body> 
   
-  <!-- <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:34px">
-        
-    <tr>
-      <td width="60%"></td>
-      <td width="10%">Nama</td>
-      <td width="30%">: <?php echo $value->nama_pasien ?></td>
-    </tr>
-    <tr>
-      <td width="60%"></td>
-      <td>No. RM</td>
-      <td>: <?php echo $value->no_mr ?></td>
-    </tr>
-    <tr>
-      <td width="60%"></td>
-      <td>Tanggal</td>
-      <td>: <?php echo $this->tanggal->formatDate($value->tgl_jam_poli) ?></td>
-    </tr>
-    
-  </table> -->
-
   <br>
   <div class="content" style="display:inline-block">
 
@@ -83,7 +63,7 @@
         <td width="20px"></td>
         <td class="title">Umur</td>
         <td width="5px">:</td>
-        <td width="78%"> <?php echo $pasien->umur ?> Tahun</td>
+        <td width="78%"> <?php echo $pasien->umur_lengkap ?></td>
       </tr>
       <tr>
         <td width="20px"></td>

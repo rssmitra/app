@@ -253,7 +253,7 @@ class Penerimaan_brg extends MX_Controller {
                     
                     // ============= proses mutasi stok
                     $konversi_satuan_kecil = $_POST['terima_'.$rows.''] * $_POST['rasio'][$rows];
-                    $kartu_stok = $this->stok_barang->stock_process($rows, $konversi_satuan_kecil, $_POST['kode_bagian'], 1 ,"Nomor PO ".$_POST['no_po']."", 'restore');
+                    // $kartu_stok = $this->stok_barang->stock_process($rows, $konversi_satuan_kecil, $_POST['kode_bagian'], 1 ,"Nomor PO ".$_POST['no_po']."", 'restore');
                     // ============= end proses mutasi stok
                     
                     // ============= update mt_rekap_stok
@@ -285,7 +285,7 @@ class Penerimaan_brg extends MX_Controller {
                     $dataexc["harga"] = $harga['hna'];
                     $dataexc["disc"] = $harga['disc'];
                     $dataexc["harga_net"] = $harga['harga_satuan_netto'];
-                    $dataexc["persediaan"] = $harga['harga_persediaan'];
+                    $dataexc["persediaan"] = $harga['harga_satuan_persediaan'];
                     $dataexc["dpp"] = $harga['dpp'];
                     $dataexc["ppn"] = $harga['harga_total_ppn'];
                     $dataexc["updated_date"] = date('Y-m-d H:i:s');
@@ -297,8 +297,10 @@ class Penerimaan_brg extends MX_Controller {
                     // insert rekap stok
                     $rekap_stok = array(
                         'harga_beli' => $harga['harga_jual'], 
-                        'harga_beli_supplier' => $harga['harga_satuan_kecil'], 
-                        'harga_persediaan' => $harga['harga_satuan_kecil'] * $kartu_stok['stok_akhir'], 
+                        'harga_beli_supplier' => $harga['harga_satuan_kecil_sbl_ppn'], 
+                        'harga_persediaan' => $harga['harga_satuan_kecil_netto'], 
+                        'ppn_barang' => $harga['ppn_rp'], 
+                        'harga_sbl_ppn' => $harga['harga_satuan_kecil_sbl_ppn'], 
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );

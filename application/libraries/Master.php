@@ -896,16 +896,27 @@ final Class Master {
 		// total_harga_hetto = harga_satuan_netto * jumlah qty barang
 
 		// get maximum harga jual akhir
-		$existing = $db->select('max(harga_beli) as harga_beli')->get_where('mt_rekap_stok', array('kode_brg' => $params['kode_brg']) )->row();
+		// $existing = $db->select('max(harga_beli) as harga_beli')->get_where('mt_rekap_stok', array('kode_brg' => $params['kode_brg']) )->row();
+
+		// get harga beli terakhir berdasarkan PO
+		$query_po = "select MAX(harga_satuan_netto) as harga_beli FROM (
+						select top 3 * from tc_po_det where kode_brg = '".$params['kode_brg']."' order by id_tc_po_det DESC 
+						) as tbl
+						";
+		$existing = $db->query($query_po)->row();
+		// echo $existing->harga_beli;die;
 
 
 		// potonga diskon satuan barang
-		$pot_disc_rp = isset($params['disc_rp']) ? $params['disc_rp'] : 0;
+		if( isset($params['disc_rp']) && $params['disc_rp'] > 0 ){
+			$pot_disc_rp = $params['disc_rp'];
+		}else{
+			$pot_disc_rp = $params['hna'] * ($params['disc']/100);
+		}
 		$potongan_disk_satuan = $pot_disc_rp;
-		// $potongan_disk_satuan = ($pot_disc_rp == 0) ? $params['hna'] * ($params['disc']/100) : $pot_disc_rp;
 
 		// harga satuan setelah dipotong diskon dan ppn
-		$harga_satuan = $params['hna'] - ($potongan_disk_satuan/$params['qty']);
+		$harga_satuan = $params['hna'] - ($potongan_disk_satuan);
 
 		// total harga satuan 
 		$total_harga_satuan = $harga_satuan * $params['qty'];
@@ -924,35 +935,42 @@ final Class Master {
 		$harga_satuan_persediaan = $harga_persediaan / $params['rasio'];
 
 		// dpp
-		$dpp = $harga_satuan_netto * $params['qty'];
+		$dpp = $total_harga_satuan;
 		$total_ppn_val = $dpp * ($params['ppn'] / 100);
 
 		// harga satuan kecil / dibagi rasio
 		$harga_satuan_kecil = $params['hna'] / $params['rasio']; 
 		$harga_satuan_kecil_netto = $harga_satuan_netto / $params['rasio']; 
+		$harga_satuan_kecil_sbl_ppn = $harga_satuan / $params['rasio'];
 		
 		// harga jual satuan 
 		$harga_jual_ppn = $harga_satuan_kecil * ($params['ppn'] / 100);
 		// cari harga jual tertinggi
-		$harga_jual_baru = $harga_satuan_kecil + $harga_jual_ppn;
+		$harga_jual_baru = $harga_satuan_kecil_netto;
 		$harga_jual = ($existing->harga_beli > $harga_jual_baru) ? $existing->harga_beli : $harga_jual_baru;
 
 		$result = array(
+			'qty' => $params['qty'],
+			'rasio' => $params['rasio'],
 			'hna' => $params['hna'],
 			'disc' => $params['disc'],
-			'potongan_disc' => $potongan_disk_satuan,
+			'disc_rp' => $potongan_disk_satuan,
+			'dpp' => $dpp, // (Dasar Pengenaan Pajak) adalah nilai dasar yang digunakan untuk menghitung pajak
 			'ppn' => $params['ppn'],
-			'dpp' => $dpp,
-			'harga_total_ppn' => $total_ppn_val,
-			'harga_ppn' => $harga_ppn,
-			'harga_satuan' => $harga_satuan,
-			'harga_satuan_kecil' => $harga_satuan_kecil,
-			'total_harga_satuan' => $total_harga_satuan,
-			'harga_satuan_netto' => $harga_satuan_netto,
-			'harga_satuan_kecil_netto' => $harga_satuan_kecil_netto,
-			'total_harga_netto' => $total_harga_netto,
-			'harga_persediaan' => $harga_persediaan,
-			'harga_satuan_persediaan' => $harga_satuan_persediaan,
+			'ppn_rp' => $total_ppn_val, // adalah total ppn dari dpp
+			'harga_total_ppn' => $total_ppn_val, // adalah total ppn dari dpp
+			
+			'ppn_per_satuan_besar_brg' => $harga_ppn,
+			'harga_satuan_besar_stl_diskon' => $harga_satuan, // harga satuan sebelum dipotong diskon dan blm pajak
+			'harga_satuan_kecil_sbl_ppn' => $harga_satuan_kecil_sbl_ppn, // harga satuan sebelum ppn
+
+			'harga_satuan_kecil' => $harga_satuan_kecil, // harga satuan kecil setelah dibagi dengan rasio, setelah dipotong diskon dan tambah pajak
+			'total_harga_satuan' => $total_harga_satuan, // adalah total harga (harga satuan * qty) setelah dipotong diskon dan belum pajak
+			'harga_satuan_netto' => $harga_satuan_netto, // harga satuan sebelum dipotong diskon dan ditambah ppn
+			'harga_satuan_kecil_netto' => $harga_satuan_kecil_netto, // harga_satuan_kecil ditambah ppn
+			'total_harga_netto' => $total_harga_netto, // adalah total harga sebelum dipotong diskon + ppn
+			'harga_persediaan' => $dpp,
+			'harga_satuan_persediaan' => $harga_satuan, // harga satuan persediaan kecil
 			'harga_jual_ppn' => $harga_jual_ppn,
 			'harga_jual' => $harga_jual,
 		);
