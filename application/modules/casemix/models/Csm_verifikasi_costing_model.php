@@ -96,7 +96,7 @@ class Csm_verifikasi_costing_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 
 		$query = $this->db->get();
-		print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
