@@ -174,7 +174,7 @@
       <div class="col-xs-6">
           <center>
             <span style="font-size: 12px;"><strong><u>TRANSAKSI FARMASI</u></strong><br>
-              No. RSK-<?php echo $resep_kronis[0]['kode_trans_far']?> - <?php echo strtoupper($resep_kronis[0]['no_resep'])?>
+              No. RSK-<?php echo $resep_kronis[0]['kode_trans_far']?> - <?php echo strtoupper($resep_kronis[0]['no_resep'])?>.<?php echo strtoupper($resep[0]['id_iter'])?>
             </span>
             <div class="pull-right">
               <button onclick="PopupCenter('farmasi/Process_entry_resep/nota_farmasi/<?php echo $kode_trans_far; ?>?tipe=resep_kronis')" class="btn btn-xs btn-warning" title="Nota Farmasi">
@@ -289,7 +289,7 @@
       </div>
 
     <?php endif; ?>
-
+    <input type="hiddenxx" name="id_iter" id="id_iter" value="<?php echo strtoupper($resep[0]['id_iter'])?>">
     <!-- button action -->
     <div class="col-xs-12" >
       <hr>
@@ -395,7 +395,7 @@
       $.ajax({
           url: 'farmasi/process_entry_resep/rollback_by_kode_trans_far',
           type: "post",
-          data: { ID : id },
+          data: { ID : id, id_iter : $('#id_iter').val() },
           dataType: "json",
           beforeSend: function() {
             achtungShowLoader();  
@@ -416,7 +416,7 @@
               }
 
               if(flag == 'itr'){
-                $('#page-area-content').load('farmasi/Pengambilan_resep_iter/form/'+jsonResponse.iter+'?flag=RJ');
+                $('#page-area-content').load('farmasi/Pengambilan_resep_iter/form/'+jsonResponse.iter+'?id_iter='+$('#id_iter').val()+'&flag=RJ');
               }
               
 
