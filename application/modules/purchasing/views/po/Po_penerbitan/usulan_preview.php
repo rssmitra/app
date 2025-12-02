@@ -104,6 +104,7 @@ th, td {
           <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>di ACC</td>
           <td rowspan="2" style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Satuan</td>
           <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Harga Satuan</td>
+          <td rowspan="2" style="text-align:center; width: 125px; border: 1px solid black; border-collapse: collapse">Keterangan</td>
           </tr>
     </thead>
     <tbody>
@@ -131,6 +132,7 @@ th, td {
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo array_sum($jumlah_pesan[$row_dt[0]->kode_brg])?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->satuan_besar?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
+              <td style="text-align:left; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->keterangan_permohonan; ?></td>
              
             </tr>
             <?php endforeach;?>

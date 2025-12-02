@@ -293,6 +293,38 @@ class Distribusi_permintaan extends MX_Controller {
         }
     }
 
+    public function print_preview($id){
+        $result = $this->Distribusi_permintaan->get_brg_permintaan($_GET['flag'], $id);
+        $table = ($_GET['flag']=='non_medis')?'tc_permintaan_inst_nm':'tc_permintaan_inst';
+        $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
+        $subtitle = str_replace('_',' ',$_GET['flag']);
+        $data = array(
+            'dt_detail_brg' => $result,
+            'permintaan' => $this->db->get_where($table, array('id_tc_permintaan_inst' => $id))->row(),
+            'flag' => $_GET['flag'],
+            'title' => $title,
+            'subtitle' => $subtitle,
+            );
+        // echo '<pre>'; print_r($data);
+        $this->load->view('pendistribusian/Distribusi_permintaan/print_preview', $data);
+    }
+
+    public function print_preview_retur($id){
+        $result = $this->Distribusi_permintaan->get_brg_retur($_GET['flag'], $id);
+        // echo '<pre>'; print_r($result);die;
+        $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
+        $subtitle = str_replace('_',' ',$_GET['flag']);
+        $data = array(
+            'dt_detail_brg' => $result,
+            'retur' => $result[0],
+            'flag' => $_GET['flag'],
+            'title' => $title,
+            'subtitle' => $subtitle,
+            );
+        // echo '<pre>'; print_r($data);
+        $this->load->view('pendistribusian/Distribusi_permintaan/print_preview_retur', $data);
+    }
+
 
 
 

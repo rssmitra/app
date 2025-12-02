@@ -52,10 +52,10 @@ class Pengambilan_resep_iter extends MX_Controller {
         /*get value by id*/
 
         /*get value by id*/
-        $data['value'] = $this->Pengambilan_resep_iter->get_by_id($id);
+        $data['value'] = $this->Pengambilan_resep_iter->get_by_id($_GET['id_iter']);
+        // echo '<pre>';print_r($data);die;
         $data['resep'] = $this->Pengambilan_resep_iter->get_detail($id);
         $data['log_mutasi'] = $this->Pengambilan_resep_iter->get_riwayat_iter($id);
-        // echo '<pre>';print_r($data);die;
 
         /*title header*/
         $data['title'] = $this->title;

@@ -187,7 +187,8 @@ class Po_penerbitan extends MX_Controller {
                     }
                     // print_r($harga);die;
 
-                    $total_potongan_diskon = $harga[$row_checked]['potongan_disc'];
+                    $total_potongan_diskon = $harga[$row_checked]['disc_rp'];
+
                     $insertBatch[] = array(
                         "id_tc_po" => $newId,
                         "id_tc_permohonan_det" => $row_id_tc_det,
@@ -247,7 +248,7 @@ class Po_penerbitan extends MX_Controller {
                         // eksekusi rumus untuk mencari harga
                         $harga = $this->master->rumus_harga($config);
                         // echo "<pre>";print_r($harga);die;
-                        $total_potongan_diskon = $harga['potongan_disc'];
+                        $total_potongan_diskon = $harga['disc_rp'];
                         $updateBatch = array(
                             "id_tc_po" => $newId,
                             "id_tc_permohonan_det" => $row_id_tc_det,
@@ -443,6 +444,8 @@ class Po_penerbitan extends MX_Controller {
         $table = ($_GET['flag']=='non_medis')?'tc_po_nm':'tc_po';
         $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
         $result = $this->Po_penerbitan->get_po($_GET['flag'], $_GET['ID']);
+        
+		// echo '<pre>'; print_r($this->db->last_query());die;
         $getData = array();
         foreach($result as $row_dt){
             $getData[$row_dt->kode_brg][] = $row_dt;

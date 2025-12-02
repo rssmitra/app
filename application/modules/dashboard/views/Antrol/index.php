@@ -117,7 +117,7 @@
         if(response.code == 200){
           $('#span_'+kode+'_'+taskid+'').html('<span><i class="fa fa-check-circle green bigger-150"></i><br>'+response.time+'</span>');
         }else{
-          $('#span_'+kode+'_'+taskid+'').html('<span><i class="fa fa-times-circle red bigger-150"></i><br>'+response.time+'<br>'+response.msg+'</span><br><a href="#" class="label label-xs label-default" onclick="resend_antrol('+"'"+kode+"'"+', '+taskid+')"><i class="fa fa-refresh"></i> Kirim ulang</a>');
+          $('#span_'+kode+'_'+taskid+'').html('<span><i class="fa fa-times-circle red bigger-150"></i><br>'+response.time+'<br>'+response.msg+'</span><br><a href="#" class="label label-xs label-default" onclick="resend_antrol('+"'"+kode+"'"+', '+taskid+', '+"'no_registrasi'"+')"><i class="fa fa-refresh"></i> Kirim ulang</a>');
         }
     });  
 

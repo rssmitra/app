@@ -289,7 +289,7 @@ class Riwayat_penerimaan_brg extends MX_Controller {
                     $dataexc["harga"] = $harga['hna'];
                     $dataexc["disc"] = $harga['disc'];
                     $dataexc["harga_net"] = $harga['harga_satuan_netto'];
-                    $dataexc["persediaan"] = $harga['harga_persediaan'];
+                    $dataexc["persediaan"] = $harga['harga_satuan_persediaan'];
                     $dataexc["dpp"] = $harga['dpp'];
                     $dataexc["ppn"] = $harga['harga_total_ppn'];
                     // insert to table
@@ -298,9 +298,11 @@ class Riwayat_penerimaan_brg extends MX_Controller {
                                         
                     // insert rekap stok
                     $rekap_stok = array(
-                        'jml_sat_kcl' => $kartu_stok['stok_akhir'],
-                        'harga_beli' => $harga['harga_satuan_kecil_netto'], 
-                        'harga_persediaan' => $harga['harga_satuan_persediaan'], 
+                        'harga_beli' => $harga['harga_jual'], 
+                        'harga_beli_supplier' => $harga['harga_satuan_kecil_sbl_ppn'], 
+                        'harga_persediaan' => $harga['harga_satuan_kecil_netto'], 
+                        'ppn_barang' => $harga['harga_jual_ppn'], 
+                        'harga_sbl_ppn' => $harga['harga_satuan_kecil_sbl_ppn'], 
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );
@@ -311,9 +313,11 @@ class Riwayat_penerimaan_brg extends MX_Controller {
                     // ============= end update mt_rekap_stok
 
                     // ============= update mt_barang (rasio, harga, satuan)
+
                     $data_brg = array(
+                        'is_active' => 1,
                         'content' => $_POST['rasio'][$rows],
-                        'harga_beli' => $harga['harga_satuan_kecil_netto'],
+                        'harga_beli' => $harga['harga_jual'],
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );

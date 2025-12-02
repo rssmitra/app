@@ -107,14 +107,14 @@ class Antrol extends MX_Controller {
                 if(!empty($idt)){
                     $is_success = ($idt['response_code'] == 200) ? '<i class="fa fa-check-circle green bigger-150"></i>' : '<i class="fa fa-times-circle red bigger-150"></i>' ;
                     $is_success_msg = ($idt['response_code'] == 200) ? '<br>'.$convert_milisecod : '<br>'.$idt['response_msg'] ;
-                    $btn_reload = ($idt['response_code'] == 200) ? '': '<br><a href="#" class="label label-xs label-default" onclick="resend_antrol('."'".$key_list."'".', '.$i.')"><i class="fa fa-refresh"></i> Kirim ulang</a>';
+                    $btn_reload = ($idt['response_code'] == 200) ? '': '<br><a href="#" class="label label-xs label-default" onclick="resend_antrol('."'".$key_list."'".', '.$i.', '."'no_registrasi'".')"><i class="fa fa-refresh"></i> Kirim ulang</a>';
 
                     $row[] = '<div class="center" id="span_'.$key_list.'_'.$i.'">'.$is_success.$is_success_msg.$btn_reload.'</div>';
                     $task[$key_list][$i] = ($idt['response_code'] == 200) ? 1 : 0 ;
                     $task_fail[$key_list][$i] = ($idt['response_code'] != 200) ? 1 : 0 ;
                     $task_fail_msg[$key_list][$i] = ($idt['response_code'] != 200) ? $idt['response_msg'] : 0 ;
                 }else{
-                    $row[] = '<div class="center" id="span_'.$key_list.'_'.$i.'" ><a href="#" class="label label-xs label-default" onclick="resend_antrol('."'".$key_list."'".', '.$i.')"><i class="fa fa-refresh"></i> Kirim ulang</a></div>';
+                    $row[] = '<div class="center" id="span_'.$key_list.'_'.$i.'" ><a href="#" class="label label-xs label-default" onclick="resend_antrol('."'".$key_list."'".', '.$i.', '."'no_registrasi'".')"><i class="fa fa-refresh"></i> Kirim ulang</a></div>';
                     $task[$key_list][$i] = 0 ;
                     $task_fail[$key_list][$i] = 1 ;
                     $task_fail_msg[$key_list][$i] = 'NULL/Belum terkirim';
@@ -212,6 +212,7 @@ class Antrol extends MX_Controller {
         // get data registrasi
         if($flag == 'no_registrasi'){
             $rowdt = $this->db->get_where('tc_registrasi', ['no_registrasi' => $kodebooking])->row();
+            // echo "<pre>"; print_r($rowdt);die;
             // update kodebooking antrol
             $this->db->where(['no_registrasi' => $kodebooking])->update('tc_registrasi', ['kodebookingantrol' => $kodebooking]);
         }else{
@@ -219,7 +220,7 @@ class Antrol extends MX_Controller {
         }
 
         $detail_data = $this->Reg_pasien->get_detail_resume_medis($rowdt->no_registrasi);
-        // echo "<pre>"; print_r($detail_data);die;
+        echo "<pre>"; print_r($detail_data);die;
         $dt_reg = $detail_data['registrasi'];
         $dt_antrian = $detail_data['no_antrian'];
         $dt_jadwal = $detail_data['jadwal'];
@@ -281,13 +282,16 @@ class Antrol extends MX_Controller {
                 "kuotanonjkn" => $kuota,
                 "keterangan" => "Silahkan tensi dengan perawat"
             );
-            
+
+            echo '<pre>'; print_r($config_antrol);die;
             $addAntrian = $this->AntrianOnline->addAntrianOnsite($config_antrol, $dt_reg->tgl_jam_masuk);
+
+            $responseWs = $addAntrian['response'];
             $milisecond = strtotime($dt_reg->tgl_jam_masuk) * 1000;
             $convert_milisecod = date('Y-m-d H:i:s', $milisecond/1000);
-            $response = ['code' => $addAntrian['response_code'], 'msg' => $addAntrian['response_msg'], 'time' => $convert_milisecod];
-            
+            $response = ['code' => $responseWs->metadata->code, 'msg' => $responseWs->metadata->message, 'time' => $convert_milisecod];
             echo json_encode($response);
+            
         }else{
             // update task antrol
             $updateTask = $this->AntrianOnline->update_task_antrol($kodebooking, $taskid, $dt_reg->tgl_jam_masuk);
@@ -301,7 +305,7 @@ class Antrol extends MX_Controller {
     public function decrypt(){
         $string = 'eyJub2thcHN0IjoiMDAwMjQ0MTM0Njk3NCIsImtvZGVCb29raW5nIjoiMDExMlIwMzQwNzI0SUpTSTdYIiwibm9SdWp1a2FuIjoiMDkwMjA3MDAwNzI0UDAwODMwMCIsIm5vcm0iOm51bGwsImtldEt1bmp1bmdhbiI6IlJ1anVrYW4gRktUUCIsIm5hbWFGYXNrZXNBc2FsUnVqdWsiOiJSUyBTRVRJQSBNSVRSQSIsIm5hbWFQb2xpIjoiTUFUQSIsIm5hbWFEb2t0ZXIiOiJkci4gRGlhbmkgRHlhaCBTYXJhc3dhdGksIFNwIE0iLCJub21vckFudHJlYW4iOiJNQVQtMTEifQ==';
         $strdecrpt = $this->AntrianOnline->stringDecryptString($string);
-        echo "<pre>"; echo json_decode($strdecrpt);die;
+        // echo "<pre>"; echo json_decode($strdecrpt);die;
         $decompress = $this->AntrianOnline->decompress($string);
 
     }

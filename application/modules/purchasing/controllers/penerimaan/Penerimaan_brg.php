@@ -253,13 +253,8 @@ class Penerimaan_brg extends MX_Controller {
                     
                     // ============= proses mutasi stok
                     $konversi_satuan_kecil = $_POST['terima_'.$rows.''] * $_POST['rasio'][$rows];
-                    // $kartu_stok = $this->stok_barang->stock_process($rows, $konversi_satuan_kecil, $_POST['kode_bagian'], 1 ,"Nomor PO ".$_POST['no_po']."", 'restore');
+                    $kartu_stok = $this->stok_barang->stock_process($rows, $konversi_satuan_kecil, $_POST['kode_bagian'], 1 ,"Nomor PO ".$_POST['no_po']."", 'restore');
                     // ============= end proses mutasi stok
-                    
-                    // ============= update mt_rekap_stok
-                    // harga satuan kecil
-                    // $harga_satuan_kecil = $_POST['harga_satuan'][$rows] / $_POST['rasio'][$rows]; 
-                    // $harga_satuan_kecil_netto = $_POST['harga_satuan_netto'][$rows] / $_POST['rasio'][$rows]; 
                     
                     // ============= insert penerimaan barang detail
                     $config = array(
@@ -299,7 +294,7 @@ class Penerimaan_brg extends MX_Controller {
                         'harga_beli' => $harga['harga_jual'], 
                         'harga_beli_supplier' => $harga['harga_satuan_kecil_sbl_ppn'], 
                         'harga_persediaan' => $harga['harga_satuan_kecil_netto'], 
-                        'ppn_barang' => $harga['ppn_rp'], 
+                        'ppn_barang' => $harga['harga_jual_ppn'], 
                         'harga_sbl_ppn' => $harga['harga_satuan_kecil_sbl_ppn'], 
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),

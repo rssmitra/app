@@ -18,7 +18,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=fr_tc_resep_iter.kode_trans_far','left');
+		$this->db->join('fr_tc_far','fr_tc_far.kode_pesan_resep=fr_tc_resep_iter.kode_pesan_resep','left');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=fr_tc_far.no_registrasi','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left');
@@ -141,11 +141,11 @@ class Pengambilan_resep_iter_model extends CI_Model {
 	{
 		$this->_main_query();
 		if(is_array($id)){
-			$this->db->where_in(''.$this->table.'.kode_trans_far',$id);
+			$this->db->where_in(''.$this->table.'.id_iter',$id);
 			$query = $this->db->get();
 			return $query->result();
 		}else{
-			$this->db->where(''.$this->table.'.kode_trans_far',$id);
+			$this->db->where(''.$this->table.'.id_iter',$id);
 			$query = $this->db->get();
 			return $query->row();
 		}
