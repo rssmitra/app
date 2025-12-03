@@ -130,6 +130,7 @@ class Pengambilan_resep_iter extends MX_Controller {
             $this->db->trans_begin();
 
             $flag_trans = $this->Process_entry_resep->format_no_resep('ITR', 2000);
+
             $data_farmasi = array(
                 'no_resep' => $flag_trans,
                 'kode_profit' => $this->regex->_genRegex(2000, 'RGXINT'),
@@ -147,6 +148,8 @@ class Pengambilan_resep_iter extends MX_Controller {
                 'flag_trans' => $this->regex->_genRegex($_POST['flag_trans'], 'RGXAZ'),
                 'referensi' => $this->regex->_genRegex($_POST['kode_trans_far'], 'RGXQSL'),
                 'id_iter' => $this->regex->_genRegex($_POST['id_iter'], 'RGXINT'),
+                'status_transaksi' => $this->regex->_genRegex(1, 'RGXINT'),
+                'status_bayar' => $this->regex->_genRegex(1, 'RGXINT'),
             );
 
             /*cek terlebih dahulu data fr_tc_far*/
@@ -154,12 +157,10 @@ class Pengambilan_resep_iter extends MX_Controller {
             $cek_existing = ( $_POST['kode_trans_far'] == 0 ) ? false : $this->Process_entry_resep->cek_existing_data('fr_tc_far', array('referensi' => $_POST['kode_trans_far'], 'id_iter' => $_POST['id_iter']) );
 
             // print_r($cek_existing);die;
-
             // check data existing detail
             $prev_dt_detail = $this->Pengambilan_resep_iter->get_detail_group_by_id($_POST['kode_trans_far']);
             
             // print_r($prev_dt_detail);die;
-
             if( $cek_existing == false ){
                 $kode_trans_far = $this->master->get_max_number('fr_tc_far', 'kode_trans_far', array());
                 /*update existing*/
@@ -243,8 +244,6 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'anjuran_pakai' => $this->regex->_genRegex($ex_dt->anjuran_pakai, 'RGXQSL'),
                 );
 
-                
-
                 /*params log prb*/
                 $data_log_prb[] = array(
                     'id_iter' => $_POST['id_iter'],
@@ -263,10 +262,8 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'kd_tr_resep' => $this->regex->_genRegex($kd_tr_resep, 'RGXQSL'),
                 );
                 
-
             }
 
-            
             $this->db->trans_begin();
 
             $this->db->insert_batch('fr_tc_far_detail', $data_farmasi_detail);

@@ -329,7 +329,6 @@ class Riwayat_penerimaan_brg extends MX_Controller {
 
                     // update tc_po status kirim jika jumlah pesan dan jumlah kirim sudah sesuai
                     $po_dt = $this->Riwayat_penerimaan_brg->get_sisa_penerimaan($tc_po.'_det', $table.'_detail', $_POST['id_tc_po']);
-                    
 
                     if ( !isset($po_dt->total) || count($po_dt->total) == 0) {
                         $update_po = array(

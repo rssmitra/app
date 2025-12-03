@@ -217,6 +217,7 @@ class Po_penerbitan extends MX_Controller {
 
                 // insert batch
                 $this->db->insert_batch($table.'_det', $insertBatch);
+                $this->db->trans_commit();
 
             }
 
@@ -273,6 +274,7 @@ class Po_penerbitan extends MX_Controller {
                             // print_r($_POST);die;
                           $id_tc_permohonan_det[] = $row_id_tc_det;
                           $this->db->update($table.'_det', $updateBatch, array('id_tc_po_det' => $permohonan_det->id_tc_po_det) );
+                          $this->db->trans_commit();
                         // }
                         
                       }

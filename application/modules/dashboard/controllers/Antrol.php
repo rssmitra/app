@@ -220,7 +220,7 @@ class Antrol extends MX_Controller {
         }
 
         $detail_data = $this->Reg_pasien->get_detail_resume_medis($rowdt->no_registrasi);
-        echo "<pre>"; print_r($detail_data);die;
+        // echo "<pre>"; print_r($detail_data);die;
         $dt_reg = $detail_data['registrasi'];
         $dt_antrian = $detail_data['no_antrian'];
         $dt_jadwal = $detail_data['jadwal'];
@@ -283,7 +283,7 @@ class Antrol extends MX_Controller {
                 "keterangan" => "Silahkan tensi dengan perawat"
             );
 
-            echo '<pre>'; print_r($config_antrol);die;
+            // echo '<pre>'; print_r($config_antrol);die;
             $addAntrian = $this->AntrianOnline->addAntrianOnsite($config_antrol, $dt_reg->tgl_jam_masuk);
 
             $responseWs = $addAntrian['response'];

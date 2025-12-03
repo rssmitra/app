@@ -624,7 +624,6 @@ class Billing extends MX_Controller {
         $this->load->library('accounting');
 
         $this->db->trans_begin();
-        
         // get no seri kuitansi
         $seri_kuitansi_dt = $this->master->no_seri_kuitansi($_POST['no_registrasi']);
         // print_r($seri_kuitansi_dt);die;
