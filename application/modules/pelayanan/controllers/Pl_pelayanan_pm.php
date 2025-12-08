@@ -177,9 +177,9 @@ class Pl_pelayanan_pm extends MX_Controller {
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm_mcu($kode_penunjang,$kode_bag_tujuan);
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==2)){
             $list = $this->Pl_pelayanan_pm->get_hasil_pm_mcu($kode_penunjang,$kode_bag_tujuan,$mktimenya);
+            // echo '<pre>';print_r($list);die;
         }else{
             $list = $this->Pl_pelayanan_pm->get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya);
-            // echo '<pre>';print_r($list);die;
         }
         $data['list'] = $list;
         

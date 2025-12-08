@@ -483,6 +483,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->select($select);
 		$this->db->from('mcu_hasilpasien_pm_v');
 		$this->db->join('pm_mt_standarhasil','pm_mt_standarhasil.kode_mt_hasilpm=mcu_hasilpasien_pm_v.kode_mt_hasilpm','left');
+		$this->db->from('mcu_hasilpasien_pm_v');
 		$this->db->join('tc_kunjungan', 'mcu_hasilpasien_pm_v.no_kunjungan=tc_kunjungan.no_kunjungan', 'left');
 		$this->db->join('mt_karyawan d', 'd.kode_dokter=tc_kunjungan.kode_dokter', 'left');
 		$this->db->where('mcu_hasilpasien_pm_v.kode_penunjang', $kode_penunjang );
@@ -490,18 +491,20 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->order_by('pm_mt_standarhasil.urutan', 'ASC');
 		
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 	
 	function get_hasil_pm_mcu($kode_penunjang,$kode_bag_tujuan,$mktimenya='')
 	{
 		$column = array('mcu_isihasil_pm2_v.nama_tindakan');
-		$select = 'mcu_isihasil_pm2_v.*,pm_standarhasil_detail_v.*,tc_kunjungan.kode_dokter as kode_dokter1,d.nama_pegawai as dokter1';
+		$select = 'mcu_isihasil_pm2_v.*,pm_standarhasil_detail_v.*,tc_kunjungan.kode_dokter as kode_dokter1,d.nama_pegawai as dokter1, hasil';
 
 		$this->db->select($select);
 		$this->db->from('mcu_isihasil_pm2_v');
 		$this->db->join('pm_standarhasil_detail_v','pm_standarhasil_detail_v.kode_mt_hasilpm=mcu_isihasil_pm2_v.kode_mt_hasilpm','left');
+		
+		$this->db->join('pm_tc_hasilpenunjang','(pm_tc_hasilpenunjang.kode_mt_hasilpm=mcu_isihasil_pm2_v.kode_mt_hasilpm AND mcu_isihasil_pm2_v.kode_trans_pelayanan = pm_tc_hasilpenunjang.kode_trans_pelayanan AND flag_mcu = 1)','left');
 		//$this->db->join('pm_mt_standarhasil','pm_mt_standarhasil.kode_mt_hasilpm=mcu_isihasil_pm2_v.kode_mt_hasilpm','left');
 		$this->db->join('pm_tc_penunjang', 'pm_tc_penunjang.kode_penunjang=mcu_isihasil_pm2_v.kode_penunjang', 'left');
 		$this->db->join('tc_kunjungan', 'pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan', 'left');
@@ -515,7 +518,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->order_by('pm_standarhasil_detail_v.urutan', 'ASC');
 		
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

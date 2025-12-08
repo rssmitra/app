@@ -88,7 +88,7 @@ class Riwayat_kunjungan_pm extends MX_Controller {
             }
             
             if($row_list->flag_mcu == 1){
-                if($row_list->status_isi_hasil == 1){
+                if($row_list->status_isihasil == 1){
                     $status_pasien = 'selesai';
                 }else{
                     $status_pasien = 'belum_isi_hasil';
