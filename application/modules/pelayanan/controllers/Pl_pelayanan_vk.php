@@ -371,8 +371,8 @@ class Pl_pelayanan_vk extends MX_Controller {
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
         $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');        
-        $this->form_validation->set_rules('cara_keluar', 'Cara Keluar Pasien', 'trim|required');        
-        $this->form_validation->set_rules('pasca_pulang', 'Pasca Pulang', 'trim|required');        
+        //$this->form_validation->set_rules('cara_keluar', 'Cara Keluar Pasien', 'trim|required');        
+        //$this->form_validation->set_rules('pasca_pulang', 'Pasca Pulang', 'trim|required');        
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
