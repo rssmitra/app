@@ -181,7 +181,7 @@ $(document).ready(function() {
       data: $('#form_search').serialize(),
       dataType: "json",
       success: function(result) {
-        window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&'+result.data+'','_blank'); 
+        window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&no_mr=<?php echo $no_mr?>&'+result.data+'','_blank'); 
       }
     });
   });
@@ -443,7 +443,7 @@ function print_resume(no_registrasi){
 
         <div class="form-group">
 
-            <label class="control-label col-md-2">Tanggal CPPT</label>
+            <label class="control-label col-md-1">Tanggal</label>
             <div class="col-md-2">
               <div class="input-group">
                 <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
@@ -453,7 +453,7 @@ function print_resume(no_registrasi){
               </div>
             </div>
 
-            <label class="control-label col-md-1" style="margin-left: 58px;padding-left: 19px">s/d</label>
+            <label class="control-label col-md-1" style="margin-left: -10px">s/d</label>
             <div class="col-md-2">
               <div class="input-group">
                 <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
@@ -463,7 +463,23 @@ function print_resume(no_registrasi){
               </div>
             </div>
 
-            <div class="col-md-5 no-padding">
+            <!-- tipe RI/RJ -->
+            <label class="control-label col-md-1">Tipe</label>
+            <div class="col-md-2">
+              <div class="radio">
+                    <label>
+                      <input name="tipe_layan" type="radio" class="ace" value="RI"/>
+                      <span class="lbl"> RI</span>
+                    </label>
+                    <label>
+                      <input name="tipe_layan" type="radio" class="ace" value="RJ"/>
+                      <span class="lbl"> RJ</span>
+                    </label>
+              </div>
+            </div>
+
+
+            <div class="col-md-4 no-padding">
               <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default" style="margin-left: 19%">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Search
@@ -472,7 +488,7 @@ function print_resume(no_registrasi){
                 <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
                 Reset
               </a>
-              <a href="#" id="btn_export_pdf_cpptxx" onclick="openSlidePanel('OK')" class="btn btn-xs btn-danger">
+              <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
                 <i class="fa fa-file-pdf-o bigger-110"></i>
                 Export PDF
               </a>

@@ -308,11 +308,21 @@ if ($flag == 'no_registrasi') {
                 "kuotanonjkn" => $kuota,
                 "keterangan" => "Silahkan tensi dengan perawat"
             );
+<<<<<<< HEAD
+
+            $addAntrian = $this->AntrianOnline->addAntrianOnsite($config_antrol, $dt_reg->tgl_jam_masuk);
+            // echo '<pre>'; print_r($addAntrian);die;
+            $milisecond = strtotime($dt_reg->tgl_jam_masuk) * 1000;
+            $convert_milisecod = date('Y-m-d H:i:s', $milisecond/1000);
+            $response = ['code' => $addAntrian['response_code'], 'msg' => $addAntrian['response_msg'], 'time' => $convert_milisecod];
+            echo json_encode($response);
+=======
             
             $addAntrian = $this->AntrianOnline->addAntrianOnsite($config_antrol, $dt_reg->tgl_jam_masuk);
             $milisecond = strtotime($dt_reg->tgl_jam_masuk) * 1000;
             $convert_milisecod = date('Y-m-d H:i:s', $milisecond/1000);
             $response = ['code' => $addAntrian['response_code'], 'msg' => $addAntrian['response_msg'], 'time' => $convert_milisecod];
+>>>>>>> 2f89d145de73b0878c3892bc8e75e3dc36bd2094
             
             echo json_encode($response);
         }else{

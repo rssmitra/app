@@ -609,15 +609,53 @@ class Pl_pelayanan_ri_model extends CI_Model {
 
 	function get_datatables_cppt($no_mr)
 	{	
-		$this->db->select('view_cppt.*, tc_kunjungan.kode_bagian_tujuan');
-		$this->db->where('view_cppt.no_mr', $no_mr);
+
+		$this->db->select('
+			v.*, 
+			k.kode_bagian_tujuan, 
+			d.kode_dokter, 
+			d.ttd, 
+			d.nama_pegawai AS dpjp
+		');
+		$this->db->from('view_cppt v');
+
+		// Subquery tc_kunjungan (ROW_NUMBER)
+		$subKunjungan = "
+			SELECT *,
+				ROW_NUMBER() OVER(PARTITION BY no_kunjungan ORDER BY id_tc_kunjungan DESC) AS rn
+			FROM tc_kunjungan
+		";
+
+		$this->db->join("($subKunjungan) k", "k.no_kunjungan = v.no_kunjungan AND k.rn = 1", "left");
+
+		// Subquery mt_dokter_v (ROW_NUMBER)
+		$subDokter = "
+			SELECT *,
+				ROW_NUMBER() OVER(PARTITION BY kode_dokter ORDER BY kode_dokter) AS rn
+			FROM mt_dokter_v
+		";
+
+		$this->db->join("($subDokter) d", "d.kode_dokter = k.kode_dokter AND d.rn = 1", "left");
+
 		if(isset($_GET['no_registrasi'])){
-			$this->db->where('view_cppt.no_registrasi', $_GET['no_registrasi']);
+			$this->db->where('v.no_registrasi', $_GET['no_registrasi']);
 		}
-		$this->db->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=view_cppt.no_kunjungan', 'left');
-		$query = $this->db->order_by('tanggal', 'DESC')->get('view_cppt')->result();
-		// echo $this->db->last_query();
-		return $query;
+
+		if(isset($_GET['tipe_layan']) && $_GET['tipe_layan'] != ''){
+			$this->db->where('v.tipe', $_GET['tipe_layan']);
+		}
+
+
+		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+			$this->db->where("CAST(v.tanggal as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
+		}
+
+		$this->db->where('v.no_mr', $no_mr);
+
+		$query = $this->db->get();
+		$result = $query->result();
+		// echo $this->db->last_query(); die;
+		return $result;
 	}
 
 

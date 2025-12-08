@@ -1693,7 +1693,6 @@ class References extends MX_Controller {
         $this->db->order_by('a.id_kartu', 'DESC');
         $this->db->limit(1);
         $exc = $this->db->get()->result();
-		// print_r($this->db->last_query());die;
 
 		// stok cito
 		$this->db->from('tc_kartu_stokcito a');
@@ -1765,6 +1764,8 @@ class References extends MX_Controller {
 				/*harga umum*/
 				$html .= '<tr>';
 				$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, $exc[0]->kode_profit );
+				// echo "<pre>"; print_r($harga_satuan); echo "</pre>";
+				// die;
 				$default_selected_umum = 'checked';
 					$html .= '<td valign="middle" align="left">
 								<div class="radio">

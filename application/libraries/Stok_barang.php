@@ -36,6 +36,7 @@ final Class Stok_barang{
             
             /*get max id kartu stok*/
             $id_kartu = $CI->master->get_max_number($t_kartu_stok, 'id_kartu');
+            
             $dataexc["id_kartu"] = $id_kartu;
             $dataexc["kode_brg"] = $kodeBrg;
             $dataexc["stok_awal"] = $stok_akhir_mutasi;

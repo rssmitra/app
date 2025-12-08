@@ -899,9 +899,9 @@ final Class Master {
 		// $existing = $db->select('max(harga_beli) as harga_beli')->get_where('mt_rekap_stok', array('kode_brg' => $params['kode_brg']) )->row();
 
 		// get harga beli terakhir berdasarkan PO
-		$query_po = "select MAX(harga_satuan_netto) as harga_beli FROM (
+		$query_po = "select CAST((MAX(harga_satuan_netto)/content) AS INT) as harga_beli FROM (
 						select top 3 * from tc_po_det where kode_brg = '".$params['kode_brg']."' order by id_tc_po_det DESC 
-						) as tbl
+						) as tbl GROUP BY content
 						";
 		$existing = $db->query($query_po)->row();
 		// echo $existing->harga_beli;die;
@@ -910,13 +910,17 @@ final Class Master {
 		// potonga diskon satuan barang
 		if( isset($params['disc_rp']) && $params['disc_rp'] > 0 ){
 			$pot_disc_rp = $params['disc_rp'];
+			$harga_satuan = ($params['hna'] * $params['qty']) - ($pot_disc_rp);
+			$harga_satuan = $harga_satuan / $params['qty'];
 		}else{
 			$pot_disc_rp = $params['hna'] * ($params['disc']/100);
+			$harga_satuan = $params['hna'] - ($pot_disc_rp);
 		}
+		// echo $harga_satuan;die;
 		$potongan_disk_satuan = $pot_disc_rp;
 
+
 		// harga satuan setelah dipotong diskon dan ppn
-		$harga_satuan = $params['hna'] - ($potongan_disk_satuan);
 
 		// total harga satuan 
 		$total_harga_satuan = $harga_satuan * $params['qty'];
