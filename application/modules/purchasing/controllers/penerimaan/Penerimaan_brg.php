@@ -267,7 +267,8 @@ class Penerimaan_brg extends MX_Controller {
                     );
                     // eksekusi rumus untuk mencari harga
                     $harga = $this->master->rumus_harga($config);
-                    // print_r($harga);die;
+                    // echo '<pre>'; print_r($harga);die;
+
                     $dataexc["kode_brg"] = $rows;
                     $dataexc["id_penerimaan"] = $_POST['id'];
                     $dataexc["kode_penerimaan"] = $_POST['kode_penerimaan'];
@@ -468,6 +469,7 @@ class Penerimaan_brg extends MX_Controller {
         $flag = $_GET['flag'];
         
         $result = $this->Penerimaan_brg->get_detail_table($flag, $id);
+        
         foreach ($result as $key => $value) {
             $getData[$value->kode_brg][] = $value; 
         }

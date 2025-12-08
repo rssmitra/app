@@ -1555,11 +1555,41 @@ class Pl_pelayanan_ri extends MX_Controller {
     {   
         // box data
         $data = array();
+        $table_datas = array();
         $list = [];
-        $list = $this->Pl_pelayanan_ri->get_cppt_by_id($_GET['id']);
-        $data['data'] = $list;
-        // echo '<pre>'; print_r($data);die;
-        $this->load->view('Pl_pelayanan_ri/export_pdf_cppt', $data);
+        $list = $this->Pl_pelayanan_ri->get_datatables_cppt($_GET['no_mr']);
+        // echo '<pre>'; print_r($list);die;
+        $no = 0;
+        foreach ($list as $row_list) {
+
+            if($row_list->flag == 'cppt' && $row_list->jenis_form == null) :
+                $no++;
+                $diagnosa_sekunder = isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '';
+                $array_data[] = [
+                    'no' => $no,
+                    'tanggal' => $this->tanggal->formatDateTime($row_list->tanggal),
+                    'ppa' => strtoupper($row_list->ppa),
+                    'nama_ppa' => $row_list->nama_ppa,
+                    'tipe' => $row_list->tipe,
+                    'soap' =>  '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br><b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>',
+                    'ttd' => '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$row_list->ttd.'" width="250px" style="position: relative"><br>'.$row_list->dpjp.'',
+                    'diagnosa_sekunder' => isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '',
+                ];
+            endif;
+        }
+
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        // header cppt
+        $header = $temp->setGlobalProfileCppExportPDF($_GET['no_mr']);
+        $data['header'] = $header;
+        $data['data'] = $array_data;
+        // echo '<pre>'; print_r($array_data);die;
+        $html = '';
+        $html .= $this->load->view('Pl_pelayanan_ri/export_pdf_cppt', $data, true);
+
+        // export pdf from html
+        $temp->exportPdfContent($html, 'A4');
     }
 
     public function get_cppt_dt(){

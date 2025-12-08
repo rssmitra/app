@@ -283,13 +283,11 @@ class Antrol extends MX_Controller {
                 "keterangan" => "Silahkan tensi dengan perawat"
             );
 
-            // echo '<pre>'; print_r($config_antrol);die;
             $addAntrian = $this->AntrianOnline->addAntrianOnsite($config_antrol, $dt_reg->tgl_jam_masuk);
-
-            $responseWs = $addAntrian['response'];
+            // echo '<pre>'; print_r($addAntrian);die;
             $milisecond = strtotime($dt_reg->tgl_jam_masuk) * 1000;
             $convert_milisecod = date('Y-m-d H:i:s', $milisecond/1000);
-            $response = ['code' => $responseWs->metadata->code, 'msg' => $responseWs->metadata->message, 'time' => $convert_milisecod];
+            $response = ['code' => $addAntrian['response_code'], 'msg' => $addAntrian['response_msg'], 'time' => $convert_milisecod];
             echo json_encode($response);
             
         }else{

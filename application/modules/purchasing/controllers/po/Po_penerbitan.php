@@ -150,7 +150,7 @@ class Po_penerbitan extends MX_Controller {
             }else{
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                /*print_r($dataexc);die;*/
+                // print_r($dataexc);die;
                 /*update record*/
                 $this->Po_penerbitan->update($table, array('id_tc_po' => $id), $dataexc);
                 $newId = $id;
@@ -247,9 +247,11 @@ class Po_penerbitan extends MX_Controller {
                             'rasio' => $_POST['rasio'][$row_checked],
                         );
                         // eksekusi rumus untuk mencari harga
-                        $harga = $this->master->rumus_harga($config);
+                        $harga[$row_checked] = $this->master->rumus_harga($config);
+                        
                         // echo "<pre>";print_r($harga);die;
-                        $total_potongan_diskon = $harga['disc_rp'];
+
+                        $total_potongan_diskon = $harga[$row_checked]['disc_rp'];
                         $updateBatch = array(
                             "id_tc_po" => $newId,
                             "id_tc_permohonan_det" => $row_id_tc_det,
@@ -261,19 +263,20 @@ class Po_penerbitan extends MX_Controller {
                             "sipa" => $_POST['sipa'],
                             "diajukan_oleh" => $_POST['diajukan_oleh'],
                             "disetujui_oleh" => $_POST['disetujui_oleh'],
-                            "harga_satuan" => $harga['hna'],
-                            "jumlah_harga" => $harga['total_harga_satuan'],
-                            "harga_satuan_netto" => $harga['harga_satuan_netto'],
-                            "jumlah_harga_netto" => $harga['total_harga_netto'],
-                            "discount" => $harga['disc'],
+                            "harga_satuan" => $harga[$row_checked]['hna'],
+                            "jumlah_harga" => $harga[$row_checked]['total_harga_satuan'],
+                            "harga_satuan_netto" => $harga[$row_checked]['harga_satuan_netto'],
+                            "jumlah_harga_netto" => $harga[$row_checked]['total_harga_netto'],
+                            "discount" => $harga[$row_checked]['disc'],
                             "discount_rp" => $total_potongan_diskon,
-                            "ppn" => $harga['ppn'],
+                            "ppn" => $harga[$row_checked]['ppn'],
                         );
 
                         // if(isset($_POST['brg_diterima'][$row_checked]) AND $_POST['brg_diterima'][$row_checked] != ''){
                             // print_r($_POST);die;
                           $id_tc_permohonan_det[] = $row_id_tc_det;
                           $this->db->update($table.'_det', $updateBatch, array('id_tc_po_det' => $permohonan_det->id_tc_po_det) );
+                        //   echo '<pre>';print_r($this->db->last_query());die;
                           $this->db->trans_commit();
                         // }
                         

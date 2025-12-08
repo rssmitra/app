@@ -233,6 +233,7 @@ final class Tarif extends AvObjects {
         }
         $profit = $db->get()->row();
         $nilai_profit = 33.3/100;
+
         // print_r($profit);die;
         // if($profit->$select_profit != ''){
         //     $nilai_profit = $profit->$select_profit;
@@ -258,6 +259,7 @@ final class Tarif extends AvObjects {
         // print_r('kenaikan_profit = '.$kenaikan_profit);
         // print_r('nilai_profit = '.$nilai_profit);
         // print_r('jumlah = '.$jumlah);die;
+
         return (int)$total_harga_jual;
 
     }

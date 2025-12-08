@@ -720,6 +720,53 @@ class Templates extends MX_Controller {
         return $html;
     }
 
+    public function setGlobalProfileCppExportPDF($no_mr){
+        $html = '';
+        $profile = $this->db->select('mt_master_pasien.*, DBO.fn_HitungUmur(tgl_lhr, CAST(GETDATE() AS DATE)) as umur_lengkap')->get_where('mt_master_pasien', array('no_mr' => $no_mr))->row();
+        $html .= '<div id="header_form">';
+        $html .= '<table border="0" style="padding: 10px"><tr><td style="width: 50%">';
+        $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td align ="left"><img src="'.base_url().'/'.COMP_ICON.'" width="50px"></td>
+                    </tr>
+                    <tr><td align ="left" colspan="2"><b>'.COMP_LONG.'</b>&nbsp;</td></tr>
+                    <tr><td align ="left" colspan="2">'.COMP_ADDRESS_SORT.'</td></tr>
+                    <tr><td align ="left" colspan="2">Telp:&nbsp;'.COMP_TELP.'&nbsp;(Hunting)&nbsp;Fax:&nbsp;'.COMP_FAX.'&nbsp;</td></tr>
+                  </table>';
+        $html .= '</td>';
+        $html .= '<td style="width: 50%;">';
+            $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td width="100px">No. RM</td>
+                            <td width="180px">: '.$profile->no_mr.'</td>
+                        </tr>
+                        <tr>
+                            <td width="100px" align="left">Nama Pasien</td>
+                            <td width="180px">: '.ucwords(strtolower($profile->nama_pasien)).'</td>
+                        </tr>
+                        <tr>
+                            <td width="100px">Umur</td>
+                            <td width="180px">: '.$profile->umur_lengkap.'</td>
+                        </tr>
+                        <tr>
+                            <td width="100px">Jenis Kelamin</td>
+                            <td width="180px">: '.$profile->jen_kelamin.'</td>
+                        </tr>  
+                        <tr>
+                            <td width="100px"><br></td>
+                        </tr>    
+                        <tr><td colspan="2" align="center"><h3>CATATAN PERKEMBANGAN PASIEN TERINTEGRASI</h3></td></tr>                
+                    </table>';
+            
+        $html .= '</td>';
+        $html .= '</tr>';
+        $html .= '</table>';
+        $html .= '</div>';
+        // $html .= '<hr>';
+
+        return $html;
+    }
+
     public function setGlobalProfilePasienTemplateRI($data, $flag='', $pm=''){
         $html = '';
         $jk = ($data->reg_data->jk == 'L')?'Pria':'Wanita';
@@ -2051,6 +2098,69 @@ class Templates extends MX_Controller {
     public function export_tp_pdf($exp_no_registrasi, $tipe, $unique_code, $act_code){
         $this->Export_data->getContentPDF($exp_no_registrasi, $tipe, $unique_code, $act_code);
         return true;
+    }
+
+    public function exportPdfContent($html_content, $paper_type) { 
+        
+        // echo ''; print_r($html_content);die;
+        $this->load->library('pdf');
+        $pdf = new TCPDF($paper_type, PDF_UNIT, array(470,280), true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        
+        $pdf->SetAuthor(COMP_FULL);
+        $pdf->SetTitle('Print PDF Document');
+
+    // remove default header/footer
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+    // set default monospaced font
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    // set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT,PDF_MARGIN_BOTTOM);
+
+    // set auto page breaks
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    // set image scale factor
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    
+    // auto page break //
+        $pdf->SetAutoPageBreak(TRUE, 30);
+
+        //set page orientation
+        
+    // set some language-dependent strings (optional)
+        if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+            require_once(dirname(__FILE__).'/lang/eng.php');
+            $pdf->setLanguageArray($l);
+        }
+        
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->ln();
+
+        //kotak form
+        $pdf->AddPage($paper_type, 'A4');
+        //$pdf->setY(10);
+        $pdf->setXY(5,20,5,5);
+        $pdf->SetMargins(10, 10, 10, 10); 
+        /* $pdf->Cell(150,42,'',1);*/
+        $html = <<<EOD
+        <link rel="stylesheet" href="'.file_get_contents(_BASE_PATH_.'/assets/css/bootstrap.css)'" />
+EOD;
+        $html .= $html_content;
+        $result = $html;
+
+        // output the HTML content
+        $pdf->writeHTML($result, true, false, true, false, '');
+        ob_end_clean();
+
+        /*show pdf*/
+        $pdf->Output('test.pdf', 'I'); 
+        /*download*/
+        //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'D'); 
+        
     }
 
 
