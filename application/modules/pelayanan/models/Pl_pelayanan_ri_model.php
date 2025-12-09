@@ -651,6 +651,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		}
 
 		$this->db->where('v.no_mr', $no_mr);
+		$this->db->order_by('v.tanggal', 'DESC');
 
 		$query = $this->db->get();
 		$result = $query->result();
