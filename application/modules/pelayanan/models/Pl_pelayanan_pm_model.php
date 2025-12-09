@@ -249,11 +249,12 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		}
 		
 		if(is_array($no_kunjungan)){
-			$this->db->where_in(''.$this->table.'.no_kunjungan',$no_kunjungan);
+			$this->db->where_in(''.$this->table.'.no_kunjungan',trim($no_kunjungan));
 			$query = $this->db->get();
 			return $query->result();
 		}else{
-			$this->db->where(''.$this->table.'.no_kunjungan',$no_kunjungan);
+			$this->db->where(''.$this->table.'.no_kunjungan',trim($no_kunjungan));
+			$this->db->order_by('tgl_periksa', 'DESC');
 			$query = $this->db->get();
 			return $query->row();
 		}

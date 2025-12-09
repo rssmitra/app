@@ -406,6 +406,7 @@ class Csm_billing_pasien extends MX_Controller {
                 
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
+                // echo '<pre>'; print_r($data_pm);die;
                 $template_html = $temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm);
                 if(!isset($_GET['format'])){
                     $html .= $temp->setGlobalHeaderTemplate();

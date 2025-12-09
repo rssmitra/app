@@ -1627,8 +1627,8 @@ class Templates extends MX_Controller {
     public function TemplateHasilPM($no_registrasi, $tipe, $data, $pm, $flag_mcu='',$data_pm=''){
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
+        // echo '<pre>';print_r($data_pm);die;
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
-        // echo '<pre>';print_r($pm_data);die;
         $html = '';
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
@@ -2012,7 +2012,7 @@ class Templates extends MX_Controller {
     public function setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm=''){
         $html = '';
         $jk = ($data->reg_data->jk == 'L')?'Pria':'Wanita';
-        // echo'<pre>';print_r($data);die;
+        // echo'<pre>';print_r($data_pm);die;
         if($flag=='RAD'){
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
