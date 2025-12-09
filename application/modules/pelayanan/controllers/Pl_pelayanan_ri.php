@@ -1574,6 +1574,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                     'soap' =>  '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br><b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$diagnosa_sekunder.''.'<br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>',
                     'ttd' => '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$row_list->ttd.'" width="250px" style="position: relative"><br>'.$row_list->dpjp.'',
                     'diagnosa_sekunder' => isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '',
+                    'verified_date' => $this->tanggal->formatDateTime($row_list->verified_date),
+                    'verified_by' => $row_list->verified_by,
                 ];
             endif;
         }
@@ -1585,11 +1587,12 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['header'] = $header;
         $data['data'] = $array_data;
         // echo '<pre>'; print_r($array_data);die;
-        $html = '';
-        $html .= $this->load->view('Pl_pelayanan_ri/export_pdf_cppt', $data, true);
+        // $html = '';
+        // $html .= $this->load->view('Pl_pelayanan_ri/export_pdf_cppt', $data, false);
+        $this->load->view('Pl_pelayanan_ri/export_pdf_cppt', $data, false);
 
         // export pdf from html
-        $temp->exportPdfContent($html, 'A4');
+        // $temp->exportPdfContent($html, 'A4');
     }
 
     public function get_cppt_dt(){

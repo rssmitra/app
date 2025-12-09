@@ -724,7 +724,7 @@ class Templates extends MX_Controller {
         $html = '';
         $profile = $this->db->select('mt_master_pasien.*, DBO.fn_HitungUmur(tgl_lhr, CAST(GETDATE() AS DATE)) as umur_lengkap')->get_where('mt_master_pasien', array('no_mr' => $no_mr))->row();
         $html .= '<div id="header_form">';
-        $html .= '<table border="0" style="padding: 10px"><tr><td style="width: 50%">';
+        $html .= '<table border="0" style="padding: 10px" width="100%"><tr><td style="width: 50%">';
         $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td align ="left"><img src="'.base_url().'/'.COMP_ICON.'" width="50px"></td>
@@ -754,8 +754,7 @@ class Templates extends MX_Controller {
                         </tr>  
                         <tr>
                             <td width="100px"><br></td>
-                        </tr>    
-                        <tr><td colspan="2" align="center"><h3>CATATAN PERKEMBANGAN PASIEN TERINTEGRASI</h3></td></tr>                
+                        </tr>                  
                     </table>';
             
         $html .= '</td>';
