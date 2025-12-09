@@ -144,7 +144,7 @@
         data: $('#form_search').serialize(),
         dataType: "json",
         success: function(result) {
-          window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&no_mr=<?php echo $no_mr?>&'+result.data+'','_blank'); 
+          window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&no_mr=<?php echo $no_mr?>&order_by=v.tanggal&sort=ASC&'+result.data+'','_blank'); 
         }
       });
     });
