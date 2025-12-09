@@ -2611,23 +2611,33 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data = $this->db->get_where('th_monitor_pemberian_obat', ['id' => $id])->row();
         if($data){
             $waktu = json_decode($data->waktu, true);
+            // echo "<pre>";print_r($waktu);die;
+            $waktu_obat = [];
             foreach($waktu as $k => $v){
                 // echo "<pre>";print_r($v);die;
                 if($k == $this->input->get('waktu')){
                     $update_pelaksanaan = ($pelaksanaan == 'true') ? '1' : '0';
+                    $waktu_obat[$k] = [
+                        'jam' => $v['jam'],
+                        'catatan' => $v['catatan'],
+                        'pelaksanaan' => $update_pelaksanaan, // 0 = belum dilaksanakan, 1 = sudah dilaksanakan
+                        'perawat' => $this->session->userdata('user')->fullname , 
+                        'waktu_pelaksanaan' => date('Y-m-d H:i:s') // waktu pemberian obat, 
+                    ];
                     // echo "<pre>";print_r($update_pelaksanaan);die;
                 }else{
                     $update_pelaksanaan = $v['pelaksanaan']; // tetap
+                    $waktu_obat[$k] = [
+                        'jam' => $v['jam'],
+                        'catatan' => $v['catatan'],
+                        'pelaksanaan' =>  $v['pelaksanaan'], // 0 = belum dilaksanakan, 1 = sudah dilaksanakan
+                        'perawat' =>  $v['perawat'] , 
+                        'waktu_pelaksanaan' =>  $v['waktu_pelaksanaan'] // waktu pemberian obat, 
+                    ];
 
                 }
                 
-                $waktu_obat[$k] = [
-                    'jam' => $v['jam'],
-                    'catatan' => $v['catatan'],
-                    'pelaksanaan' => $update_pelaksanaan, // 0 = belum dilaksanakan, 1 = sudah dilaksanakan
-                    'perawat' => $this->session->userdata('user')->fullname , 
-                    'waktu_pelaksanaan' => date('Y-m-d H:i:s') // waktu pemberian obat, 
-                ];
+                
             }
             // echo "<pre>";print_r($waktu_obat);die;
             $this->db->where('id', $id)->update('th_monitor_pemberian_obat', ['waktu' => json_encode($waktu_obat)]);
