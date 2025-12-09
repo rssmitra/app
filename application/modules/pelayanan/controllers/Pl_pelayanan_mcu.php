@@ -266,7 +266,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_poli);
             $row[] = $row_list->nama_pegawai;
             $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
-            $row[] = '<div class="center">'.$row_list->nama_tarif.'</div>';
+            $row[] = '<div class="left">'.$row_list->nama_tarif.'</div>';
 
             $status_periksa = '';
             if($row_list->status_batal==1){

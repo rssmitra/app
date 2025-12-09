@@ -1368,7 +1368,8 @@ class Billing extends MX_Controller {
 
             $kode_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
             $data_kunjungan = $this->db->get_where('tc_kunjungan', array('no_kunjungan' => $_POST['no_kunjungan']))->row();
-            
+            $tarifDokter = [];
+            $tarifInsert = [];
             $dataexc = array(
                 /*form hidden input default*/
                 'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXINT'),
@@ -1408,14 +1409,16 @@ class Billing extends MX_Controller {
 
                  $tarifInsert = $this->tarif->getTarifForinsert();
  
-                 $mergeData = array_merge($dataexc, $tarifDokter, $tarifInsert);
+                 
             }else{
                 $dataexc['bill_rs'] = $_POST['total_ruangan'];
-                $dataexc['total'] = $_POST['total_ruangan'];
+                // $dataexc['total'] = $_POST['total_ruangan'];
             }
+
+            $mergeData = array_merge($dataexc, $tarifDokter, $tarifInsert);
            
 
-            // echo "<pre>";print_r($dataexc);die;
+            // echo "<pre>";print_r($mergeData);die;
             
             /*save tc_trans_pelayanan*/
             $this->db->insert('tc_trans_pelayanan', $mergeData);

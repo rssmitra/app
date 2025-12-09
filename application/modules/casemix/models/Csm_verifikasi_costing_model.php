@@ -59,7 +59,8 @@ class Csm_verifikasi_costing_model extends CI_Model {
 
 		$this->db->where('csm_reg_pasien.is_submitted', 'Y');
 		$this->db->where('csm_reg_pasien.kode_perusahaan', 120);
-		$this->db->where('csm_dokumen_klaim.no_sep is not null');
+		// $this->db->where('csm_dokumen_klaim.no_sep is not null');
+		$this->db->where('csm_dokumen_klaim.csm_dk_filename != ', '.pdf');
 			
 	}
 
