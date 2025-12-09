@@ -219,30 +219,29 @@ class Antrol extends MX_Controller {
         // }
 
         // get data registrasi
-if ($flag == 'no_registrasi') {
+        if ($flag == 'no_registrasi') {
 
-    $this->db->from('tc_registrasi');
-    $this->db->group_start();
-        $this->db->where('no_registrasi', $kodebooking);
-        $this->db->or_where('kodebookingantrol', $kodebooking);
-    $this->db->group_end();
+            $this->db->from('tc_registrasi');
+            $this->db->group_start();
+                $this->db->where('no_registrasi', $kodebooking);
+                $this->db->or_where('kodebookingantrol', $kodebooking);
+            $this->db->group_end();
 
-    $rowdt = $this->db->get()->row();
+            $rowdt = $this->db->get()->row();
 
-    // ✅ HANYA update jika data ditemukan
-    if (!empty($rowdt)) {
-        $this->db->where('no_registrasi', $rowdt->no_registrasi)
-                 ->update('tc_registrasi', [
-                     'kodebookingantrol' => $kodebooking
-                 ]);
-    }
+            if (!empty($rowdt)) {
+                $this->db->where('no_registrasi', $rowdt->no_registrasi)
+                        ->update('tc_registrasi', [
+                            'kodebookingantrol' => $kodebooking
+                        ]);
+            }
 
-} else {
+        } else {
 
-    $rowdt = $this->db->get_where('tc_registrasi', [
-        'kodebookingantrol' => $kodebooking
-    ])->row();
-}
+            $rowdt = $this->db->get_where('tc_registrasi', [
+                'kodebookingantrol' => $kodebooking
+            ])->row();
+        }
         
 
         $detail_data = $this->Reg_pasien->get_detail_resume_medis($rowdt->no_registrasi);
@@ -328,7 +327,7 @@ if ($flag == 'no_registrasi') {
     public function decrypt(){
         $string = 'eyJub2thcHN0IjoiMDAwMjQ0MTM0Njk3NCIsImtvZGVCb29raW5nIjoiMDExMlIwMzQwNzI0SUpTSTdYIiwibm9SdWp1a2FuIjoiMDkwMjA3MDAwNzI0UDAwODMwMCIsIm5vcm0iOm51bGwsImtldEt1bmp1bmdhbiI6IlJ1anVrYW4gRktUUCIsIm5hbWFGYXNrZXNBc2FsUnVqdWsiOiJSUyBTRVRJQSBNSVRSQSIsIm5hbWFQb2xpIjoiTUFUQSIsIm5hbWFEb2t0ZXIiOiJkci4gRGlhbmkgRHlhaCBTYXJhc3dhdGksIFNwIE0iLCJub21vckFudHJlYW4iOiJNQVQtMTEifQ==';
         $strdecrpt = $this->AntrianOnline->stringDecryptString($string);
-        echo "<pre>"; echo json_decode($strdecrpt);die;
+        // echo "<pre>"; echo json_decode($strdecrpt);die;
         $decompress = $this->AntrianOnline->decompress($string);
 
     }
