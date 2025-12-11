@@ -191,6 +191,10 @@ $('select[name="kode_sub_gol"]').change(function () {
                   <div class="col-md-1">
                     <input name="stok_maksimum" id="stok_maksimum" value="<?php echo isset($value)?$value->stok_maksimum:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>
+                  <label class="control-label col-md-2">Harga Pembelian Terakhir</label>
+                    <div class="col-md-2">
+                      <input name="harga_beli" id="harga_beli" value="<?php echo isset($value)?$value->harga_beli:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -253,11 +257,6 @@ $('select[name="kode_sub_gol"]').change(function () {
                     <input type="hidden" name="margin_percent" id="margin_percent" value="<?php echo isset($value->margin_percent)?$value->margin_percent:''?>">
                     </div>
 
-                    <label class="control-label col-md-2">Harga Pembelian Terakhir</label>
-                    <div class="col-md-2">
-                      <input name="harga_beli" id="harga_beli" value="<?php echo isset($value)?$value->harga_beli:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
-                    </div>
-                    
                   </div>
 
                   <div class="form-group">
