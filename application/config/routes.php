@@ -73,4 +73,36 @@ $route['ws/getMedicalRecord'] = "api/service/getMedicalRecord";
 $route['ws/getMedicalExam'] = "api/service/getMedicalExam";
 $route['ws/getMedicalExamResult'] = "api/service/getMedicalExamResult";
 
+// web service website setia mitra
+// static
+$route['patient-criterias'] = "api/web_api/patient_criterias";
+$route['payouts'] = "api/web_api/payouts";
+$route['appointment-status'] = "api/web_api/appointment_status";
+$route['policlinic-schedule-types'] = "api/web_api/policlinic_schedule_types";
+$route['policlinic-queue-status'] = "api/web_api/policlinic_queue_status";
+$route['schedule-days'] = "api/web_api/schedule_days";
+$route['specialists'] = "api/web_api/specialists";
+// master data
+$route['specialists'] = "api/web_api/specialists";
+$route['insurances'] = "api/web_api/insurances";
+$route['subdistricts'] = "api/web_api/subdistricts";
+$route['diseases'] = "api/web_api/diseases";
+
+// Patient
+$route['patient'] = "api/web_api/patient";
+$route['bpjs/(:any)/references'] = "api/web_api/references/$1";
+
+// Doctors
+$route['doctors'] = "api/web_api/doctors";
+$route['doctors/(:any)'] = "api/web_api/doctor_detail/$1";
+$route['doctors/(:any)/time-availabilities'] = "api/web_api/doctor_time_available/$1";
+
+// Appointments
+$route['appointments'] = "api/web_api/appointments";
+$route['appointments/(:any)'] = "api/web_api/appointments/$1";
+$route['payout-available'] = "api/web_api/payout_available";
+
+// Policlinics Queue
+$route['polyclinic-queues'] = "api/web_api/polyclinic_queues";
+
 

@@ -38,7 +38,8 @@ function printDivHtml(divId) {
   <div class="pull-right"><a href="<?php echo base_url()?>Templates/Export_data/exportContent?type=pdf&flag=catatan_pengkajian&mod=Pl_pelayanan_ri&cppt_id=<?php echo $result->id?>&paper=P" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-print"></i> Print PDF</a></div> 
 
     <input type="hidden" name="idx_cppt" id="idx_cppt" value="<?php echo $cppt_id?>">
-    <div id="editor"><?php echo $html_form?></div>
+
+    <div id="editorxx"><?php echo $html_form?></div>
   </div>
      
 </div>

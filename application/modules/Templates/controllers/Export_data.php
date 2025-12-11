@@ -170,13 +170,13 @@ class Export_data extends MX_Controller {
 
         $obj = new $class;
         $content = $obj->get_content_data();
+        // echo '<pre>'; print_r($content);die;
         $html_content = $content->catatan_pengkajian;
 
         $data = [
             'cppt_id' => $content->cppt_id,
             'html_content' => $html_content,
         ];
-        // echo '<pre>'; print_r($data);die;
         $this->load->view('templates/view_html_content', $data);
 
 

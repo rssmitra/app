@@ -1671,6 +1671,7 @@ class Pl_pelayanan_ri extends MX_Controller {
     }
 
     public function show_catatan_pengkajian($cppt_id){
+
         $query = $this->db->get_where('view_cppt', array('id' => $cppt_id))->row();
 
         $this->load->module('Templates/Templates.php');
@@ -1699,8 +1700,8 @@ class Pl_pelayanan_ri extends MX_Controller {
 
                 $data['header'] = $header;
                 $data['footer'] = $footer;
-                // echo "<pre>"; print_r($data);die;
                 $data["html_form"] = $this->load->view('Pl_pelayanan/clinical_pathway/'.$data['jenis_form'].'', $data, true);
+                // echo "<pre>"; print_r($data);die;
 
                 $html = $this->load->view('Pl_pelayanan/form_show_pengkajian', $data, true);
                 echo json_encode(array('html' => $html, 'result' => $query, 'value_form' => $end_array));
