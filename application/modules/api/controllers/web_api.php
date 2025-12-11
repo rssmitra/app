@@ -640,6 +640,8 @@ class Web_api extends MX_Controller {
         // Require basic auth
         $this->require_basic_auth();
 
+        $this->load->helper('mssql');
+
         // paging / sort / filter params
         $limit   = (int)$this->input->get('limit');
         $skip    = (int)$this->input->get('skip');
@@ -714,8 +716,8 @@ class Web_api extends MX_Controller {
         // keyword search on doctor name or specialist name
         if ($keyword !== '') {
             $this->db->group_start();
-            $this->db->like('nama_pegawai', $keyword);
-            $this->db->or_like('nama_bagian', $keyword);
+            $this->db->like('j.nama_pegawai', $keyword);
+            // $this->db->or_like('j.nama_bagian', $keyword);
             $this->db->group_end();
             // reset skip when searching similar to other endpoints
             $skip = 0;
@@ -723,12 +725,12 @@ class Web_api extends MX_Controller {
 
         // filters
         if (!empty($specialistXids)) {
-            $this->db->where_in('jd_kode_spesialis', $specialistXids);
+            $this->db->where_in('j.jd_kode_spesialis', $specialistXids);
             $skip = 0;
         }
 
         if (!empty($dayIds)) {
-            $this->db->where_in('jd_hari', $dayIds);
+            $this->db->where_in('j.jd_hari', $dayIds);
             $skip = 0;
         }
 
@@ -752,17 +754,37 @@ class Web_api extends MX_Controller {
         // echo $this->db->last_query(); die;
 
         // fetch doctors (distinct) with pagination
-        $this->db->select('jd_kode_dokter, nama_pegawai, url_foto_karyawan, pengalaman_tahun, updated_date, specialist_xid, nama_bagian, is_eksekutif', false);
-        $this->db->group_by('jd_kode_dokter, nama_pegawai, url_foto_karyawan, pengalaman_tahun, specialist_xid, nama_bagian, is_eksekutif, updated_date');
-        $this->db->where("jd_kode_spesialis NOT IN ('012601','012801','012901', '012101','012201','013601', '013801', '013101')");
+        $this->db->select('
+            j.jd_kode_dokter,
+            j.nama_pegawai,
+            j.url_foto_karyawan,
+            j.pengalaman_tahun,
+            MAX(j.updated_date) AS updated_date,
+            j.specialist_xid,
+            j.nama_bagian,
+            j.is_eksekutif
+        ', false);
+
+        $this->db->from('view_jadwal_dokter');
+
+        $this->db->where("j.jd_kode_spesialis NOT IN ('012601','012801','012901','012101','012201','013601','013801','013101')");
+
+        $this->db->group_by('
+            j.jd_kode_dokter,
+            j.nama_pegawai,
+            j.url_foto_karyawan,
+            j.pengalaman_tahun,
+            j.specialist_xid,
+            j.nama_bagian,
+            j.is_eksekutif
+        ');
 
         $this->db->order_by($order_by, $order_dir);
-        $query = $this->db->get(null, $limit, $skip); // null because from already set in cache
-        // $query = $this->db->get(null, $limit); // null because from already set in cache
-        $rows = $query->result();
 
-        // echo $this->db->last_query(); die;
+        // Panggil helper row_number pagination
 
+        $rows = mssql_qb_limit($this->db, $limit, $skip);
+        
         // get schedules for returned doctors
         $doctorIds = array();
         foreach ($rows as $r) {
@@ -1149,6 +1171,8 @@ class Web_api extends MX_Controller {
         $q = $this->db->get();
         $rows = $q->result();
 
+        // echo $this->db->last_query(); die;
+
         // map schedule rows to API items
         $items = array();
         foreach ($rows as $s) {
@@ -1186,6 +1210,8 @@ class Web_api extends MX_Controller {
                 'scheduleType' => $scheduleType
             );
         }
+
+        // echo "<pre>"; print_r($items); die;
 
         // client side sorting fallback (in case developer requested different sortBy values)
         if ($sortBy === 'startTimeAsc') {
