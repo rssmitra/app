@@ -142,9 +142,11 @@ class Adm_tagihan_perusahaan_model extends CI_Model {
 	public function get_detail_pasien($kode_perusahaan){
 
 		$this->db->select('a.*');
+		$this->db->select('c.jen_kelamin');
 		$this->db->select('CAST(bill as INT) as bill_int, (CAST(tunai as INT) + CAST(debet as INT) + CAST(kredit as INT)) as beban_pasien, CAST(nk_perusahaan as INT) as nk_perusahaan_int');
 		$this->db->from($this->table.' a');
 		$this->db->join('mt_perusahaan b','b.kode_perusahaan=a.kode_perusahaan','left');
+		$this->db->join('mt_master_pasien c','c.no_mr=a.no_mr','left');
 		$this->db->where('(a.nk_perusahaan > 0 AND a.kd_inv_persh_tx IS NULL AND a.kode_perusahaan NOT IN (120, 221, 0, 299))');
 		$this->db->where('a.kode_perusahaan', $kode_perusahaan);		
 		$this->db->where('a.seri_kuitansi', $_GET['jenis_pelayanan']);		
