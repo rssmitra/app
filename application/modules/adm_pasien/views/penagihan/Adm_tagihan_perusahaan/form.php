@@ -248,6 +248,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                             <th class="center"><input type="checkbox" onClick="checkAll(this);" style="cursor:pointer"></th>
                             <th width="80px">Tanggal</th>
                             <th width="70px">No MR</th>
+                            <th width="20px">JK</th>
                             <th>Nama Pasien</th>
                             <th width="130px">Total Billing</th>
                             <th width="130px">Dibayarkan Pasien</th>
@@ -270,6 +271,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                               </td>
                               <td><?php echo $this->tanggal->formatDateDmy($row->tgl_jam)?></td>
                               <td><?php echo $row->no_mr; ?></td>
+                              <td><?php echo '('.$row->jen_kelamin.')'; ?></td>
                               <td><?php echo $row->nama_pasien; ?></td>
                               <td align="right">
                                 <input type="hidden" name="bill_<?php echo $row->kode_tc_trans_kasir; ?>" id="bill_<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->bill_int?>" >
@@ -302,11 +304,11 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                             </tr>
                           <?php endforeach; ?>
                           <tr>
-                            <td colspan="7" align="right">Subtotal</td>
+                            <td colspan="8" align="right">Subtotal</td>
                             <td id="subtotal" align="right" style="background: beige; height: 39px !important;">0</td>
                           </tr>
                           <tr>
-                            <td colspan="7" align="right">
+                            <td colspan="8" align="right">
                             <input type="hidden" id="total_diskon_val" name="total_diskon_val" value="0">
                             Diskon</td>
                             <td id="total_diskon" align="right" style="background: beige; height: 39px !important;">0
