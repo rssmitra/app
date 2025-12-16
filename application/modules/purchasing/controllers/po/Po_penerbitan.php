@@ -248,7 +248,7 @@ class Po_penerbitan extends MX_Controller {
                         );
                         // eksekusi rumus untuk mencari harga
                         $harga[$row_checked] = $this->master->rumus_harga($config);
-                        
+
                         // echo "<pre>";print_r($harga);die;
 
                         $total_potongan_diskon = $harga[$row_checked]['disc_rp'];

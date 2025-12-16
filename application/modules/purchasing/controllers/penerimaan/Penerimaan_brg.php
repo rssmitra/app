@@ -253,7 +253,7 @@ class Penerimaan_brg extends MX_Controller {
                     
                     // ============= proses mutasi stok
                     $konversi_satuan_kecil = $_POST['terima_'.$rows.''] * $_POST['rasio'][$rows];
-                    $kartu_stok = $this->stok_barang->stock_process($rows, $konversi_satuan_kecil, $_POST['kode_bagian'], 1 ,"Nomor PO ".$_POST['no_po']."", 'restore');
+                    // $kartu_stok = $this->stok_barang->stock_process($rows, $konversi_satuan_kecil, $_POST['kode_bagian'], 1 ,"Nomor PO ".$_POST['no_po']."", 'restore');
                     // ============= end proses mutasi stok
                     
                     // ============= insert penerimaan barang detail
