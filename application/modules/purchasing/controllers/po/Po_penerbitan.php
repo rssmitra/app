@@ -250,7 +250,6 @@ class Po_penerbitan extends MX_Controller {
                         $harga[$row_checked] = $this->master->rumus_harga($config);
 
                         // echo "<pre>";print_r($harga);die;
-
                         $total_potongan_diskon = $harga[$row_checked]['disc_rp'];
                         $updateBatch = array(
                             "id_tc_po" => $newId,

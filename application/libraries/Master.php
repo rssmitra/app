@@ -929,7 +929,8 @@ final Class Master {
 		$harga_ppn = $harga_satuan * ($params['ppn'] / 100);
 		
 		// harga satuan netto (setelah ditambah ppn)
-		$harga_satuan_netto = $harga_satuan + $harga_ppn;
+		// $harga_satuan_netto = $harga_satuan + $harga_ppn;
+		$harga_satuan_netto = $harga_satuan;
 
 		// jumlah harga netto
 		$total_harga_netto = $harga_satuan_netto * $params['qty'];
