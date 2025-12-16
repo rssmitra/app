@@ -899,12 +899,12 @@ final Class Master {
 		// $existing = $db->select('max(harga_beli) as harga_beli')->get_where('mt_rekap_stok', array('kode_brg' => $params['kode_brg']) )->row();
 
 		// get harga beli terakhir berdasarkan PO
-		$query_po = "select CAST((MAX(harga_satuan_netto)/content) AS INT) as harga_beli FROM (
+		$query_po = "select CAST((MAX(harga_satuan)/content) AS INT) as harga_beli FROM (
 						select top 3 * from tc_po_det where kode_brg = '".$params['kode_brg']."' order by id_tc_po_det DESC 
 						) as tbl GROUP BY content
 						";
 		$existing = $db->query($query_po)->row();
-		// echo $existing->harga_beli;die;
+		// echo $db->last_query();die;
 
 
 		// potonga diskon satuan barang

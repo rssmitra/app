@@ -780,8 +780,8 @@ class Reg_klinik extends MX_Controller {
                         ),
                 );
 
-                // echo "<pre>"; print_r($data);die;
                 $result = $this->Ws_index->insertSep($data);
+                // echo "<pre>"; print_r($result);die;
                 $response = isset($result['response']) ? $result : false;
 
                 if($response == false){

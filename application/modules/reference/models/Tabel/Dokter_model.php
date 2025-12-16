@@ -5,7 +5,7 @@ class Dokter_model extends CI_Model {
 
 	var $table = 'mt_karyawan';
 	var $column = array('mt_karyawan.nama_pegawai');
-	var $select = 'mt_karyawan.no_induk,mt_karyawan.urutan_karyawan,mt_karyawan.nama_pegawai,mt_karyawan.kode_jabatan,mt_karyawan.kode_bagian,mt_karyawan.kode_dokter,mt_karyawan.kode_spesialisasi,mt_karyawan.status_dr,mt_karyawan.status,mt_karyawan.available,mt_karyawan.jatah_kelas,mt_karyawan.level_id,mt_karyawan.no_mr,mt_karyawan.flag_tenaga_medis,mt_karyawan.url_foto_karyawan,mt_karyawan.kode_perawat,mt_karyawan.id_mt_karyawan,mt_spesialisasi_dokter.nama_spesialisasi, no_sip, ttd, stamp, is_active';
+	var $select = 'mt_karyawan.no_induk,mt_karyawan.urutan_karyawan,mt_karyawan.nama_pegawai,mt_karyawan.kode_jabatan,mt_karyawan.kode_bagian,mt_karyawan.kode_dokter,mt_karyawan.kode_spesialisasi,mt_karyawan.status_dr,mt_karyawan.status,mt_karyawan.available,mt_karyawan.jatah_kelas,mt_karyawan.level_id,mt_karyawan.no_mr,mt_karyawan.flag_tenaga_medis,mt_karyawan.url_foto_karyawan,mt_karyawan.kode_perawat,mt_karyawan.id_mt_karyawan,mt_spesialisasi_dokter.nama_spesialisasi, no_sip, ttd, stamp, mt_karyawan.is_active';
 
 	//var $order = array('no_induk' => 'ASC');
 
