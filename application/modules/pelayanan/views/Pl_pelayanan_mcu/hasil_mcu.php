@@ -402,13 +402,13 @@
         <td width="20px"></td>
         <td class="title">Thorax Foto</td>
         <td width="3%">: </td>
-        <td width="75%"><?php echo nl2br($pemeriksaan_radiologi->hasil) ?></td>
+        <td width="75%"><?php echo nl2br(htmlspecialchars($pemeriksaan_radiologi->hasil, ENT_QUOTES, 'UTF-8')) ?></td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Kesan</td>
         <td width="3%">: </td>
-        <td width="75%"><?php echo nl2br($pemeriksaan_radiologi->kesan) ?></td>
+        <td width="75%"><?php echo nl2br(htmlspecialchars($pemeriksaan_radiologi->kesan, ENT_QUOTES, 'UTF-8')) ?></td>
       </tr>
     </table><br>
 
@@ -461,14 +461,14 @@
           <td width="20px"></td>
           <td width="38%">'.$no.'. '.ucwords($res).'</td>
           <td width="2%">: </td>';
-        if(!is_object($value)){
-          echo '
-          <td width="40%">'. nl2br($value).' </td>
-        </tr>';
-        }else{
-          echo '
-          <td width="40%"></td>
-        </tr>';
+          if(!is_object($value)){
+            echo '
+            <td width="40%">'. nl2br($value).' </td>
+          </tr>';
+          }else{
+            echo '
+            <td width="40%"></td>
+          </tr>';
 
         
           foreach ($value as $k => $v) :
@@ -519,7 +519,7 @@
     <table border="0" width="100%">
       <tr>
         <td width="20px"></td>
-        <td width="100%"><?php echo nl2br(ucwords($kesan)) ?></td>
+        <td width="100%"><?php echo nl2br(htmlspecialchars(ucwords($kesan), ENT_QUOTES, 'UTF-8')) ?></td>
       </tr>
     </table><br>
 
@@ -528,7 +528,7 @@
     <table border="0" width="100%">
       <tr>
         <td width="60%"></td>
-        <td width="40%" style="text-align:center"1>Penanggung Jawab</td>
+        <td width="40%" style="text-align:center">Penanggung Jawab</td>
       </tr>
       <tr>
         <td width="60%"></td>
