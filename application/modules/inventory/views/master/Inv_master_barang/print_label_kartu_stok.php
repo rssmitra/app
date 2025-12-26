@@ -18,7 +18,7 @@
     <?php echo $rows->nama_kategori?> / 
 	<?php
 if ($rows->rak === null || $rows->rak === '') {
-    echo 'Belum Ada Rak';
+    echo 'Belum ada Rak';
 } else {
     echo $rows->rak;
 }
@@ -27,4 +27,3 @@ if ($rows->rak === null || $rows->rak === '') {
 <?php endforeach; ?>
 
 </center>
-
