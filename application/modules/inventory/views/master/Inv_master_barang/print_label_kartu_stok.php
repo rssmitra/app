@@ -15,7 +15,14 @@
   <div align="left" style="width:265px; height:112px;">
     <b><span style="font-size: 16px"><?php echo $rows->kode_brg; ?></span></b> <br>
     <span style="font-size: 14px"><?php echo ucwords(strtolower($rows->nama_brg)).' <br>('.$rows->content.' '.$rows->satuan_kecil.'/'.$rows->satuan_besar.')'?></span><br>
-    <?php echo $rows->nama_kategori?>
+    <?php echo $rows->nama_kategori?> / 
+	<?php
+if ($rows->rak === null || $rows->rak === '') {
+    echo 'Belum Ada Rak';
+} else {
+    echo $rows->rak;
+}
+?>
   </div>
 <?php endforeach; ?>
 
