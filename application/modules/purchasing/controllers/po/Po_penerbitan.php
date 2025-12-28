@@ -290,7 +290,6 @@ class Po_penerbitan extends MX_Controller {
             // update flag process
             $this->Po_penerbitan->update_flag_proses($id_tc_permohonan, $_POST['flag']);
             
-
             // print_r($id_tc_permohonan);die;
             
             if ($this->db->trans_status() === FALSE)

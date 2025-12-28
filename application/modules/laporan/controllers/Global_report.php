@@ -622,35 +622,6 @@ class Global_report extends MX_Controller {
                 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function lappembelian() { 
         /*define variable data*/
         $data = array(
@@ -661,6 +632,7 @@ class Global_report extends MX_Controller {
         /*load view index*/
         $this->load->view('Global_report/lappembelian', $data);
     }
+    
     public function lappembelian_1() { 
         /*define variable data*/
         $data = array(

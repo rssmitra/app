@@ -160,7 +160,7 @@ class Verifikasi_permintaan_model extends CI_Model {
 		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian, CAST(c.harga_beli as INT), CAST(e.catatan as NVARCHAR(1000))');
 		$this->db->order_by('c.nama_brg ASC');
 		$query = $this->db->get()->result();
-		// print_r($this->db->last_query());die;
+		print_r($this->db->last_query());die;
 		return $query;
 	}
 

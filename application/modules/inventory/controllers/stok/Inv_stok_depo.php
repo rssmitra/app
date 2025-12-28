@@ -154,11 +154,12 @@ class Inv_stok_depo extends MX_Controller {
         }
 
         $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Inv_stok_depo->count_all(),
-                        "recordsFiltered" => $this->Inv_stok_depo->count_filtered(),
-                        "data" => $data,
-                );
+                    "draw" => $_POST['draw'],
+                    "recordsTotal" => $this->Inv_stok_depo->count_all(),
+                    "recordsFiltered" => $this->Inv_stok_depo->count_filtered(),
+                    "data" => $data,
+        );
+
         //output to json format
         echo json_encode($output);
     }
