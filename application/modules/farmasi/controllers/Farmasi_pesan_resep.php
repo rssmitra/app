@@ -98,7 +98,7 @@ class Farmasi_pesan_resep extends MX_Controller {
 
             }
 
-            $row[] = '<div class="center">'.$lbl_eresep.'</div>';
+            $row[] = '<div class="center">'.$lbl_eresep.'<br>'.$this->tanggal->formatDateTimeFormDmy($row_list->updated_date).'</div>';
            
             $data[] = $row;
         }

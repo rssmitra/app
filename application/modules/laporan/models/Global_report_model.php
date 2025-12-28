@@ -1840,20 +1840,20 @@ public function pengadaan_mod_8(){
 		$obat="D";
 		$alkes="E";
 		if($_POST['jenis']=='Obat'){
-		$query = 'select b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik, SUM(b.jumlah_kirim) as jml, sum((b.harga-((b.harga*disc)/100))*b.jumlah_kirim) as jumlah from tc_penerimaan_barang a inner join tc_penerimaan_barang_detail b on a.kode_penerimaan=b.kode_penerimaan inner join mt_barang c on b.kode_brg=c.kode_brg 
+		$query = 'select b.kode_brg,c.nama_brg,c.satuan_kecil, c.content,c.satuan_besar,d.nama_pabrik, CAST(SUM(b.jumlah_kirim) as INT) as jml, CAST(sum((b.harga-((b.harga*disc)/100))*b.jumlah_kirim) as INT) as jumlah, d.nama_pabrik from tc_penerimaan_barang a inner join tc_penerimaan_barang_detail b on a.kode_penerimaan=b.kode_penerimaan inner join mt_barang c on b.kode_brg=c.kode_brg 
 			left join mt_pabrik d on c.id_pabrik=d.id_pabrik 
 			WHERE b.flag_prod_obat<>1 and YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' and SUBSTRING(b.kode_brg,1,1)='."'".$obat."'".'
 		    group by b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik ORDER BY c.nama_brg';
 		}
 		elseif($_POST['jenis']=='Alkes'){
-		$query = 'select b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik,SUM(b.jumlah_kirim) as jml, sum((b.harga-((b.harga*disc)/100))*b.jumlah_kirim) as jumlah from tc_penerimaan_barang a inner join tc_penerimaan_barang_detail b on a.kode_penerimaan=b.kode_penerimaan inner join mt_barang c on b.kode_brg=c.kode_brg 
+		$query = 'select b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik, CAST(SUM(b.jumlah_kirim) as INT) as jml, CAST(sum((b.harga-((b.harga*disc)/100))*b.jumlah_kirim) as INT) as jumlah from tc_penerimaan_barang a inner join tc_penerimaan_barang_detail b on a.kode_penerimaan=b.kode_penerimaan inner join mt_barang c on b.kode_brg=c.kode_brg 
 			left join mt_pabrik d on c.id_pabrik=d.id_pabrik WHERE b.flag_prod_obat<>1 and YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' and SUBSTRING(b.kode_brg,1,1)='."'".$alkes."'".' group by b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik ORDER BY c.nama_brg';
 		}
 		else{
-		$query = 'select b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,SUM(b.jumlah_kirim) as jml, sum((b.harga-((b.harga*disc)/100))*b.jumlah_kirim) as jumlah from tc_penerimaan_barang a inner join tc_penerimaan_barang_detail b on a.kode_penerimaan=b.kode_penerimaan inner join mt_barang c on b.kode_brg=c.kode_brg 
+		$query = 'select b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,CAST(SUM(b.jumlah_kirim) as INT) as jml, CAST(sum((b.harga-((b.harga*disc)/100))*b.jumlah_kirim) as INT) as jumlah, d.nama_pabrik from tc_penerimaan_barang a inner join tc_penerimaan_barang_detail b on a.kode_penerimaan=b.kode_penerimaan inner join mt_barang c on b.kode_brg=c.kode_brg 
 			left join mt_pabrik d on c.id_pabrik=d.id_pabrik WHERE b.flag_prod_obat<>1 and YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' group by b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik ORDER BY c.nama_brg';
 		}
-		// return $query;
+		
 		return $this->db->query($query)->result();
 	}
 

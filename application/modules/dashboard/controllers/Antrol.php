@@ -309,9 +309,7 @@ class Antrol extends MX_Controller {
                 "keterangan" => "Silahkan tensi dengan perawat"
             );
 
-
             // echo '<pre>';print_r($config_antrol);die;
-            
             $addAntrian = $this->AntrianOnline->addAntrianOnsite($config_antrol, $dt_reg->tgl_jam_masuk);
             $milisecond = strtotime($dt_reg->tgl_jam_masuk) * 1000;
             $convert_milisecod = date('Y-m-d H:i:s', $milisecond/1000);

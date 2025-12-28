@@ -160,8 +160,8 @@ function rollback_kasir(no_reg) {
     var todayStr = yyyy + '-' + mm + '-' + dd;
     console.log(tglTransaksi);
     console.log(todayStr);
-    if (tglTransaksi !== todayStr) {
-        // Tanggal transaksi berbeda dengan hari ini, tampilkan modal verifikasi
+
+     // Tanggal transaksi berbeda dengan hari ini, tampilkan modal verifikasi
         $('#modal-approval-kepala-keuangan .modal-title').text('Verifikasi Rollback Transaksi');
         $('#password_user').val('');
         $('#kode_verifikasi').val('');
@@ -169,21 +169,31 @@ function rollback_kasir(no_reg) {
         $('#modal-approval-kepala-keuangan').data('rollback-no-reg', no_reg);
         $('#modal-approval-kepala-keuangan').data('rollback-mode', true);
         $('#modal-approval-kepala-keuangan').modal('show');
-    } else {
-        if (confirm('Are you sure?')) {
-            $.ajax({
-                url: "billing/Billing/rollback_kasir",
-                data: { no_reg: no_reg },
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                    /*sukses*/
-                    load_billing_data();
-                    $('#btn_lanjutkan_pembayaran').attr('disabled', false);
-                }
-            });
-        }
-    }
+
+    // if (tglTransaksi !== todayStr) {
+    //     // Tanggal transaksi berbeda dengan hari ini, tampilkan modal verifikasi
+    //     $('#modal-approval-kepala-keuangan .modal-title').text('Verifikasi Rollback Transaksi');
+    //     $('#password_user').val('');
+    //     $('#kode_verifikasi').val('');
+    //     // Simpan callback rollback
+    //     $('#modal-approval-kepala-keuangan').data('rollback-no-reg', no_reg);
+    //     $('#modal-approval-kepala-keuangan').data('rollback-mode', true);
+    //     $('#modal-approval-kepala-keuangan').modal('show');
+    // } else {
+    //     if (confirm('Are you sure?')) {
+    //         $.ajax({
+    //             url: "billing/Billing/rollback_kasir",
+    //             data: { no_reg: no_reg },
+    //             dataType: "json",
+    //             type: "POST",
+    //             success: function (response) {
+    //                 /*sukses*/
+    //                 load_billing_data();
+    //                 $('#btn_lanjutkan_pembayaran').attr('disabled', false);
+    //             }
+    //         });
+    //     }
+    // }
 }
 
 function getSum(total, num) {

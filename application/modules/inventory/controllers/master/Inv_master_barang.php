@@ -443,6 +443,7 @@ class Inv_master_barang extends MX_Controller {
     public function print_multiple_preview(){
 
         $result = $this->Inv_master_barang->get_by_id($_GET['id']);
+        // print_r($this->db->last_query());die;
         // print_r($result);die;
         $table = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
         $title = ($_GET['flag']=='non_medis')?'Barang Non Medis':'Barang Medis';

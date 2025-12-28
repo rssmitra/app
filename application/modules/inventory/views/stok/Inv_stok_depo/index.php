@@ -42,9 +42,9 @@
   function print_data_label(myid){
   
     $.ajax({
-      url: 'inventory/master/Inv_master_barang/print_multiple?flag=medis',
+      url: 'inventory/master/Inv_master_barang/print_multiple?flag=medis&kode_bagian='+$('#kode_bagian').val()+'',
       type: "post",
-      data: {ID:myid, flag: 'medis'},
+      data: {ID:myid, flag: 'medis' },
       dataType: "json",
       beforeSend: function() {
       },
@@ -54,7 +54,7 @@
         // response
         var data=xhr.responseText;
         var jsonResponse = JSON.parse(data);
-        PopupCenter('inventory/master/Inv_master_barang//print_multiple_preview?'+jsonResponse.queryString+'&tipe=kartu_stok', 'PRINT PREVIEW', 1000, 550);
+        PopupCenter('inventory/master/Inv_master_barang//print_multiple_preview?'+jsonResponse.queryString+'&tipe=kartu_stok&kode_bagian='+$('#kode_bagian').val()+'', 'PRINT PREVIEW', 1000, 550);
       }
 
     });

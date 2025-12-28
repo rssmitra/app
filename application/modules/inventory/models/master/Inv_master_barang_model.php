@@ -9,7 +9,7 @@ class Inv_master_barang_model extends CI_Model {
 		$this->load->database();
 		$this->table = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
 		$this->column = array('table_brg.nama_brg','table_brg.kode_brg','nama_kategori','nama_golongan','nama_sub_golongan');
-		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi, rak';
+		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi';
 		$this->order = array('table_brg.created_date' => 'DESC', 'table_brg.updated_date' => 'DESC');
 
 	}
@@ -19,7 +19,7 @@ class Inv_master_barang_model extends CI_Model {
 		$this->db->from($this->table.' as table_brg');
 
 		if( $_GET['flag'] == 'medis' ){
-			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_generik,nama_layanan,nama_pabrik,nama_jenis,jenis_barang, Margin_percent as margin_percent, stok_minimum, stok_maksimum, mt_rekap_stok.id_profit, table_brg.id_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan, table_brg.is_prb, table_brg.is_kronis, kategori_gf, is_restrict, restrict_desc');
+			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_generik,nama_layanan,nama_pabrik,nama_jenis,jenis_barang, Margin_percent as margin_percent, mt_rekap_stok.stok_minimum, mt_rekap_stok.stok_maksimum, mt_rekap_stok.id_profit, table_brg.id_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan, table_brg.is_prb, table_brg.is_kronis, kategori_gf, is_restrict, restrict_desc');
 			$this->db->join('mt_rekap_stok','mt_rekap_stok.kode_brg=table_brg.kode_brg','left');
 			$this->db->join('mt_kategori','mt_kategori.kode_kategori=table_brg.kode_kategori','left');
 			$this->db->join('mt_golongan','mt_golongan.kode_golongan=table_brg.kode_golongan','left');
@@ -39,7 +39,6 @@ class Inv_master_barang_model extends CI_Model {
 			$this->db->join('mt_sub_golongan_nm','mt_sub_golongan_nm.kode_sub_gol=table_brg.kode_sub_golongan','left');
 			$this->db->join('mt_pabrik_nm','mt_pabrik_nm.id_pabrik=table_brg.id_pabrik','left');	
 		}
-
 	}
 
 	private function _get_datatables_query()
@@ -136,11 +135,16 @@ class Inv_master_barang_model extends CI_Model {
 
 	public function get_by_id($id)
 	{
-		// if( $_GET['flag'] == 'medis' ){
-		// 	$this->db->select( 'table_brg. *, Margin_percent as margin_percent' );
-		// }
-		// $this->db->from( $this->table.' as table_brg' );
 		$this->_main_query();
+		$this->db->select('dp.rak');
+		$this->db->where('dp.kode_bagian', $_GET['kode_bagian']);
+		if( $_GET['flag'] == 'medis' ){
+			$this->db->join('mt_depo_stok dp','dp.kode_brg=table_brg.kode_brg','left');
+		}
+		if( $_GET['flag'] == 'non_medis' ){
+			$this->db->join('mt_depo_stok_nm dp','dp.kode_brg=table_brg.kode_brg','left');
+		}
+
 		if(is_array($id)){
 			$this->db->where_in('table_brg.kode_brg',$id);
 			$query = $this->db->get();

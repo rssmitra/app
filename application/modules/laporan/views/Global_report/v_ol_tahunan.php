@@ -92,8 +92,8 @@ switch($jenis){
                 $content = $row_data->content;
                 $jml_kcl = $jml_besar*$content;
                 if($jml_besar<>'' && $jml_harga<>''){
-                  $harga_beli = $jml_harga/$jml_besar;
-                  $harga_sat_kcl = $harga_beli/$content;
+                  $harga_beli = round($jml_harga/$jml_besar);
+                  $harga_sat_kcl = round($harga_beli/$content);
                 }
                 
                 $sub_harga_beli = $sub_harga_beli + $jml_harga;
@@ -105,9 +105,9 @@ switch($jenis){
               <td align="left" width=""><?php echo $satuan_kecil?>&nbsp;</td>
               <td align="left" width="">&nbsp;<?php echo $content?>&nbsp;</td>
               <td align="left" width="">&nbsp;<?php echo $jml_besar?>&nbsp;</td>
-              <td align="right" width=""><?php echo number_format($harga_sat_kcl)?></td>
-              <td align="right" width=""><?php echo number_format($jml_kcl)?></td>
-              <td align="right" width=""><?php echo number_format($jml_harga)?></td>
+              <td align="right" width=""><?php echo ($_POST['submit']=='excel') ? $harga_sat_kcl : number_format($harga_sat_kcl)?></td>
+              <td align="right" width=""><?php echo ($_POST['submit']=='excel') ? $jml_kcl : number_format($jml_kcl)?></td>
+              <td align="right" width=""><?php echo ($_POST['submit']=='excel') ? $jml_harga : number_format($jml_harga)?></td>
               <td width="">&nbsp;<?php echo $nama_pabrik?>&nbsp;</td>
             </tr>
             <?php
