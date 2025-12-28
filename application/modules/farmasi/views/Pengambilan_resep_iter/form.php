@@ -116,7 +116,7 @@ function submit_form(arrDataChecklist){
     complete: function(xhr) {     
       var data=xhr.responseText;
       var jsonResponse = JSON.parse(data);
-      $('#page-area-content').load('farmasi/Process_entry_resep/preview_entry/'+$('#kode_trans_far').val()+'?flag=ITR&status_lunas=0');
+      $('#page-area-content').load('farmasi/Process_entry_resep/preview_entry/'+jsonResponse.kode_trans_far+'?flag=ITR&status_lunas=0');
       
       achtungHideLoader();
     }
@@ -241,11 +241,12 @@ function saveRow(num){
             <!-- <button type="button" onclick="PopupCenter('farmasi/Verifikasi_resep_prb/nota_farmasi/<?php echo $value->kode_trans_far?>?flag=<?php echo $flag?>')" class="btn btn-xs btn-success" title="Nota Farmasi">
                 <i class="fa fa-print dark"></i> Nota Farmasi
             </button> -->
-
+            <!-- <?php //if($value->status_iter != 1):?> -->
             <button type="button" id="btn_submit_pengambilan_obat" class="btn btn-primary btn-xs">
                   <span class="ace-icon fa fa-check-circle dark icon-on-right bigger-110"></span>
                   Proses Pengambilan Obat
             </button>
+            <!-- <?php// endif; ?> -->
 
           </div>
 

@@ -289,7 +289,7 @@
       </div>
 
     <?php endif; ?>
-    <input type="hiddenxx" name="id_iter" id="id_iter" value="<?php echo strtoupper($resep[0]['id_iter'])?>">
+    <input type="hidden" name="id_iter" id="id_iter" value="<?php echo strtoupper($resep[0]['id_iter'])?>">
     <!-- button action -->
     <div class="col-xs-12" >
       <hr>

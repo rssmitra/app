@@ -131,7 +131,7 @@ class Inv_master_barang extends MX_Controller {
             $explode_gf = isset($row_list->kategori_gf) ? explode(",", $row_list->kategori_gf) : '';
             $kategori_gf = $this->getKategoriGf($explode_gf);
 
-            $row[] = ucfirst($txt_gol).'<br><span style="color: green">Rak : '.$row_list->rak.'</span><br>'.$kategori_gf.'';
+            $row[] = ucfirst($txt_gol).'<br>'.$kategori_gf.'';
             $row[] = '<div class="center">'.strtoupper($row_list->satuan_besar).'/'.strtoupper($row_list->satuan_kecil).'</div>';
             $row[] = '<div class="center">'.$row_list->content.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_beli).'</div>';
