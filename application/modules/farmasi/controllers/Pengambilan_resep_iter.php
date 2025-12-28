@@ -53,9 +53,10 @@ class Pengambilan_resep_iter extends MX_Controller {
 
         /*get value by id*/
         $data['value'] = $this->Pengambilan_resep_iter->get_by_id($_GET['id_iter']);
-        // echo '<pre>';print_r($data);die;
         $data['resep'] = $this->Pengambilan_resep_iter->get_detail($id);
+        // echo $this->db->last_query();die;
         $data['log_mutasi'] = $this->Pengambilan_resep_iter->get_riwayat_iter($id);
+        // echo '<pre>';print_r($data);die;
 
         /*title header*/
         $data['title'] = $this->title;
@@ -261,7 +262,7 @@ class Pengambilan_resep_iter extends MX_Controller {
                     'kode_trans_far' => $kode_trans_far,
                     'kd_tr_resep' => $this->regex->_genRegex($kd_tr_resep, 'RGXQSL'),
                 );
-                
+
             }
 
             $this->db->trans_begin();
@@ -280,7 +281,7 @@ class Pengambilan_resep_iter extends MX_Controller {
 
             foreach ($data_log as $k => $v) {
                 // potong stok biasa
-                $this->stok_barang->stock_process($v['kode_brg'], $v['jumlah_tebus'], '060101', 14, " Transaksi Iter : ".$v['kode_trans_far']."", 'reduce');
+                $this->stok_barang->stock_process($v['kode_brg'], $v['jumlah_obat_23'], '060101', 14, " Transaksi Iter : ".$v['kode_trans_far']."", 'reduce');
             }
 
             // update jumlah itter

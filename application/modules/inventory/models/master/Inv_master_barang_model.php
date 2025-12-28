@@ -65,15 +65,15 @@ class Inv_master_barang_model extends CI_Model {
 		}
 
 		if( ( $_GET['flag'] == 'medis' )  ){
-			if( ( isset( $_GET['rak']) AND $_GET['rak'] != '' )  ){
-				if( $_GET['rak'] != '0' ){
-					$this->db->where('table_brg.rak', $_GET['rak']);
-				}
+			// if( ( isset( $_GET['rak']) AND $_GET['rak'] != '' )  ){
+			// 	if( $_GET['rak'] != '0' ){
+			// 		$this->db->where('table_brg.rak', $_GET['rak']);
+			// 	}
 
-				if( $_GET['rak'] == '0' ){
-					$this->db->where('table_brg.rak IS NULL');
-				}
-			}
+			// 	if( $_GET['rak'] == '0' ){
+			// 		$this->db->where('table_brg.rak IS NULL');
+			// 	}
+			// }
 
 			if(isset($_GET['kategori_gf'])){
 				$implode = implode(",", $_GET['kategori_gf']);
@@ -137,7 +137,9 @@ class Inv_master_barang_model extends CI_Model {
 	{
 		$this->_main_query();
 		$this->db->select('dp.rak');
-		$this->db->where('dp.kode_bagian', $_GET['kode_bagian']);
+		if(isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != ''){
+			$this->db->where('dp.kode_bagian', $_GET['kode_bagian']);
+		}
 		if( $_GET['flag'] == 'medis' ){
 			$this->db->join('mt_depo_stok dp','dp.kode_brg=table_brg.kode_brg','left');
 		}

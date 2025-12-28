@@ -120,6 +120,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 		->order_by('fr_tc_far_detail_log.relation_id', 'ASC')
 		->group_by("fr_tc_far_detail_log.id_fr_tc_far_detail_log,fr_tc_far_detail_log.tgl_input,fr_tc_far_detail_log.kode_brg,fr_tc_far_detail_log.nama_brg,fr_tc_far_detail_log.satuan_kecil,fr_tc_far_detail_log.jumlah_pesan,fr_tc_far_detail_log.jumlah_tebus,fr_tc_far_detail_log.harga_jual_satuan,fr_tc_far_detail_log.sub_total,fr_tc_far_detail_log.jasa_r,fr_tc_far_detail_log.jasa_produksi,fr_tc_far_detail_log.diskon,fr_tc_far_detail_log.total,fr_tc_far_detail_log.urgensi,fr_tc_far_detail_log.flag_resep,fr_tc_far_detail_log.dosis_obat,fr_tc_far_detail_log.relation_id,fr_tc_far_detail_log.satuan_obat,fr_tc_far_detail_log.anjuran_pakai,fr_tc_far_detail_log.kode_pesan_resep,fr_tc_far_detail_log.status_input,fr_tc_far_detail_log.kode_trans_far,fr_tc_far_detail_log.jumlah_obat_23,fr_tc_far_detail_log.status_tebus,fr_tc_far_detail_log.jumlah_retur,fr_tc_far_detail_log.tgl_retur,dosis_per_hari,
 		prb_ditangguhkan, fr_tc_log_mutasi_obat.jumlah_mutasi_obat, resep_ditangguhkan")
+		// ->where('fr_tc_far_detail_log.id_iter is not null')
 		->get_where('fr_tc_far_detail_log', array('fr_tc_far_detail_log.kode_trans_far' => $kode_trans_far))->result();		
 
 		return $query;
