@@ -671,16 +671,56 @@ class Global_report_model extends CI_Model {
         $tc_penerimaan_barang = ($_POST['jenis'] == 'medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
         $tc_po = ($_POST['jenis'] == 'medis')?'tc_po':'tc_po_nm';
 
-		$query = "select e.kodesupplier, e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
-						from ".$tc_penerimaan_barang_detail." a 
-						left join ".$mt_barang." c on c.kode_brg=a.kode_brg
-						left join ".$tc_penerimaan_barang." b on b.id_penerimaan=a.id_penerimaan
-						left join ".$tc_po." d on d.id_tc_po=b.id_tc_po
-						left join mt_supplier e on e.kodesupplier=d.kodesupplier
-						where YEAR(b.tgl_penerimaan)=".$_POST['year']." and MONTH(b.tgl_penerimaan)=".$_POST['from_month']." 
-						GROUP BY e.kodesupplier, e.namasupplier
-						ORDER BY SUM((a.harga_net * a.jumlah_kirim_decimal)) DESC";
-		// echo $query; exit;
+		if($_POST['jenis'] == 'medis') {
+			$this->db->select("
+			e.kodesupplier,
+			e.namasupplier AS supplier,
+			SUM(a.harga_net * a.jumlah_kirim_decimal) AS total_format_money
+			", false);
+
+			$this->db->from($tc_penerimaan_barang_detail . ' a');
+			$this->db->join($mt_barang . ' c', 'c.kode_brg = a.kode_brg', 'left');
+			$this->db->join($tc_penerimaan_barang . ' b', 'b.id_penerimaan = a.id_penerimaan', 'left');
+			$this->db->join($tc_po . ' d', 'd.id_tc_po = b.id_tc_po', 'left');
+			$this->db->join('mt_supplier e', 'e.kodesupplier = d.kodesupplier', 'left');
+
+			if(isset($_POST['from_month']) && !empty($_POST['from_month']) && $_POST['from_month'] > 0){
+				$this->db->where('MONTH(b.tgl_penerimaan)', (int) $_POST['from_month'], false);
+			}
+			$this->db->where('YEAR(b.tgl_penerimaan)', (int) $_POST['year'], false);
+
+			$this->db->group_by(['e.kodesupplier', 'e.namasupplier']);
+			$this->db->order_by('total_format_money', 'DESC');
+
+			$exc = $this->db->get();
+			$query = $this->db->last_query();
+
+		}else{
+
+			$this->db->select("
+			e.kodesupplier,
+			e.namasupplier AS supplier,
+			SUM(a.harga_satuan * a.jumlah_besar_acc) AS total_format_money
+			", false);
+
+			$this->db->from($tc_po.'_det' . ' a');
+			$this->db->join($tc_po . ' d', 'd.id_tc_po = a.id_tc_po', 'left');
+			$this->db->join($mt_barang . ' c', 'c.kode_brg = a.kode_brg', 'left');
+			$this->db->join('mt_supplier e', 'e.kodesupplier = d.kodesupplier', 'left');
+
+			if(isset($_POST['from_month']) && !empty($_POST['from_month']) && $_POST['from_month'] > 0){
+				$this->db->where('MONTH(d.tgl_kirim)', (int) $_POST['from_month'], false);
+			}
+			$this->db->where('YEAR(d.tgl_kirim)', (int) $_POST['year'], false);
+
+			$this->db->group_by(['e.kodesupplier', 'e.namasupplier']);
+			$this->db->order_by('total_format_money', 'DESC');
+
+			$exc = $this->db->get();
+			$query = $this->db->last_query();
+
+		}
+		
 		return $query;
 
     }
@@ -692,14 +732,64 @@ class Global_report_model extends CI_Model {
         $tc_penerimaan_barang = ($_GET['jenis'] == 'medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
         $tc_po = ($_GET['jenis'] == 'medis')?'tc_po':'tc_po_nm';
 
-		$query = "select e.kodesupplier,e.namasupplier as supplier, CAST(b.tgl_penerimaan as DATE) as tgl_terima, b.no_faktur, f.nama_brg, f.satuan_besar,
-        a.jumlah_kirim_decimal as jml_kirim, a.harga_net as harga, (a.jumlah_kirim_decimal * a.harga_net) as total_biaya, a.disc
-        from ".$tc_penerimaan_barang_detail." a left join mt_barang c on c.kode_brg=a.kode_brg 
-        left join ".$mt_barang." f on f.kode_brg=a.kode_brg
-        left join ".$tc_penerimaan_barang." b on b.id_penerimaan=a.id_penerimaan 
-        left join ".$tc_po." d on d.id_tc_po=b.id_tc_po 
-        left join mt_supplier e on e.kodesupplier=d.kodesupplier 
-        where YEAR(b.tgl_penerimaan)=".$_GET['year']." and MONTH(b.tgl_penerimaan)=".$_GET['month']." and e.kodesupplier=".$_GET['kode_supplier']."";
+		if($_GET['jenis'] == 'medis') {
+			$this->db->select("
+				e.kodesupplier,
+				e.namasupplier AS supplier,
+				CAST(b.tgl_penerimaan AS DATE) AS tgl_terima,
+				b.no_faktur,
+				f.nama_brg,
+				f.satuan_besar,
+				a.jumlah_kirim_decimal AS jml_kirim,
+				a.harga_satuan_netto AS harga,
+				(a.jumlah_kirim_decimal * a.harga_satuan_netto) AS total_biaya,
+				a.disc
+			", false);
+
+			$this->db->from($tc_penerimaan_barang_detail . ' a');
+			$this->db->join('mt_barang c', 'c.kode_brg = a.kode_brg', 'left');
+			$this->db->join($mt_barang . ' f', 'f.kode_brg = a.kode_brg', 'left');
+			$this->db->join($tc_penerimaan_barang . ' b', 'b.id_penerimaan = a.id_penerimaan', 'left');
+			$this->db->join($tc_po . ' d', 'd.id_tc_po = b.id_tc_po', 'left');
+			$this->db->join('mt_supplier e', 'e.kodesupplier = d.kodesupplier', 'left');
+
+			$this->db->where('YEAR(b.tgl_penerimaan)', (int) $_GET['year'], false);
+			$this->db->where('MONTH(b.tgl_penerimaan)', (int) $_GET['month'], false);
+			$this->db->where('e.kodesupplier', (int) $_GET['kode_supplier']);
+
+			$exc = $this->db->get();
+			$query = $this->db->last_query();
+		}else{
+			$this->db->select("
+				e.kodesupplier,
+				e.namasupplier AS supplier,
+				CAST(d.tgl_kirim AS DATE) AS tgl_terima,
+				null as no_faktur,
+				c.nama_brg,
+				c.satuan_besar,
+				a.jumlah_besar_acc AS jml_kirim,
+				a.harga_satuan_netto AS harga,
+				(a.jumlah_besar_acc * a.harga_satuan_netto) AS total_biaya,
+				a.discount as disc
+			", false);
+
+			$this->db->from($tc_po.'_det' . ' a');
+			$this->db->join($tc_po . ' d', 'd.id_tc_po = a.id_tc_po', 'left');
+			$this->db->join($mt_barang . ' c', 'c.kode_brg = a.kode_brg', 'left');
+			$this->db->join('mt_supplier e', 'e.kodesupplier = d.kodesupplier', 'left');
+
+			if(isset($_GET['month']) && !empty($_GET['month']) && $_GET['month'] > 0){
+				$this->db->where('MONTH(d.tgl_kirim)', (int) $_GET['month'], false);
+			}
+			$this->db->where('YEAR(d.tgl_kirim)', (int) $_GET['year'], false);
+			$this->db->where('e.kodesupplier', (int) $_GET['kode_supplier'], false);
+
+
+			$exc = $this->db->get();
+			$query = $this->db->last_query();
+
+		}
+
 		// echo $query; exit;
 		return $query;
 
@@ -1000,7 +1090,81 @@ class Global_report_model extends CI_Model {
 		}
 		else{
 			
-			$query = 'SELECT a.no_po, a.tgl_po, b.kode_brg, b.jumlah_besar, b.harga_satuan_netto, b.jumlah_harga_netto, c.nama_brg, d.namasupplier FROM tc_po_nm a JOIN tc_po_nm_det b ON b.id_tc_po=a.id_tc_po JOIN mt_barang_nm c ON c.kode_brg=b.kode_brg JOIN mt_supplier d ON d.kodesupplier=a.kodesupplier WHERE YEAR(a.tgl_po)='."'".$_POST['year']."'".' AND MONTH(a.tgl_po)='."'".$_POST['from_month']."'".' AND (b.status_batal<>1 OR b.status_batal IS NULL) ORDER BY a.tgl_po, d.namasupplier, c.nama_brg';
+			$this->db->select('e.tgl_permohonan,
+			e.tgl_acc,
+			a.no_po,
+			CAST ( a.tgl_po AS DATE ) AS tgl_po,
+			b.kode_brg,
+			h.jumlah_besar as jumlah_usulan,
+			CAST(h.jml_acc_penyetuju as int) as jumlah_diacc,
+			b.jumlah_besar as jml_order,
+			h.satuan_besar,
+			CAST(b.harga_satuan_netto as INT) as harga_satuan_netto,
+			b.jumlah_harga_netto,
+			c.nama_brg, 
+			d.namasupplier, i.nama_pabrik,
+			e.kode_permohonan,
+			f.tgl_penerimaan,
+			f.no_faktur,
+			CAST(a.updated_date as date) as revisi,
+				jumlah_kirim_decimal AS jml_diterima');
+
+			if($_POST['search_by'] == 'usulan'){
+				$this->db->select('h.satuan_besar,c.satuan_kecil, h.rasio as content, b.harga_satuan, b.discount');
+				$this->db->from('tc_permohonan_nm_det h');
+				$this->db->join('tc_permohonan_nm e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
+				$this->db->join('tc_po_nm_det b', 'b.id_tc_permohonan_det= h.id_tc_permohonan_det', 'LEFT');
+				$this->db->join('tc_po_nm a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
+				$this->db->join('mt_barang_nm c', 'c.kode_brg= h.kode_brg', 'LEFT');
+				$this->db->join('mt_pabrik i', 'i.kode_pabrik= c.kode_pabrik', 'LEFT');
+				$this->db->join('mt_supplier d', 'd.kodesupplier= a.kodesupplier', 'LEFT');
+				$this->db->join('tc_penerimaan_barang_nm_detail g', 'g.id_tc_po_det = b.id_tc_po_det', 'LEFT');
+				$this->db->join('tc_penerimaan_barang_nm f', 'f.id_penerimaan = g.id_penerimaan ', 'LEFT');
+				$this->db->where('YEAR(e.tgl_permohonan) = ', $_POST['year']);
+				$this->db->where('MONTH(e.tgl_permohonan) = ', $_POST['from_month']);
+				$this->db->where('(b.status_batal<>1 OR b.status_batal IS NULL)');
+				$this->db->order_by('e.tgl_permohonan', 'ASC');
+			}
+
+			if($_POST['search_by'] == 'penerbitan_po'){
+				$this->db->select('c.satuan_besar, c.satuan_kecil, b.content, b.harga_satuan, b.discount');
+				$this->db->from('tc_po_nm_det b');
+				$this->db->join('tc_po_nm a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
+				$this->db->join('tc_permohonan_nm_det h', 'b.id_tc_permohonan_det= h.id_tc_permohonan_det', 'LEFT');
+				$this->db->join('tc_permohonan_nm e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
+				$this->db->join('mt_barang_nm c', 'c.kode_brg= b.kode_brg', 'LEFT');
+				$this->db->join('mt_pabrik i', 'i.kode_pabrik= c.kode_pabrik', 'LEFT');
+				$this->db->join('mt_supplier d', 'd.kodesupplier= a.kodesupplier', 'LEFT');
+				$this->db->join('tc_penerimaan_barang_nm_detail g', 'g.id_tc_po_det = b.id_tc_po_det', 'LEFT');
+				$this->db->join('tc_penerimaan_barang_nm f', 'f.id_penerimaan = g.id_penerimaan ', 'LEFT');
+				$this->db->where('YEAR(a.tgl_po) = ', $_POST['year']);
+				$this->db->where('MONTH(a.tgl_po) = ', $_POST['from_month']);
+				$this->db->where('(b.status_batal<>1 OR b.status_batal IS NULL)');
+				$this->db->order_by('a.tgl_po', 'ASC');
+			}
+
+			if($_POST['search_by'] == 'penerimaan'){
+				$this->db->select('c.satuan_besar, c.satuan_kecil, g.content, b.harga_satuan, b.discount');
+				$this->db->from('tc_penerimaan_barang_nm_detail g ');
+				$this->db->join('tc_po_nm_det b', 'b.id_tc_po_det= g.id_tc_po_det', 'LEFT');
+				$this->db->join('tc_po_nm a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
+				$this->db->join('tc_permohonan_nm_det h', 'h.id_tc_permohonan_det= b.id_tc_permohonan_det', 'LEFT');
+				$this->db->join('tc_permohonan_nm e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
+				$this->db->join('mt_barang_nm c', 'c.kode_brg= g.kode_brg', 'LEFT');
+				$this->db->join('mt_pabrik i', 'i.kode_pabrik= c.kode_pabrik', 'LEFT');
+				$this->db->join('mt_supplier d', 'd.kodesupplier= a.kodesupplier', 'LEFT');
+				$this->db->join('tc_penerimaan_barang_nm f', 'f.id_penerimaan = g.id_penerimaan ', 'LEFT');
+				$this->db->where('YEAR(f.tgl_penerimaan) = ', $_POST['year']);
+				$this->db->where('MONTH(f.tgl_penerimaan) = ', $_POST['from_month']);
+				$this->db->where('(b.status_batal<>1 OR b.status_batal IS NULL)');
+				$this->db->order_by('f.tgl_penerimaan', 'ASC');
+			}
+			$this->db->get();
+
+			$query = $this->db->last_query();
+
+
+			// $query = 'SELECT a.no_po, a.tgl_po, b.kode_brg, b.jumlah_besar, b.harga_satuan_netto, b.jumlah_harga_netto, c.nama_brg, d.namasupplier FROM tc_po_nm a JOIN tc_po_nm_det b ON b.id_tc_po=a.id_tc_po JOIN mt_barang_nm c ON c.kode_brg=b.kode_brg JOIN mt_supplier d ON d.kodesupplier=a.kodesupplier WHERE YEAR(a.tgl_po)='."'".$_POST['year']."'".' AND MONTH(a.tgl_po)='."'".$_POST['from_month']."'".' AND (b.status_batal<>1 OR b.status_batal IS NULL) ORDER BY a.tgl_po, d.namasupplier, c.nama_brg';
 				
 		}
 			
