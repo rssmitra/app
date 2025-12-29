@@ -104,7 +104,7 @@ class Input_dt_so_model extends CI_Model {
 		$this->db->order_by( 'nama_brg','ASC' );
 		$this->db->order_by( 'nama_sub_golongan','ASC' );
 		
-		$this->db->group_by('is_active, nama_sub_golongan');
+		$this->db->group_by('mt_depo_stok_nm_v.is_active, nama_sub_golongan');
 		$this->db->group_by($this->select_nm);
 	}
 
