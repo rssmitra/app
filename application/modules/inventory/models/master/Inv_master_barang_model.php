@@ -9,7 +9,7 @@ class Inv_master_barang_model extends CI_Model {
 		$this->load->database();
 		$this->table = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
 		$this->column = array('table_brg.nama_brg','table_brg.kode_brg','nama_kategori','nama_golongan','nama_sub_golongan');
-		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi';
+		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi, table_brg.rak';
 		$this->order = array('table_brg.created_date' => 'DESC', 'table_brg.updated_date' => 'DESC');
 
 	}
@@ -32,7 +32,7 @@ class Inv_master_barang_model extends CI_Model {
 		}
 
 		if( $_GET['flag'] == 'non_medis' ){
-			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_pabrik, stok_minimum, stok_maksimum, table_brg.id_pabrik as kode_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan');
+			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_pabrik,mt_rekap_stok_nm.stok_minimum, mt_rekap_stok_nm.stok_maksimum, table_brg.id_pabrik as kode_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan');
 			$this->db->join('mt_rekap_stok_nm','mt_rekap_stok_nm.kode_brg=table_brg.kode_brg','left');
 			$this->db->join('mt_kategori_nm','mt_kategori_nm.kode_kategori=table_brg.kode_kategori','left');
 			$this->db->join('mt_golongan_nm','mt_golongan_nm.kode_golongan=table_brg.kode_golongan','left');
@@ -133,7 +133,7 @@ class Inv_master_barang_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
-	public function get_by_id($id)
+	/*public function get_by_id($id)
 	{
 		$this->_main_query();
 		$this->db->select('dp.rak');
@@ -157,7 +157,43 @@ class Inv_master_barang_model extends CI_Model {
 			return $query->row();
 		}
 		
-	}
+	}*/
+
+	public function get_by_id($id)
+{
+    $this->_main_query();
+
+    // rak ambil dari mt_barang_nm
+    $this->db->select('table_brg.rak');
+
+    if(isset($_GET['kode_bagian']) && $_GET['kode_bagian'] != ''){
+        $this->db->where('dp.kode_bagian', $_GET['kode_bagian']);
+    }
+
+    if($_GET['flag'] == 'medis'){
+        $this->db->join(
+            'mt_depo_stok dp',
+            'dp.kode_brg = table_brg.kode_brg',
+            'left'
+        );
+    }
+
+    if($_GET['flag'] == 'non_medis'){
+        $this->db->join(
+            'mt_depo_stok_nm dp',
+            'dp.kode_brg = table_brg.kode_brg',
+            'left'
+        );
+    }
+
+    if(is_array($id)){
+        $this->db->where_in('table_brg.kode_brg', $id);
+        return $this->db->get()->result();
+    }else{
+        $this->db->where('table_brg.kode_brg', $id);
+        return $this->db->get()->row();
+    }
+}
 
 	public function save($data)
 	{
