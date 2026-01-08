@@ -512,7 +512,7 @@
           $base_url = ltrim($va->base_url_dok);
           $url = ltrim($va->csm_dex_fullpath);
           if (file_exists($url)) {
-              echo '<img src="'.$url.'"><br>'.$va->csm_dex_nama_dok.'<br pagebreak="true"/>';
+              echo '<img src="'.$url.'"><br pagebreak="true"/>';
           } else {
               echo 'Foto tidak ditemukan';
           }
