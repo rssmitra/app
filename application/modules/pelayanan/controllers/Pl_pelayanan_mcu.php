@@ -1079,7 +1079,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $data['qr_url'] = $this->qr_code_lib->qr_url($config);
         $data['img'] = $this->qr_code_lib->generate($data['qr_url']);
 
-        $data['attachment'] =  $this->db->get_where('csm_dokumen_export', ['no_registrasi' => $data['kunjungan']->no_registrasi, 'is_adjusment' => 'Y'])->result();
+        $data['attachment'] =  $this->db->order_by('created_date', 'ASC')->where_in('csm_dex_jenis_dok',['image/tiff', 'image/png', 'image/jpeg'])->get_where('csm_dokumen_export', ['no_registrasi' => $data['kunjungan']->no_registrasi, 'is_adjusment' => 'Y'])->result();
         // echo "<pre>"; print_r($data['attachment']); die;
         $html_content =  $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data, true);   
 
