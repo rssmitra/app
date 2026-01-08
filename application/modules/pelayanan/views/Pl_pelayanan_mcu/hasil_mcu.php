@@ -507,12 +507,15 @@
     <br pagebreak="true"/>
     <p style="font-weight: bold; text-align: center">LAMPIRAN HASIL PEMERIKSAAN</p>
     <?php
+      // get max key
+      $maxKey = array_keys($attachment, max($attachment))[0];
       foreach ($attachment as $ka => $va) {
         if(in_array( $va->csm_dex_jenis_dok, array('image/png', 'image/jpg', 'image/jpeg') )){
           $base_url = ltrim($va->base_url_dok);
           $url = ltrim($va->csm_dex_fullpath);
           if (file_exists($url)) {
-              echo '<img src="'.$url.'"><br pagebreak="true"/>';
+              $pageBreak = ($ka==$maxKey)?'':'<br pagebreak="true"/>';
+              echo '<img src="'.$url.'">'.$pageBreak.'';
           } else {
               echo 'Foto tidak ditemukan';
           }
