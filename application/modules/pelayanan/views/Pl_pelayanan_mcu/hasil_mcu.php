@@ -505,9 +505,10 @@
     </table><br>
     
     <br pagebreak="true"/>
-    <p style="font-weight: bold">LAMPIRAN HASIL PEMERIKSAAN</p>
+    <p style="font-weight: bold; text-align: center">LAMPIRAN HASIL PEMERIKSAAN</p>
     <?php
       foreach ($attachment as $ka => $va) {
+        if(in_array( $va->csm_dex_jenis_dok, array('image/png', 'image/jpg', 'image/jpeg') )){
           $base_url = ltrim($va->base_url_dok);
           $url = ltrim($va->csm_dex_fullpath);
           if (file_exists($url)) {
@@ -515,6 +516,7 @@
           } else {
               echo 'Foto tidak ditemukan';
           }
+        }
       }
     ?>
 
