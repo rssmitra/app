@@ -324,7 +324,9 @@ class Csm_billing_pasien extends MX_Controller {
         // echo '<pre>'; print_r($data);die;
         $html = '';
 
-       switch ($flag) {
+        
+        
+        switch ($flag) {
             case 'Surat_Permohonan_RI':
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setTemplateSuratPermohonanRI($data);
@@ -356,24 +358,37 @@ class Csm_billing_pasien extends MX_Controller {
                 $html .= $temp->setGlobalContentBilling($temp->TemplateBillingRI($no_registrasi, $flag, $data, $rb));
                 $html .= $temp->setGlobalFooterBillingRI($data);
                 break;
+
             case 'RAD':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                if(!isset($_GET['format'])){
-                    $html .= $temp->setGlobalHeaderTemplate();
+                // echo "<pre>"; print_r($data_pm);die;
+
+                if($flag_mcu == 1){
+                    $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
+                    // get foto MCU
+                    $html .= $temp->TemplateFotoMCURadiologi($no_registrasi);
                 }else{
-                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                    
+                    if(!isset($_GET['format'])){
                         $html .= $temp->setGlobalHeaderTemplate();
+                    }else{
+                        if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                            $html .= $temp->setGlobalHeaderTemplate();
+                        }
                     }
-                }
-                
-                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
-                $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
-                if(!isset($_GET['format'])){
-                    $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
-                }else{
-                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                    
+                    $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
+
+                    $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
+                    
+                    if(!isset($_GET['format'])){
                         $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                    }else{
+                        if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                            $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                        }
                     }
+
                 }
                 
                 break;
@@ -401,31 +416,37 @@ class Csm_billing_pasien extends MX_Controller {
                     }
                 }
 
-                
+
+
             break;
-                
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
                 // echo '<pre>'; print_r($data_pm);die;
                 $template_html = $temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm);
-                if(!isset($_GET['format'])){
-                    $html .= $temp->setGlobalHeaderTemplate();
+
+                if($flag_mcu == 1){
+                    $html .= $temp->setGlobalContentBilling($template_html);
                 }else{
-                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                    if(!isset($_GET['format'])){
                         $html .= $temp->setGlobalHeaderTemplate();
+                    }else{
+                        if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                            $html .= $temp->setGlobalHeaderTemplate();
+                        }
                     }
-                }
 
-                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
-                $html .= $temp->setGlobalContentBilling($template_html);
+                    $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
+                    $html .= $temp->setGlobalContentBilling($template_html);
 
-                if(!isset($_GET['format'])){
-                    $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
-                }else{
-                    if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                    if(!isset($_GET['format'])){
                         $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
+                    }else{
+                        if(isset($_GET['format']) && $_GET['format'] != 'html'){
+                            $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
+                        }
                     }
                 }
+                
                 break;
 
             case 'SEP':
@@ -441,6 +462,10 @@ class Csm_billing_pasien extends MX_Controller {
                 # code...
                 break;
         }
+
+        // if($flag_mcu == 1){
+        //     $attachment = $temp->TemplateFotoMCURadiologi($no_registrasi);
+        // }
         // print_r($html);die;
         return json_encode( array('html' => $html, 'data' => $data) );
     }

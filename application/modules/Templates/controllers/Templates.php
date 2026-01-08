@@ -1627,8 +1627,8 @@ class Templates extends MX_Controller {
     public function TemplateHasilPM($no_registrasi, $tipe, $data, $pm, $flag_mcu='',$data_pm=''){
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
-        // echo '<pre>';print_r($data_pm);die;
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
+        // echo '<pre>';print_r($pm_data);die;
         $html = '';
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
@@ -1688,7 +1688,9 @@ class Templates extends MX_Controller {
             if(isset($_GET['format']) && $_GET['format'] == 'html'){
                 $html .= '<center><span style="text-align: center; font-size: 42px;"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span></center>';
             }else{
-                $html .= '<center><span style="text-align: center; font-size: 42px"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span></center>';
+                if($flag_mcu  == ''){
+                    $html .= '<center><span style="text-align: center; font-size: 42px"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span></center>';
+                }
                 $html .= '<br><br><hr>';
             }
             
@@ -1712,21 +1714,22 @@ class Templates extends MX_Controller {
                 
 
                 for($i=0;$i<count($referensi);$i++) {
-
                     if(($referensi[$i]->referensi != $referen)){
                         $html .= '<tr><td colspan="5"><b>'.$referensi[$i]->referensi.'</b></td></tr>';
                         $referen = $referensi[$i]->referensi;
                     }
 
+                    
+                    // echo '<pre>';print_r($pm_data);die;
                     foreach ($pm_data as $key => $value) {
-                        // echo '<pre>';print_r($value);die;
+                        
                         $standar = ($data->reg_data->jk == 'L') ? $value->standar_hasil_pria : $value->standar_hasil_wanita;
                         if( trim($value->nama_pemeriksaan) == trim($referensi[$i]->nama_pemeriksaan)){
                             if($value->detail_item_1 != ' ' AND $value->detail_item_1 != NULL){
-                                if((trim($value->nama_tindakan)!=$nama_tindakan)){
-                                    $html .= '<tr><td colspan="5">&nbsp;'.strtoupper($value->nama_tindakan).'</td></tr>';
-                                    $nama_tindakan = trim($value->nama_tindakan);
-                                }
+                                // if((trim($value->nama_tindakan)!=$nama_tindakan)){
+                                //     $html .= '<tr><td colspan="5">&nbsp;'.strtoupper($value->nama_tindakan).'</td></tr>';
+                                //     $nama_tindakan = trim($value->nama_tindakan);
+                                // }
                                 if((trim($value->nama_pemeriksaan)!=$nama_pemeriksaan)){
                                     $html .= '<tr><td colspan="5">&nbsp;&nbsp;&nbsp;'.$value->nama_pemeriksaan.'</td></tr>';
                                     $nama_pemeriksaan = trim($value->nama_pemeriksaan);
@@ -2162,6 +2165,31 @@ EOD;
         
     }
 
+    public function TemplateFotoMCURadiologi($no_registrasi)
+    {
+        $data_pm = $this->db
+            ->get_where('csm_dokumen_export', ['no_registrasi' => $no_registrasi, 'is_adjusment' => 'Y'])
+            ->result();
+        // echo '<pre>';print_r($data_pm);die;
+
+        if (empty($data_pm)) {
+            return 'Data foto tidak ditemukan';
+        }
+
+        $html = '';
+        foreach ($data_pm as $key => $value) {
+            $base_url = ltrim($value->base_url_dok);
+            $url = ltrim($value->csm_dex_fullpath);
+            if (file_exists($url)) {
+                $html .= '<img src="'.$base_url.$url.'"><br>'.$value->csm_dex_nama_dok.'<br pagebreak="true"/>';
+            } else {
+                $html .= 'Foto tidak ditemukan';
+            }
+        }
+        
+
+        return $html;
+    }
 
 }
 

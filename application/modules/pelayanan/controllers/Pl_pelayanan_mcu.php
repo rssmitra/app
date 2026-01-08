@@ -29,6 +29,9 @@ class Pl_pelayanan_mcu extends MX_Controller {
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->load->model('registration/Reg_pm_model', 'Reg_pm');
+
     }
 
     public function index() { 
@@ -1048,23 +1051,50 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $data['param_ekg'] = $this->Pl_pelayanan_mcu->get_param('global_parameter','label,value',array('flag' => 'pemeriksaan_irama_ekg'));
         $data['param_kesan_mcu'] = $this->Pl_pelayanan_mcu->get_param('global_parameter','label,value',array('flag' => 'kesan_mcu'));
 
-        // echo"<pre>";print_r($data['hasil']);die;
+        // get hasil lab
+        /*load class*/
+        $kunjungan_pm = $this->db->join('pm_tc_penunjang','pm_tc_penunjang.no_kunjungan = tc_kunjungan.no_kunjungan','left')->where_in('kode_bagian_tujuan', ['050101','050201'])->get_where('tc_kunjungan', ['no_registrasi' => $data['kunjungan']->no_registrasi, 'status_isihasil' => 1])->result();
+        
+        // echo "<pre>"; print_r($this->db->last_query());die;
+        $csm_bp = new Csm_billing_pasien;
+        $reg_pm = new Reg_pm_model;
+        $params = [];
 
-        // $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data);   
+        foreach ($kunjungan_pm as $k => $v) {
+            $flag = $this->master->get_short_name_pm($v->kode_bagian_tujuan);
+            $flag_mcu = 1;
+            /*get content html*/
+            $html_pm = json_decode($csm_bp->getHtmlData($params, $data['kunjungan']->no_registrasi, $flag, $v->kode_penunjang, '', $v->no_kunjungan, $flag_mcu));
+            $data['hasil_penunjang'][$v->kode_bagian_tujuan][] = $html_pm;
+            
+        }
+
+        $config = [
+            'no_registrasi' => isset($data['kunjungan']->no_registrasi)?$data['kunjungan']->no_registrasi:'',
+            'kode' => isset($data['kunjungan']->no_registrasi)?$data['kunjungan']->no_registrasi:'',
+            'tanggal' => isset($data['kunjungan']->tgl_jam_poli)?$data['kunjungan']->tgl_jam_poli:'',
+            'flag' => 'MCU',
+        ];
+        
+        $data['qr_url'] = $this->qr_code_lib->qr_url($config);
+        $data['img'] = $this->qr_code_lib->generate($data['qr_url']);
+
+        $data['attachment'] =  $this->db->get_where('csm_dokumen_export', ['no_registrasi' => $data['kunjungan']->no_registrasi, 'is_adjusment' => 'Y'])->result();
+        // echo "<pre>"; print_r($data['attachment']); die;
         $html_content =  $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data, true);   
 
-        $this->exportHasilMCU($html_content,$data['kunjungan']->no_registrasi,$data['pasien']->nama_pasien);
+        $this->exportHasilMCU($html_content,$data['kunjungan'],$data['pasien']);
         
     
     }
 
-    public function exportHasilMCU($html,$no_reg,$nama)
+    public function exportHasilMCU($html,$data_kunjungan,$data_pasien)
     {
         /*Print PDF */
         /*default*/
         /*filename and title*/
         
-        $filename = 'MCU_'.$no_reg.'_'.$nama.'';
+        $filename = 'MCU_'.$data_kunjungan->no_registrasi.'_'.$data_pasien->nama_pasien.'';
         $tanggal = new Tanggal();
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
@@ -1115,6 +1145,61 @@ class Pl_pelayanan_mcu extends MX_Controller {
 
         //kotak form
 
+        // Halaman cover
+        $pdf->setPrintHeader(false);
+        $pdf->AddPage('P', 'A4');
+
+        // Background color
+        $pdf->SetFillColor(240, 248, 255); // Alice blue
+        $pdf->Rect(0, 0, 210, 297, 'F');
+
+        // Tambahkan logo
+        $pdf->Image('assets/images/' . $PDF_HEADER_LOGO, 80, 20, 50, 0, 'PNG');
+
+        // Nama dan alamat rumah sakit
+        $pdf->SetY(70);
+        $pdf->SetTextColor(0, 0, 128); // Navy blue
+        $pdf->SetFont('helvetica', 'B', 20);
+        $pdf->Cell(0, 10, $PDF_HEADER_TITLE, 0, 1, 'C');
+
+        // Judul dengan warna
+        $pdf->SetY(77);
+        $pdf->SetTextColor(0, 0, 128); // Navy blue
+        $pdf->SetFont('helvetica', 'B', 24);
+        $pdf->Cell(0, 15, 'HASIL MEDICAL CHECK-UP', 0, 1, 'C');
+
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetFont('helvetica', 'B', 18);
+        $pdf->Cell(0, 15, $data_kunjungan->nama_tarif, 0, 1, 'C');
+
+        // Reset text color
+        $pdf->SetTextColor(0, 0, 0);
+
+        // Informasi pasien
+        $pdf->Ln(10);
+        $pdf->SetFont('helvetica', '', 14);
+        $pdf->Cell(60, 5, 'No Registrasi', 0, 0);
+        $pdf->Cell(0, 5, ': '.$data_kunjungan->no_registrasi, 0, 1);
+        $pdf->Cell(60, 5, 'No. MR', 0, 0);
+        $pdf->Cell(0, 5, ': '.$data_kunjungan->no_mr, 0, 1);
+        $pdf->Cell(60, 5, 'Nama Pasien', 0, 0);
+        $pdf->Cell(0, 5, ': '.$data_pasien->nama_pasien, 0, 1);
+        $pdf->Cell(60, 5, 'Umur', 0, 0);
+        $pdf->Cell(0, 5, ': '.$data_pasien->umur_lengkap, 0, 1);
+        $pdf->Cell(60, 5, 'Tanggal MCU', 0, 0);
+        $pdf->Cell(0, 5, ': '.date('d/m/Y', strtotime($data_kunjungan->tgl_jam_poli)), 0, 1);
+        $pdf->Cell(60, 5, 'Dokter Pemeriksa', 0, 0);
+        $pdf->Cell(0, 5, ': '.$data_kunjungan->nama_pegawai, 0, 1);
+
+        // Garis bawah
+        // $pdf->Ln(20);
+        // $pdf->SetDrawColor(0, 0, 128); // Navy blue line
+        // $pdf->Line(20, $pdf->GetY(), 180, $pdf->GetY());
+
+        // Aktifkan header kembali untuk halaman berikutnya
+        $pdf->setPrintHeader(true);
+
+        // Halaman konten utama
         $pdf->AddPage('P', 'A4');
         //$pdf->setY(10);
         $pdf->setXY(5,10,5,5);
@@ -1122,7 +1207,6 @@ class Pl_pelayanan_mcu extends MX_Controller {
         // /* $pdf->Cell(150,42,'',1);*/
         
         $result = $html;
-
         // output the HTML content
         $pdf->writeHTML($result, true, false, true, false, '');
         ob_end_clean();

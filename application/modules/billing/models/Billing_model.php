@@ -1441,7 +1441,7 @@ class Billing_model extends CI_Model {
             $table = 'mcu_hasilpasien_pm_v as a';
             $where = 'a.kode_trans_pelayanan IN (SELECT kode_trans_pelayanan_paket_mcu FROM tc_trans_pelayanan_paket_mcu WHERE kode_penunjang='.$kode_penunjang.')';
         }
-        $this->db->select("c.kode_tarif,c.nama_tarif as referensi,b.nama_tarif,a.nama_pemeriksaan,MAX(d.urutan) as urutan,MAX(a.kode_trans_pelayanan) AS kode_trans_pelayanan");
+        $this->db->select("c.kode_tarif,c.nama_tarif as referensi, b.nama_tarif, a.nama_pemeriksaan, MAX(d.urutan) as urutan,MAX(a.kode_trans_pelayanan) AS kode_trans_pelayanan");
         $this->db->from($table);
         $this->db->join('mt_master_tarif b', 'a.kode_tarif=b.kode_tarif', 'left');
         $this->db->join('mt_master_tarif c', 'c.kode_tarif=b.referensi', 'left');
@@ -1473,19 +1473,39 @@ class Billing_model extends CI_Model {
     }
 
     public function getNamaDokter_($flag, $kode_pm){
+        // Query from tc_trans_pelayanan with doctor name
+        $this->db->select('tc_trans_pelayanan.no_registrasi, mt_karyawan.nama_pegawai');
         $this->db->from('tc_trans_pelayanan');
         $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1', 'left');
-        $this->db->where('kode_penunjang', $kode_pm);
-        $exc = $this->db->get()->row();
-        // print_r($this->db->last_query());die;
-        if( $exc && isset($exc->nama_pegawai) || $exc->nama_pegawai!=''){
-            return $exc->nama_pegawai;
-        }else{
-            // cek dari pendaftaran
-            $reg = $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_registrasi.kode_dokter', 'left')->get_where('tc_registrasi', array('no_registrasi' => $exc->no_registrasi) );
-            return $reg->nama_pegawai;
+        $this->db->where('tc_trans_pelayanan.kode_penunjang', $kode_pm);
+        $result = $this->db->get()->row();
+        
+        if(!empty($result)){
+            // If doctor found in trans_pelayanan
+            if($result && !empty($result->nama_pegawai)){
+                return $result->nama_pegawai;
+            }
+            
+            // If not found, check from tc_registrasi
+            if($result && $result->no_registrasi){
+                $this->db->select('mt_karyawan.nama_pegawai');
+                $this->db->from('tc_registrasi');
+                $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_registrasi.kode_dokter', 'left');
+                $this->db->where('tc_registrasi.no_registrasi', $result->no_registrasi);
+                $reg = $this->db->get()->row();
+                
+                if($reg && !empty($reg->nama_pegawai)){
+                    return $reg->nama_pegawai;
+                }
+            }
         }
-
+        
+        // Last resort: check from pm_tc_penunjang
+        $penunjang = $this->db->select('dr_pengirim')
+                              ->get_where('pm_tc_penunjang', array('kode_penunjang' => $kode_pm))
+                              ->row();
+        
+        return ($penunjang && !empty($penunjang->dr_pengirim)) ? $penunjang->dr_pengirim : '';
     }
 
     public function getRiwayatKunjungan($no_registrasi){
