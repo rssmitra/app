@@ -64,6 +64,7 @@ $(document).ready(function() {
               /*reset all field*/
               $('#inputKeyObat').val('');
               $('#pl_kode_tindakan_hidden').val('');
+			  $('#pl_jumlah_obat').val(''); // update 07 jan 2026
               $('#div_detail_obat').hide('fast');
               $('#detailObatHtml').html('');
             }else{
