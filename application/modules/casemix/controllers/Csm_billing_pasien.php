@@ -366,7 +366,7 @@ class Csm_billing_pasien extends MX_Controller {
                 if($flag_mcu == 1){
                     $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
                     // get foto MCU
-                    $html .= $temp->TemplateFotoMCURadiologi($no_registrasi);
+                    // $html .= $temp->TemplateFotoMCURadiologi($no_registrasi);
                 }else{
                     
                     if(!isset($_GET['format'])){

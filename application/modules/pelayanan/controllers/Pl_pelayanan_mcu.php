@@ -1084,8 +1084,42 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $html_content =  $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data, true);   
 
         $this->exportHasilMCU($html_content,$data['kunjungan'],$data['pasien']);
+
+        // redirect('pelayanan/Pl_pelayanan_mcu/mergeDokumenMCU?kode_mcu='.$kode_mcu.'&id_pl_tc_poli='.$id_pl_tc_poli);
         
-    
+    }
+
+    public function mergeDokumenMCU(){
+
+        $kode_mcu = $_GET['kode_mcu'];
+        $id_pl_tc_poli = $_GET['id_pl_tc_poli'];
+        $data_kunjungan = $this->Pl_pelayanan_mcu->get_by_id($id_pl_tc_poli);
+        $data_pasien = $this->Reg_pasien->get_by_mr($data_kunjungan->no_mr);
+        $attachment =  $this->db->get_where('csm_dokumen_export', ['no_registrasi' => $data_kunjungan->no_registrasi, 'is_adjusment' => 'Y'])->result();
+
+        // merge pdf hasil mcu dan attachment
+         $main_pdf_path = 'MCU_'.$data_kunjungan->no_registrasi.'_'.$data_pasien->nama_pasien.'';
+
+        if (!empty($attachment)) {
+            include_once 'ApiMerge/PDFMerger-master/PDFMerger.php';
+            $pdfMerger = new PDFMerger();
+            // $pdfMerger->addPDF('uploaded/temp/'.$main_pdf_path.'', 'all');
+
+            foreach ($attachment as $attachment) {
+                $attachment_path = $attachment->csm_dex_fullpath;
+                if (file_exists($attachment_path)) {
+                    $pdfMerger->addPDF($attachment_path, 'all');
+                }
+            }
+
+            // Output PDF gabungan
+            $pdfMerger->merge('browser', $main_pdf_path . '.pdf');
+            // Hapus file sementara
+            unlink($main_pdf_path);
+        } else {
+            // Jika tidak ada attachment, output PDF utama
+            $pdf->Output('uploaded/mcu/'.$main_pdf_path.'.pdf', 'I');
+        }
     }
 
     public function exportHasilMCU($html,$data_kunjungan,$data_pasien)
@@ -1211,8 +1245,9 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $pdf->writeHTML($result, true, false, true, false, '');
         ob_end_clean();
         /*save to folder*/
-        $pdf->Output('uploaded/'.$filename.'.pdf', 'I'); 
-
+        // $pdf->Output('uploaded/temp/'.$filename.'.pdf', 'F'); 
+        $pdf->Output('uploaded/temp/'.$filename.'.pdf', 'I'); 
+        // return $filename;
         /*show pdf*/
         //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'I'); 
         /*download*/
