@@ -270,6 +270,35 @@ class Attachment_model extends CI_Model {
 				$noted = isset($trans->kode_penunjang)?'Hasil Pemeriksaan Laboratorium Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
 			break;
 
+			case 'MCU':
+   			 	$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
+        		->from('tc_registrasi tr')
+        		->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
+        		->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
+        		->where('tr.no_registrasi', $_GET['reg'])
+        		->get()
+        		->row();
+				// echo "<pre>"; print_r($trans);die;
+    			
+				$signed = $trans->dokter_pengirim . '<br><span style="font-size: 9px">SIP. ' . $trans->no_sip.'</span>';
+    			$ttd = $trans->ttd;
+
+   				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="35%"><br>';
+
+    			$tgl = $this->tanggal->formatDateTime($trans->created_date);
+    			$created_by = $trans->dokter_pengirim;
+
+    			$user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
+    			$signTitle = 'Dokter Penanggung Jawab';
+    			$title = 'HASIL PEMERIKSAAN MCU';
+
+    			$status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
+
+    			$noted = isset($trans->no_registrasi)
+       			? 'Hasil Pemeriksaan MCU oleh ' . $trans->dokter_pengirim . ' untuk Pasien dengan No. Registrasi ' . $trans->no_registrasi . ' a.n. '.$trans->nama_pasien
+        		: 'Dokumen ini telah dihapus';
+			break;
+
 		}
 
 		$response = [

@@ -107,7 +107,7 @@
       if(!is_object($value)){
         echo '
         <td width="5px">:</td>
-        <td width="50%"> '.$value.' </td>
+        <td width="50%"> '.ucfirst($value).' </td>
       </tr>';
       }else{
         echo '
@@ -264,7 +264,7 @@
                   <?php 
                     switch ($k) {
                       case 'hidung':
-                        echo $v;
+                        echo ucfirst($v);
                       break;
 
                       case 'gigi':
@@ -276,31 +276,31 @@
                       break;
 
                       case 'lidah':
-                        echo $v;
+                        echo ucfirst($v);
                       break;
 
                       case 'jvp':
-                        echo $v;
+                        echo ucfirst($v);
                       break;
 
                       case 'tiroid':
                       case 'kel_getah_bening':
                       case 'hati_atau_limpa':
                       case 'tumor':
-                        echo $v;
+                        echo ucfirst($v);
                       break;
 
                       case 'besar':
-                        echo $v;
+                        echo ucfirst($v);
                         
                       break;
 
                       case 'bunyi_S1_strip_S2':
-                        echo $v;
+                        echo ucfirst($v);
                       break;
 
                       case 'bising':
-                        echo $v;
+                        echo ucfirst($v);
                       break;
 
                       case 'extremitas':
@@ -314,11 +314,11 @@
                       break;
 
                       case 'lainnya':
-                        echo $v;
+                        echo ucfirst($v);
                       break;
                       
                       default:
-                        echo nl2br($v);
+                        echo nl2br(ucfirst($v));
                       break;
                     }
                     // echo "<pre>"; print_r($v);die;
@@ -504,6 +504,7 @@
       
     </table><br>
     
+    <?php if(!empty($attachment)): ?>
     <br pagebreak="true"/>
     <p style="font-weight: bold; text-align: center">LAMPIRAN HASIL PEMERIKSAAN</p>
     <?php
@@ -516,12 +517,11 @@
           if (file_exists($url)) {
               $pageBreak = ($ka==$maxKey)?'':'<br pagebreak="true"/>';
               echo '<img src="'.$url.'">'.$pageBreak.'';
-          } else {
-              echo 'Foto tidak ditemukan';
           }
         }
       }
     ?>
+    <?php endif; ?>
 
    
   </div>

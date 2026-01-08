@@ -105,6 +105,8 @@ class Reg_mcu extends MX_Controller {
             $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,'','',$tgl_registrasi);
             $no_registrasi = $data_registrasi['no_registrasi'];
             $no_kunjungan = $data_registrasi['no_kunjungan'];
+
+            $kode_tarif = $this->regex->_genRegex($this->form_validation->set_value('mcu_paket_tindakan'),'RGXINT');
             
 
             /*insert poli pl_tc_poli*/
@@ -126,7 +128,11 @@ class Reg_mcu extends MX_Controller {
             //echo"<pre>";print_r($dataexc);echo"<pre>";print_r($datakunjungan);echo"<pre>";print_r($data_gd_tc_gawat_darurat);die;
            /*insert mcu*/
            $data_mcu = array(
-                'kode_mcu' => $kode_mcu
+                'kode_mcu' => $kode_mcu,
+                'kode_tarif' => $kode_tarif,
+                'no_registrasi' => $no_registrasi,
+                'no_kunjungan' => $no_kunjungan,
+                'no_mr' => $no_mr,
             );
 
             /*save poli*/
@@ -144,8 +150,9 @@ class Reg_mcu extends MX_Controller {
             /*insert tc_trans_pelayanan*/
 
             // ------------------- Ini Bagian Tarif -------------------
+            
 			$tarifUmum=new Tarif();
-			$tarifUmum->set("kode_tarif",$this->regex->_genRegex($this->form_validation->set_value('mcu_paket_tindakan'),'RGXINT'));
+			$tarifUmum->set("kode_tarif",$kode_tarif);
 			$tarifUmum->set("kode_klas","16");
 			$tarifUmum->set("kode_kelompok",$this->regex->_genRegex($this->form_validation->set_value('kode_kelompok_hidden'),'RGXINT'));
 			//$tarifUmum->set("acc_pola",$acc_pola);
