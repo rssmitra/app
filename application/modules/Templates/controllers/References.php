@@ -1249,7 +1249,7 @@ class References extends MX_Controller {
 			$jenis_operasi = ($_POST['kode_bag']=='030901') ? ''.$value->tingkat_operasi.'' : '' ;
 			$bagian = ($value->bagian == null)?'Global':$value->bagian;
 			$label_new_tarif = ($value->label_tarif_baru != null)?'<span style="background: green; color:white; padding: 2px; font-size: 10px; border-radius: 5px">New</span>':'';
-			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$bagian.') '.$jenis_operasi.' '.$label_new_tarif.'';
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$bagian.') '.$jenis_operasi.' : '.$label_new_tarif.'';
 		}
 		echo json_encode($arrResult);
 		
