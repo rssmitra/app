@@ -39,8 +39,8 @@ $(document).ready(function(){
           },1800);
 
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }        
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }        
 
         achtungHideLoader();        
 

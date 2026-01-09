@@ -52,8 +52,10 @@ $('#InputKeyTindakanPm').typeahead({
     afterSelect: function (item) {
         // do what is needed with item
         var val_item=item.split(':')[0];
+        var label_item=item.split(':')[1];
         console.log(val_item);
         $('#perjanjian_tindakan_pm').val(val_item);
+        $('#InputKeyTindakanPm').val(label_item);
     }
 
 });
