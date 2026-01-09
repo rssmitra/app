@@ -509,7 +509,7 @@ $(document).ready(function(){
               <td style="vertical-align: top; width: 25%">
                 <table>
                   <?php 
-                    foreach($pemeriksaan['UMUM']['URIN'] as $key_urin=>$row_urin): 
+                    foreach($pemeriksaan['UMUM']['URINALISA'] as $key_urin=>$row_urin): 
                       $split = explode("|", $row_urin);
                       if($key_urin < 9) :
                   ?>
@@ -738,7 +738,7 @@ $(document).ready(function(){
               <td style="vertical-align: top; width: 25%">
                 <table>
                   <?php 
-                    foreach($pemeriksaan['UMUM']['LEMAK'] as $key_lemak=>$row_lemak): 
+                    foreach($pemeriksaan['UMUM']['PROFIL_LIPID'] as $key_lemak=>$row_lemak): 
                       $split = explode("|", $row_lemak);
                   ?>
                   <tr>
@@ -759,7 +759,7 @@ $(document).ready(function(){
               <td style="vertical-align: top; width: 25%">
                 <table>
                   <?php 
-                    foreach($pemeriksaan['UMUM']['GINJAL'] as $key_ginjal=>$row_ginjal): 
+                    foreach($pemeriksaan['UMUM']['FAAL_GINJAL'] as $key_ginjal=>$row_ginjal): 
                       $split = explode("|", $row_ginjal);
                   ?>
                   <tr>
@@ -828,7 +828,7 @@ $(document).ready(function(){
               <td style="vertical-align: top; width: 25%">
                 <table>
                   <?php 
-                    foreach($pemeriksaan['BPJS']['LEMAK'] as $key_lemak=>$row_lemak): 
+                    foreach($pemeriksaan['BPJS']['PROFIL_LIPID'] as $key_lemak=>$row_lemak): 
                       $split = explode("|", $row_lemak);
                   ?>
                   <tr>
@@ -849,7 +849,7 @@ $(document).ready(function(){
               <td style="vertical-align: top; width: 25%">
                 <table>
                   <?php 
-                    foreach($pemeriksaan['BPJS']['GINJAL'] as $key_ginjal=>$row_ginjal): 
+                    foreach($pemeriksaan['BPJS']['FAAL_GINJAL'] as $key_ginjal=>$row_ginjal): 
                       $split = explode("|", $row_ginjal);
                   ?>
                   <tr>
