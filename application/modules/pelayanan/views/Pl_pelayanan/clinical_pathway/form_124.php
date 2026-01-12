@@ -67,7 +67,7 @@ $(document).ready(function() {
       <br>
   <ol>
     <li>
-      Sehat<br> Bekerja tetapi dalam pengawasan 
+      Sehat<br> Bekerja tetapi dalam pengawasan <input type="text" class="input_type" placeholder="isi keterangan (bila ada)" style="width: 460px !important; text-align: left" name="form_124[bekerja_catatan]" id="bekerja_catatan" onchange="fillthis('bekerja_catatan')" value="<?php echo isset($value_form['bekerja_catatan'])?$value_form['bekerja_catatan']:''?>">
     </li>
     <li>
       Sakit dan memerlukan istirahat selama
