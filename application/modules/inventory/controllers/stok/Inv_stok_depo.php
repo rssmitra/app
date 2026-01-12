@@ -388,8 +388,8 @@ class Inv_stok_depo extends MX_Controller {
         echo 'Sukses Total '.$no;
 
     }
-
-    public function set_status_brg()
+	
+	    public function set_status_brg()
     {
         // print_r($_POST);die;
         /*proses input so*/
