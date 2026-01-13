@@ -396,7 +396,7 @@ function bar_forward(progress_line_object) {
   progress_line_object.attr('style', 'width: ' + new_value + '%;').data('now-value', new_value);
 }
 
-function periksa(kode_penunjang) {
+function proses_periksa(kode_penunjang) {
   
   $.ajax({
       url: "pelayanan/Pl_pelayanan_pm/periksa_pm",
@@ -436,6 +436,10 @@ function periksa(kode_penunjang) {
         achtungHideLoader();
       }
   });
+}
+
+function periksa(kode_penunjang){
+  show_modal('pelayanan/Pl_pelayanan_pm/form_periksa/'+kode_penunjang, 'Form Pemeriksaan Penunjang Medis');
 }
 
 function cetak_slip(kode_penunjang) {

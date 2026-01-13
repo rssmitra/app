@@ -629,10 +629,10 @@ class Reg_pasien extends MX_Controller {
         $reg_pm = new Reg_pm_model;
         $data = [];
         $flag = $this->master->get_short_name_pm($kode_bagian_pm);
-
         $flag_mcu = isset($_GET['flag_mcu'])?$_GET['flag_mcu']:'';
         /*get content html*/
         $html = json_decode($csm_bp->getHtmlData($data, $no_registrasi, $flag, $kode_penunjang, '', $no_kunjungan, $flag_mcu));
+        
         /*load form view*/
         $data = array(
             // 'html' => $hasil_pm['html'],

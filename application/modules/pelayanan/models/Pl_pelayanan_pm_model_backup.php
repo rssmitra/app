@@ -45,7 +45,6 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			if(isset($_GET['status_pasien']) AND $_GET['status_pasien']!=''){
 
 				if($_GET['status_pasien']=='belum_ditindak' ){
-					
 					$this->db->where("(pm_tc_penunjang.status_daftar is null or pm_tc_penunjang.status_daftar = 0 )");
 
 					if( (isset($_GET['keyword']) AND $_GET['keyword']!='') OR ( (isset($_GET['from_tgl']) AND $_GET['from_tgl']!='') AND (isset($_GET['from_tgl']) AND $_GET['to_tgl']!='') ) ){
@@ -247,7 +246,6 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			$this->db->join('tc_trans_pelayanan tp',''.$this->table.'.kode_penunjang=tp.kode_penunjang','left');
 		}else{
 			$this->db->join('tc_trans_pelayanan_paket_mcu tp',''.$this->table.'.kode_penunjang=tp.kode_penunjang','left');
-			$this->db->where('status_isihasil', 1);
 		}
 		
 		if(is_array($no_kunjungan)){
@@ -441,11 +439,12 @@ class Pl_pelayanan_pm_model extends CI_Model {
       pm_standarhasil_detail_v.keterangan, 
       pm_standarhasil_detail_v.mktime_umur_akhir, 
       pm_standarhasil_detail_v.detail_item_1, 
-      pm_standarhasil_detail_v.detail_item_2 , c.kode_tarif as referensi, pm_isihasil_v.kode_dokter1, d.nama_pegawai as dokter1, pm_isihasil_v.kode_dokter2, e.nama_pegawai as dokter2, loinc_code,loinc_display_name,loinc_speciment,loinc_uom,loinc_type,loinc_metode,loinc_request_type, h.hasil, h.keterangan as keterangan_pm';
+      pm_standarhasil_detail_v.detail_item_2 , c.kode_tarif as referensi, pm_isihasil_v.kode_dokter1, d.nama_pegawai as dokter1, pm_isihasil_v.kode_dokter2, e.nama_pegawai as dokter2, loinc_code,loinc_display_name,loinc_speciment,loinc_uom,loinc_type,loinc_metode,loinc_request_type';
 
 		$this->db->select($select);
+		$this->db->select('(select top 1 hasil from pm_tc_hasilpenunjang where (kode_trans_pelayanan=pm_isihasil_v.kode_trans_pelayanan AND kode_mt_hasilpm=pm_isihasil_v.kode_mt_hasilpm) order by kode_tc_hasilpenunjang DESC ) as hasil');
+		$this->db->select('(select top 1 keterangan from pm_tc_hasilpenunjang where (kode_trans_pelayanan=pm_isihasil_v.kode_trans_pelayanan AND kode_mt_hasilpm=pm_isihasil_v.kode_mt_hasilpm) order by kode_tc_hasilpenunjang DESC ) as keterangan_pm');
 		$this->_main_query_hasil_pm($kode_penunjang,$kode_bag_tujuan);
-		$this->db->join('pm_tc_hasilpenunjang h', 'h.kode_trans_pelayanan = pm_isihasil_v.kode_trans_pelayanan AND h.kode_mt_hasilpm = pm_isihasil_v.kode_mt_hasilpm AND h.kode_tc_hasilpenunjang = (SELECT MAX(kode_tc_hasilpenunjang) FROM pm_tc_hasilpenunjang WHERE kode_trans_pelayanan = pm_isihasil_v.kode_trans_pelayanan AND kode_mt_hasilpm = pm_isihasil_v.kode_mt_hasilpm)', 'left');
 		if($kode_bag_tujuan=='050101'){
 			$this->db->where("mktime_umur_mulai <= '".$mktimenya."' " );
 			$this->db->where("mktime_umur_akhir > '".$mktimenya."' " );
@@ -485,6 +484,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->select($select);
 		$this->db->from('mcu_hasilpasien_pm_v');
 		$this->db->join('pm_mt_standarhasil','pm_mt_standarhasil.kode_mt_hasilpm=mcu_hasilpasien_pm_v.kode_mt_hasilpm','left');
+		$this->db->from('mcu_hasilpasien_pm_v');
 		$this->db->join('tc_kunjungan', 'mcu_hasilpasien_pm_v.no_kunjungan=tc_kunjungan.no_kunjungan', 'left');
 		$this->db->join('mt_karyawan d', 'd.kode_dokter=tc_kunjungan.kode_dokter', 'left');
 		$this->db->where('mcu_hasilpasien_pm_v.kode_penunjang', $kode_penunjang );
@@ -718,9 +718,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 	
 	function count_filtered_order_penunjang()
 	{
-		$this->_main_query_order_penunjang();
-		$query = $this->db->get();
-		return $query->num_rows();
+		return count($this->_get_datatables_order_penunjang());
 	}
 
 	public function count_all_order_penunjang()
@@ -747,8 +745,8 @@ class Pl_pelayanan_pm_model extends CI_Model {
 
 
 	function get_penunjang_by_no_mr($no_mr){
-		if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
-		{
+		// if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
+		// {
 			$this->db->select('tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan');
 			$this->db->select('tgl_daftar, tgl_isihasil, tgl_periksa');
 			$this->db->select("CAST((
@@ -770,8 +768,8 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			$this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05');
 			$this->db->order_by('tgl_masuk', 'DESC');
 			$penunjang = $this->db->get()->result();
-			$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
-		}
+		// 	$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
+		// }
 
 		$getDataPm = [];
 		foreach ($penunjang as $key_pm => $val_pm) {

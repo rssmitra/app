@@ -140,9 +140,6 @@ function tambah_file()
             
             </div>
       </div>
-
-      <br>
-      <br>
       <br>
 
       <p style="font-weight: bold">JENIS PEMERIKSAAN</p>
@@ -181,11 +178,13 @@ function tambah_file()
               
               if(($row_list->detail_item_1!=' ') OR ($row_list->detail_item_1=='' OR $row_list->detail_item_1==' ')){
 
+                $detail_item_1 = isset($row_list->detail_item_1 && $row_list->detail_item_1!='')?'->'.$row_list->detail_item_1:'';
+                $detail_item_2 = isset($row_list->detail_item_2)?'->'.$row_list->detail_item_2:'';
                 echo
                   '<tr>
                     <td style="padding-left: 30px">- '.$row_list->nama_pemeriksaan.'</td>
-                    <td>'.$row_list->detail_item_1.'</td>
-                    <td>'.$row_list->detail_item_2.'</td>
+                    <td>'.$detail_item_1.'</td>
+                    <td>'.$detail_item_2.'</td>
                     <td>'. $nilai_std.' '.$row_list->satuan.'</td> 
                     <td width="100px"> <input type="text" name="hasil_pm['.trim($row_list->kode_mt_hasilpm).']['.$key.']" class="hasil_pm" value="'.$hasil.'"></td>    
                     <td width="100px">
@@ -206,25 +205,7 @@ function tambah_file()
           ?>
         </tbody>
       </table>
-      <br>
-      <p style="font-weight: bold">UPLOAD HASIL PEMERIKSAAN LAINNYA</p>
-      <div class="form-group">
-          <label class="control-label col-md-2">Nama Dokumen</label>
-          <div class="col-md-2">
-            <input name="pf_file_name[]" id="pf_file_name" class="form-control" type="text">
-          </div>
-          <label class="control-label col-md-1">Pilih File</label>
-          <div class="col-md-3">
-            <input type="file" id="pf_file" name="pf_file[]" class="upload_file form-control"/>
-          </div>
-          <div class ="col-md-1" style="margin-left:-2.5%">
-            <input onClick="tambah_file()" value="+" type="button" class="btn btn-sm btn-info" />
-          </div>
-      </div>
-
-      <div id="input_file<?php echo $j;?>"></div>
-      <?php echo $attachment; ?>
-      <br>
+      
       <p style="font-weight: bold">CATATAN PEMERIKSAAN</p>
       <div class="col-md-12 no-padding">
         <textarea class="form-control" name="catatan_hasil" id="catatan_hasil" cols="50" style="height:150px !important;"><?php echo isset($catatan_hasil)?strip_tags($catatan_hasil):'';?></textarea>

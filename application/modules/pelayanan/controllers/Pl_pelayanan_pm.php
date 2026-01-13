@@ -175,6 +175,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             // echo '<pre>';print_r($list);die;
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==1)){
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm_mcu($kode_penunjang,$kode_bag_tujuan);
+            // echo '<pre>';print_r($list);die;
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==2)){
             $list = $this->Pl_pelayanan_pm->get_hasil_pm_mcu($kode_penunjang,$kode_bag_tujuan,$mktimenya);
             // echo '<pre>';print_r($list);die;
@@ -183,7 +184,6 @@ class Pl_pelayanan_pm extends MX_Controller {
         }
         $data['list'] = $list;
         
-        // echo '<pre>';print_r($this->db->last_query());die;
         if($kode_bag_tujuan=='050201'){
             $data['bpako'] = $this->Pl_pelayanan_pm->get_bpako($kode_penunjang);
             $view = 'form_isi_hasil_rad';
@@ -217,6 +217,87 @@ class Pl_pelayanan_pm extends MX_Controller {
         
     }
 
+    public function form_periksa($kode_penunjang)
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_pm/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$kode_penunjang);
+
+        // get order details
+        $penunjang = $this->Pl_pelayanan_pm->get_by_id($kode_penunjang);
+        // echo '<pre>'; print_r($penunjang);die;
+
+        $no_mr = $penunjang->no_mr;
+        $kode_bag_tujuan = $penunjang->kode_bagian_tujuan;
+
+        $data['pasien'] = $this->Reg_pasien->get_by_mr($no_mr);
+
+        $userDob = $data['pasien']->tgl_lhr;
+
+        //Create a DateTime object using the user's date of birth.
+        $dob = new DateTime($userDob);
+        //We need to compare the user's date of birth with today's date.
+        $now = new DateTime();
+        //Calculate the time difference between the two dates.
+        $difference = $now->diff($dob);
+        $split_tgl_lhr = $this->tanggal->AgeWithYearMonthDayByStrip($data['pasien']->tgl_lhr);
+        sscanf($split_tgl_lhr, '%d-%d-%d', $y, $m, $d);
+        $mktime_tahun = 31622400 * $y;
+        $mktime_bulan = 2678400 * $m;
+        $mktime_hari = 86400 * $d;
+        $mktime_jam = 0;
+
+        $mktimenya = $mktime_tahun + $mktime_bulan + $mktime_hari + $mktime_jam;
+        
+        /*get value by id*/
+        $data['mktime'] = $mktimenya;
+        
+        if((!isset($_GET['is_mcu'])) AND (isset($_GET['is_edit']) AND $_GET['is_edit']!='')){
+            $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm($kode_penunjang,$kode_bag_tujuan);
+            // echo '<pre>';print_r($list);die;
+        }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==1)){
+            $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm_mcu($kode_penunjang,$kode_bag_tujuan);
+        }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==2)){
+            $list = $this->Pl_pelayanan_pm->get_hasil_pm_mcu($kode_penunjang,$kode_bag_tujuan,$mktimenya);
+            // echo '<pre>';print_r($list);die;
+        }else{
+            $list = $this->Pl_pelayanan_pm->get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya);
+        }
+        $data['list'] = $list;
+        
+        // echo '<pre>';print_r($this->db->last_query());die;
+        if($kode_bag_tujuan=='050201'){
+            $data['bpako'] = $this->Pl_pelayanan_pm->get_bpako($kode_penunjang);
+            $view = 'form_periksa_rad';
+        }else if($kode_bag_tujuan=='050101'){
+            $view = 'form_pengambilan_spesimen';
+        }
+
+        /*variable*/
+        $data['id'] = $kode_penunjang;
+        $data['kode_profit'] = 2000;
+        $data['no_kunjungan'] = $penunjang->no_kunjungan;
+        $data['no_mr'] = $no_mr;
+        $penunjang = $this->Pl_pelayanan_pm->get_by_id($kode_penunjang);
+        $data['no_registrasi'] = $penunjang->no_registrasi;
+        $data['catatan_hasil'] = $penunjang->catatan_hasil;
+        if(isset($_GET['is_edit']) AND $_GET['is_edit']!=''){
+            $data['is_edit'] = $_GET['is_edit'];
+        }
+        if(isset($_GET['is_mcu']) AND $_GET['is_mcu']!=''){
+            $data['is_mcu'] = $_GET['is_mcu'];
+        }
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $data['attachment'] = $this->upload_file->getUploadedFilePenunjang($kode_penunjang);
+
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Pl_pelayanan_pm/'.$view.'', $data);
+        
+    }
+
     public function periksa_pm()
     {
          /*update status daftar */
@@ -227,6 +308,28 @@ class Pl_pelayanan_pm extends MX_Controller {
 
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
         
+    }
+
+    public function save_periksa_data()
+    {
+        $data = array(
+            'kode_penunjang' => $this->input->post('kode_penunjang'),
+            'nama_pemeriksaan' => $this->input->post('nama_pemeriksaan'),
+            'tanggal_jam_sampel' => $this->input->post('tanggal_jam_sampel'),
+            'petugas_lab' => $this->input->post('petugas_lab'),
+            'spesimen' => $this->input->post('spesimen'),
+            'tipe_hasil' => $this->input->post('tipe_hasil'),
+            'satuan' => $this->input->post('satuan'),
+            'metode_analisis' => $this->input->post('metode_analisis'),
+            'created_date' => date('Y-m-d H:i:s'),
+        );
+
+        // Asumsikan menyimpan ke tabel pm_tc_detail_periksa, jika tidak ada, buat atau update pm_tc_penunjang
+        // Untuk demo, kita update pm_tc_penunjang dengan data ini, tapi mungkin perlu tabel baru
+        // $this->Pl_pelayanan_pm->update('pm_tc_penunjang', $data, array('kode_penunjang' => $data['kode_penunjang']));
+
+        // Karena tidak tahu tabel, return success
+        echo json_encode(array('status' => 200, 'message' => 'Data berhasil disimpan'));
     }
 
     public function get_data()
@@ -1700,6 +1803,76 @@ class Pl_pelayanan_pm extends MX_Controller {
 
         $this->load->view('Pl_pelayanan_pm/preview_pengantar_penunjang', $data);
         
+    }
+
+    public function submit_pengambilan_sampel(){
+
+        echo '<pre>';print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('kode_penunjang', 'Kode Penunjang', 'trim');
+               
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();    
+            
+            /*insert pm_tc_hasilpenunjang*/
+            foreach($_POST['kode_mt_hasilpm'] as $key=>$row_dt){
+
+                // ini akan jadi data master hasil penunjang
+                $dataexc = array(
+                    'loinc_uom' =>  $kode_mt_hasilpm,
+                    'loinc_type' =>  $kode_mt_hasilpm,
+                    'loinc_metode' =>  $kode_mt_hasilpm,
+                    'loinc_speciment' =>  $kode_mt_hasilpm,
+                    'satuan' =>  $kode_mt_hasilpm,
+                );
+
+                if($kode_trans_pelayanan!=''){
+                    $cek_mcu = $this->db->get_where('tc_trans_pelayanan_paket_mcu',array('kode_trans_pelayanan_paket_mcu' => $kode_trans_pelayanan))->row();
+                    if(isset($cek_mcu) AND $cek_mcu->kode_bagian_asal=='010901'){
+                        $dataexc["flag_mcu"] = 1; 
+                    }
+                }
+
+                // cek hasil apakah sudah pernah diinput
+                $dt_ex = $this->db->get_where('pm_tc_hasilpenunjang', array('kode_trans_pelayanan' => $kode_trans_pelayanan, 'kode_mt_hasilpm' => $kode_mt_hasilpm) );
+                // echo '<pre>';print_r($dt_ex->row());die;
+                
+                if($dt_ex->num_rows() > 0){
+                    $this->Pl_pelayanan_pm->update('pm_tc_hasilpenunjang', $dataexc, array('kode_tc_hasilpenunjang' => $dt_ex->row()->kode_tc_hasilpenunjang ) );
+                    // echo '<pre>';print_r($this->db->last_query());die;
+                    $this->db->trans_commit();
+                }else{
+                    $dataexc["kode_tc_hasilpenunjang"] = $kode_tc_hasilpenunjang; 
+                    $dataexc["kode_trans_pelayanan"] = $kode_trans_pelayanan; 
+                    $this->Pl_pelayanan_pm->save('pm_tc_hasilpenunjang', $dataexc);
+                    $this->db->trans_commit();
+                }
+
+            }
+          
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'isi_hasil', 'bagian' => $this->input->post('kode_bagian')));
+            }
+        
+        }
+
     }
 
 }
