@@ -43,6 +43,26 @@ class Distribusi_permintaan_model extends CI_Model {
 
 		$this->db->where('status_acc', 1);
 		$this->db->where('version', 1);
+		
+		//Edit by amelia 12-01-2026
+		// FILTER STATUS PENERIMAAN
+		if (isset($_GET['status_penerimaan']) && $_GET['status_penerimaan'] != '') {
+
+			if ($_GET['status_penerimaan'] == 'selesai') {
+				$this->db->where('a.tgl_input_terima IS NOT NULL');
+				$this->db->where('a.yg_terima IS NOT NULL');
+			}
+
+			if ($_GET['status_penerimaan'] == 'belum_diterima') {
+				$this->db->where('a.tgl_pengiriman IS NOT NULL');
+				$this->db->where('a.tgl_input_terima IS NULL');
+				$this->db->where('a.yg_terima IS NULL');
+			}
+
+			if ($_GET['status_penerimaan'] == 'belum_dikirim') {
+				$this->db->where('a.tgl_pengiriman IS NULL');
+			}
+		}
 
 		$this->db->group_by('CAST(a.catatan as NVARCHAR(1000))');
 		$this->db->group_by('b.nama_bagian, c.fullname ');

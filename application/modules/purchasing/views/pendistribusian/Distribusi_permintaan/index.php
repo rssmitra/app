@@ -156,6 +156,32 @@ $('select[name="search_by"]').change(function () {
             </label>
           </div>
         </div>    
+     </div>   
+	 
+	    <div class="form-group">
+		  <label class="control-label col-md-2">Status</label>
+		  <div class="col-md-2">
+		    <select name="status_penerimaan" id="status_penerimaan" class="form-control">
+		      <option value="">-- Semua Status --</option>
+		      <option value="selesai">Selesai</option>
+		      <option value="belum_diterima">Belum diterima user</option>
+		      <option value="belum_dikirim">Belum dikirim</option>
+		    </select>
+		  </div>
+		</div>
+<div class="form-group">
+  <div class="col-md-offset-2 col-md-6">
+    <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+      <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+      Search
+    </a>
+    <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
+      <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+      Reset
+    </a>
+  </div>
+</div>
+<!--
         <div class="col-md-4" style="margin-left: -12px;">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -167,7 +193,7 @@ $('select[name="search_by"]').change(function () {
           </a>
         </div>            
       </div>
-      
+!-->      
       <hr class="separator">
       <div class="clearfix" style="margin-bottom:-5px">
         <?php echo $this->authuser->show_button('purchasing/pendistribusian/Distribusi_permintaan','C','',7)?>
@@ -202,6 +228,7 @@ $('select[name="search_by"]').change(function () {
               <th>Tgl Dikirim</th>
               <th>Tgl Diterima</th>
               <th width="150px">Diterima Oleh</th>
+			  <th>Status</th>
             </tr>
           </thead>
           <tbody>

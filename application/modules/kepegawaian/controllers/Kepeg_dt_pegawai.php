@@ -240,7 +240,34 @@ class Kepeg_dt_pegawai extends MX_Controller {
             echo json_encode(array('status' => 301, 'message' => validation_errors()));
         }
         else
-        {                       
+		{
+    // ===============================
+    // VALIDASI NIP KARYAWAN DUPLIKAT EDIT BY AMELIA 12-01-2026
+    // ===============================
+    $kepeg_id  = $this->input->post('kepeg_id');
+    $kepeg_nip = $this->input->post('kepeg_nip');
+
+    $this->db->where('kepeg_nip', $kepeg_nip);
+
+    // jika UPDATE → exclude data sendiri
+    if (!empty($kepeg_id)) {
+        $this->db->where('kepeg_id !=', $kepeg_id);
+    }
+
+    $cek_nip = $this->db->get('kepeg_dt_pegawai')->num_rows();
+
+    if ($cek_nip > 0) {
+        echo json_encode(array(
+            'status'  => 301,
+            'message' => 'NIP sudah terdaftar. Silakan gunakan NIP lain.'
+        ));
+        return;
+    }
+
+    // ===============================
+    // LANJUT PROSES NORMAL
+    // ===============================
+	
             $this->db->trans_begin();
             
             $id = ($this->input->post('kepeg_id'))?$this->regex->_genRegex($this->input->post('kepeg_id'),'RGXINT'):0;

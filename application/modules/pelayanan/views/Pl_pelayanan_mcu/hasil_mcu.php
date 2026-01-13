@@ -34,12 +34,12 @@
   
   <br>
   <div class="content" style="display:inline-block">
-    <br>
-    <center>
-      <div class="center" style="font-weight: bold; font-size: 1.2em; text-align: center">HASIL  PEMERIKSAAN  KESEHATAN</div>
-    </center>
 
-    <p style="font-weight: bold">A. DATA PRIBADI</p>
+    <span class="center">
+      <h2>HASIL  PEMERIKSAAN  KESEHATAN</h2>
+    </span>
+
+    <h3>A. DATA PRIBADI</h3>
       
     <table border="0" width="100%">
       <tr>
@@ -55,7 +55,8 @@
         <td class="title">Jenis Kelamin</td>
         <td width="5px">:</td>
         <td>
-          <?php echo ($pasien->jen_kelamin=='L')?'Laki-Laki':'Perempuan' ?>
+          <span class="dejavu-font"><?php echo ($pasien->jen_kelamin=='L')?'&#9745;':'&#9744;' ?></span>&nbsp;Pria &nbsp;&nbsp;
+          <span class="dejavu-font"><?php echo ($pasien->jen_kelamin=='P')?'&#9745;':'&#9744;' ?></span>&nbsp;Wanita &nbsp;&nbsp;
         </td>
       </tr>
       <tr>
@@ -75,7 +76,12 @@
         <td class="title">Agama</td>
         <td width="5px">:</td>
         <td width="80%">
-          <?php echo $pasien->religion_name ?>
+          <?php
+            foreach ($param_agama as $value) : ?>
+              
+              <span class="dejavu-font"><?php echo ($pasien->id_dc_agama==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp; <?php echo $value->label ?> <br>
+
+          <?php  endforeach ?>
         </td>
       </tr>
       <tr>
@@ -83,7 +89,10 @@
         <td class="title">Status Perkawinan</td>
         <td width="5px">:</td>
         <td>
-          <?php echo $pasien->ms_name?>
+          <?php
+            foreach ($param_perkawinan as $value) : ?>
+              <span class="dejavu-font"><?php echo ($pasien->id_dc_kawin==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $value->label ?> &nbsp;&nbsp;
+          <?php  endforeach ?>
         </td>
       </tr>
       <tr>
@@ -94,7 +103,7 @@
       </tr>
     </table><br>
 
-    <p style="font-weight: bold">B. ANAMNESA</p>
+    <h3>B. ANAMNESA</h3>
 
     <table>
          
@@ -107,7 +116,7 @@
       if(!is_object($value)){
         echo '
         <td width="5px">:</td>
-        <td width="50%"> '.ucfirst($value).' </td>
+        <td width="50%"> '.$value.' </td>
       </tr>';
       }else{
         echo '
@@ -122,7 +131,8 @@
             <td width="55px"></td>
             <td width="34%"><?php echo ucwords($res_) ?></td>
             <td width="50%">:
-              <?php echo ($v=='Ada')?'Ya':'Tidak' ?>
+              <span class="dejavu-font"><?php echo ($v=='Ada')?'&#9745;':'&#9744;' ?></span>&nbsp;Ya &nbsp;&nbsp;
+              <span class="dejavu-font"><?php echo ($v=='Tidak Ada')?'&#9745;':'&#9744;' ?></span>&nbsp;Tidak &nbsp;&nbsp;
             </td>
           </tr>
           
@@ -135,7 +145,9 @@
   
     </table><br>
 
-    <p style="font-weight: bold">C. PEMERIKSAAN FISIK</p>
+    <br pagebreak="true"/>
+
+    <h3>C. PEMERIKSAAN FISIK</h3>
       
     <table border="0" width="100%">
       <tr>
@@ -172,21 +184,36 @@
         <td width="20px"></td>
         <td class="title">Status Gizi</td>
         <td width="78%">:
-          <?php echo $fisik->status_gizi?>
+          <?php
+            foreach ($param_status_gizi as $value) : ?>
+              
+              <span class="dejavu-font"><?php echo ($fisik->status_gizi==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $value->label ?> &nbsp;&nbsp;
+
+          <?php  endforeach ?>
         </td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Kesadaran</td>
         <td width="78%">:
-          <?php echo $fisik->kesadaran?>
+          <?php
+            foreach ($param_kesadaran as $value) : ?>
+              
+              <span class="dejavu-font"><?php echo ($fisik->kesadaran==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $value->label ?> &nbsp;&nbsp;
+
+          <?php  endforeach ?>
         </td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Buta Warna</td>
         <td width="78%">:
-          <?php echo $pemeriksaan_fisik->buta_warna?>
+          <?php
+            foreach ($param_buta_warna as $value) : ?>
+              
+              <span class="dejavu-font"><?php echo ($pemeriksaan_fisik->buta_warna==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $value->label ?> &nbsp;&nbsp;
+
+          <?php  endforeach ?>
         </td>
       </tr>
 
@@ -264,7 +291,11 @@
                   <?php 
                     switch ($k) {
                       case 'hidung':
-                        echo ucfirst($v);
+                        foreach ($param_hidung as $hidung) : ?>
+                
+                        <span class="dejavu-font"><?php echo ($v==$hidung->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $hidung->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
 
                       case 'gigi':
@@ -276,49 +307,79 @@
                       break;
 
                       case 'lidah':
-                        echo ucfirst($v);
+                        foreach ($param_lidah as $lidah) : ?>
+                
+                          <span class="dejavu-font"><?php echo ($v==$lidah->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $lidah->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
 
                       case 'jvp':
-                        echo ucfirst($v);
+                        foreach ($param_jvp as $jvp) : ?>
+                
+                          <span class="dejavu-font"><?php echo ($v==$jvp->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $jvp->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
 
                       case 'tiroid':
                       case 'kel_getah_bening':
                       case 'hati_atau_limpa':
                       case 'tumor':
-                        echo ucfirst($v);
+                        foreach ($param_fisik as $fsk) : ?>
+                
+                          <span class="dejavu-font"><?php echo ($v==$fsk->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $fsk->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
 
                       case 'besar':
-                        echo ucfirst($v);
-                        
+                        foreach ($param_jantung_besar as $jbesar) : ?>
+                
+                          <span class="dejavu-font"><?php echo ($v==$jbesar->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $jbesar->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
 
                       case 'bunyi_S1_strip_S2':
-                        echo ucfirst($v);
+                        foreach ($param_jantung_S1_S2 as $jbunyi) : ?>
+                
+                          <span class="dejavu-font"><?php echo ($v==$jbunyi->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $jbunyi->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
 
                       case 'bising':
-                        echo ucfirst($v);
+                        foreach ($param_jantung_bising as $jbising) : ?>
+                
+                          <span class="dejavu-font"><?php echo ($v==$jbising->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $jbising->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
 
                       case 'extremitas':
-                      case 'kulit_atau_turgor':
-                        echo ($v=='Dalam Batas Normal')?'Dalam Batas Normal':'Tidak Normal';
-
+                      case 'kulit_atau_turgor':?>
+                        <span class="dejavu-font"><?php echo ($v=='Dalam Batas Normal')?'&#9745;':'&#9744;' ?></span>&nbsp;Dalam Batas Normal&nbsp;&nbsp;
+                        <span class="dejavu-font"><?php echo ($v=='Tak Normal')?'&#9745;':'&#9744;' ?></span>&nbsp;Tak Normal&nbsp;&nbsp;
+                      <?php
                       break;
 
-                      case 'nyeri_tekan':
-                        echo ($v=='Negatif')?'Negatif':'Positif';
+                      case 'nyeri_tekan':?>
+                        <span class="dejavu-font"><?php echo ($v=='Negatif')?'&#9745;':'&#9744;' ?></span>&nbsp;Negatif&nbsp;&nbsp;
+                        <span class="dejavu-font"><?php echo ($v=='Positif')?'&#9745;':'&#9744;' ?></span>&nbsp;Positif&nbsp;&nbsp;
+                      <?php
                       break;
 
                       case 'lainnya':
-                        echo ucfirst($v);
+                        foreach ($param_abdomen_lainnya as $lainnya) : ?>
+                
+                          <span class="dejavu-font"><?php echo ($v==$lainnya->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $lainnya->label ?> &nbsp;&nbsp;
+          
+                        <?php  endforeach ;
                       break;
                       
                       default:
-                        echo nl2br(ucfirst($v));
+                        echo nl2br($v);
                       break;
                     }
                     // echo "<pre>"; print_r($v);die;
@@ -330,23 +391,40 @@
         }
       } ?>
 
-    </table>
+    </table><br>
     
-    <div style="page-break-before: always;"></div>
-    <p style="font-weight: bold">D. PEMERIKSAAN RADIOLOGI</p>
+    <br pagebreak="true"/>
 
-    <?php 
-      echo $hasil_penunjang['050201'][0]->html;
-    ?>
+    <h3>D. PEMERIKSAAN RADIOLOGI</h3>
 
-    <p style="font-weight: bold">E. PEMERIKSAAN EKG</p>
+    <table border="0" width="100%">
+      <tr>
+        <td width="20px"></td>
+        <td class="title">Thorax Foto</td>
+        <td width="3%">: </td>
+        <td width="75%"><?php echo nl2br(htmlspecialchars($pemeriksaan_radiologi->hasil, ENT_QUOTES, 'UTF-8')) ?></td>
+      </tr>
+      <tr>
+        <td width="20px"></td>
+        <td class="title">Kesan</td>
+        <td width="3%">: </td>
+        <td width="75%"><?php echo nl2br(htmlspecialchars($pemeriksaan_radiologi->kesan, ENT_QUOTES, 'UTF-8')) ?></td>
+      </tr>
+    </table><br>
+
+    <h3>E. PEMERIKSAAN EKG</h3>
 
     <table border="0" width="100%">
       <tr>
         <td width="20px"></td>
         <td class="title">Irama</td>
         <td width="78%">:
-          <?php echo $pemeriksaan_ekg->irama; ?>
+          <?php
+            foreach ($param_ekg as $value) : ?>
+              
+              <span class="dejavu-font"><?php echo ($pemeriksaan_ekg->irama==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $value->label ?> &nbsp;&nbsp;
+
+          <?php  endforeach ?>
         </td>
       </tr>
       <tr>
@@ -357,28 +435,24 @@
       <tr>
         <td width="20px"></td>
         <td class="title">Kesan</td>
-        <td width="78%">: <?php echo nl2br(ucwords($pemeriksaan_ekg->kesan)) ?></td>
+        <td width="78%">: <?php echo nl2br($pemeriksaan_ekg->kesan) ?></td>
       </tr>
-    </table>
-    
-    <div style="page-break-before: always;"></div>
+    </table><br>
 
-    <p style="font-weight:bold; margin-top:0;">
-      F. PEMERIKSAAN LABORATORIUM
-    </p>
-
-    <?php 
-      foreach($hasil_penunjang['050101'] as $key_lab => $val_lab){
-        echo $val_lab->html;
-      }
-    ?>
-    
-    <br pagebreak="true"/>
-
-    <p style="font-weight: bold">G. KESIMPULAN</p>
+    <h3>F. PEMERIKSAAN LABORATORIUM</h3>
 
     <table border="0" width="100%">
-      
+      <tr>
+        <td width="20px"></td>
+        <td class="title"><b>Terlampir</b></td>
+        <td width="78%"></td>
+      </tr>
+    </table><br>
+
+    <h3>G. KESIMPULAN</h3>
+
+    <table border="0" width="100%">
+
       <?php $no=1; foreach ($hasil as $key => $value) {
         $res = str_replace('_', ' ', $key);
         echo 
@@ -389,7 +463,7 @@
           <td width="2%">: </td>';
           if(!is_object($value)){
             echo '
-            <td width="40%">'. nl2br(htmlspecialchars(ucfirst($value), ENT_QUOTES, 'UTF-8')).' </td>
+            <td width="40%">'. nl2br($value).' </td>
           </tr>';
           }else{
             echo '
@@ -398,64 +472,25 @@
 
         
           foreach ($value as $k => $v) :
-            $res_ = str_replace('_', ' ', $k); 
+            $res_ = str_replace('_', ' ', $k); ?>
 
-            if($res_=='gigi') {
-              echo '<tr>
+            <tr>
               <td width="55px"></td>
-              <td width="32%">'.ucwords($res_).'</td>
+              <td width="32%"><?php echo ucwords($res_) ?></td>
               <td width="2%">: </td>
-              <td width="64%">
-                <table width="100%"><tr>
-                      <td class="title" width="35%">Gigi Kanan Atas</td>
-                      <td width="20%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas.' </td>
-                      <td class="title" width="20%" >Gigi ke -</td>
-                      <td width="25%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas_ke.' ('.$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_atas.')</td>
-                  </tr>
-                  <tr>
-                      <td class="title" width="35%">Gigi Kanan Bawah</td>
-                      <td width="20%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah.'</td>
-                      <td class="title" width="20%" >Gigi ke -</td>
-                      <td width="25%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah_ke.' ('.$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_bawah.')</td>
-                  </tr>
-
-                  <tr>
-                      <td class="title" width="35%">Gigi Kiri Atas</td>
-                      <td width="20%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas.'</td>
-                      <td class="title" width="20%" >Gigi ke -</td>
-                      <td width="25%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas_ke.' ('.$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_atas.')</td>
-                  </tr>
-
-                  <tr>
-                      <td class="title" width="35%">Gigi Kiri Bawah</td>
-                      <td width="20%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah.'</td>
-                      <td class="title" width="20%" >Gigi ke -</td>
-                      <td width="25%">: '.$pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah_ke.' ('.$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_bawah.')</td>
-                  </tr></table>
-              </td>
-            </tr>';
-
-            }else{
-              echo '<tr>
-              <td width="55px"></td>
-              <td width="32%">'.ucwords($res_).'</td>
-              <td width="2%">: </td>
-              <td width="64%">'.nl2br(htmlspecialchars(ucfirst($v), ENT_QUOTES, 'UTF-8')).'</td>
-            </tr>';
-            }
-
-          ?>
-
+              <td width="64%"><?php echo nl2br($v) ?></td>
+            </tr>
+            
           <?php endforeach;
 
         }
           
-        $no++;
+          $no++;
       } ?>
 
     </table>
 
-    <p style="font-weight: bold"> </p>
+    <h3> </h3>
     
     <table border="0" width="100%">
       <tr>
@@ -465,23 +500,20 @@
       </tr>
 
       <?php
-        foreach ($param_kesan_mcu as $value) : 
-          if($kesimpulan==$value->label) :
-        ?>
+        foreach ($param_kesan_mcu as $value) : ?>
           
           <tr>
             <td width="20px"></td>
-            <td colspan="2">
-              <b><?php echo $value->label.' ( '.ucwords($value->value).' )' ?></b>
-            </td>
+            <td width="100%"><?php echo nl2br(htmlspecialchars(ucwords($kesan), ENT_QUOTES, 'UTF-8')) ?></td>
           </tr>
           
-      <?php  endif; endforeach ?>
+      <?php  endforeach ?>
+	  
 
     </table><br>
     
     <br pagebreak="true"/>
-    <p style="font-weight: bold">H. ANJURAN / SARAN</p>
+    <h3>H. ANJURAN / SARAN</h3>
 
     <table border="0" width="100%">
       <tr>
@@ -490,7 +522,7 @@
       </tr>
     </table><br>
 
-    <p style="font-weight: bold"></p>
+    <h3></h3>
 
     <table border="0" width="100%">
       <tr>
@@ -498,31 +530,24 @@
         <td width="40%" style="text-align:center">Penanggung Jawab</td>
       </tr>
       <tr>
-        <td></td>
-        <td style="text-align:center"><?php echo $img?><br><b><?php echo ucwords($kunjungan->nama_pegawai) ?></b></td>
+        <td width="60%"></td>
+        <td width="40%"></td>
+      </tr>
+      <tr>
+        <td width="60%"></td>
+        <td width="40%"></td>
+      </tr>
+      <tr>
+        <td width="60%"></td>
+        <td width="40%"></td>
+      </tr>
+      <tr>
+        <td ></td>
+        <td style="text-align:center"><b><?php echo ucwords($kunjungan->nama_pegawai) ?></b></td>
       </tr>
       
     </table><br>
-    
-    <?php if(!empty($attachment)): ?>
-    <br pagebreak="true"/>
-    <p style="font-weight: bold; text-align: center">LAMPIRAN HASIL PEMERIKSAAN</p>
-    <?php
-      // get max key
-      $maxKey = array_keys($attachment, max($attachment))[0];
-      foreach ($attachment as $ka => $va) {
-        if(in_array( $va->csm_dex_jenis_dok, array('image/png', 'image/jpg', 'image/jpeg') )){
-          $base_url = ltrim($va->base_url_dok);
-          $url = ltrim($va->csm_dex_fullpath);
-          if (file_exists($url)) {
-              $pageBreak = ($ka==$maxKey)?'':'<br pagebreak="true"/>';
-              echo '<img src="'.$url.'">'.$pageBreak.'';
-          }
-        }
-      }
-    ?>
-    <?php endif; ?>
-
+  
    
   </div>
 
