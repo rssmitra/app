@@ -52,6 +52,7 @@ foreach ($_GET as $key => $value) {
 		}
 		// $getData[] = $_GET[$key];
 	}
+}
 
 
 
