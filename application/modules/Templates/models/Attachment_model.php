@@ -271,37 +271,6 @@ class Attachment_model extends CI_Model {
 			break;
 			
 			case 'MCU':
-				$trans = $this->Pl_pelayanan_mcu->get_by_kode_penunjang($_GET['code'], '050101');
-				
-				ganti tc_registrasi panggil
-				
-				$trans = $this->db
-    ->select('
-        tc_registrasi.no_registrasi,
-        tc_registrasi.kode_dokter,
-        md.nama_pegawai,
-		md.ttd
-    ')
-    ->from('tc_registrasi')
-    ->join('mt_dokter_v md', 'md.kode_dokter = tc_registrasi.kode_dokter', 'left')
-    ->where('tc_registrasi.kode_trans_far', $_GET['code'])
-    ->get()
-    ->row();
-				
-				// echo "<pre>"; print_r($trans);die;
-				$signed = $this->master->get_ttd_data('ka_inst_lab', 'label');
-				
-				$img_ttd = '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="50%"><br>';
-				
-				$tgl = $this->tanggal->formatDateTime($trans->tgl_masuk);
-				$user = $trans->nama_pegawai.' [Dokter Pemeriksa] ';
-				$signTitle = 'Dokter Penanggung Jawab';
-				$title = 'HASIL PEMERIKSAAN MCU';
-				$status = isset($trans->kode_penunjang)?'Published':'Deleted';
-				$noted = isset($trans->kode_penunjang)?'Hasil Pemeriksaan MCU Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
-			break;
-
-			case 'MCU':
    			 	$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
         		->from('tc_registrasi tr')
         		->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
@@ -331,45 +300,6 @@ class Attachment_model extends CI_Model {
 			break;
 
 		}
-		
-		case 'MCU':
-
-    $trans = $this->db
-        ->select('
-            tr.no_registrasi,
-            tr.kode_dokter,
-            tr.created_date,
-
-            md.fullname AS dokter_pengirim,
-            md.no_sip,
-            md.ttd,
-            md.nama_bagian
-        ')
-        ->from('tc_registrasi tr')
-        ->join('mt_dokter_v md', 'md.kode_dokter = tr.kode_dokter', 'left')
-        ->where('tr.no_registrasi', $_GET['no_registrasi'])
-        ->get()
-        ->row();
-
-    $signed = $trans->dokter_pengirim . '<br>SIP. ' . $trans->no_sip;
-    $ttd = $trans->ttd;
-
-    $img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="50%"><br>';
-
-    $tgl = $this->tanggal->formatDateTime($trans->created_date);
-    $created_by = $trans->dokter_pengirim;
-
-    $user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
-    $signTitle = 'Dokter Penanggung Jawab';
-    $title = 'HASIL PEMERIKSAAN MCU';
-
-    $status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
-
-    $noted = isset($trans->no_registrasi)
-        ? 'Hasil Pemeriksaan MCU oleh <i>' . $trans->dokter_pengirim . '</i> (' . $trans->nama_bagian . ')'
-        : 'Dokumen ini telah dihapus';
-
-break;
 
 		$response = [
 			'documentName' => $title,
