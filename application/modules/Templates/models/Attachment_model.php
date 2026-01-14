@@ -299,6 +299,35 @@ class Attachment_model extends CI_Model {
         		: 'Dokumen ini telah dihapus';
 			break;
 
+			case 'RAD':
+				$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
+			->from('tc_registrasi tr')
+			->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
+			->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
+			->where('tr.no_registrasi', $_GET['reg'])
+			->get()
+			->row();
+			
+				$signed = $trans->dokter_pengirim . '<br>SIP. ' . $trans->no_sip;
+				$ttd = $trans->ttd;
+			
+				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="50%"><br>';
+			
+				$tgl = $this->tanggal->formatDateTime($trans->created_date);
+				$created_by = $trans->dokter_pengirim;
+			
+				$user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
+				$signTitle = 'Dokter Penanggung Jawab';
+				$title = 'HASIL PEMERIKSAAN RADIOLOGI';
+			
+				$status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
+			
+				$noted = isset($trans->no_registrasi)
+					? 'Hasil Pemeriksaan Radiologi oleh <i>' . $trans->dokter_pengirim . '</i> (' . $trans->nama_bagian . ')'
+					: 'Dokumen ini telah dihapus';
+			
+			break;
+
 		}
 
 		$response = [
