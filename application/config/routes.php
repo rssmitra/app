@@ -72,6 +72,7 @@ $route['ws/getPatient/(:any)/(:any)'] = "api/service/getPatient/$1/$2";
 $route['ws/getMedicalRecord'] = "api/service/getMedicalRecord";
 $route['ws/getMedicalExam'] = "api/service/getMedicalExam";
 $route['ws/getMedicalExamResult'] = "api/service/getMedicalExamResult";
+$route['c3850if'] = "Display_antrian/farmasi_publik";
 
 $route['c3850if'] = "Display_antrian/farmasi_publik";
 

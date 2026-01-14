@@ -163,19 +163,22 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
 		$this->db->from('csm_reg_pasien');
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
 		$this->db->where("(csm_dokumen_klaim.no_sep is null AND LEN(csm_rp_no_sep) > 18)");
-        // $this->db->where("csm_rp_tipe = 'RI' " );
+        $this->db->where("csm_reg_pasien.is_scheduler is null " );
         $this->db->where("csm_reg_pasien.csm_rp_kode_bagian !=", '031201');
-        $this->db->where("csm_reg_pasien.is_scheduler is null" );
-
+        $this->db->where("(csm_reg_pasien.is_scheduler is null or csm_dokumen_klaim.no_sep is null)" );
         // $this->db->where("DATEDIFF(day,csm_reg_pasien.csm_rp_tgl_keluar,GETDATE()) <= 4" );
-        // if($_GET['type'] == 'RJ'){
-        //     $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) =", $date_to_execute);
-        // }else{
-        //     $this->db->where("(CAST(csm_reg_pasien.csm_rp_tgl_masuk as DATE) = '".$date_to_execute."' OR CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) = '".$last_date."') ");
-            // }
-        // $this->db->where("(CAST(csm_reg_pasien.csm_rp_tgl_masuk as DATE) = '".$date_to_execute."' OR CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) = '".$date_to_execute."') ");
 
-        $this->db->where("MONTH(csm_reg_pasien.csm_rp_tgl_keluar) =", date('m', strtotime($date_to_execute)));
+        if($_GET['type'] == 'RJ'){
+            $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) =", $date_to_execute);
+        }else{
+            $this->db->where("(CAST(csm_reg_pasien.csm_rp_tgl_masuk as DATE) = '".$date_to_execute."' OR CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) = '".$date_to_execute."') ");
+        }
+
+        if(isset($_GET['type']) && $_GET['type'] != ''){
+            $this->db->where("csm_rp_tipe = '".$_GET['type']."' " );
+        }
+        // $this->db->where("csm_reg_pasien.no_registrasi", 1340417 );
+        
 		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi=csm_reg_pasien.no_registrasi', 'LEFT');
 		$this->db->order_by('no_registrasi ASC');
         $result = $this->db->get();
@@ -242,7 +245,10 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         $string_url = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $type, 1);
         // echo '<pre>';print_r($string_url);exit;
         // redirect(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
-        file_get_contents(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
+
+        echo '<script>window.open("'.base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.''.'","_blank")</script>';
+
+        // file_get_contents(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
 
         // echo "url merge ".$string_url['url']."  " . PHP_EOL;
         // $script_cmd = 'start chrome "'.$string_url['url'].'" ';
