@@ -526,7 +526,7 @@ function showModalEditPasien()
               <?php if(empty($value->tgl_keluar_poli)) :?>
               <a href="#" class="btn btn-xs btn-primary" id="btn_selesai_mcu" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
               <a href="#" class="btn btn-xs btn-danger" id="btn_batal_mcu" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-            <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
+            <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_mcu'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
               <a href="#" class="btn btn-xs btn-warning" id="btn_cetak_hasil" onclick="cetak_hasil(<?php echo isset($value->kode_gcu)?$value->kode_gcu:''?>,<?php echo isset($value->id_pl_tc_poli)?$value->id_pl_tc_poli:''?>)" <?php echo isset($hasil_kesimpulan)?'':'style="display:none"' ?> ><i class="fa fa-file"></i> Cetak Hasil</a>
               <a href="#" name="submit" class="btn btn-xs btn-info" onclick="showModalEditPasien()" >
 

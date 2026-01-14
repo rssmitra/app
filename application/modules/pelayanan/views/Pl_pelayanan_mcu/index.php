@@ -147,7 +147,7 @@ function rollback(no_registrasi, no_kunjungan){
         <label class="control-label col-md-2">Tanggal Registrasi</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($this->cache->get('cache')['from_tgl'])?$this->cache->get('cache')['from_tgl']:''?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -157,13 +157,41 @@ function rollback(no_registrasi, no_kunjungan){
           <label class="control-label col-md-1">s/d Tanggal</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($this->cache->get('cache')['to_tgl'])?$this->cache->get('cache')['to_tgl']:''?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
             </div>
           </div>
       </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-2">Status Periksa</label>
+        <div class="col-md-10">
+          <div class="radio">
+            <label>
+              <input name="flag_status" type="radio" class="ace" value="semua" <?php echo isset($this->cache->get('cache')['flag_status']) && $this->cache->get('cache')['flag_status'] == 'semua' ? 'checked' : '' ?>/>
+              <span class="lbl"> Semua </span>
+            </label>
+            <label>
+              <input name="flag_status" type="radio" class="ace" value="selesai" <?php echo isset($this->cache->get('cache')['flag_status']) && $this->cache->get('cache')['flag_status'] == 'selesai' ? 'checked' : '' ?>/>
+              <span class="lbl"> Selesai </span>
+            </label>
+            <label>
+              <input name="flag_status" type="radio" class="ace" value="belum_isi_hasil" <?php echo isset($this->cache->get('cache')['flag_status']) && $this->cache->get('cache')['flag_status'] == 'belum_isi_hasil' ? 'checked' : '' ?>/>
+              <span class="lbl"> Belum Isi Hasil </span>
+            </label>
+            <label>
+              <input name="flag_status" type="radio" class="ace" value="belum_bayar" <?php echo isset($this->cache->get('cache')['flag_status']) && $this->cache->get('cache')['flag_status'] == 'belum_bayar' ? 'checked' : '' ?>/>
+              <span class="lbl"> Belum Bayar </span>
+            </label>
+            <label>
+              <input name="flag_status" type="radio" class="ace" value="batal" <?php echo isset($this->cache->get('cache')['flag_status']) && $this->cache->get('cache')['flag_status'] == 'batal' ? 'checked' : '' ?>/>
+              <span class="lbl"> Batal Kunjungan</span>
+            </label>
+          </div>
+        </div>    
+     </div>  
 
       <div class="form-group">
         <label class="control-label col-md-2 ">&nbsp;</label>
@@ -195,7 +223,7 @@ function rollback(no_registrasi, no_kunjungan){
       <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan_mcu" class="table table-bordered table-hover">
        <thead>
         <tr>  
-          <th width="30px" class="center"></th>
+          <th width="30px" class="center">No</th>
           <th></th>
           <th>Kode</th>
           <th>No MR</th>
@@ -206,6 +234,7 @@ function rollback(no_registrasi, no_kunjungan){
           <th>Antrian ke-</th>
           <th>Nama Paket</th>
           <th class="center">Status</th>          
+          <th class="center">Aksi</th>          
         </tr>
       </thead>
       <tbody>
