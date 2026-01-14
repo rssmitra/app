@@ -269,44 +269,54 @@ class Attachment_model extends CI_Model {
 				$status = isset($trans->kode_penunjang)?'Published':'Deleted';
 				$noted = isset($trans->kode_penunjang)?'Hasil Pemeriksaan Laboratorium Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
 			break;
-			
+
 			case 'MCU':
-   			 	$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
-        		->from('tc_registrasi tr')
-        		->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
-        		->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
-        		->where('tr.no_registrasi', $_GET['reg'])
-        		->get()
-        		->row();
-				// echo "<pre>"; print_r($trans);die;
-    			
-				$signed = $trans->dokter_pengirim . '<br><span style="font-size: 9px">SIP. ' . $trans->no_sip.'</span>';
-    			$ttd = $trans->ttd;
 
-   				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="35%"><br>';
+				$trans = $this->db
+					->select('
+						tr.no_registrasi,
+						tr.kode_dokter,
+						tr.created_date,
 
-    			$tgl = $this->tanggal->formatDateTime($trans->created_date);
-    			$created_by = $trans->dokter_pengirim;
+						md.fullname AS dokter_pengirim,
+						md.no_sip,
+						md.ttd,
+						md.nama_bagian
+					')
+					->from('tc_registrasi tr')
+					->join('mt_dokter_v md', 'md.kode_dokter = tr.kode_dokter', 'left')
+					->where('tr.no_registrasi', $_GET['no_registrasi'])
+					->get()
+					->row();
 
-    			$user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
-    			$signTitle = 'Dokter Penanggung Jawab';
-    			$title = 'HASIL PEMERIKSAAN MCU';
+				$signed = $trans->dokter_pengirim . '<br>SIP. ' . $trans->no_sip;
+				$ttd = $trans->ttd;
 
-    			$status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
+				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="50%"><br>';
 
-    			$noted = isset($trans->no_registrasi)
-       			? 'Hasil Pemeriksaan MCU oleh ' . $trans->dokter_pengirim . ' untuk Pasien dengan No. Registrasi ' . $trans->no_registrasi . ' a.n. '.$trans->nama_pasien
-        		: 'Dokumen ini telah dihapus';
+				$tgl = $this->tanggal->formatDateTime($trans->created_date);
+				$created_by = $trans->dokter_pengirim;
+
+				$user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
+				$signTitle = 'Dokter Penanggung Jawab';
+				$title = 'HASIL PEMERIKSAAN MCU';
+
+				$status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
+
+				$noted = isset($trans->no_registrasi)
+					? 'Hasil Pemeriksaan MCU oleh <i>' . $trans->dokter_pengirim . '</i> (' . $trans->nama_bagian . ')'
+					: 'Dokumen ini telah dihapus';
+
 			break;
 
 			case 'RAD':
 				$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
-			->from('tc_registrasi tr')
-			->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
-			->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
-			->where('tr.no_registrasi', $_GET['reg'])
-			->get()
-			->row();
+					->from('tc_registrasi tr')
+					->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
+					->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
+					->where('tr.no_registrasi', $_GET['reg'])
+					->get()
+					->row();
 			
 				$signed = $trans->dokter_pengirim . '<br>SIP. ' . $trans->no_sip;
 				$ttd = $trans->ttd;

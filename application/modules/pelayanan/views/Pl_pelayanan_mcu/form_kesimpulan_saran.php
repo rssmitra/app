@@ -207,7 +207,7 @@ $(document).ready(function() {
           <span class="input-group-btn">
 
             <?php if($status_isihasil==1): ?>
-              <a href="#" class="btn btn-sm btn-info" onclick="show_modal('pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo isset($no_kunjungan)?$no_kunjungan:0 ?>/<?php echo isset($kode_bagian)?$kode_bagian:0 ?>/<?php echo isset($kode_penunjang)?$kode_penunjang:0 ?>?mr=<?php echo isset($no_mr)?$no_mr:0 ?>&is_mcu=1', '')">Lihat Hasil</a>
+              <a href="#" class="btn btn-sm btn-info" onclick="show_modal('pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo isset($no_kunjungan)?$no_kunjungan:0 ?>/<?php echo isset($kode_bagian)?$kode_bagian:0 ?>/<?php echo isset($kode_penunjang)?$kode_penunjang:0 ?>?mr=<?php echo isset($no_mr)?$no_mr:0 ?>&is_mcu=1', 'HASIL LABORATORIUM')">Lihat Hasil</a>
             <?php else: ?>
               <button class="btn btn-sm btn-danger" onclick="javascript:return false">Belum Isi Hasil</button>
             <?php endif ?>

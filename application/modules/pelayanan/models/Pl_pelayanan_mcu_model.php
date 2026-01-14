@@ -54,8 +54,38 @@ class Pl_pelayanan_mcu_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
         }else{
-        	$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m') ) );
+        	$start = date('Y-m-01', strtotime('-1 month')); // awal bulan lalu
+			$end   = date('Y-m-t'); // akhir bulan ini
+			$this->db->where("pl_tc_poli.tgl_jam_poli BETWEEN '$start' AND '$end'");
 		}
+
+
+		if ( isset($_GET['flag_status']) AND $_GET['flag_status'] != 'semua' ) {
+			if ( isset($_GET['flag_status']) AND $_GET['flag_status'] != '' ) {
+
+				if($_GET['flag_status']=='batal'){
+					$this->db->where("pl_tc_poli.status_batal", 1);
+				}else{
+
+					if($_GET['flag_status']=='selesai'){
+						$this->db->where("pl_tc_poli.status_periksa is not null");
+						$this->db->where("tc_trans_pelayanan_mcu_v.status_selesai_bayar != ", 2);
+					}
+
+					if($_GET['flag_status']=='belum_isi_hasil'){
+						$this->db->where("tc_trans_pelayanan_mcu_v.status_selesai_bayar", 3);
+						$this->db->where("pl_tc_poli.status_daftar", 2);
+					}
+
+					if($_GET['flag_status']=='belum_bayar'){
+						$this->db->where("tc_trans_pelayanan_mcu_v.status_selesai_bayar !=", 3);
+					}
+
+					
+
+				}			
+			}
+        }
 
 		//$this->db->where('(pl_tc_poli.status_periksa=0 or pl_tc_poli.status_periksa IS NULL)');	
 		

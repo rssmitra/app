@@ -485,7 +485,6 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->select($select);
 		$this->db->from('mcu_hasilpasien_pm_v');
 		$this->db->join('pm_mt_standarhasil','pm_mt_standarhasil.kode_mt_hasilpm=mcu_hasilpasien_pm_v.kode_mt_hasilpm','left');
-		$this->db->from('mcu_hasilpasien_pm_v');
 		$this->db->join('tc_kunjungan', 'mcu_hasilpasien_pm_v.no_kunjungan=tc_kunjungan.no_kunjungan', 'left');
 		$this->db->join('mt_karyawan d', 'd.kode_dokter=tc_kunjungan.kode_dokter', 'left');
 		$this->db->where('mcu_hasilpasien_pm_v.kode_penunjang', $kode_penunjang );

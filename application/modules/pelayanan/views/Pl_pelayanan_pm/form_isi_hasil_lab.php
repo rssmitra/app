@@ -140,6 +140,9 @@ function tambah_file()
             
             </div>
       </div>
+
+      <br>
+      <br>
       <br>
 
       <p style="font-weight: bold">JENIS PEMERIKSAAN</p>

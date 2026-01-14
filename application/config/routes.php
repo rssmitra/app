@@ -74,6 +74,8 @@ $route['ws/getMedicalExam'] = "api/service/getMedicalExam";
 $route['ws/getMedicalExamResult'] = "api/service/getMedicalExamResult";
 $route['c3850if'] = "Display_antrian/farmasi_publik";
 
+$route['c3850if'] = "Display_antrian/farmasi_publik";
+
 // web service website setia mitra
 // static
 $route['patient-criterias'] = "api/web_api/patient_criterias";
