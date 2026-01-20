@@ -5,12 +5,14 @@ jQuery(function($) {
 
   $('.date-picker').datepicker({
     autoclose: true,
-    todayHighlight: true
+    todayHighlight: true,
+    format: 'dd-mm-yyyy'   // TAMBAHAN
   })
-  //show datepicker when clicking on the icon
+  // show datepicker when clicking on the icon
   .next().on(ace.click_event, function(){
     $(this).prev().focus();
   });
+
 });
 
 $(document).ready(function(){
@@ -81,6 +83,21 @@ $(document).ready(function(){
                     <input name="no_sip" id="no_sip" value="<?php echo isset($value)?$value->no_sip:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>
                 </div>
+				
+				<?php
+				$masa_sip = '';
+				if (!empty($value->masa_berlaku_sip) && $value->masa_berlaku_sip != '0000-00-00') {
+				    $masa_sip = date('d-m-Y', strtotime($value->masa_berlaku_sip));
+				}
+				?>
+				<div class="form-group">
+					<label class="control-label col-md-2">Masa Berlaku SIP</label>
+					<div class="col-md-3">
+						<input name="masa_berlaku_sip" id="masa_berlaku_sip" value="<?php echo ($flag == 'read' && empty($masa_sip)) ? 'Belum diisi' : $masa_sip; ?>" class="form-control date-picker" type="text" placeholder="dd-mm-yyyy"<?php echo ($flag == 'read') ? 'readonly' : ''; ?>
+				    >
+				  </div>
+				</div>
+				
                 <div class="form-group">
                   <label class="control-label col-md-2">Spesialisasi</label>
                   <div class="col-md-3">
@@ -133,6 +150,8 @@ $(document).ready(function(){
                   </div>
                 </div>              
                 <br>
+
+
                 <!-- ttd dan stamp -->
                 <p><b>TANDA TANGAN DOKTER DAN STEMPEL</b></p>
                 <div class="form-group">
