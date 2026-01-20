@@ -211,8 +211,8 @@ function delete_tarif_klas(myid){
              name="masa_berlaku_sip"
              id="masa_berlaku_sip"
              class="form-control date-picker"
-             data-date-format="yyyy-mm-dd"
-             placeholder="yyyy-mm-dd">
+             data-date-format="dd-mm-yyyy"
+             placeholder="dd-mm-yyyy">
       <span class="input-group-addon">
         <i class="fa fa-calendar bigger-110"></i>
       </span>

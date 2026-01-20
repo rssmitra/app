@@ -83,7 +83,7 @@ $(document).ready(function(){
                     <input name="no_sip" id="no_sip" value="<?php echo isset($value)?$value->no_sip:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>
                 </div>
-				
+                
 				<?php
 				$masa_sip = '';
 				if (!empty($value->masa_berlaku_sip) && $value->masa_berlaku_sip != '0000-00-00') {

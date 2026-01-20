@@ -5,7 +5,7 @@ class Dokter_model extends CI_Model {
 
 	var $table = 'mt_karyawan';
 	var $column = array('mt_karyawan.nama_pegawai');
-	var $select = 'mt_karyawan.no_induk,mt_karyawan.urutan_karyawan,mt_karyawan.nama_pegawai,mt_karyawan.kode_jabatan,mt_karyawan.kode_bagian,mt_karyawan.kode_dokter,mt_karyawan.kode_spesialisasi,mt_karyawan.status_dr,mt_karyawan.status,mt_karyawan.available,mt_karyawan.jatah_kelas,mt_karyawan.level_id,mt_karyawan.no_mr,mt_karyawan.flag_tenaga_medis,mt_karyawan.url_foto_karyawan,mt_karyawan.kode_perawat,mt_karyawan.id_mt_karyawan,mt_spesialisasi_dokter.nama_spesialisasi, no_sip, masa_berlaku_sip, ttd, stamp, mt_karyawan.is_active';
+	var $select = 'mt_karyawan.no_induk,mt_karyawan.urutan_karyawan,mt_karyawan.nama_pegawai,mt_karyawan.kode_jabatan,mt_karyawan.kode_bagian,mt_karyawan.kode_dokter,mt_karyawan.kode_spesialisasi,mt_karyawan.status_dr,mt_karyawan.status,mt_karyawan.available,mt_karyawan.jatah_kelas,mt_karyawan.level_id,mt_karyawan.no_mr,mt_karyawan.flag_tenaga_medis,mt_karyawan.url_foto_karyawan,mt_karyawan.kode_perawat,mt_karyawan.id_mt_karyawan,mt_spesialisasi_dokter.nama_spesialisasi, mt_karyawan.no_sip, mt_karyawan.masa_berlaku_sip, mt_karyawan.ttd, mt_karyawan.stamp, mt_karyawan.is_active';
 
 	//var $order = array('no_induk' => 'ASC');
 
@@ -21,19 +21,22 @@ class Dokter_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('mt_spesialisasi_dokter', 'mt_spesialisasi_dokter.kode_spesialisasi=mt_karyawan.kode_spesialisasi','left');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_karyawan.kode_bagian','left');
-		$this->db->where('kode_dokter <> ');
+		//$this->db->where('kode_dokter <> ');
+		$this->db->where('mt_karyawan.kode_dokter IS NOT NULL', null, false);
 		
 		// ================= FILTER =================
 
 		// filter masa berlaku SIP (sampai tanggal)
 		if (!empty($masa_berlaku_sip)) {
 
-			// convert dd-mm-yyyy -> yyyy-mm-dd
-			$tgl = DateTime::createFromFormat('d-m-Y', $masa_berlaku_sip);
+    		$dt = DateTime::createFromFormat('d-m-Y', $masa_berlaku_sip);
 
-			if (!empty($masa_berlaku_sip)) {
-				$this->db->where('mt_karyawan.masa_berlaku_sip >=', $masa_berlaku_sip);
-			}
+    		if ($dt !== false) {
+    		    $this->db->where(
+    		        'mt_karyawan.masa_berlaku_sip >=',
+    		        $dt->format('Y-m-d')
+    		    );
+    		}
 		}
 
 		// filter status aktif
