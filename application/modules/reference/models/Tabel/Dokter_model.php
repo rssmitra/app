@@ -178,4 +178,17 @@ class Dokter_model extends CI_Model {
         ->result();
 	}
 
+	public function get_unit_by_dokter($kode_dokter){
+    $this->db->select('kd_bagian');
+    $this->db->from('mt_dokter_bagian');
+    $this->db->where('kode_dokter', $kode_dokter);
+    $res = $this->db->get()->result();
+
+    $arr = [];
+    foreach($res as $r){
+        $arr[] = $r->kd_bagian;
+    }
+    return $arr;
+	}
+
 }

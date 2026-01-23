@@ -105,8 +105,8 @@ class Dokter extends MX_Controller {
             $row[] = strtoupper($row_list->nama_pegawai);
             $row[] = $row_list->no_sip;
             $row[] = ($row_list->masa_berlaku_sip && $row_list->masa_berlaku_sip != '1900-01-01')
-				? date('d-m-Y', strtotime($row_list->masa_berlaku_sip))
-				: 'Belum diisi';
+                ? date('d-m-Y', strtotime($row_list->masa_berlaku_sip))
+                : 'Belum diisi';
             $row[] = $row_list->nama_spesialisasi;
             $file_ttd = (file_exists(PATH_TTD_FILE.$row_list->ttd)) ? '<a href="'.base_url().PATH_TTD_FILE.$row_list->ttd.'" target="_blank"><img src="'.PATH_TTD_FILE.$row_list->ttd.'" width="150px"></a>' : '';
             $file_stamp = (file_exists(PATH_TTD_FILE.$row_list->stamp)) ? '<a href="'.base_url().PATH_TTD_FILE.$row_list->stamp.'" target="_blank"><img src="'.PATH_TTD_FILE.$row_list->stamp.'" width="180px"></a>' : '';
@@ -146,15 +146,15 @@ class Dokter extends MX_Controller {
         //output to json format
         echo json_encode($output);
     }
-	
-	public function find_data()
-	{
+    
+    public function find_data()
+    {
     $data = array();
 
     if ($this->input->post('masa_berlaku_sip')) {
         $data[] = 'masa_berlaku_sip=' . $this->input->post('masa_berlaku_sip');
     }
-	
+    
     if ($this->input->post('is_active')) {
         $data[] = 'is_active=' . $this->input->post('is_active');
     }
@@ -162,7 +162,7 @@ class Dokter extends MX_Controller {
     echo json_encode([
         'data' => implode('&', $data)
     ]);
-	}
+    }
 
 
     public function process()
@@ -194,13 +194,13 @@ class Dokter extends MX_Controller {
 
             $masa = $this->input->post('masa_berlaku_sip');
 
-				$masa_db = null;
-				if (!empty($masa) && $masa != 'Belum diisi') {
-					$dt = DateTime::createFromFormat('d-m-Y', $masa);
-					if ($dt !== false) {
-						$masa_db = $dt->format('Y-m-d');
-					}
-				}
+                $masa_db = null;
+                if (!empty($masa) && $masa != 'Belum diisi') {
+                    $dt = DateTime::createFromFormat('d-m-Y', $masa);
+                    if ($dt !== false) {
+                        $masa_db = $dt->format('Y-m-d');
+                    }
+                }
 
             $dataexc = array(
                 'nama_pegawai' => $val->set_value('nama_pegawai'),
@@ -262,10 +262,27 @@ class Dokter extends MX_Controller {
                 $this->dokter->save('mt_karyawan', $dataexc);
                 $newId = $IDP['no_urut'];
 
+
+                //izin tutup dulu
                 // insert new dokter bagian
-                $datadrbag['kd_bagian'] = $_POST['kodebagian'];
+                /*$datadrbag['kd_bagian'] = $_POST['kodebagian'];
                 $datadrbag['kode_dokter'] = $newId;
-                $this->dokter->save('mt_dokter_bagian', $datadrbag);
+                $this->dokter->save('mt_dokter_bagian', $datadrbag);*/
+
+                // hapus dulu semua unit lama
+                $this->db->where('kode_dokter', $newId);
+                $this->db->delete('mt_dokter_bagian');
+
+                // insert ulang
+                if(!empty($units)){
+                    foreach($units as $u){
+                        $datadrbag = [
+                            'kode_dokter' => $newId,
+                            'kd_bagian'   => $u
+                        ];
+                        $this->dokter->save('mt_dokter_bagian', $datadrbag);
+                    }
+                }
                
             }else{
                 /*update record*/
@@ -274,6 +291,27 @@ class Dokter extends MX_Controller {
                 $this->dokter->update('mt_karyawan', array('kode_dokter' => $id), $dataexc);
                 $newId = $id;
                 
+            }
+
+                        
+            /* ============================= */
+            //* UPDATE UNIT DOKTER (GLOBAL)   */
+            //* ============================= */
+            $units = $this->input->post('kodebagian');
+
+            // hapus semua relasi lama
+            $this->db->where('kode_dokter', $newId);
+            $this->db->delete('mt_dokter_bagian');
+
+            // insert ulang
+            if(!empty($units)){
+                foreach($units as $u){
+                    $datadrbag = [
+                        'kode_dokter' => $newId,
+                        'kd_bagian'   => $u
+                    ];
+                    $this->dokter->save('mt_dokter_bagian', $datadrbag);
+                }
             }
 
             if ($this->db->trans_status() === FALSE)
