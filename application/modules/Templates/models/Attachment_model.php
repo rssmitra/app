@@ -309,41 +309,41 @@ class Attachment_model extends CI_Model {
 					->row();*/
 				
 				$trans = $this->db
-    ->select('
-        tr.no_registrasi,
-        tr.created_date,
-        md.nama_pegawai AS dokter_pengirim,
-        md.no_sip AS no_sip_pengirim,
-        mp.nama_pasien,
-        mdpj.nama_pegawai AS dokter_pj,
-        mdpj.no_sip AS no_sip_dokter_pj,
-        mdpj.ttd AS ttd_dokter_pj
-    ')
-    ->from('tc_registrasi tr')
+    			->select('
+    			    tr.no_registrasi,
+    			    tr.created_date,
+    			    md.nama_pegawai AS dokter_pengirim,
+    			    md.no_sip AS no_sip_pengirim,
+    			    mp.nama_pasien,
+    			    mdpj.nama_pegawai AS dokter_pj,
+    			    mdpj.no_sip AS no_sip_dokter_pj,
+    			    mdpj.ttd AS ttd_dokter_pj
+    				')
+    			->from('tc_registrasi tr')
 
-    // dokter pengirim (dari pendaftaran)
-    ->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
+    			// dokter pengirim (dari pendaftaran)
+    			->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
 
-    // pasien
-    ->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
+    			// pasien
+    			->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
 
-    // transaksi pelayanan Radiologi
-    ->join(
-        'tc_trans_pelayanan tp',
-        "tp.no_registrasi = tr.no_registrasi AND tp.kode_bagian = '050201'",
-        'left'
-    )
+    			// transaksi pelayanan Radiologi
+    			->join(
+    			    'tc_trans_pelayanan tp',
+    			    "tp.no_registrasi = tr.no_registrasi AND tp.kode_bagian = '050201'",
+    			    'left'
+    			)
 
-    // dokter PJ Radiologi (kode_dokter1)
-    ->join(
-        'mt_karyawan mdpj',
-        'mdpj.kode_dokter = tp.kode_dokter1',
-        'left'
-    )
+    			// dokter PJ Radiologi (kode_dokter1)
+    			->join(
+    			    'mt_karyawan mdpj',
+    			    'mdpj.kode_dokter = tp.kode_dokter1',
+    			    'left'
+    			)
 
-    ->where('tr.no_registrasi', $_GET['reg'])
-    ->get()
-    ->row();
+    			->where('tr.no_registrasi', $_GET['reg'])
+    			->get()
+    			->row();
 					
 				$created_by = json_decode($trans->created_by);
 				$signeddokter = $created_by->fullname;
@@ -356,7 +356,7 @@ class Attachment_model extends CI_Model {
 				$tgl = $this->tanggal->formatDateTime($trans->created_date);
 				$created_by = $trans->dokter_pengirim;
 			
-				$user = $trans->dokter_pengirim . ' [Dokter Pemeriksa]';
+				$user = $trans->dokter_pengirim . ' [Dokter Pengirim]';
 				$signTitle = 'Dokter Penanggung Jawab';
 				$title = 'HASIL PEMERIKSAAN RADIOLOGI';
 			
