@@ -271,72 +271,101 @@ class Attachment_model extends CI_Model {
 			break;
 
 			case 'MCU':
+   			 	$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
+        		->from('tc_registrasi tr')
+        		->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
+        		->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
+        		->where('tr.no_registrasi', $_GET['reg'])
+        		->get()
+        		->row();
+				// echo "<pre>"; print_r($trans);die;
+    			
+				$signed = $trans->dokter_pengirim . '<br><span style="font-size: 9px">SIP. ' . $trans->no_sip.'</span>';
+    			$ttd = $trans->ttd;
 
-				$trans = $this->db
-					->select('
-						tr.no_registrasi,
-						tr.kode_dokter,
-						tr.created_date,
+   				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="35%"><br>';
 
-						md.fullname AS dokter_pengirim,
-						md.no_sip,
-						md.ttd,
-						md.nama_bagian
-					')
-					->from('tc_registrasi tr')
-					->join('mt_dokter_v md', 'md.kode_dokter = tr.kode_dokter', 'left')
-					->where('tr.no_registrasi', $_GET['no_registrasi'])
-					->get()
-					->row();
+    			$tgl = $this->tanggal->formatDateTime($trans->created_date);
+    			$created_by = $trans->dokter_pengirim;
 
-				$signed = $trans->dokter_pengirim . '<br>SIP. ' . $trans->no_sip;
-				$ttd = $trans->ttd;
+    			$user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
+    			$signTitle = 'Dokter Penanggung Jawab';
+    			$title = 'HASIL PEMERIKSAAN MCU';
 
-				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="50%"><br>';
+    			$status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
 
-				$tgl = $this->tanggal->formatDateTime($trans->created_date);
-				$created_by = $trans->dokter_pengirim;
-
-				$user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
-				$signTitle = 'Dokter Penanggung Jawab';
-				$title = 'HASIL PEMERIKSAAN MCU';
-
-				$status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
-
-				$noted = isset($trans->no_registrasi)
-					? 'Hasil Pemeriksaan MCU oleh <i>' . $trans->dokter_pengirim . '</i> (' . $trans->nama_bagian . ')'
-					: 'Dokumen ini telah dihapus';
-
+    			$noted = isset($trans->no_registrasi)
+       			? 'Hasil Pemeriksaan MCU oleh ' . $trans->dokter_pengirim . ' untuk Pasien dengan No. Registrasi ' . $trans->no_registrasi . ' a.n. '.$trans->nama_pasien
+        		: 'Dokumen ini telah dihapus';
 			break;
 
-			case 'RAD':
-				$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
+		case 'RAD':
+				/*$trans = $this->db->select('tr.no_registrasi, tr.kode_dokter, tr.created_date, md.nama_pegawai AS dokter_pengirim, md.no_sip, md.ttd, mp.nama_pasien')
 					->from('tc_registrasi tr')
 					->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
 					->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
 					->where('tr.no_registrasi', $_GET['reg'])
 					->get()
-					->row();
+					->row();*/
+				
+				$trans = $this->db
+    ->select('
+        tr.no_registrasi,
+        tr.created_date,
+        md.nama_pegawai AS dokter_pengirim,
+        md.no_sip AS no_sip_pengirim,
+        mp.nama_pasien,
+        mdpj.nama_pegawai AS dokter_pj,
+        mdpj.no_sip AS no_sip_dokter_pj,
+        mdpj.ttd AS ttd_dokter_pj
+    ')
+    ->from('tc_registrasi tr')
+
+    // dokter pengirim (dari pendaftaran)
+    ->join('mt_karyawan md', 'md.kode_dokter = tr.kode_dokter', 'left')
+
+    // pasien
+    ->join('mt_master_pasien mp', 'mp.no_mr = tr.no_mr', 'left')
+
+    // transaksi pelayanan Radiologi
+    ->join(
+        'tc_trans_pelayanan tp',
+        "tp.no_registrasi = tr.no_registrasi AND tp.kode_bagian = '050201'",
+        'left'
+    )
+
+    // dokter PJ Radiologi (kode_dokter1)
+    ->join(
+        'mt_karyawan mdpj',
+        'mdpj.kode_dokter = tp.kode_dokter1',
+        'left'
+    )
+
+    ->where('tr.no_registrasi', $_GET['reg'])
+    ->get()
+    ->row();
+					
+				$created_by = json_decode($trans->created_by);
+				$signeddokter = $created_by->fullname;
 			
-				$signed = $trans->dokter_pengirim . '<br>SIP. ' . $trans->no_sip;
-				$ttd = $trans->ttd;
+				$signed = $trans->dokter_pj . '<br>SIP. ' . $trans->no_sip_dokter_pj;
+				$ttd = $trans->ttd_dokter_pj;
 			
-				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="50%"><br>';
+				$img_ttd = '<img src="' . BASE_FILE_RM . 'uploaded/ttd/' . $ttd . '" width="30%"><br>';
 			
 				$tgl = $this->tanggal->formatDateTime($trans->created_date);
 				$created_by = $trans->dokter_pengirim;
 			
-				$user = $trans->dokter_pengirim . '<br>[Dokter Pemeriksa] ';
+				$user = $trans->dokter_pengirim . ' [Dokter Pemeriksa]';
 				$signTitle = 'Dokter Penanggung Jawab';
 				$title = 'HASIL PEMERIKSAAN RADIOLOGI';
 			
 				$status = isset($trans->no_registrasi) ? 'Published' : 'Deleted';
 			
 				$noted = isset($trans->no_registrasi)
-					? 'Hasil Pemeriksaan Radiologi oleh <i>' . $trans->dokter_pengirim . '</i> (' . $trans->nama_bagian . ')'
-					: 'Dokumen ini telah dihapus';
+					? 'Hasil Pemeriksaan Radiologi Pasien a.n ' . $trans->nama_pasien . 'oleh <i>' . $trans->dokter_pj . '.</i>  ' : 'Dokumen ini telah dihapus';
 			
-			break;
+			break; 
 
 		}
 
