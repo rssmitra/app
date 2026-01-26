@@ -226,7 +226,9 @@ $(document).ready(function(){
             $unit_selected = $this->dokter->get_unit_by_dokter($value->kode_dokter);
           }
 
-          $units = $this->db->get('mt_bagian')->result();
+         $units = $this->db->order_by('nama_bagian', 'ASC')
+                  ->get('mt_bagian')
+                  ->result();
           foreach($units as $u):
         ?>
           <label class="pos-rel" style="width:32%;display:inline-block">
