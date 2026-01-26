@@ -72,16 +72,28 @@
           console.log(val_item);
           $('#InputKeyNasabahEditPenjamin').val(label_item);
           $('#kode_kelompok_hidden_edit_penjamin').val(val_item);
+          //$('#kode_perusahaan_hidden_edit_penjamin').val(val_item);
 
-          if (val_item == 3) {
+          // selalu tampilkan field perusahaan
+          //$('#field_perusahaan').show('fast');
 
-            $('#field_perusahaan').show('fast');
-
-          }else {
-
+          if (val_item == 1) { // UMUM
             $('#field_perusahaan').hide('fast');
-
+            $('#kode_perusahaan_hidden_edit_penjamin').val('');
+            $('#InputKeyPenjaminEdit').val('');
+              } else { // SELAIN UMUM
+            $('#field_perusahaan').show('fast');
           }
+
+          //if (val_item == 3) {
+
+          //  $('#field_perusahaan').show('fast');
+
+          //}else {
+
+          //  $('#field_perusahaan').hide('fast');
+
+          //}
 
           // if(val_item !== 3){
           //   $('#kode_perusahaan_hidden_edit_penjamin').val('');
