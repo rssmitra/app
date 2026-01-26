@@ -1,3 +1,15 @@
+<style>
+.checkbox {
+    clear: both;
+}
+
+.checkbox label {
+    display: inline-block !important;
+    position: relative;
+    z-index: 1;
+}
+</style>
+
 <script type="text/javascript">
 
 jQuery(function($) {  
