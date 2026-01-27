@@ -382,10 +382,10 @@ class Csm_billing_pasien extends MX_Controller {
                     $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
                     
                     if(!isset($_GET['format'])){
-                        $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                        $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
                     }else{
                         if(isset($_GET['format']) && $_GET['format'] != 'html'){
-                            $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                            $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
                         }
                     }
 

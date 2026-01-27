@@ -94,9 +94,14 @@ $(document).ready(function(){
     });
 
     $('#btn_reset_data').click(function (e) {
-        e.preventDefault();
-        find_data_reload();
-    });
+    e.preventDefault();
+
+    // reset form
+    $('#form_search')[0].reset();
+
+    // reload datatable TANPA parameter
+    oTable.ajax.url('reference/tabel/dokter/get_data').load();
+});
 
 })
 
@@ -196,10 +201,53 @@ function delete_tarif_klas(myid){
     </div><!-- /.page-header -->
     
     <form class="form-horizontal" method="post" id="form_search" action="reference/tabel/dokter/find_data">
+	  
+	<div class="col-md-12">
+	  <div class="form-group">
+  <label class="control-label col-md-2">Masa Berlaku SIP</label>
+  <div class="col-md-2">
+    <div class="input-group">
+      <input type="text"
+             name="masa_berlaku_sip"
+             id="masa_berlaku_sip"
+             class="form-control date-picker"
+             data-date-format="dd-mm-yyyy"
+             placeholder="dd-mm-yyyy">
+      <span class="input-group-addon">
+        <i class="fa fa-calendar bigger-110"></i>
+      </span>
+    </div>
+  </div>
 
+<br><br>
+
+  <label class="control-label col-md-2">Status Dokter</label>
+  <div class="col-md-3">
+    <select name="is_active" id="is_active" class="form-control">
+      <option value="">-- Semua --</option>
+      <option value="Y">Aktif</option>
+      <option value="N">Tidak Aktif</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-md-offset-2 col-md-6">
+    <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+      <i class="ace-icon fa fa-search"></i> Search
+    </a>
+    <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
+      <i class="ace-icon fa fa-refresh"></i> Reset
+    </a>
+  </div>
+</div>
+</div>
+<br>
       <div class="clearfix" style="margin-bottom:-5px">
         <?php echo $this->authuser->show_button('reference/tabel/dokter','C','',1)?>
       </div>
+	  
+	  <br>
       
       <hr class="separator">
       <!-- div.dataTables_borderWrap -->
@@ -213,6 +261,7 @@ function delete_tarif_klas(myid){
               <th>Kode</th>         
               <th>Nama Dokter</th>         
               <th>No. SIP</th>         
+              <th>Masa Berlaku SIP</th>         
               <th>Spesialis</th>         
               <th>TTD</th>         
               <th>Stamp</th>         

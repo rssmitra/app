@@ -227,8 +227,17 @@ $(document).ready(function(){
       <div class="widget-body" id="widget-body-div">
         <div class="widget-main no-padding">
           <form class="form-horizontal" method="post" id="form_kepeg_dt_pegawai" action="<?php echo site_url('kepegawaian/Kepeg_dt_pegawai/process')?>" enctype="multipart/form-data" autocomplete="off">
-            <br>
-
+			
+			<div class="alert alert-warning" style="margin-top:25px">
+				<i class="fa fa-info-circle"></i>
+				<b>Informasi:</b><br>
+					Seluruh data pegawai pada halaman ini bersifat <b>read only</b>.
+					Perubahan atau pembaruan data hanya dapat dilakukan oleh
+					<b>Human Resources Department (HRD)</b>.
+					<br>
+					Silakan menghubungi HRD apabila terdapat data yang perlu diperbaiki.
+			</div>
+			<br>
 
             <!-- hidden form -->
             <input type="hidden" name="no_induk" id="no_induk" value="<?php echo isset($value->no_induk)?$value->no_induk:''?>">
@@ -241,26 +250,26 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="control-label col-md-2">NIK</label>
               <div class="col-md-2">
-                <input name="nik" id="nik" value="<?php echo isset($value->nik)?$value->nik:''?>" class="form-control" type="text">
+                <input name="nik" id="nik" value="<?php echo isset($value->nik)?$value->nik:''?>" class="form-control" type="text" readonly>
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2">Nama Lengkap</label>
               <div class="col-md-3">
-                <input name="nama_pegawai" id="nama_pegawai" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?>" class="form-control" type="text">
+                <input name="nama_pegawai" id="nama_pegawai" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?>" class="form-control" type="text" readonly>
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2">Tempat Lahir</label>
               <div class="col-md-3">
-                <input name="tmp_lahir" id="inputTmpLhr" value="<?php echo isset($value->tmp_lahir)?$value->tmp_lahir:''?>" class="form-control" type="text">
+                <input name="tmp_lahir" id="inputTmpLhr" value="<?php echo isset($value->tmp_lahir)?$value->tmp_lahir:''?>" class="form-control" type="text" readonly>
               </div>
               <label class="control-label col-md-1">Tgl Lahir</label>
               <div class="col-md-2">
                 <div class="input-group">
-                    <input name="dob_pegawai" id="dob_pegawai" value="<?php echo isset($value->tgl_lahir)?$this->tanggal->formatDateForm($value->tgl_lahir):''?>"  class="form-control date-picker" type="text">
+                    <input name="dob_pegawai" id="dob_pegawai" value="<?php echo isset($value->tgl_lahir)?$this->tanggal->formatDateForm($value->tgl_lahir):''?>"  class="form-control date-picker" type="text" readonly>
                     <span class="input-group-addon">
                     <i class="ace-icon fa fa-calendar"></i>
                     </span>
@@ -271,17 +280,17 @@ $(document).ready(function(){
             <div class="form-group" style="padding-bottom: 3px">
               <label class="control-label col-md-2">Alamat</label>
               <div class="col-md-4">
-              <textarea name="alamat" id="alamat" class="form-control" style="height:50px !important"><?php echo isset($value->alamat)?$value->alamat:''?></textarea>
+              <textarea name="alamat" id="alamat" class="form-control readonly-field" style="height:50px !important" readonly><?php echo isset($value->alamat)?$value->alamat:'' ?> </textarea>
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2">RT/RW</label>
               <div class="col-md-1">
-                <input name="rt" id="rt" style="text-align: center" value="<?php echo isset($value->rt)?$value->rt:''?>" placeholder="" class="form-control" type="text" >
+                <input name="rt" id="rt" style="text-align: center" value="<?php echo isset($value->rt)?$value->rt:''?>" placeholder="" class="form-control" type="text" readonly>
               </div>
               <div class="col-md-1">
-                <input name="rw" id="rw" style="text-align: center" value="<?php echo isset($value->rw)?$value->rw:''?>" placeholder="" class="form-control" type="text" >
+                <input name="rw" id="rw" style="text-align: center" value="<?php echo isset($value->rw)?$value->rw:''?>" placeholder="" class="form-control" type="text" readonly>
               </div>
             </div>
 
@@ -291,7 +300,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2">Provinsi</label>
 
               <div class="col-md-3">
-                  <input id="inputProvinsi" style="margin-left:-9px;margin-bottom:3px;" class="form-control" name="provinsi" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->nama_provinsi)?($value->nama_provinsi!=null)?"$value->nama_provinsi":'':''?>"/>
+                  <input id="inputProvinsi" style="margin-left:-9px;margin-bottom:3px;" class="form-control" name="provinsi" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->nama_provinsi)?($value->nama_provinsi!=null)?"$value->nama_provinsi":'':''?>" / readonly>
                   <input type="hidden" name="provinsiHidden" value="<?php echo isset($value->id_propinsi)?$value->id_propinsi:'' ?>" id="provinsiHidden">
               </div>
 
@@ -299,7 +308,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2" style="margin-left:-13px;">Kota / Kabupaten</label>
 
               <div class="col-md-3">
-                  <input id="inputKota" style="margin-left:-9px" class="form-control" name="kota" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kota)?($value->id_kota!=null)?"$value->nama_kota":'':''?>"/>
+                  <input id="inputKota" style="margin-left:-9px" class="form-control" name="kota" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kota)?($value->id_kota!=null)?"$value->nama_kota":'':''?>"/ readonly>
                   <input type="hidden" name="kotaHidden" value="<?php echo isset($value->id_kota)?$value->id_kota:'' ?>" id="kotaHidden">
               </div>
             </div>
@@ -311,7 +320,7 @@ $(document).ready(function(){
             <label class="control-label col-md-2">Kecamatan</label>
 
             <div class="col-md-3">
-                <input id="inputKecamatan" class="form-control" name="kecamatan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kecamatan)?($value->id_kecamatan!=null)?"$value->nama_kecamatan":'':''?>" />
+                <input id="inputKecamatan" class="form-control" name="kecamatan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kecamatan)?($value->id_kecamatan!=null)?"$value->nama_kecamatan":'':''?>" / readonly>
                 <input type="hidden" name="kecamatanHidden" value="<?php echo isset($value->id_kecamatan)?$value->id_kecamatan:''?>" id="kecamatanHidden">
             </div>
             
@@ -320,7 +329,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2">Kelurahan</label>
 
               <div class="col-md-3">
-                  <input id="inputKelurahan" style="margin-left:-9px" class="form-control" name="kelurahan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kelurahan)?($value->id_kelurahan!=null)?"$value->nama_kelurahan":'':''?>"/> 
+                  <input id="inputKelurahan" style="margin-left:-9px" class="form-control" name="kelurahan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kelurahan)?($value->id_kelurahan!=null)?"$value->nama_kelurahan":'':''?>"/ readonly> 
                   <input type="hidden" name="kelurahanHidden" value="<?php echo isset($value->id_kelurahan)?$value->id_kelurahan:''?>" id="kelurahanHidden">
               </div>
             </div>
@@ -332,7 +341,7 @@ $(document).ready(function(){
             <label class="control-label col-md-2">Kode Pos</label>
 
             <div class="col-md-2">
-                <input id="zipcode" class="form-control" name="zipcode" type="text" value="<?php echo isset($value->kode_pos)?$value->kode_pos:''?>"/>
+                <input id="zipcode" class="form-control" name="zipcode" type="text" value="<?php echo isset($value->kode_pos)?$value->kode_pos:''?>"/ readonly>
             </div>
 
           </div>
@@ -343,7 +352,7 @@ $(document).ready(function(){
 
             <div class="col-md-2">
             
-              <?php echo $this->master->custom_selection($params = array('table' => 'mst_gender', 'id' => 'gender_id', 'name' => 'gender_name', 'where' => array()), isset($value->jk)?$value->jk:'' , 'gender', 'gender', 'form-control', '', '') ?> 
+              <?php echo $this->master->custom_selection($params = array('table' => 'mst_gender', 'id' => 'gender_id', 'name' => 'gender_name', 'where' => array()), isset($value->jk)?$value->jk:'' , 'gender', 'gender', 'form-control readonly-field', 'disabled', '') ?> 
 
             </div>
 
@@ -351,7 +360,7 @@ $(document).ready(function(){
 
             <div class="col-md-2">
 
-              <?php echo $this->master->custom_selection($params = array('table' => 'mst_type_blood', 'id' => 'tb_id', 'name' => 'tb_name', 'where' => array()), isset($value->type_blood)?$value->type_blood:'' , 'type_blood', 'type_blood', 'form-control', '', '') ?> 
+              <?php echo $this->master->custom_selection($params = array('table' => 'mst_type_blood', 'id' => 'tb_id', 'name' => 'tb_name', 'where' => array()), isset($value->type_blood)?$value->type_blood:'' , 'type_blood', 'type_blood', 'form-control readonly-field', 'disabled', '') ?> 
 
             </div>
 
@@ -364,7 +373,7 @@ $(document).ready(function(){
 
             <div class="col-md-2">
 
-              <?php echo $this->master->custom_selection($params = array('table' => 'mst_marital_status', 'id' => 'ms_id', 'name' => 'ms_name', 'where' => array()), isset($value->marital_status)?$value->marital_status:'' , 'marital_status', 'marital_status', 'form-control', '', '') ?> 
+              <?php echo $this->master->custom_selection($params = array('table' => 'mst_marital_status', 'id' => 'ms_id', 'name' => 'ms_name', 'where' => array()), isset($value->marital_status)?$value->marital_status:'' , 'marital_status', 'marital_status', 'form-control readonly-field', 'disabled', '') ?> 
 
             </div>
 
@@ -372,7 +381,7 @@ $(document).ready(function(){
 
             <div class="col-md-2">
 
-              <?php echo $this->master->custom_selection($params = array('table' => 'mst_religion', 'id' => 'religion_id', 'name' => 'religion_name', 'where' => array()), isset($value->religion)?$value->religion:'' , 'religion', 'religion', 'form-control', '', '') ?> 
+              <?php echo $this->master->custom_selection($params = array('table' => 'mst_religion', 'id' => 'religion_id', 'name' => 'religion_name', 'where' => array()), isset($value->religion)?$value->religion:'' , 'religion', 'religion', 'form-control readonly-field', 'disabled', '') ?> 
 
             </div>
 
@@ -401,32 +410,32 @@ $(document).ready(function(){
             <div class="form-group" id="status_kepegawaian">
               <label class="control-label col-md-2">NIP</label>
               <div class="col-md-1">
-                <input type="text" name="kepeg_nip" id="kepeg_nip" value="<?php echo isset($value->kepeg_nip)?$value->kepeg_nip:''?>" class="form-control">
+                <input type="text" name="kepeg_nip" id="kepeg_nip" value="<?php echo isset($value->kepeg_nip)?$value->kepeg_nip:''?>" class="form-control" readonly>
               </div>
             </div>
 
             <div class="form-group" id="status_kepegawaian">
               <label class="control-label col-md-2">No. Telp/HP</label>
               <div class="col-md-2">
-                <input type="text" placeholder="08xxx..." name="kepeg_no_telp" id="kepeg_no_telp" value="<?php echo isset($value->kepeg_no_telp)?$value->kepeg_no_telp:''?>" class="form-control">
+                <input type="text" placeholder="08xxx..." name="kepeg_no_telp" id="kepeg_no_telp" value="<?php echo isset($value->kepeg_no_telp)?$value->kepeg_no_telp:''?>" class="form-control" readonly>
               </div>
               <label class="control-label col-md-1">Email</label>
               <div class="col-md-2">
-                <input type="text" name="kepeg_email" id="kepeg_email" value="<?php echo isset($value->kepeg_email)?$value->kepeg_email:''?>" class="form-control">
+                <input type="text" name="kepeg_email" id="kepeg_email" value="<?php echo isset($value->kepeg_email)?$value->kepeg_email:''?>" class="form-control" readonly>
               </div>
             </div>
 
             <div class="form-group" id="pendidikan_terakhir">
               <label class="control-label col-md-2">Pendidikan Terakhir</label>
               <div class="col-md-2">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mst_education', 'id' => 'education_id', 'name' => 'education_name', 'where' => array('is_active' => 'Y')), isset($value)?$value->kepeg_pendidikan_terakhir:'' , 'kepeg_pendidikan_terakhir', 'kepeg_pendidikan_terakhir', 'form-control', '', '') ?> 
+                <?php echo $this->master->custom_selection($params = array('table' => 'mst_education', 'id' => 'education_id', 'name' => 'education_name', 'where' => array('is_active' => 'Y')), isset($value)?$value->kepeg_pendidikan_terakhir:'' , 'kepeg_pendidikan_terakhir', 'kepeg_pendidikan_terakhir', 'form-control readonly-field', 'disabled', '') ?> 
               </div>
             </div>
 
             <div class="form-group" id="pas_foto">
               <label class="control-label col-md-2">Pas Foto</label>
               <div class="col-md-2">
-                <input type="file" name="pas_foto" value="<?php echo isset($value->pas_foto)?$value->pas_foto:''?>" class="form-control">
+                <input type="file" name="pas_foto" value="<?php echo isset($value->pas_foto)?$value->pas_foto:''?>" class="form-control" readonly>
               </div>
             </div>
 
@@ -445,25 +454,25 @@ $(document).ready(function(){
             <div class="form-group" id="unit">
               <label class="control-label col-md-2">Unit/Bagian</label>
               <div class="col-md-2">
-                <?php echo $this->master->custom_selection($params = array('table' => 'kepeg_mt_unit', 'id' => 'kepeg_unit_id', 'name' => 'kepeg_unit_nama', 'where' => array()), isset($value)?$value->kepeg_unit:'' , 'kepeg_unit', 'kepeg_unit', 'form-control', '', '') ?> 
+                <?php echo $this->master->custom_selection($params = array('table' => 'kepeg_mt_unit', 'id' => 'kepeg_unit_id', 'name' => 'kepeg_unit_nama', 'where' => array()), isset($value)?$value->kepeg_unit:'' , 'kepeg_unit', 'kepeg_unit', 'form-control readonly-field', 'disabled', '') ?> 
               </div>
             </div>
             <div class="form-group" id="level">
               <label class="control-label col-md-2">Level Jabatan</label>
               <div class="col-md-2">
-                <?php echo $this->master->custom_selection($params = array('table' => 'kepeg_mt_level', 'id' => 'kepeg_level_id', 'name' => 'kepeg_level_nama', 'where' => array()), isset($value)?$value->kepeg_level:'' , 'kepeg_level', 'kepeg_level', 'form-control', '', '') ?> 
+                <?php echo $this->master->custom_selection($params = array('table' => 'kepeg_mt_level', 'id' => 'kepeg_level_id', 'name' => 'kepeg_level_nama', 'where' => array()), isset($value)?$value->kepeg_level:'' , 'kepeg_level', 'kepeg_level', 'form-control readonly-field', 'disabled', '') ?> 
               </div>
             </div>
             <div class="form-group" id="level">
               <label class="control-label col-md-2">Golongan</label>
               <div class="col-md-2">
-                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'gol_pegawai')), isset($value)?$value->kepeg_gol:'' , 'kepeg_gol', 'kepeg_gol', 'form-control', '', '') ?> 
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'gol_pegawai')), isset($value)?$value->kepeg_gol:'' , 'kepeg_gol', 'kepeg_gol', 'form-control readonly-field', 'disabled', '') ?> 
               </div>
             </div>
             <div class="form-group" id="hak_keperawatan">
               <label class="control-label col-md-2">Hak Keperawatan</label>
               <div class="col-md-2">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array()), isset($value)?$value->kepeg_hak_perawatan:'' , 'kepeg_hak_perawatan', 'kepeg_hak_perawatan', 'form-control', '', '') ?> 
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array()), isset($value)?$value->kepeg_hak_perawatan:'' , 'kepeg_hak_perawatan', 'kepeg_hak_perawatan', 'form-control readonly-field', 'disabled', '') ?> 
               </div>
             </div>
 
@@ -487,7 +496,7 @@ $(document).ready(function(){
             <div class="form-group" id="status_kepegawaian">
               <label class="control-label col-md-2">Status Kepegawaian</label>
               <div class="col-md-2">
-                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'status_kepegawaian')), isset($value)?$value->kepeg_status_kerja:'' , 'kepeg_status_kerja', 'kepeg_status_kerja', 'form-control', '', '') ?> 
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'status_kepegawaian')), isset($value)?$value->kepeg_status_kerja:'' , 'kepeg_status_kerja', 'kepeg_status_kerja', 'form-control readonly-field', 'disabled', '') ?> 
               </div>
             </div>
 
@@ -495,7 +504,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2">Tanggal Aktif Kerja</label>
               <div class="col-md-2">
                 <div class="input-group">
-                    <input name="kepeg_tgl_aktif" id="kepeg_tgl_aktif" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_aktif):''?>"  data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
+                    <input name="kepeg_tgl_aktif" id="kepeg_tgl_aktif" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_aktif):''?>"  data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text" readonly>
                     <span class="input-group-addon">
                     <i class="ace-icon fa fa-calendar"></i>
                     </span>
@@ -507,7 +516,7 @@ $(document).ready(function(){
                 <div class="form-group" id="masa_kontrak">
                   <label class="control-label col-md-2">Masa Kontrak (bulan)</label>
                   <div class="col-md-2">
-                    <input type="text" name="kepeg_masa_kontrak" value="<?php echo isset($value->kepeg_masa_kontrak)?$value->kepeg_masa_kontrak:''?>" class="form-control">
+                    <input type="text" name="kepeg_masa_kontrak" value="<?php echo isset($value->kepeg_masa_kontrak)?$value->kepeg_masa_kontrak:''?>" class="form-control" readonly>
                   </div>
                 </div>
 
@@ -515,7 +524,7 @@ $(document).ready(function(){
                   <label class="control-label col-md-2">Tanggal Berakhir Kerja</label>
                   <div class="col-md-2">
                     <div class="input-group">
-                        <input name="kepeg_tgl_selesai" id="kepeg_tgl_selesai" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_selesai):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
+                        <input name="kepeg_tgl_selesai" id="kepeg_tgl_selesai" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_selesai):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text" readonly>
                         <span class="input-group-addon">
                         <i class="ace-icon fa fa-calendar"></i>
                         </span>
@@ -540,7 +549,7 @@ $(document).ready(function(){
               </div>
             </div>
 
-            <div class="form-group">
+            <!--<div class="form-group">
               <label class="col-md-2">&nbsp;</label>
               <div class="col-md-8" style="padding-top:8px;font-size:11px">
                 <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info">
@@ -548,7 +557,7 @@ $(document).ready(function(){
                   Submit
                 </button>
               </div>
-            </div>
+            </div>-->
             
           </form>
         </div>

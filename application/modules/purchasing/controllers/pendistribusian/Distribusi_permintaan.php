@@ -83,39 +83,36 @@ class Distribusi_permintaan extends MX_Controller {
                       </div>';
             $row[] = '';
             $row[] = $row_list->id_tc_permintaan_inst;
-            // if($row_list->tgl_pengiriman == null){
-            //     $row[] = '<div class="center"><a href="#" onclick="getMenu('."'".base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".')" class="label label-xs label-primary" style="width: 100%">Distribusi</div>';
-            // }else{
-            //     $row[] = '<div class="center"><i class="fa fa-check green bigger-120"></i></div>';
-            // }
             
-			//Edit by amelia 12-01-2026
-			//$row[] = '<div class="center"><a href="#" onclick="getMenu('."'".base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag']."'".')" class="label label-xs label-primary" style="width: 100%">Distribusi</div>';
-			// === KOLOM ACTION : DISTRIBUSI ===
-				if ($row_list->tgl_input_terima != null && $row_list->yg_terima != null) {
+             // === KOLOM ACTION : DISTRIBUSI ===
 
-				    // SUDAH DITERIMA → BUTTON HILANG
-				    $row[] = '<div class="center">-</div>';
+            if ($row_list->total_diterima == 0) {
 
-				} elseif ($row_list->tgl_pengiriman == null) {
+            // belum ada penerimaan sama sekali
+            $row[] = '<div class="center">
+                <a href="#" onclick="getMenu(\''.base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag'].'\')" 
+                   class="label label-xs label-primary" style="width:100%">
+                   Distribusi
+                </a>
+              </div>';
 
-				    // BELUM DIKIRIM → BUTTON MUNCUL
-				    $row[] = '
-				        <div class="center">
-				            <a href="#"
-				               onclick="getMenu(\''.base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag'].'\')"
-				               class="label label-xs label-primary"
-				               style="width:100%">
-				               Distribusi
-				            </a>
-				        </div>';
+            } elseif ($row_list->total_diterima < $row_list->total_permintaan) {
 
-				} else {
+            // sudah sebagian
+            $row[] = '<div class="center">
+                <a href="#" onclick="getMenu(\''.base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag'].'\')" 
+                   class="label label-xs label-warning" style="width:100%">
+                   Distribusi (Partial)
+                </a>
+              </div>';
 
- 				   // SUDAH DIKIRIM / PROSES → BUTTON HILANG
-				    $row[] = '<div class="center">-</div>';
-				}
-			
+            } else {
+
+            // sudah full
+            $row[] = '<div class="center">
+                <i class="fa fa-check green bigger-120"></i>
+              </div>';
+            }
 
             $row[] = '<div class="center">'.$row_list->id_tc_permintaan_inst.'</div>';
             // $row[] = $row_list->nomor_permintaan;
@@ -150,40 +147,40 @@ class Distribusi_permintaan extends MX_Controller {
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pengiriman).'</div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_input_terima).'</div>';
             $row[] = '<div class="center">'.ucfirst($row_list->yg_terima).'</div>';
-			
-			//Edit by amelia 12-01-2026
-			// STATUS PENERIMAAN
-			if ($row_list->tgl_input_terima != null && $row_list->yg_terima != null) {
+            
+            //Edit by amelia 12-01-2026
+            // STATUS PENERIMAAN
+            if ($row_list->tgl_input_terima != null && $row_list->yg_terima != null) {
 
-				// Selesai
-				$status_penerimaan = '
-					<div class="center">
-						<label class="label label-xs label-success">
-							<i class="fa fa-check-circle"></i> Selesai
-						</label>
-					</div>';
+                // Selesai
+                $status_penerimaan = '
+                    <div class="center">
+                        <label class="label label-xs label-success">
+                            <i class="fa fa-check-circle"></i> Selesai
+                        </label>
+                    </div>';
 
-			} elseif ($row_list->tgl_pengiriman != null && $row_list->tgl_input_terima == null && $row_list->yg_terima == null) {
+            } elseif ($row_list->tgl_pengiriman != null && $row_list->tgl_input_terima == null && $row_list->yg_terima == null) {
 
-				// Belum diterima user
-				$status_penerimaan = '
-        			<div class="center">
-        			    <label class="label label-xs label-warning">
-        			        <i class="fa fa-exclamation-circle"></i> Belum diterima user
-        			    </label>
-        			</div>';
+                // Belum diterima user
+                $status_penerimaan = '
+                    <div class="center">
+                        <label class="label label-xs label-warning">
+                            <i class="fa fa-exclamation-circle"></i> Belum diterima user
+                        </label>
+                    </div>';
 
-			} else {
+            } else {
 
-    			// Belum dikirim
-    			$status_penerimaan = '
-    			    <div class="center">
-    			        <label class="label label-xs label-danger">
-    			            <i class="fa fa-truck"></i> Belum dikirim
-    			        </label>
-    			    </div>';
-			}
-			$row[] = $status_penerimaan;
+                // Belum dikirim
+                $status_penerimaan = '
+                    <div class="center">
+                        <label class="label label-xs label-danger">
+                            <i class="fa fa-truck"></i> Belum dikirim
+                        </label>
+                    </div>';
+            }
+            $row[] = $status_penerimaan;
                   
             $data[] = $row;
         }

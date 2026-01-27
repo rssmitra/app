@@ -221,6 +221,7 @@ class Reg_pasien extends MX_Controller {
                             '.$rollback.'
                             <li><a href="#" onclick="ubah_penjamin_pasien('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Ubah Penjamin Pasien</a></li>
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_edit_dokter/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".' ,'."'UBAH DOKTER PEMERIKSA'".')">Ubah Dokter Pemeriksa</a></li>
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_edit_diagnosa/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".' ,'."'UBAH DIAGNOSA MASUK (ICD-10)'".')">Ubah Diagnosa Masuk (ICD-10)</a></li>
                             '.$btn_view_hasil_pm.'
                             '.$btn_print_out_checklist_mcu.'
                             '.$btn_cetak_sep.'
@@ -1204,18 +1205,28 @@ class Reg_pasien extends MX_Controller {
         {                       
 
             $this->db->trans_begin();
+
+            $no_registrasi   = $val->set_value('no_registrasi_hidden_edit_penjamin');
+            $kode_kelompok   = $this->regex->_genRegex($val->set_value('kode_kelompok_hidden_edit_penjamin'),'RGXINT');
+            $kode_perusahaan = !empty($_POST['kode_perusahaan_hidden_edit_penjamin'])
+                                ? $this->regex->_genRegex($val->set_value('kode_perusahaan_hidden_edit_penjamin'),'RGXINT') 
+                                : NULL;
+
+            $no_sep = ($val->set_value('noSepEditPenjamin')) 
+                        ? $this->regex->_genRegex($val->set_value('noSepEditPenjamin'),'RGXALNUM') 
+                    : '';
             
             /*process*/
 
-            $dataexc = array(
+            /*$dataexc = array(
                 'no_sep' => ($val->set_value('noSepEditPenjamin'))?$this->regex->_genRegex($val->set_value('noSepEditPenjamin'),'RGXALNUM'):'',
                 'kode_kelompok' => $this->regex->_genRegex($val->set_value('kode_kelompok_hidden_edit_penjamin'),'RGXINT'),
                 'kode_perusahaan' => isset($_POST['kode_perusahaan_hidden_edit_penjamin'])?$this->regex->_genRegex($val->set_value('kode_perusahaan_hidden_edit_penjamin'),'RGXINT'):NULL,
-            );
+            );*/
 
             //print_r($dataexc);die;
 
-            $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_penjamin') ) );
+            /*$this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_penjamin') ) );
 
             $dataexc2 = array(
                 'kode_kelompok' => $this->regex->_genRegex($val->set_value('kode_kelompok_hidden_edit_penjamin'),'RGXINT'),
@@ -1223,6 +1234,40 @@ class Reg_pasien extends MX_Controller {
             );
 
             $this->db->update('fr_tc_pesan_resep', $dataexc2, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_penjamin') ) );
+
+            */
+
+            /* ================= tc_registrasi ================= */
+    $this->db->update('tc_registrasi', [
+        'no_sep' => $no_sep,
+        'kode_kelompok' => $kode_kelompok,
+        'kode_perusahaan' => $kode_perusahaan
+    ], [
+        'no_registrasi' => $no_registrasi
+    ]);
+
+    /* ================= fr_tc_pesan_resep ================= */
+    $this->db->update('fr_tc_pesan_resep', [
+        'kode_kelompok' => $kode_kelompok,
+        'kode_perusahaan' => $kode_perusahaan
+    ], [
+        'no_registrasi' => $no_registrasi
+    ]);
+
+    /* ================= tc_trans_pelayanan ================= */
+    $this->db->update('tc_trans_pelayanan', [
+        'kode_kelompok' => $kode_kelompok,
+        'kode_perusahaan' => $kode_perusahaan
+    ], [
+        'no_registrasi' => $no_registrasi
+    ]);
+
+    /* ================= tc_trans_kasir ================= */
+    $this->db->update('tc_trans_kasir', [
+        'kode_perusahaan' => $kode_perusahaan
+    ], [
+        'no_registrasi' => $no_registrasi
+    ]);
 
 
             if ($this->db->trans_status() === FALSE)
@@ -1469,6 +1514,75 @@ class Reg_pasien extends MX_Controller {
         // echo "<pre>"; print_r($data['kunjungan']); echo "</pre>";
         $this->load->view('Reg_pasien/form_referensi_kunjungan', $data);
     }
+
+    // 1. Untuk buka modal Ubah Diagnosa Masuk
+    public function form_modal_edit_diagnosa($no_registrasi, $no_kunjungan)
+    {
+    // registrasi
+    $data = [
+            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan),
+            'no_registrasi' => $no_registrasi,
+            'no_kunjungan' => $no_kunjungan,
+        ];
+
+    $this->load->view('registration/reg_pasien/form_modal_edit_diagnosa', $data);
+    }
+
+    // 2. Untuk proses simpan Diagnosa Terbaru
+    public function process_edit_diagnosa()
+{
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+
+    $this->load->library('form_validation');
+    $val = $this->form_validation;
+
+    $val->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
+    $val->set_rules('no_mr', 'No MR', 'trim|required');
+    $val->set_rules('diagnosa_baru', 'Diagnosa Baru', 'trim|required');
+    $val->set_rules('kode_icd10', 'Kode ICD10', 'trim|required');
+
+    $val->set_message('required', "Silahkan isi field \"%s\"");
+
+    if ($val->run() == FALSE)
+    {
+        echo json_encode([
+            'status' => 301,
+            'message' => validation_errors()
+        ]);
+        return;
+    }
+
+    $this->db->trans_begin();
+
+    $dataexc = [
+        'diagnosa_awal' => $this->regex->_genRegex($val->set_value('diagnosa_baru'),'RGXQSL'),
+        'kode_icd10'    => $this->regex->_genRegex($val->set_value('kode_icd10'),'RGXQSL'),
+    ];
+
+    // Update th_riwayat_pasien
+    $this->db->update('th_riwayat_pasien', $dataexc, [
+        'no_mr'         => $val->set_value('no_mr'),
+        'no_registrasi' => $val->set_value('no_registrasi')
+    ]);
+
+    if ($this->db->trans_status() === FALSE)
+    {
+        $this->db->trans_rollback();
+        echo json_encode(['status' => 301, 'message' => 'Proses gagal']);
+    }
+    else
+    {
+        $this->db->trans_commit();
+        echo json_encode([
+            'status' => 200,
+            'message' => 'Diagnosa berhasil diupdate',
+            'no_mr' => $val->set_value('no_mr')
+        ]);
+    }
+}
+
+
 
 }
 

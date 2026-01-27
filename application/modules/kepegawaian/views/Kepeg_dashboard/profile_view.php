@@ -50,7 +50,7 @@
 
 							<a href="#" onclick="show_modal('kepegawaian/Kepeg_dt_pegawai/form_modal/<?php echo $profile->kepeg_id;?>')" class="btn btn-sm btn-block btn-success">
 								<i class="ace-icon fa fa-pencil bigger-120"></i>
-								<span class="bigger-110">Update Data Pegawai</span>
+								<span class="bigger-110">View Data Pegawai</span>
 							</a>
 						</div><!-- /.col -->
 
