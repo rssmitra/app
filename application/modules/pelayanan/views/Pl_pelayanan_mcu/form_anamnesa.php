@@ -82,7 +82,7 @@ $(document).ready(function() {
                       
       <label class="control-label col-sm-2">Keluhan</label>
       
-      <div class="col-md-3">
+      <div class="col-md-8">
         
         <textarea name="keluhan_utama" id="keluhan_utama" cols="50" style="height:100px !important;"><?php echo isset($anamnesa)?$anamnesa->keluhan_utama:'' ?></textarea>
       

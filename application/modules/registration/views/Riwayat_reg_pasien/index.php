@@ -37,7 +37,18 @@ oTable = $('#dynamic-table').DataTable({
       var no = 0;
       $.each(objData.resume, function (i, o) {       
         no++;
-          $('<tr><td align="center">'+no+'</td><td>'+o.unit+'</td><td align="center">'+o.total+'</td></tr>').appendTo($('#rekap_data'));   
+
+          var rowClass = (o.unit === 'Medical Check Up') ? 'class="clickable-row" style="cursor: pointer; color: blue; font-weight: bold;"' : '';
+          $('<tr '+rowClass+'><td align="center">'+no+'</td><td>'+o.unit+'</td><td align="center">'+o.total+'</td></tr>').appendTo($('#rekap_data'));   
+
+      });
+
+      // clickable row: buka modal detail paket MCU pasien ketika unit = Medical Check Up
+      $('#rekap_data').off('click', '.clickable-row').on('click', '.clickable-row', function () {
+        var from = $('#from_tgl').val() || '';
+        var to = $('#to_tgl').val() || '';
+        // gunakan helper show_modal yang sudah ada di aplikasi untuk menampilkan modal
+        show_modal('registration/Riwayat_reg_pasien/modal_mcu_detail?from='+from+'&to='+to, 'DETAIL PAKET MCU PASIEN');
       });
       $('.total_rekap').html(objData.recordsTotal);
       $('#rekap_batal').html(objData.rekap_batal);

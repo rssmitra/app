@@ -82,6 +82,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan->get_by_id($id);
+        // echo '<pre>';print_r($data['value']);die;
 
         if( ! $riwayat_pasien = $this->cache->get('riwayat_pasien_by_mr_'.$no_kunjungan.'_'.date('Y-m-d').'') )
 		{
@@ -992,8 +993,11 @@ class Pl_pelayanan extends MX_Controller {
                             
                         </div>
                       </p>';
+
         $html_tag .= '<center>';
-        $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
+        if( $this->session->userdata('user')->user_id == 1 ){
+            $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
+        }
         $html_tag .= '</center>';
         $html_tag .= '</form>';
         $html_tag .= '</div>';
