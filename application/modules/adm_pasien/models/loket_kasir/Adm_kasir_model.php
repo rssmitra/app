@@ -67,7 +67,7 @@ class Adm_kasir_model extends CI_Model {
 				$this->db->where('b.kode_perusahaan', 120);
 			}
 			if($_GET['flag']=='umum'){
-				$this->db->where('b.kode_perusahaan != 120');
+				$this->db->where('(b.kode_perusahaan != 120 OR b.kode_perusahaan IS NULL)');
 			}
 
 			$this->db->where("SUBSTRING(b.kode_bagian_masuk, 0, 3) != '03'");
