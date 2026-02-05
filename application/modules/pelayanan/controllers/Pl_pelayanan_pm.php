@@ -389,7 +389,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                         break;
                     case 'belum_bayar':
                         $status = ($row_list->kode_rujukan != null)
-                            ? '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa '.$row_list->kode_rujukan.'</a>'
+                            ? '<a href="#" class="btn btn-xs btn-primary" onclick="proses_periksa('.$row_list->kode_penunjang.')">Periksa '.$row_list->kode_rujukan.'</a>'
                             : '<label class="label label-danger">Belum bayar</label>';
                         break;
                     case 'belum_isi_hasil':
@@ -397,7 +397,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                         break;
                     default:
                         if (isset($_GET['sess_kode_bagian']) && $_GET['sess_kode_bagian'] != '050301') {
-                            $status = '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa</a>';
+                            $status = '<a href="#" class="btn btn-xs btn-primary" onclick="proses_periksa('.$row_list->kode_penunjang.')">Periksa</a>';
                         } else {
                             $status = '';
                         }
@@ -430,6 +430,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         );
         echo json_encode($output);
     }
+
     public function get_data_order()
     {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
@@ -665,8 +666,6 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*load form view*/
         $this->load->view('Pl_pelayanan_pm/form_end_visit', $data);
     }
-
-    
 
     public function find_data()
     {   
