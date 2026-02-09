@@ -127,7 +127,7 @@ class Csm_billing_pasien extends MX_Controller {
                     $no_mr = $explode[1];
                     $exp_no_registrasi = $explode[2];
                     $unique_code = $explode[3];
-                    $no_kunjungan = $explode[4];
+                    $no_kunjungan = isset($explode[4]) ? $explode[4] : '';
 
                     /*create and save download file pdf*/
                     if( $this->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F', $no_kunjungan) ) :
