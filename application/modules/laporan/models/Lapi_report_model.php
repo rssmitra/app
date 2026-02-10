@@ -84,7 +84,7 @@ class Lapi_report_model extends CI_Model {
 			LEFT JOIN mt_layanan_obat on mt_layanan_obat.kode_layanan = mt_barang.kode_layanan
 			GROUP BY MONTH(tanggal), YEAR(tanggal), tblx.kode_brg, tblx.nama_brg, nama_layanan, tblx.satuan_kecil, tblx.dokter_pengirim
 			ORDER BY tblx.nama_brg ASC";
-
+			echo '<pre>'; print_r($query);die;
 			return $query;
 	}
 
@@ -93,12 +93,12 @@ class Lapi_report_model extends CI_Model {
 	{
 		$query 		= $this->_main_query($params);
 		$execute 	= $this->db->query( $query );
+		// echo '<pre>'; print_r($this->db->last_query());die;
 		/*field data*/
 		$result = array(
 			'fields' 	=> $execute->field_data(),
 			'data' 		=> $execute->result(),
 		);
-		// echo '<pre>'; print_r($result);die;
 		/*return data*/
 		return $result;
 	}
