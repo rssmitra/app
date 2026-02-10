@@ -9,82 +9,170 @@ class Lapi_report_model extends CI_Model {
 	}
 
 	private function _main_query($params){
-		$query = "select YEAR(tanggal) as tahun, MONTH(tanggal) as bulan, tblx.kode_brg, tblx.nama_brg, nama_layanan, dokter_pengirim, tblx.satuan_kecil, SUM(jumlah_pesan) as jumlah_item, AVG(harga_jual_satuan) as rata_jual
-			FROM (
-			SELECT
-			CAST(fr_tc_far.tgl_trans as DATE) as tanggal,
-			fr_tc_far_detail_log.kode_brg,
-			fr_tc_far_detail_log.nama_brg,
-			fr_tc_far_detail_log.satuan_kecil,dokter_pengirim,
-			CASE 
-			WHEN prb_ditangguhkan != 1 THEN CAST( (SUM ( fr_tc_far_detail_log.jumlah_pesan ) + SUM ( fr_tc_far_detail_log.jumlah_obat_23 )) as INT)
-				ELSE CAST( SUM ( fr_tc_far_detail_log.jumlah_pesan ) as INT)
-			END
-			AS jumlah_pesan,
-			AVG (CAST(harga_jual_satuan AS INT)) AS harga_jual_satuan
-		FROM
-			fr_tc_far_detail_log 
-			LEFT JOIN fr_tc_far on fr_tc_far.kode_trans_far=fr_tc_far_detail_log.kode_trans_far
-		WHERE YEAR(tgl_trans)=".$params['tahun']." and MONTH(tgl_trans) = ".$params['bulan']." and fr_tc_far_detail_log.flag_resep = 'biasa'
-		GROUP BY
-		CAST(fr_tc_far.tgl_trans as DATE),prb_ditangguhkan,
-			fr_tc_far_detail_log.kode_brg,
-			fr_tc_far_detail_log.nama_brg,
-			fr_tc_far_detail_log.satuan_kecil, dokter_pengirim
-			
-			UNION ALL
-			
-		SELECT
-		CAST(tc_far_racikan.tgl_input as DATE) as tanggal,
-			tc_far_racikan_detail.kode_brg,
-			mt_barang.nama_brg,dokter_pengirim,
-			satuan AS satuan_kecil,
-			CASE 
-			WHEN tc_far_racikan_detail.prb_ditangguhkan != 1 THEN CAST ( ( SUM ( jumlah ) + SUM(tc_far_racikan_detail.jumlah_obat_23) ) AS INT)
-				ELSE CAST( SUM ( jumlah ) as INT)
-			END
-			AS jumlah_pesan,
-			AVG ( CAST(tc_far_racikan_detail.harga_jual AS INT) ) AS harga_jual_satuan
-		FROM
-			tc_far_racikan_detail 
-			LEFT JOIN tc_far_racikan on tc_far_racikan.id_tc_far_racikan=tc_far_racikan_detail.id_tc_far_racikan
-			LEFT JOIN fr_tc_far on fr_tc_far.kode_trans_far=tc_far_racikan.kode_trans_far
-			LEFT JOIN mt_barang on mt_barang.kode_brg = tc_far_racikan_detail.kode_brg
-			WHERE YEAR(tgl_trans)= ".$params['tahun']." and MONTH(tgl_trans) = ".$params['bulan']." 
-		GROUP BY
-		CAST(tc_far_racikan.tgl_input as DATE),dokter_pengirim, tc_far_racikan_detail.prb_ditangguhkan,
-			tc_far_racikan_detail.kode_brg,
-			mt_barang.nama_brg,
-			satuan
-			
-			UNION ALL
-			
-			SELECT
-				CAST(tgl_input as DATE) as tanggal,
-				mt_barang.kode_brg,
-				mt_barang.nama_brg,
-				mt_barang.satuan_kecil,dokter_pengirim,
-				CAST (SUM ( log_jml_mutasi ) AS INT) AS jumlah_pesan,
-				AVG ( CAST(harga_satuan AS INT) ) AS harga_jual_satuan
-			FROM
-				fr_tc_far_detail_log_prb 
-			LEFT JOIN fr_tc_far on fr_tc_far.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far
-			LEFT JOIN mt_barang on mt_barang.kode_brg = fr_tc_far_detail_log_prb.kode_brg
-			WHERE YEAR(tgl_input) = ".$params['tahun']." and MONTH(tgl_input) = ".$params['bulan']." 
-			GROUP BY
-				CAST(tgl_input as DATE),dokter_pengirim,
-				mt_barang.kode_brg,
-				mt_barang.nama_brg,
-				mt_barang.satuan_kecil
-				HAVING CAST (SUM ( log_jml_mutasi ) AS INT) > 0
-			
-			) as tblx
+		
+		$bulan = $params['bulan'];
+		$tahun = $params['tahun'];
+		
+		$query = "DECLARE @startDate DATE = '$tahun-$bulan-01';
+					DECLARE @endDate   DATE = DATEADD(MONTH, 1, @startDate);
 
-			LEFT JOIN mt_barang on mt_barang.kode_brg = tblx.kode_brg
-			LEFT JOIN mt_layanan_obat on mt_layanan_obat.kode_layanan = mt_barang.kode_layanan
-			GROUP BY MONTH(tanggal), YEAR(tanggal), tblx.kode_brg, tblx.nama_brg, nama_layanan, tblx.satuan_kecil, tblx.dokter_pengirim
-			ORDER BY tblx.nama_brg ASC";
-			echo '<pre>'; print_r($query);die;
+					WITH last_discount AS (
+						SELECT
+							p.kode_brg,
+							p.discount
+						FROM tc_po_det p
+						INNER JOIN (
+							SELECT
+								kode_brg,
+								MAX(id_tc_po_det) AS max_id
+							FROM tc_po_det
+							GROUP BY kode_brg
+						) x ON x.kode_brg = p.kode_brg
+						AND x.max_id   = p.id_tc_po_det
+					),
+
+					trx AS (
+
+						/* ================= OBAT NON RACIK ================= */
+						SELECT
+							CAST(f.tgl_trans AS DATE) AS tanggal,
+							d.kode_brg,
+							d.nama_brg,
+							d.satuan_kecil,
+							f.dokter_pengirim,
+
+							CASE 
+								WHEN d.prb_ditangguhkan != 1
+									THEN SUM(d.jumlah_pesan + d.jumlah_obat_23)
+								ELSE SUM(d.jumlah_pesan)
+							END AS qty,
+
+							SUM(
+								CASE 
+									WHEN d.prb_ditangguhkan != 1
+										THEN (d.jumlah_pesan + d.jumlah_obat_23) * CAST(d.harga_jual_satuan AS INT)
+									ELSE d.jumlah_pesan * CAST(d.harga_jual_satuan AS INT)
+								END
+							) AS total_jual
+
+						FROM fr_tc_far_detail_log d
+						JOIN fr_tc_far f ON f.kode_trans_far = d.kode_trans_far
+						WHERE
+							f.tgl_trans >= @startDate
+							AND f.tgl_trans <  @endDate
+							AND d.flag_resep = 'biasa'
+						GROUP BY
+							CAST(f.tgl_trans AS DATE),
+							d.prb_ditangguhkan,
+							d.kode_brg,
+							d.nama_brg,
+							d.satuan_kecil,
+							f.dokter_pengirim
+
+						UNION ALL
+
+						/* ================= OBAT RACIK ================= */
+						SELECT
+							CAST(r.tgl_input AS DATE) AS tanggal,
+							rd.kode_brg,
+							b.nama_brg,
+							rd.satuan AS satuan_kecil,
+							f.dokter_pengirim,
+
+							CASE 
+								WHEN rd.prb_ditangguhkan != 1
+									THEN SUM(rd.jumlah + rd.jumlah_obat_23)
+								ELSE SUM(rd.jumlah)
+							END AS qty,
+
+							SUM(
+								CASE 
+									WHEN rd.prb_ditangguhkan != 1
+										THEN (rd.jumlah + rd.jumlah_obat_23) * CAST(rd.harga_jual AS INT)
+									ELSE rd.jumlah * CAST(rd.harga_jual AS INT)
+								END
+							) AS total_jual
+
+						FROM tc_far_racikan_detail rd
+						JOIN tc_far_racikan r ON r.id_tc_far_racikan = rd.id_tc_far_racikan
+						JOIN fr_tc_far f ON f.kode_trans_far = r.kode_trans_far
+						JOIN mt_barang b ON b.kode_brg = rd.kode_brg
+						WHERE
+							f.tgl_trans >= @startDate
+							AND f.tgl_trans <  @endDate
+						GROUP BY
+							CAST(r.tgl_input AS DATE),
+							rd.prb_ditangguhkan,
+							rd.kode_brg,
+							b.nama_brg,
+							rd.satuan,
+							f.dokter_pengirim
+
+						UNION ALL
+
+						/* ================= PRB ================= */
+						SELECT
+							CAST(p.tgl_input AS DATE) AS tanggal,
+							p.kode_brg,
+							b.nama_brg,
+							b.satuan_kecil,
+							f.dokter_pengirim,
+
+							SUM(p.log_jml_mutasi) AS qty,
+
+							SUM(p.log_jml_mutasi * CAST(p.harga_satuan AS INT)) AS total_jual
+
+						FROM fr_tc_far_detail_log_prb p
+						JOIN fr_tc_far f ON f.kode_trans_far = p.kode_trans_far
+						JOIN mt_barang b ON b.kode_brg = p.kode_brg
+						WHERE
+							p.tgl_input >= @startDate
+							AND p.tgl_input <  @endDate
+						GROUP BY
+							CAST(p.tgl_input AS DATE),
+							p.kode_brg,
+							b.nama_brg,
+							b.satuan_kecil,
+							f.dokter_pengirim
+						HAVING SUM(p.log_jml_mutasi) > 0
+					)
+
+					SELECT
+						YEAR(t.tanggal)  AS tahun,
+						MONTH(t.tanggal) AS bulan,
+
+						t.kode_brg,
+						t.nama_brg,
+						lo.nama_layanan,
+						t.dokter_pengirim,
+						t.satuan_kecil,
+
+						SUM(t.qty) AS jumlah_item,
+
+						CAST(SUM(t.total_jual) / NULLIF(SUM(t.qty),0) AS DECIMAL(18,2)) AS rata_jual,
+
+						ISNULL(ld.discount,0) AS discount  
+
+					FROM trx t
+					JOIN mt_barang b ON b.kode_brg = t.kode_brg
+					LEFT JOIN mt_layanan_obat lo ON lo.kode_layanan = b.kode_layanan
+					LEFT JOIN last_discount ld ON ld.kode_brg = t.kode_brg
+
+					GROUP BY
+						YEAR(t.tanggal),
+						MONTH(t.tanggal),
+						t.kode_brg,
+						t.nama_brg,
+						lo.nama_layanan,
+						t.satuan_kecil,
+						t.dokter_pengirim,
+						ld.discount
+
+					ORDER BY
+						t.nama_brg ASC;
+					";
+
+			// echo '<pre>'; print_r($query);die;
 			return $query;
 	}
 
