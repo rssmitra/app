@@ -314,37 +314,31 @@ class Permintaan_stok_unit extends MX_Controller {
     public function delete_cart()
     {
         $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
-        if($id!=null){
 
-            if($_POST['id_tc_permintaan_inst_det'] != ''){
-                if($_POST['type'] == 'cart_log'){
-                    if($this->Permintaan_stok_unit->delete_cart_log('tc_permintaan_inst_cart_log', array($_POST['id_tc_permintaan_inst_det']))){
-                        echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
-                    }else{
-                        echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
-                    }
-                    exit;
-                }else{
-                    $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
-                    if($this->Permintaan_stok_unit->delete_brg_permintaan($table.'_det', array($_POST['id_tc_permintaan_inst_det']))){
-                        echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
-                    }else{
-                        echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
-                    }
-                    exit;
-                }
-                
-            }else{
-                if($this->db->where(array('kode_brg' => $id, 'user_id_session' => $this->session->userdata('user')->user_id, 'flag_form' => $_POST['flag_form']))->delete('tc_permintaan_inst_cart_log')){
-                    echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan' ));
+        if($_POST['id_tc_permintaan_inst_det'] != ''){
+            if($_POST['type'] == 'cart_log'){
+                if($this->Permintaan_stok_unit->delete_cart_log('tc_permintaan_inst_cart_log', array($_POST['id_tc_permintaan_inst_det']))){
+                    echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
                 }else{
                     echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
                 }
+                exit;
+            }else{
+                $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
+                if($this->Permintaan_stok_unit->delete_brg_permintaan($table.'_det', array($_POST['id_tc_permintaan_inst_det']))){
+                    echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+                }else{
+                    echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+                }
+                exit;
             }
-
             
         }else{
-            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+            if($this->db->where(array('kode_brg' => $id, 'user_id_session' => $this->session->userdata('user')->user_id, 'flag_form' => $_POST['flag_form']))->delete('tc_permintaan_inst_cart_log')){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan' ));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
         }
         
     }

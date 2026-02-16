@@ -172,6 +172,7 @@ class Permintaan_stok_unit_model extends CI_Model {
 	public function delete_cart_log($table, $id)
 	{
 		$this->db->where_in('id', $id)->delete($table);
+		// echo $this->db->last_query();die;
 		return true;
 	}
 	

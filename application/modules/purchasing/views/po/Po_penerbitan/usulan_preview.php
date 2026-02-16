@@ -100,6 +100,7 @@ th, td {
         <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
           <td rowspan="2" style="text-align:center; width: 30px; border: 1px solid black; border-collapse: collapse">No</td>
           <td rowspan="2" style="border: 1px solid black; border-collapse: collapse">Kode & Nama Barang</td>
+          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Stok<br>Akhir</td>
           <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>Permintaan</td>
           <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>di ACC</td>
           <td rowspan="2" style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Satuan</td>
@@ -128,6 +129,7 @@ th, td {
             <tr>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $no?></td>
               <td style="border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->kode_brg.' - '.$row_dt[0]->nama_brg?></td>
+              <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->jml_sat_kcl?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo array_sum($jumlah_permintaan[$row_dt[0]->kode_brg])?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo array_sum($jumlah_pesan[$row_dt[0]->kode_brg])?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->satuan_besar?></td>
