@@ -1,4 +1,4 @@
-var loading = "<center><img src='"+window.location.origin+"/sirs/app/assets/images/loading.gif' style='width:150px;padding-top:200px;cursor:auto;z-index:15;'/></center>";
+var loading = "<center><img src='"+window.location.origin+"/assets/images/loading.gif' style='width:150px;padding-top:200px;cursor:auto;z-index:15;'/></center>";
 
 $('#message_notification').click(function() {
   $('#message_notification span').remove();

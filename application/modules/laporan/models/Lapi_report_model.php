@@ -181,12 +181,12 @@ class Lapi_report_model extends CI_Model {
 	{
 		$query 		= $this->_main_query($params);
 		$execute 	= $this->db->query( $query );
+		// echo '<pre>'; print_r($this->db->last_query());die;
 		/*field data*/
 		$result = array(
 			'fields' 	=> $execute->field_data(),
 			'data' 		=> $execute->result(),
 		);
-		// echo '<pre>'; print_r($result);die;
 		/*return data*/
 		return $result;
 	}
