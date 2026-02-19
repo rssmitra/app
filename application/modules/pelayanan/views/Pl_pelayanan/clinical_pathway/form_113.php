@@ -142,7 +142,7 @@ jQuery(function($) {
   <br>
 
     
-  Demikian surat keterangan sehat ini dibuat dengan benar, agar dapat dipergunakan sebagaimana mestinya.
+  Demikian surat keterangan rawat inap ini dibuat dengan benar, agar dapat dipergunakan sebagaimana mestinya.
 </p>
 <hr>
 
