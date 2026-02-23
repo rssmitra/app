@@ -1,3 +1,16 @@
+<style>
+  .riwayat-card { line-height: 1.8; padding: 2px 0; }
+  .riwayat-card-header { margin-bottom: 5px; }
+  .riwayat-card-header .riwayat-noreg { font-size: 14px; font-weight: 700; color: #222; letter-spacing: 0.3px; }
+  .riwayat-card-body { font-size: 12.5px; font-weight: 600; color: #333; }
+  .riwayat-card-body > div { margin-bottom: 2px; }
+  .riwayat-icon { color: #999; width: 16px; margin-right: 5px; }
+  .riwayat-time { color: #666; font-size: 11.5px; font-weight: 500; margin-top: 2px; }
+  #riwayat-table td { vertical-align: middle !important; text-align: left; }
+  #riwayat-table td:first-child,
+  #riwayat-table td:nth-child(2) { text-align: center; white-space: nowrap; }
+</style>
+
 <script type="text/javascript">
 
   $(document).ready(function(){
@@ -9,27 +22,16 @@
 
     var url = (no_reg!='')?'registration/Reg_pasien/get_riwayat_pasien?mr='+no_mr+'&tujuan='+tujuan+'&no_reg='+no_reg+'':'registration/Reg_pasien/get_riwayat_pasien?mr='+no_mr+'&kode_bagian='+kode_bagian+'';
 
-    table_riwayat = $('#riwayat-table').DataTable({ 
-      
-      "processing": true, //Feature control the processing indicator.
-      "serverSide": true, //Feature control DataTables' server-side processing mode.
+    table_riwayat = $('#riwayat-table').DataTable({
+      "processing": true,
+      "serverSide": true,
       "ordering": false,
       "searching": false,
       "bInfo": false,
       "scrollY": "500px",
-      //"scrollX": "500px",
       "lengthChange": false,
       "bPaginate": false,
-      // Load data for the table's content from an Ajax source
-      
-      "ajax": {
-          
-          "url": url,
-          
-          "type": "POST"
-      
-      },
-    
+      "ajax": { "url": url, "type": "POST" }
     });
 
   });
@@ -150,12 +152,12 @@
 <!-- <b> RIWAYAT KUNJUNGAN PASIEN <i class="fa fa-angle-double-right bigger-120"></i> </b> -->
 
 
-<table id="riwayat-table" class="table">
+<table id="riwayat-table" class="table table-bordered table-hover table-condensed">
   <thead>
-    <tr>  
-      <th>No</th>
-      <th>&nbsp;</th>
-      <th>Deskripsi</th>
+    <tr>
+      <th style="width:28px"></th>
+      <th style="width:28px"></th>
+      <th>Riwayat Kunjungan</th>
     </tr>
   </thead>
   <tbody id="table_riwayat_pasien">

@@ -346,13 +346,13 @@ class Pengiriman_unit extends MX_Controller {
             $stok_gudang = ($row_list->stok_gdg_revisi == null) ? $row_list->jumlah_stok_gudang : '<s style="color: red">'.$row_list->jumlah_stok_gudang.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->stok_gdg_revisi;
             $row[] = '<div class="left">'.$nama_brg.'</div>';
             $row[] = '<div class="center">'.$row_list->satuan.'</div>';
-            $row[] = '<div class="center">'.$row_list->jumlah_stok_sebelumnya.'</div>';
+            $row[] = '<div class="center">'.number_format($stok_gudang).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->jumlah_stok_sebelumnya).'</div>';
             $row[] = '<div class="center">'.$qty.'</div>';
             $row[] = '<div class="center">'.$row_list->jml_acc_atasan.'</div>';
             $row[] = '<div class="center">'.$row_list->jumlah_kirim.'</div>';
-            $row[] = '<div class="center">'.$stok_gudang.'</div>';
-            $row[] = '<div class="center">'.$row_list->keterangan_verif.'</div>';
             $row[] = '<div style="text-align: right">'.number_format($row_list->harga).'</div>';
+            $row[] = '<div class="center">'.$row_list->keterangan_verif.'</div>';
 
             if($row_list->status_verif == 1){
                 if($row_list->jumlah_kirim > 0){

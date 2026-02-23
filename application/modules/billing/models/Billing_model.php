@@ -23,9 +23,24 @@ class Billing_model extends CI_Model {
 	{
 		/*insert tc_registrasi*/
 		$this->db->insert($table, $data);
-		
+
 		return $this->db->insert_id();;
 	}
+
+    /**
+     * Update field diskon_tindakan_rp pada tc_trans_pelayanan
+     * Nilai diskon sudah dalam Rp (konversi % → Rp dilakukan di sisi controller/JS)
+     */
+    public function update_diskon_item($kode_trans_pelayanan, $diskon_rp)
+    {
+        $this->db->update(
+            'tc_trans_pelayanan',
+            array('diskon_tindakan_rp' => (int)$diskon_rp),
+            array('kode_trans_pelayanan' => (int)$kode_trans_pelayanan)
+        );
+        // affected_rows >= 0: sukses meski nilai tidak berubah (same value)
+        return $this->db->affected_rows() >= 0;
+    }
 
 	private function _main_query(){
 		$this->db->select($this->select);
@@ -1252,7 +1267,7 @@ class Billing_model extends CI_Model {
     }
     
     public function getTransData($no_registrasi){
-		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, dokter_2.nama_pegawai as nama_dokter_2, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, is_update_by_kasir, fr_tc_far.tgl_trans as tgl_obat, mt_barang.satuan_kecil, bagian_asal.nama_bagian as nama_bagian_asal');
+		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, dokter_2.nama_pegawai as nama_dokter_2, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, is_update_by_kasir, fr_tc_far.tgl_trans as tgl_obat, mt_barang.satuan_kecil, bagian_asal.nama_bagian as nama_bagian_asal, tc_kunjungan.status_batal');
 		$this->db->from('tc_trans_pelayanan');
 		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
@@ -1678,9 +1693,11 @@ class Billing_model extends CI_Model {
 
     public function getLogActivity($no_registrasi){
         // kunjungan
-        $kunjungan = $this->db->select('no_kunjungan, tgl_masuk, tgl_keluar, nama_bagian')->join('mt_bagian','mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan')->order_by('tgl_masuk', 'ASC')->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi) )->result_array();
+        $kunjungan = $this->db->select('tc_kunjungan.status_batal, no_kunjungan, tgl_masuk, tgl_keluar, nama_bagian')->join('mt_bagian','mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan')->order_by('tgl_masuk', 'ASC')->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi) )->result_array();
+        // echo $this->db->last_query();die;
         // farmasi
-        $farmasi = $this->db->select('no_kunjungan,tgl_pesan as tgl_masuk, nama_bagian')->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_pesan_resep.kode_bagian')->limit(1)->order_by('tgl_pesan','ASC')->get_where('fr_tc_pesan_resep', array('fr_tc_pesan_resep.no_registrasi' => $no_registrasi) )->result_array();
+        $farmasi = $this->db->select('fr_tc_pesan_resep.no_kunjungan,tgl_pesan as tgl_masuk, nama_bagian, kode_trans_far, fr_tc_far.tgl_trans as tgl_keluar')->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_pesan_resep.kode_bagian')->join('fr_tc_far','(fr_tc_far.kode_pesan_resep=fr_tc_pesan_resep.kode_pesan_resep  AND fr_tc_far.status_transaksi = 1)', 'left')->limit(1)->order_by('tgl_pesan','ASC')->get_where('fr_tc_pesan_resep', array('fr_tc_pesan_resep.no_registrasi' => $no_registrasi) )->result_array();
+
         $arr_merge = array_merge($kunjungan, $farmasi);
         $keys = array_column($arr_merge, 'tgl_masuk');
         array_multisort($keys, SORT_ASC, $arr_merge);

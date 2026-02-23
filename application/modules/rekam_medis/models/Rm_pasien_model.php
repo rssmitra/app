@@ -32,7 +32,7 @@ class Rm_pasien_model extends CI_Model {
         
         $this->_main_query();
         $this->db->where('SUBSTRING(kode_bagian_masuk, 1,2) IN ('."'01'".','."'02'".')');
-        $this->db->where('tc_registrasi.tgl_jam_keluar IS NOT NULL');
+        // $this->db->where('tc_registrasi.tgl_jam_keluar IS NOT NULL');
         
         if(isset($_GET['search_by'])) {
 

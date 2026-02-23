@@ -12,40 +12,23 @@
 <div class="row">
 
   
-  <h4 style="text-align: center" class="widget-title lighter">RESUME MEDIS PASIEN</h4>
+<h4 style="text-align: center" class="widget-title lighter">RESUME MEDIS PASIEN</h4>
 
-  <div class="col-sm-12 widget-container-col ui-sortable">
-    <div class="widget-box transparent ui-sortable-handle">
-      <div class="widget-body">
-        <div class="col-md-6 no-padding">
-          <div class="widget-main">
-            <address class="no-padding">
-              No. Registrasi : <?php echo $result['registrasi']->no_registrasi?> &nbsp;&nbsp;&nbsp; Tanggal : <?php echo $this->tanggal->formatDateTime($result['registrasi']->tgl_jam_masuk)?><br>
-              <?php echo ucfirst($result['registrasi']->nama_bagian)?>&nbsp; | &nbsp;<?php echo ucwords($result['registrasi']->nama_pegawai)?>                 
-            </address>
-            <table>
-              <tr><td width="130px">No. Rekam Medis</td><td>: <?php echo $result['registrasi']->no_mr?></td></tr>
-              <tr><td>Nama Pasien</td><td>: <?php echo $result['registrasi']->nama_pasien?></td></tr>
-              <tr><td>Umur</td><td>: <?php echo $umur?> Tahun</td></tr>
-            </table>
-          </div>
-        </div>
-        <?php if(!isset($_GET['print'])) :?>
-        <div class="col-md-6" align="right">
-          <div class="widget-main">
-            <a href="<?php echo base_url().'registration/reg_pasien/view_detail_resume_medis/'.$result['registrasi']->no_registrasi.'?print=true'?>" class="btn btn-xs btn-inverse" target="_blank">Cetak Resume Medis</a>
-          </div>
-        </div>
-        <?php endif;?>
-      </div>
-    </div>
+<?php if(!isset($_GET['print'])) :?>
+<div class="col-md-12" align="right">
+  <div class="widget-main">
+    <a href="<?php echo base_url().'registration/reg_pasien/view_detail_resume_medis/'.$result['registrasi']->no_registrasi.'?print=true'?>" class="btn btn-xs btn-inverse" target="_blank">Cetak Resume Medis</a>
   </div>
+</div>
+<?php endif;?>
 
   <div class="col-sm-12 widget-container-col ui-sortable">
     <div class="widget-box transparent ui-sortable-handle">
       <div class="widget-body">
         <div class="col-md-12">
+
           <?php 
+            if($tipe_layan == 'RJ') :
             foreach($result['riwayat_medis'] as $row_rm) :
               $str = substr($row_rm->kode_bagian_tujuan, 0,2);
               $poli = [];
@@ -63,8 +46,58 @@
             <br><br>
             <span style="font-weight: bold;">DIAGNOSA AKHIR :</span><br><?php echo $row_rm->diagnosa_akhir; ?> <br><br>
           </p>
-          <?php endif; endforeach; ?>
-        
+          <?php endif; endforeach; endif; ?>
+          
+          <?php if($tipe_layan == 'RI') :?>
+          <b>RIWAYAT MEDIS PASIEN</b>
+          <table class="table table-bordered table-hover">
+
+            <thead>
+
+              <th style="color:black">No</th>
+
+              <th style="color:black; width: 150px">Jam Masuk Poli</th>
+
+              <th style="color:black; width: 120px">Unit Asal</th>
+
+              <th style="color:black; width: 120px">Unit Tujuan</th>
+
+              <th style="color:black; width: 150px">Diagnosa Awal</th>
+
+              <th style="color:black">Anamnesa</th>
+
+              <th style="color:black">Tindakan/Pemeriksaan</th>
+
+              <th style="color:black; width: 150px">Diagnosa Akhir</th>
+
+            </thead>
+
+            <tbody>
+
+            <?php 
+              $no = 0;
+              foreach($result['riwayat_medis'] as $row_rm):
+                if(!in_array($row_rm->kode_bagian_tujuan, ['050101','050201'])) :
+                // echo "<pre>"; print_r($row_rm);die;
+                $no++;
+            ?>
+              <tr>
+                <td align="center"><?php echo $no;?></td>
+                <td><?php echo $this->tanggal->formatDateTime($row_rm->tgl_masuk)?></td>
+                <td><?php echo $row_rm->poli_asal_kunjungan?></td>
+                <td><?php echo $row_rm->poli_tujuan_kunjungan?></td>
+                <td><?php echo ucfirst($row_rm->diagnosa_awal)?></td>
+                <td><?php echo ucfirst($row_rm->anamnesa)?></td>
+                <td><?php echo ucfirst($row_rm->pemeriksaan)?></td>
+                <td><?php echo ucfirst($row_rm->diagnosa_akhir)?></td>
+              </tr>
+            <?php endif; endforeach;?>
+
+            </tbody>
+
+          </table>
+          <?php endif;?>
+          <hr>
           <b>PEMERIKSAAN PENUNJANG MEDIS</b>
           <table class="table table-bordered table-hover" style="width:100%">
             <thead>
@@ -100,7 +133,7 @@
             </tbody>
           </table>
 
-          <br>
+          <hr>
           <b>OBAT YANG DIBERIKAN</b>
           <table class="table table-bordered table-hover" style="width:100% !important">
               <thead>

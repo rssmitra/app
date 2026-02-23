@@ -570,6 +570,48 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
 
 }
 
+function selesaikanKunjungan() {
+  preventDefault();
+
+  var no_kunjungan  = $('#no_kunjungan').val();
+  var no_registrasi = $('#no_registrasi').val();
+
+  if (!no_kunjungan || !no_registrasi) {
+    $.achtung({message: 'Data kunjungan tidak ditemukan!', timeout: 5, className: 'achtungFail'});
+    return false;
+  }
+
+  if (!confirm('Apakah Anda yakin ingin menyelesaikan kunjungan ini?')) {
+    return false;
+  }
+
+  achtungShowLoader();
+
+  $.ajax({
+    url: 'pelayanan/Pl_pelayanan/processSelesaikanKunjungan',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      no_kunjungan  : no_kunjungan,
+      no_registrasi : no_registrasi,
+      cara_keluar   : $('#cara_keluar').val()  || '',
+      pasca_pulang  : $('#pasca_pulang').val() || ''
+    },
+    complete: function(xhr) {
+      achtungHideLoader();
+      var jsonResponse = JSON.parse(xhr.responseText);
+      if (jsonResponse.status === 200) {
+        $.achtung({message: jsonResponse.message, timeout: 5});
+        setTimeout(function() {
+          getMenu('pelayanan/Pl_pelayanan/form/' + $('#id_pl_tc_poli').val() + '/' + no_kunjungan + '?no_mr=' + $('#no_mr_val').val() + '&form=form_rj');
+        }, 1200);
+      } else {
+        $.achtung({message: jsonResponse.message, timeout: 8, className: 'achtungFail'});
+      }
+    }
+  });
+}
+
 function searchTable() {
     var input, filter, found, table, tr, td, i, j;
     input = document.getElementById("seacrh_ul_li");
@@ -791,8 +833,8 @@ function show_icare() {
         
         <div class="pull-left" style="margin-bottom:1%; width: 100%">
           <?php if(empty($value->tgl_keluar_poli)) :?>
-          <!-- <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
-          <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a> -->
+            
+          <a href="#" class="btn btn-xs btn-success" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
           <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit_dr(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
           <?php else: echo ''; endif;?>
           

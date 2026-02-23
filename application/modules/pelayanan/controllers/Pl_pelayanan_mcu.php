@@ -53,7 +53,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_mcu/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_mcu->get_by_id($id);
-        //echo '<pre>';print_r($data['value']);die;
+        // echo '<pre>';print_r($data);die;
         $data['riwayat'] = $this->Pl_pelayanan_mcu->get_riwayat_pasien_by_id($no_kunjungan);
 
         $pemeriksaan = $this->Pl_pelayanan_mcu->get_pemeriksaan($data['value']->kode_gcu);
@@ -75,7 +75,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $data['kode_klas'] = $kode_klas;
         $data['kode_profit'] = 2000;
         $data['no_kunjungan'] = $no_kunjungan;
-        //echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = 'Medical Check Up';
         /*show breadcrumbs*/
@@ -1214,10 +1214,13 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $pdf->Cell(0, 10, $PDF_HEADER_TITLE, 0, 1, 'C');
 
         // Judul dengan warna
-        $pdf->SetY(77);
+        $pdf->SetY(80);
         $pdf->SetTextColor(0, 0, 128); // Navy blue
         $pdf->SetFont('helvetica', 'B', 24);
         $pdf->Cell(0, 15, 'HASIL MEDICAL CHECK-UP', 0, 1, 'C');
+        $pdf->SetY(92);
+        $pdf->SetFont('helvetica', 'I', 16);
+        $pdf->Cell(0, 5, 'Medical Examination Report', 0, 1, 'C');
 
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', 'B', 18);
@@ -1229,18 +1232,13 @@ class Pl_pelayanan_mcu extends MX_Controller {
         // Informasi pasien
         $pdf->Ln(10);
         $pdf->SetFont('helvetica', '', 14);
-        $pdf->Cell(60, 5, 'No Registrasi', 0, 0);
-        $pdf->Cell(0, 5, ': '.$data_kunjungan->no_registrasi, 0, 1);
-        $pdf->Cell(60, 5, 'No. MR', 0, 0);
-        $pdf->Cell(0, 5, ': '.$data_kunjungan->no_mr, 0, 1);
-        $pdf->Cell(60, 5, 'Nama Pasien', 0, 0);
-        $pdf->Cell(0, 5, ': '.$data_pasien->nama_pasien, 0, 1);
-        $pdf->Cell(60, 5, 'Umur', 0, 0);
-        $pdf->Cell(0, 5, ': '.$data_pasien->umur_lengkap, 0, 1);
-        $pdf->Cell(60, 5, 'Tanggal MCU', 0, 0);
-        $pdf->Cell(0, 5, ': '.date('d/m/Y', strtotime($data_kunjungan->tgl_jam_poli)), 0, 1);
-        $pdf->Cell(60, 5, 'Dokter Pemeriksa', 0, 0);
-        $pdf->Cell(0, 5, ': '.$data_kunjungan->nama_pegawai, 0, 1);
+
+        $this->cellBilingual($pdf,'No Registrasi','Registration Number',$data_kunjungan->no_registrasi);
+        $this->cellBilingual($pdf,'No. MR','Medical Record Number',$data_kunjungan->no_mr);
+        $this->cellBilingual($pdf,'Nama Pasien','Patient Name',$data_pasien->nama_pasien);
+        $this->cellBilingual($pdf,'Umur','Age',$data_pasien->umur_lengkap);
+        $this->cellBilingual($pdf,'Tanggal MCU','Examination Date',date('d/m/Y', strtotime($data_kunjungan->tgl_jam_poli)));
+        $this->cellBilingual($pdf,'Dokter Pemeriksa','Examining Physician',$data_kunjungan->nama_pegawai);
 
         // Garis bawah
         // $pdf->Ln(20);
@@ -1336,6 +1334,21 @@ class Pl_pelayanan_mcu extends MX_Controller {
         }
         
     }
+
+    function cellBilingual($pdf, $labelId, $labelEn, $value){
+        // Indonesia
+        $pdf->SetFont('helvetica','',10);
+        $pdf->Cell(60,5,$labelId,0,0);
+        $pdf->Cell(0,5,': '.$value,0,1);
+
+        // English (italic)
+        $pdf->SetFont('helvetica','I',9);
+        $pdf->Cell(60,4,$labelEn,0,1);
+
+        // balik normal
+        $pdf->SetFont('helvetica','',10);
+    }
+
 
 
 }

@@ -55,7 +55,7 @@ class Log_proses_resep_obat extends MX_Controller {
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
         );
         $max_layan = (isset($_GET['max_layan']) && is_numeric($_GET['max_layan'])) ? (int)$_GET['max_layan'] : 45;
-        
+        // echo "<pre>"; print_r($list); die;
         foreach ($list as $row_list) {
             $no++;
             // $flag = $this->regex->_genRegex($row_list->no_resep, 'RQXAZ');
@@ -84,9 +84,12 @@ class Log_proses_resep_obat extends MX_Controller {
 
             $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=1'".')">'.$row_list->kode_trans_far.'</a></b><br>['.$bagian_asal.']</div>';
 
+            $color = ($row_list->kode_perusahaan == 120) ? 'green' : 'blue';
+
             // $row[] = '<div class="center">'.$row_list->no_resep.'</div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</div>';
-            $row[] = $row_list->no_mr.' - '.strtoupper($row_list->nama_pasien);
+            $row[] = '<div style="background-color:'.$color.'; color: white; font-weight: bold; padding: 5px">'.$row_list->no_mr.' <br>'.strtoupper($row_list->nama_pasien).'</div>';
+
             $jenis_resep = ($row_list->jenis_resep == 'racikan')?'<span style="font-weight: bold; color: red">Racikan</span>':'<span style="font-weight: bold; color: blue">Non Racikan</span>';
             $row[] = '<div class="center">'.$jenis_resep.'</div>';
             $row[] = ($row_list->log_time_1 == null) ? '<div class="center"><a href="#" class="btn btn-sm btn-primary" onclick="exc_process('.$row_list->kode_trans_far.', 1, '."'".$row_list->jenis_resep."'".')"> <i class="fa fa-check-circle"></i> Selesai </a></div>' : '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->log_time_1).'</div>';

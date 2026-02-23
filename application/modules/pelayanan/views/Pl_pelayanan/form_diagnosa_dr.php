@@ -1152,11 +1152,11 @@ audio, canvas, progress, video {
     <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
     
     <label for="form-field-8">
-        <label><input type="checkbox" class="ace" name="checklist_status_lokaslis" id="checklist_status_lokaslis" <?php echo($riwayat->anatomi_tagging != null)?'checked':''?> ><span class="lbl"> <b>Status Lokalis</b></span></label>
+        <label><input type="checkbox" class="ace" name="checklist_status_lokaslis" id="checklist_status_lokaslis" <?php echo(isset($riwayat->anatomi_tagging) && $riwayat->anatomi_tagging != null)?'checked':''?> ><span class="lbl"> <b>Status Lokalis</b></span></label>
          <br><span style="font-size: 11px; font-style: italic">(Mohon di<i>tagging</i> status lokalis pada gambar anatomi tubuh pasien)</span>
     </label>
     <!-- status lokalis -->
-    <div id="form_status_lokalis" <?php echo($riwayat->anatomi_tagging != null)?'':'style="display: none;"'?>>
+    <div id="form_status_lokalis" <?php echo(isset($riwayat->anatomi_tagging) && $riwayat->anatomi_tagging != null)?'':'style="display: none;"'?>>
         <div class="form-group">
             <label class="control-label col-sm-2">Anatomi</label>
             <div class="col-md-4">
@@ -1284,7 +1284,7 @@ audio, canvas, progress, video {
 <div class="form-group">
     <label class="control-label col-sm-3" for="">Pasca Pulang</label>
     <div class="col-sm-4">
-        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), ($riwayat->pasca_pulang) ? $riwayat->pasca_pulang : 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), (isset($riwayat->pasca_pulang) && $riwayat->pasca_pulang) ? $riwayat->pasca_pulang : 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
     </div>
 </div>
 

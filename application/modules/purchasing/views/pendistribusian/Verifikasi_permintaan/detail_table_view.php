@@ -175,7 +175,9 @@
           $txt = ($dt_detail_brg[0]->status_acc == 1) ? 'Disetujui' : 'Ditolak';
           $clr = ($dt_detail_brg[0]->status_acc == 1) ? 'success' : 'danger';
       ?>
-        <div class="alert alert-<?php echo $clr;?>"><strong style="font-weight: bold; font-size: 14px">Permintaan <?php echo $txt; ?></strong><br>Permintaan ini telah disetujui dan tidak dapat diubah kembali.</div>
+        <div class="alert alert-<?php echo $clr;?>"><strong style="font-weight: bold; font-size: 14px">Permintaan <?php echo $txt; ?></strong><br>Permintaan ini telah disetujui. 
+          <button type="button" class="btn btn-xs btn-warning" onclick="rollbackApproval(<?php echo $id; ?>,'<?php echo $_GET['flag']?>')"><i class="fa fa-undo"></i> Rollback</button>
+        </div>
       <?php endif; ?>
 
     <!-- PAGE rasio ENDS -->

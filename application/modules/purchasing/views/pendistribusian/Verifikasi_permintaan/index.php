@@ -53,6 +53,38 @@
 
   }
 
+  // Fungsi Rollback Approval
+  function rollbackApproval(id, flag) {
+    if (confirm('Apakah Anda yakin ingin melakukan rollback approval?\nStatus verifikasi akan dikembalikan ke belum diverifikasi.')) {
+      $.ajax({
+        url: '<?php echo base_url(); ?>purchasing/pendistribusian/Verifikasi_permintaan/rollback',
+        type: 'POST',
+        data: {
+          id: id,
+          flag: flag
+        },
+        dataType: 'json',
+        beforeSend: function() {
+          achtungShowLoader();
+        },
+        success: function(response) {
+          achtungHideLoader();
+          if (response.status == 200) {
+            alert(response.message);
+            // Reload datatable
+            $('#dynamic-table').DataTable().ajax.reload();
+          } else {
+            alert('Error: ' + response.message);
+          }
+        },
+        error: function() {
+          achtungHideLoader();
+          alert('Terjadi kesalahan saat melakukan rollback');
+        }
+      });
+    }
+  }
+
 </script>
 <div class="page-header">
   <h1>

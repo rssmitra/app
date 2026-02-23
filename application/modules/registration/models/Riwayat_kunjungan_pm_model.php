@@ -7,7 +7,7 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 	var $column = array('tc_kunjungan.no_kunjungan','tc_kunjungan.no_mr');
 	var $select = 'tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan, pm_tc_penunjang.status_batal';
 
-	var $order = array('pm_tc_penunjang.kode_penunjang' => 'desc');
+	var $order = array('pen.kode_penunjang' => 'desc');
 
 	public function __construct()
 	{
@@ -15,77 +15,98 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 		$this->load->database();
 	}
 
-	private function _main_query(){
-		$this->db->select($this->select);
-		$this->db->from($this->table);
-		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
-		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
-		$this->db->join('mt_bagian as asal','asal.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
-		$this->db->join('mt_bagian as tujuan','tujuan.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
-		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left');
-	
-		/*default*/
-		if( $_GET ) {
+	private function _main_query()
+	{
+		/*
+		 * Subquery pm_tc_penunjang: filter status_daftar dulu SEBELUM join
+		 * agar optimizer tidak perlu scan seluruh tabel penunjang.
+		 * Alias kolom disesuaikan agar tidak ambigu dengan tc_kunjungan.
+		 */
+		$penunjang_sub = $this->db
+			->select('no_kunjungan, status_isihasil, kode_penunjang, flag_mcu, status_daftar, status_batal')
+			->from('pm_tc_penunjang')
+			->where('status_daftar IS NOT NULL AND status_daftar > 0', NULL, FALSE)
+			->get_compiled_select();
 
-			if( (isset($_GET['keyword']) AND $_GET['keyword']!='')  ){
-				if(isset($_GET['search_by']) AND $_GET['keyword'] != ''){
-					if($_GET['search_by']=='no_mr' ){
-						$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+		$this->db->select("
+			tc_kunjungan.no_kunjungan, tc_kunjungan.no_mr, tc_kunjungan.no_registrasi,
+			mt_karyawan.nama_pegawai   AS dokter,
+			asal.nama_bagian           AS asal_bagian,
+			tujuan.nama_bagian         AS tujuan_bagian,
+			mt_master_pasien.nama_pasien,
+			tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,
+			pen.status_isihasil, pen.kode_penunjang, pen.flag_mcu, pen.status_daftar,
+			tc_kunjungan.kode_bagian_tujuan, pen.status_batal
+		", FALSE);
+
+		$this->db->from($this->table);
+		// INNER JOIN subquery — filter penunjang dulu, baru join ke kunjungan
+		$this->db->join("($penunjang_sub) pen", 'pen.no_kunjungan = tc_kunjungan.no_kunjungan', 'inner', FALSE);
+		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr = tc_kunjungan.no_mr', 'left');
+		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter = tc_kunjungan.kode_dokter', 'left');
+		$this->db->join('mt_bagian as asal', 'asal.kode_bagian = tc_kunjungan.kode_bagian_asal', 'left');
+		$this->db->join('mt_bagian as tujuan', 'tujuan.kode_bagian = tc_kunjungan.kode_bagian_tujuan', 'left');
+
+		/*default*/
+		if ($_GET) {
+
+			if (isset($_GET['keyword']) AND $_GET['keyword'] != '') {
+				if (isset($_GET['search_by']) AND $_GET['keyword'] != '') {
+					if ($_GET['search_by'] == 'no_mr') {
+						$this->db->where('mt_master_pasien.' . $_GET['search_by'], $_GET['keyword']);
 					}
-			
-					if($_GET['search_by']=='nama_pasien'  ){
-						$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					if ($_GET['search_by'] == 'nama_pasien') {
+						$this->db->like('mt_master_pasien.' . $_GET['search_by'], $_GET['keyword']);
 					}
-	
 				}
 			}
 
 			if (isset($_GET['bulan']) AND $_GET['bulan'] != 0) {
-	            $this->db->where('MONTH(tgl_masuk)='.$_GET['bulan'].'');	
-	        }
+				$this->db->where('MONTH(tc_kunjungan.tgl_masuk)=' . intval($_GET['bulan']));
+			}
 
-	        if (isset($_GET['tahun']) AND $_GET['tahun'] != 0) {
-	            $this->db->where('YEAR(tgl_masuk)='.$_GET['tahun'].'');	
-	        }
+			if (isset($_GET['tahun']) AND $_GET['tahun'] != 0) {
+				$this->db->where('YEAR(tc_kunjungan.tgl_masuk)=' . intval($_GET['tahun']));
+			}
 
-	        if (isset($_GET['bagian_asal']) AND $_GET['bagian_asal'] != '') {
-	            $this->db->where('kode_bagian_asal', $_GET['bagian_asal']);	
-	        }
+			if (isset($_GET['bagian_asal']) AND $_GET['bagian_asal'] != '') {
+				$this->db->where('tc_kunjungan.kode_bagian_asal', $_GET['bagian_asal']);
+			}
 
-	        if (isset($_GET['dokter']) AND $_GET['dokter'] != 0) {
-	            $this->db->where('tc_kunjungan.kode_dokter', $_GET['dokter']);	
-	        }
+			if (isset($_GET['dokter']) AND $_GET['dokter'] != 0) {
+				$this->db->where('tc_kunjungan.kode_dokter', $_GET['dokter']);
+			}
 
-	        if (isset($_GET['bagian_tujuan']) AND $_GET['bagian_tujuan'] != '') {
-				$this->db->where('kode_bagian_tujuan', $_GET['bagian_tujuan']);	
-				
-				if( (!isset($_GET['bulan'])) OR (!isset($_GET['tahun'])) OR ( (!isset($_GET['from_tgl'])) AND (!isset($_GET['to_tgl'])) )){
-					$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 0');	
-					// $this->db->where('DAY(tgl_masuk)='.date('d').'');	
-					// $this->db->where('MONTH(tgl_masuk)='.date('m').'');	
-					// $this->db->where('YEAR(tgl_masuk)='.date('Y').'');
+			if (isset($_GET['bagian_tujuan']) AND $_GET['bagian_tujuan'] != '') {
+				$this->db->where('tc_kunjungan.kode_bagian_tujuan', $_GET['bagian_tujuan']);
+
+				// Default: tampilkan hari ini jika tidak ada filter tanggal
+				if ((!isset($_GET['bulan'])) OR (!isset($_GET['tahun'])) OR ((!isset($_GET['from_tgl'])) AND (!isset($_GET['to_tgl'])))) {
+					// Sargable — index pada tgl_masuk bisa digunakan (vs DATEDIFF pada kolom)
+					$this->db->where("tc_kunjungan.tgl_masuk >= CAST(GETDATE() AS DATE) AND tc_kunjungan.tgl_masuk < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))", NULL, FALSE);
 				}
 
-				if( (isset($_GET['bulan']) AND $_GET['bulan'] == 0) AND (isset($_GET['tahun']) AND $_GET['tahun']== 0) AND ( (isset($_GET['from_tgl']) AND $_GET['from_tgl']=='') AND (isset($_GET['to_tgl']) AND $_GET['to_tgl']=='') )){
-					if(isset($_GET['search_by']) AND $_GET['keyword'] == ''){
-						$this->db->where('MONTH(tgl_masuk)='.date('m').'');	
-						$this->db->where('YEAR(tgl_masuk)='.date('Y').'');
+				if ((isset($_GET['bulan']) AND $_GET['bulan'] == 0) AND (isset($_GET['tahun']) AND $_GET['tahun'] == 0)
+					AND ((isset($_GET['from_tgl']) AND $_GET['from_tgl'] == '') AND (isset($_GET['to_tgl']) AND $_GET['to_tgl'] == ''))) {
+					if (isset($_GET['search_by']) AND $_GET['keyword'] == '') {
+						$this->db->where('MONTH(tc_kunjungan.tgl_masuk)=' . intval(date('m')));
+						$this->db->where('YEAR(tc_kunjungan.tgl_masuk)=' . intval(date('Y')));
 					}
-				}	
-	        }
+				}
+			}
 
 			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-				$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
-	        }
+				$from = $this->db->escape($_GET['from_tgl'] . ' 00:00:00');
+				$to   = $this->db->escape($_GET['to_tgl'] . ' 23:59:59');
+				$this->db->where("tc_kunjungan.tgl_masuk BETWEEN $from AND $to");
+			}
 
-		}else{
-			$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 0');	
+		} else {
+			// Sargable — index pada tgl_masuk bisa digunakan
+			$this->db->where("tc_kunjungan.tgl_masuk >= CAST(GETDATE() AS DATE) AND tc_kunjungan.tgl_masuk < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))", NULL, FALSE);
 		}
 
-		$this->db->where("(pm_tc_penunjang.status_daftar is not null or pm_tc_penunjang.status_daftar != 0 )");
-
 		/*end parameter*/
-		
 	}
 
 	private function _get_datatables_query()
@@ -153,14 +174,36 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 	function count_filtered()
 	{
 		$this->_get_datatables_query();
-		$query = $this->db->get();
-		return $query->num_rows();
+		return $this->db->count_all_results();
 	}
 
 	public function count_all()
 	{
 		$this->_main_query();
 		return $this->db->count_all_results();
+	}
+
+	/**
+	 * Batch check transaksi kasir untuk semua kunjungan sekaligus.
+	 * Menghindari N+1 query pada looping get_data().
+	 * Mengembalikan array asosiatif: key = "no_registrasi_no_kunjungan" => true (lunas)
+	 */
+	public function get_trans_kasir_batch(array $no_kunjungan_list, $kode_bagian)
+	{
+		if (empty($no_kunjungan_list) || empty($kode_bagian)) return [];
+
+		$this->db->select('tc_trans_kasir.no_registrasi, tc_trans_pelayanan.no_kunjungan');
+		$this->db->from('tc_trans_kasir');
+		$this->db->join('tc_trans_pelayanan', 'tc_trans_kasir.kode_tc_trans_kasir=tc_trans_pelayanan.kode_tc_trans_kasir', 'left');
+		$this->db->where_in('tc_trans_pelayanan.no_kunjungan', $no_kunjungan_list);
+		$this->db->where('kode_bagian', $kode_bagian);
+		$rows = $this->db->get()->result();
+
+		$map = [];
+		foreach ($rows as $row) {
+			$map[$row->no_registrasi . '_' . $row->no_kunjungan] = true;
+		}
+		return $map;
 	}
 
 	public function cek_transaksi_kasir($no_registrasi, $no_kunjungan){
@@ -232,8 +275,8 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
 		$this->db->join('mt_bagian as asal','asal.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
 		$this->db->join('mt_bagian as tujuan','tujuan.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
-		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left');
-	
+		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','inner');
+
 		/*default*/
 		if( $_GET ) {
 
@@ -242,43 +285,45 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 					if($_GET['search_by']=='no_mr' ){
 						$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 					}
-			
+
 					if($_GET['search_by']=='nama_pasien'  ){
 						$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 					}
-	
+
 				}
 			}
 
 			if (isset($_GET['bulan']) AND $_GET['bulan'] != 0) {
-	            $this->db->where('MONTH(tgl_masuk)='.$_GET['bulan'].'');	
+	            $this->db->where('MONTH(tgl_masuk)='.intval($_GET['bulan']).'');
 	        }
 
 	        if (isset($_GET['tahun']) AND $_GET['tahun'] != 0) {
-	            $this->db->where('YEAR(tgl_masuk)='.$_GET['tahun'].'');	
+	            $this->db->where('YEAR(tgl_masuk)='.intval($_GET['tahun']).'');
 	        }
 
 	        if (isset($_GET['bagian_asal']) AND $_GET['bagian_asal'] != '') {
-	            $this->db->where('kode_bagian_asal', $_GET['bagian_asal']);	
+	            $this->db->where('kode_bagian_asal', $_GET['bagian_asal']);
 	        }
 
 	        if (isset($_GET['dokter']) AND $_GET['dokter'] != 0) {
-	            $this->db->where('tc_kunjungan.kode_dokter', $_GET['dokter']);	
+	            $this->db->where('tc_kunjungan.kode_dokter', $_GET['dokter']);
 	        }
 
 	        if (isset($_GET['bagian_tujuan']) AND $_GET['bagian_tujuan'] != '') {
-				$this->db->where('kode_bagian_tujuan', $_GET['bagian_tujuan']);	
-				
+				$this->db->where('kode_bagian_tujuan', $_GET['bagian_tujuan']);
+
 				if( (isset($_GET['bulan']) AND $_GET['bulan'] == 0) AND (isset($_GET['tahun']) AND $_GET['tahun']== 0) AND ( (isset($_GET['from_tgl']) AND $_GET['from_tgl']=='') AND (isset($_GET['to_tgl']) AND $_GET['to_tgl']=='') )){
 					if(isset($_GET['search_by']) AND $_GET['keyword'] == ''){
-						$this->db->where('MONTH(tgl_masuk)='.date('m').'');	
-						$this->db->where('YEAR(tgl_masuk)='.date('Y').'');
+						$this->db->where('MONTH(tgl_masuk)='.intval(date('m')).'');
+						$this->db->where('YEAR(tgl_masuk)='.intval(date('Y')).'');
 					}
-				}	
+				}
 	        }
 
 			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-				$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+				$from = $this->db->escape($_GET['from_tgl'].' 00:00:00');
+				$to   = $this->db->escape($_GET['to_tgl'].' 23:59:59');
+				$this->db->where("tc_kunjungan.tgl_masuk BETWEEN $from AND $to");
 	        }
 
 		}
@@ -296,8 +341,7 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 	function count_filtered_by_mr()
 	{
 		$this->_get_datatables_query_by_mr();
-		$query = $this->db->get();
-		return $query->num_rows();
+		return $this->db->count_all_results();
 	}
 
 	public function count_all_by_mr()

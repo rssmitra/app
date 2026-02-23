@@ -3,7 +3,7 @@
   function checkAll(elm) {
 
     if($(elm).prop("checked") == true){
-      $('.checkbox_brg_<?php echo $flag?>_<?php echo $id?>').each(function(){
+      $('.checkbox_brg_<?php echo $flag?>_<?php echo $id?>:not(:disabled)').each(function(){
         var kode_brg = $(this).val();
         var jml_permohonan = $('#jml_permohonan_hidden_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val();
         var jml_pemeriksa = $('#jml_acc_pemeriksa_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val();
@@ -13,7 +13,7 @@
       });
     }else{
       $('.checkbox_brg_<?php echo $flag?>_<?php echo $id?>').prop("checked", false);
-      $('.checkbox_brg_<?php echo $flag?>_<?php echo $id?>').each(function(){
+      $('.checkbox_brg_<?php echo $flag?>_<?php echo $id?>:not(:disabled)').each(function(){
         var kode_brg = $(this).val();
         $('#form_input_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val( '' );
       });
@@ -40,16 +40,21 @@
   }
 
   function approve(field, id, app, flag){
-    var selected_data = $("#table-rincian-barang input:checkbox:checked").map(function(){
+    var selected_data = $("#table-rincian-barang input:checkbox:checked:not(:disabled)").map(function(){
       return $(this).val();
     }).toArray();
-    var input_data = $("#table-rincian-barang input[type=number]").map(function(){
+    
+    var permohonan_det_ids = $("#table-rincian-barang input:checkbox:checked:not(:disabled)").map(function(){
+      return $(this).attr('data-id');
+    }).toArray();
+    
+    var input_data = $("#table-rincian-barang input[type=number]:not(:disabled)").map(function(){
       if( $(this).val() != 0 ){
         return $(this).val();
       }
     }).toArray();
 
-    var is_free_text = $("#table-rincian-barang .is_free_text").map(function(){
+    var is_free_text = $("#table-rincian-barang .is_free_text:not(:disabled)").map(function(){
       if( $(this).val() != 0 ){
         return $(this).val();
       }
@@ -68,6 +73,7 @@
             data: {
                     id_tc_permohonan : $('#id_tc_permohonan').val(), 
                     selected : selected_data, 
+                    permohonan_det_ids : permohonan_det_ids,
                     acc_value : input_data, 
                     approval_by : $('#'+field).val(),
                     verifikator : field,
@@ -298,6 +304,25 @@
           <tbody id="table-rincian-barang">
           <?php 
             $no=0; 
+            
+            // Hitung jumlah kemunculan setiap kode barang dan track index pertama
+            $kode_count = array();
+            $kode_first_index = array();
+            $current_index = 0;
+            
+            foreach($dt_detail_brg as $row) {
+              $row = (object)$row;
+              $kode = isset($row->kode_brg) ? $row->kode_brg : $row->id;
+              
+              if (!isset($kode_count[$kode])) {
+                $kode_count[$kode] = 0;
+                $kode_first_index[$kode] = $current_index;
+              }
+              $kode_count[$kode]++;
+              $current_index++;
+            }
+            
+            $loop_index = 0;
             foreach($dt_detail_brg as $row_dt) : 
             $no++;
             $row_dt = (object)$row_dt;
@@ -306,24 +331,54 @@
             $jumlah_stok = isset($row_dt->jumlah_stok_sebelumnya) ? $row_dt->jumlah_stok_sebelumnya : 0; 
             $satuan = isset($row_dt->satuan_kecil) ? $row_dt->satuan_kecil : $row_dt->satuan_besar;
             $rasio = isset($row_dt->rasio) ? $row_dt->rasio : 1;
+            
+            // Cek apakah kode barang ini duplikat dan bukan kemunculan pertama
+            $is_duplicate = isset($kode_count[$ex_kode_brg]) && $kode_count[$ex_kode_brg] > 1;
+            $is_first_occurrence = ($loop_index === $kode_first_index[$ex_kode_brg]);
+            $should_disable_duplicate = ($is_duplicate && !$is_first_occurrence);
+            
+            // Logic disable berdasarkan pemeriksaan:
+            // 1. Jika tgl_pemeriksa & tgl_penyetuju masih null → AKTIF
+            // 2. Jika tgl_pemeriksa != null tapi jml_pemeriksa 0 atau null → DISABLED
+            // 3. Selain itu → AKTIF
+            $jml_acc_pemeriksa = isset($row_dt->jml_acc_pemeriksa) ? $row_dt->jml_acc_pemeriksa : null;
+            $tgl_pemeriksa = isset($row_dt->tgl_pemeriksa) ? $row_dt->tgl_pemeriksa : null;
+            
+            // Disable jika sudah ada pemeriksaan (tgl_pemeriksa != null) tapi jumlah pemeriksaan 0 atau null
+            $should_disable_reviewed = (!empty($tgl_pemeriksa) && ($jml_acc_pemeriksa == 0 || $jml_acc_pemeriksa == null)) ? true : false;
+            
+            $should_disable = ($should_disable_duplicate || $should_disable_reviewed);
+            $duplicate_label = ($is_duplicate && isset($row_dt->kode_brg)) ? '<span class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Duplikat</span>' : '';
+            $review_label = ($should_disable_reviewed) ? '<span class="label label-danger"><i class="fa fa-ban"></i> Ditolak</span>' : '';
+            $disabled_attr = $should_disable ? 'disabled' : '';
+            $disabled_class = $should_disable ? 'style="opacity: 0.5; background-color: #f5f5f5;"' : '';
+            
+            // Tentukan message tooltip
+            $tooltip_msg = '';
+            if($should_disable_duplicate) {
+              $tooltip_msg = 'Baris ini di-disable karena duplikat';
+            } elseif($should_disable_reviewed) {
+              $tooltip_msg = 'Baris ini di-disable, barang di-reject oleh pemeriksa';
+            }
+
 
             ?>
-            <tr>
+            <tr <?php echo $disabled_class; ?>>
               <td class="center">
                 <?php if(isset($row_dt->id_tc_permohonan_det)) : ?>
                   <?php if($row_dt->status_po == NULL) : ?>
-                    <input type="checkbox" class="checkbox_brg_<?php echo $flag?>_<?php echo $id?>" id="checkbox_brg_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" class="form-control" value="<?php echo $row_dt->kode_brg?>" onClick="checkOne(this);" style="cursor:pointer">
+                    <input type="checkbox" class="checkbox_brg_<?php echo $flag?>_<?php echo $id?>" id="checkbox_brg_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" class="form-control" value="<?php echo $row_dt->kode_brg?>" data-id="<?php echo $row_dt->id_tc_permohonan_det; ?>" onClick="checkOne(this);" style="cursor:pointer" <?php echo $disabled_attr; ?> title="<?php echo $tooltip_msg; ?>">
                   <?php 
                     else: 
                       echo '<i class="fa fa-check-circle bigger-150 green"></i>';
                     endif;
                   ?>
                 <?php else:?>
-                  <input type="checkbox" class="checkbox_brg_<?php echo $flag?>_<?php echo $id?>" id="checkbox_brg_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->id?>" class="form-control" value="<?php echo $row_dt->id?>" onClick="checkOne(this);" style="cursor:pointer">
+                  <input type="checkbox" class="checkbox_brg_<?php echo $flag?>_<?php echo $id?>" id="checkbox_brg_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->id?>" class="form-control" value="<?php echo $row_dt->id?>" data-id="<?php echo $row_dt->id; ?>" onClick="checkOne(this);" style="cursor:pointer" <?php echo $disabled_attr; ?> title="<?php echo $tooltip_msg; ?>">
                 <?php endif;?>
               </td>
               <td class="center"><?php echo $no?></td>
-              <td><?php echo $kode_brg?></td>
+              <td><?php echo $kode_brg; echo $duplicate_label; echo $review_label; ?></td>
               <td><?php echo $row_dt->nama_brg?></td>
               <td class="center"><?php echo $jumlah_stok.' '.$satuan?></td>
               <td class="center" id="jml_permohonan_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>">
@@ -338,7 +393,7 @@
                       echo '<input type="hidden" id="jml_acc_pemeriksa_'.$flag.'_'.$id.'_'.$ex_kode_brg.'" value="'.$row_dt->jml_acc_pemeriksa.'">';
                     }
                 ?>
-                  <input type="number" name="jml_acc[<?php echo $ex_kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center">
+                  <input type="number" name="jml_acc[<?php echo $ex_kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center" <?php echo $disabled_attr; ?> title="<?php echo $tooltip_msg; ?>">
                   <input type="hidden" class="is_free_text" name="is_free_text[<?php echo $ex_kode_brg?>]" id="is_free_text<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center" value="N">
                 <?php 
                   else:
@@ -346,7 +401,7 @@
                   endif;
                   ?>
                 <?php else: ?>
-                  <input type="number" name="jml_acc[<?php echo $ex_kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center">
+                  <input type="number" name="jml_acc[<?php echo $ex_kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center" <?php echo $disabled_attr; ?> title="<?php echo $tooltip_msg; ?>">
                   <input type="hidden" class="is_free_text" name="is_free_text[<?php echo $ex_kode_brg?>]" id="is_free_text<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center" value="Y">
                 <?php endif; ?>
 
@@ -355,6 +410,7 @@
               <td class="center"><?php echo $rasio?></td>
               <td class="center"><?php echo $row_dt->keterangan?></td>
             </tr>
+            <?php $loop_index++; ?>
           <?php endforeach;?>
           </tbody>
         </table>

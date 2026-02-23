@@ -1411,7 +1411,7 @@ class Templates extends MX_Controller {
     
                 $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
                         <tr>
-                            <td colspan="2" align="center"><b>HASIL PEMERIKSAAN RADIOLOGI</b></td>
+                            <td colspan="2" align="center"><b>HASIL PEMERIKSAAN RADIOLOGI</b><br><span style="font-style:italic">Radiology Examination Report</span></td>
                         </tr> 
                         ';
     
@@ -1458,7 +1458,7 @@ class Templates extends MX_Controller {
                 // echo '<pre>';print_r($pm_data);die;
                 $html .= '<br><table cellpadding="0" cellspacing="0" border="1" style="font-size:38px">
                         <tr>
-                            <td colspan="5" align="center"><b>HASIL PEMERIKSAAN LABORATORIUM</b></td>
+                            <td colspan="5" align="center" style="text-align:center"><b>HASIL PEMERIKSAAN LABORATORIUM</b><br><span style="font-style:italic">Laboratory Examination Report</span></td>
                         </tr> 
                         <tr>                        
                             <th align="center" width=200px"><b>JENIS TEST</b></th>
@@ -1633,7 +1633,7 @@ class Templates extends MX_Controller {
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
                     <tr>
-                        <td colspan="3" align="center"><br><b>HASIL PEMERIKSAAN RADIOLOGI</b><br><hr></td>
+                        <td colspan="3" align="center"><br><b>HASIL PEMERIKSAAN RADIOLOGI</b><br><span style="font-style:italic">Radiology Examination Report</span><hr></td>
                     </tr> 
                     ';
             
@@ -1643,18 +1643,18 @@ class Templates extends MX_Controller {
                     //$no++;
                     $html .= '      
                             <tr>
-                                <th width="100px"><b>Pemeriksaan</b> </th>
+                                <th width="100px"><b>Pemeriksaan</b><br><span style="font-style:italic">Examination</span> </th>
                                 <td width="10px" valign="top">:</td>
                                 <th width="550px">'.$name.'</th>
                             </tr>
                             <hr>
                             <tr>
-                                <td valign="top" width="100px"><b>Hasil</b> </td>
+                                <td valign="top" width="100px"><b>Hasil</b><br><span style="font-style:italic">Result</span> </td>
                                 <td width="10px" valign="top">:</td>
                                 <td>'.nl2br($value->hasil).'</td>
                             </tr>
                             <tr>
-                                <td valign="top" width="100px"><b>Kesan</b> </td>
+                                <td valign="top" width="100px"><b>Kesan</b><br><span style="font-style:italic">Impression</span> </td>
                                 <td width="10px" valign="top">:</td>
                                 <td>'.nl2br($value->keterangan).'</td>
                             </tr>';
@@ -1664,7 +1664,7 @@ class Templates extends MX_Controller {
             }
             
             $html .= '<hr><tr>
-                        <td valign="top" width="100px"><b>Catatan</b> </td>
+                        <td valign="top" width="100px"><b>Catatan</b><br><span style="font-style:italic">Notes</span> </td>
                         <td width="10px" valign="top">:</td>
                         <td>'.trim($data_pm->catatan_hasil).'</td>
                     </tr>';
@@ -1686,21 +1686,21 @@ class Templates extends MX_Controller {
             
             $html .= '<br><br>';
             if(isset($_GET['format']) && $_GET['format'] == 'html'){
-                $html .= '<center><span style="text-align: center; font-size: 42px;"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span></center>';
+                $html .= '<center><span style="text-align: center; font-size: 42px"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span><br><span style="font-style:italic">Laboratory Examination Report</span></center>';
             }else{
                 if($flag_mcu  == ''){
-                    $html .= '<center><span style="text-align: center; font-size: 42px"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span></center>';
+                    $html .= '<center><span style="text-align: center; font-size: 42px"><b>HASIL PEMERIKSAAN LABORATORIUM</b><br><span style="font-style:italic">Laboratory Examination Report</span></span></center>';
                 }
                 $html .= '<br><br><hr>';
             }
             
             $html .= '<table border="0" style="font-size:36px;">
                     <tr style="border-bottom: 1px solid black; border-top: 1px solid black;">                        
-                        <th valign="bottom" align="left" class="left" width="200px"><b>JENIS TEST</b></th>
-                        <th valign="bottom" align="center" class="center" width="100px"><b>HASIL</b></th>
-                        <th valign="bottom" align="center" class="center" width="110px"><b>NILAI STANDAR</b></th>
-                        <th valign="bottom" align="center" class="center" width="110px"><b>SATUAN</b></th>
-                        <th valign="bottom" align="left" width="153px"><b>KETERANGAN</b></th>
+                        <th valign="bottom" align="left" class="left" width="200px"><b>JENIS TEST</b><br><span style="font-style:italic">Test Categories</span></th>
+                        <th valign="bottom" align="center" class="center" width="100px"><b>HASIL</b><br><span style="font-style:italic">Result</span></th>
+                        <th valign="bottom" align="center" class="center" width="110px"><b>NILAI STANDAR</b><br><span style="font-style:italic">Reference Values</span></th>
+                        <th valign="bottom" align="center" class="center" width="110px"><b>SATUAN</b><br><span style="font-style:italic">Units</span></th>
+                        <th valign="bottom" align="left" width="153px"><b>KETERANGAN</b><br><span style="font-style:italic">Remarks</span></th>
                     </tr>
                     <hr>';
             $no=0;
@@ -1784,7 +1784,7 @@ class Templates extends MX_Controller {
             }
             
             $html .= '</table><br><br><hr>';
-            $html .= '<b><span style="font-size:38px; padding-top: 10px">Catatan : </span></b>
+            $html .= '<b><span style="font-size:38px; padding-top: 10px">Catatan : <br><span style="font-style:italic">Notes</span></span></b>
                 <p style="text-align: justify">'.trim($data_pm->catatan_hasil).'</p>
             <br><br><div style="border-bottom:0.6px dotted black"></div>';
         }
@@ -1830,7 +1830,7 @@ class Templates extends MX_Controller {
                 $html .= '<tr> 
                             <td align="left" width="60%" style="font-size: 32px">
                             <br><br>                        
-                            Penanggung Jawab : <br>&nbsp;&nbsp;'.$nm_dokter.'
+                            Penanggung Jawab <i>(Laboratory Medical Director)</i> : <br>&nbsp;&nbsp;'.$nm_dokter.'
                             </td>
                             <td align="center" width="10%">&nbsp;</td>';
 
@@ -1843,6 +1843,7 @@ class Templates extends MX_Controller {
                                 '.$img.'
                                 <br/>
                                 '.$petugas.'
+                                <br><span style="font-style:italic; font-size:0.9em">Head of Laboratory Department</span>
                                 <br>
                             </td>';
                 
@@ -2019,7 +2020,7 @@ class Templates extends MX_Controller {
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
-                            <td width="100px">No. RM</td>
+                            <td width="100px">No. RM <br><span style="font-style:italic; font-size: 10px">Medical Record Number</span></td>
                             <td width="250px">: '.$data->reg_data->no_mr.'</td>
                             <td width="150px">No. Penunjang</td>
                             <td width="250px">: '.$pm.'</td>
@@ -2060,33 +2061,33 @@ class Templates extends MX_Controller {
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
-                            <td width="150px">No. Penunjang</td>
+                            <td width="150px">No. Penunjang <br><span style="font-style:italic; font-size: 0.7em">(Order Number)</span></td>
                             <td width="250px">: '.$pm_.'</td>
-                            <td width="100px">No. RM</td>
+                            <td width="100px">No. RM <br><span style="font-style:italic; font-size: 0.6em">(Medical Record Number)</span></td>
                             <td width="200px">: '.$no_mr.'</td>
                         </tr>
                         <tr>
-                            <td width="150px">Dokter Pengirim</td>
+                            <td width="150px">Dokter Pengirim <br><span style="font-style:italic; font-size: 0.7em">(Referring Doctor)</span></td>
                             <td width="250px">: '.$dokter_pengirim.'</td>
-                            <td width="100px" align="left">Nama Pasien</td>
+                            <td width="100px" align="left">Nama Pasien <br><span style="font-style:italic; font-size: 0.7em">(Patient Name)</span></td>
                             <td width="200px">: '.$nama_pasien.'</td>
                         </tr>
                         <tr>
-                            <td width="150px">Tanggal Pendaftaran</td>
+                            <td width="150px">Tanggal Pendaftaran <br><span style="font-style:italic; font-size: 0.7em">(Registration Date)</span></td>
                             <td align="left" width="250px">: '.$tgl_daftar.'</td>
-                            <td width="100px">Umur</td>
+                            <td width="100px">Umur <br><span style="font-style:italic; font-size: 0.7em">(Age)</span></td>
                             <td width="200px">: '.$umur.' </td>     
                         </tr>
 
                         <tr>
-                            <td width="150px">Tanggal Pemeriksaan</td>
+                            <td width="150px">Tanggal Pemeriksaan <br><span style="font-style:italic; font-size: 0.7em">(Examination Date)</span></td>
                             <td width="250px">: '.$tgl_periksa.'</td>
-                            <td width="100px">Jenis Kelamin</td>
+                            <td width="100px">Jenis Kelamin <br><span style="font-style:italic; font-size: 0.7em">(Gender)</span></td>
                             <td width="200px">: '.$jk_.'</td>
                         </tr>    
                         
                         <tr>
-                        <td width="150px">Ruangan / Kelas</td>
+                        <td width="150px">Ruangan / Kelas <br><span style="font-style:italic; font-size: 0.7em">(Room/ Class</span></td>
                         <td width="250px" colspan="3">: '.ucwords($data_pm->nama_bagian).' / '.$data_pm->nama_klas.'</td>
                       
                         </tr>    

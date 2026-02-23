@@ -2,10 +2,10 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: $('#idx_cppt').val()} , function (response) {    
+  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: $('#idx_cppt_fsp').val()} , function (response) {    
     // show data
     var obj = response.result;
-    $('#editor').html(obj.catatan_pengkajian);
+    $('#editor_show_pengkajian').html(obj.catatan_pengkajian);
     // set value input
     var value_form = response.value_form;
     $.each(value_form, function(i, item) {
@@ -37,9 +37,9 @@ function printDivHtml(divId) {
   <div class="col-md-12">
   <div class="pull-right"><a href="<?php echo base_url()?>Templates/Export_data/exportContent?type=pdf&flag=catatan_pengkajian&mod=Pl_pelayanan_ri&cppt_id=<?php echo $result->id?>&paper=P" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-print"></i> Print PDF</a></div> 
 
-    <input type="hidden" name="idx_cppt" id="idx_cppt" value="<?php echo $cppt_id?>">
+    <input type="hidden" name="idx_cppt_fsp" id="idx_cppt_fsp" value="<?php echo $cppt_id?>">
 
-    <div id="editorxx"><?php echo $html_form?></div>
+    <div id="editor_show_pengkajian"><?php echo $html_form?></div>
   </div>
      
 </div>

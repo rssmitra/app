@@ -72,14 +72,23 @@ class Riwayat_kunjungan_pm extends MX_Controller {
         //print_r($_GET);die;
         $data = array();
         $no = $_POST['start'];
+
+        // Batch load semua transaksi kasir sekaligus — hindari N+1 query
+        // Gunakan array_map eksplisit agar kompatibel dengan PHP < 7.0
+        // (array_column tidak bisa baca property stdClass di PHP 5.x)
+        $no_kunjungan_list  = array_map(function($item) { return $item->no_kunjungan; }, $list);
+        $kode_bagian_tujuan = isset($_GET['bagian_tujuan']) ? $_GET['bagian_tujuan'] : '';
+        $trans_kasir_map    = $this->Riwayat_kunjungan_pm->get_trans_kasir_batch($no_kunjungan_list, $kode_bagian_tujuan);
+
         foreach ($list as $row_list) {
             $no++;
             $row = array();
             $flag_mcu = ($row_list->flag_mcu==1)?'&flag_mcu=1':'';
             $flag_mcu_edit = ($row_list->flag_mcu==1)?'&is_mcu=1':'';
-            
 
-            $trans_kasir = $this->Riwayat_kunjungan_pm->cek_transaksi_kasir($row_list->no_registrasi, $row_list->no_kunjungan);
+            // Lookup dari map: key ada = ada transaksi (lunas) = false, tidak ada = true
+            $trans_kasir = !array_key_exists($row_list->no_registrasi . '_' . $row_list->no_kunjungan, $trans_kasir_map);
+
             if( isset($_GET['bagian_tujuan']) && $_GET['bagian_tujuan']=='050301'){
                 $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
                 $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.','."'".$flag_rollback."'".')">Rollback</a></li>';
@@ -118,9 +127,10 @@ class Riwayat_kunjungan_pm extends MX_Controller {
             
             $charge_slip = '<li><a href="#" onclick="cetak_slip('.$row_list->kode_penunjang.')">Cetak Slip</a></li>';
             
+            $chk_disabled = ($row_list->status_batal == 1) ? 'disabled' : '';
             $row[] = '<div class="center">
                         <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_kunjungan.'"/>
+                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_kunjungan.'" '.$chk_disabled.'/>
                             <span class="lbl"></span>
                         </label>
                       </div>';
@@ -144,9 +154,10 @@ class Riwayat_kunjungan_pm extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_keluar);
 
-            //$trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi, $row_list->no_kunjungan);
 
-            if($trans_kasir==false){
+            if($row_list->status_batal == 1){
+                $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal</label>';
+            }else if($trans_kasir==false){
                 $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas </label>';
             }else{
                 if($row_list->flag_mcu == 1){

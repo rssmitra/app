@@ -1493,6 +1493,38 @@ class Billing extends MX_Controller {
         }
     }
 
+    /**
+     * Update diskon_tindakan_rp pada tc_trans_pelayanan per item tindakan.
+     * Nilai diskon diterima sudah dalam Rp (konversi % → Rp dilakukan di sisi client/JS).
+     */
+    public function update_diskon_item()
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+
+        $kode_trans_pelayanan = (int) $this->input->post('kode_trans_pelayanan');
+        $diskon_rp            = (int) $this->input->post('diskon_rp');
+
+        if ($kode_trans_pelayanan <= 0) {
+            echo json_encode(array('status' => 400, 'message' => 'kode_trans_pelayanan tidak valid'));
+            return;
+        }
+
+        if ($diskon_rp < 0) {
+            echo json_encode(array('status' => 400, 'message' => 'Nilai diskon tidak valid'));
+            return;
+        }
+
+        $ok = $this->Billing->update_diskon_item($kode_trans_pelayanan, $diskon_rp);
+
+        if ($ok) {
+            echo json_encode(array('status' => 200, 'message' => 'Diskon berhasil disimpan', 'diskon_rp' => $diskon_rp));
+        } else {
+            echo json_encode(array('status' => 500, 'message' => 'Gagal menyimpan diskon'));
+        }
+    }
+
 }
 
 /* End of file example.php */

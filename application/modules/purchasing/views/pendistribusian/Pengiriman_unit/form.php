@@ -173,13 +173,13 @@ th, td {
                   <th width="100px">Kode Brg</th>
                   <th>Nama Barang</th>
                   <th class="center">Satuan</th>
-                  <th class="center">Stok Akhir</th>
+                  <th class="center">Stok Gudang</th>
+                  <th class="center">Stok Akhir<br>Unit</th>
                   <th class="center">Jumlah<br>Permintaan</th>
                   <th class="center">Jumlah<br>Disetujui</th>
                   <th class="center">Jumlah<br>Kirim</th>
-                  <th class="center">Stok Gudang</th>
+                  <th style="width: 80px">Total Nilai<br>Persediaan</th>
                   <th class="center">Keterangan Verif</th>
-                  <th style="width: 80px">Total</th>
                   <th style="width: 50px">#</th>
                 </tr>
               </thead>
@@ -197,8 +197,8 @@ th, td {
                     </span>
                 </div>
               </div>
-              <label class="control-label col-md-2" style="margin-left: 42px">Petugas</label>
-              <div class="col-md-3">
+              <label class="control-label col-md-1" style="margin-left: 42px">Petugas</label>
+              <div class="col-md-2">
                 <input class="form-control" type="text" name="yang_menyerahkan" id="yang_menyerahkan" value="<?php echo $this->session->userdata('user')->fullname?>">
               </div>
             </div>

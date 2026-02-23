@@ -197,7 +197,14 @@ class Reg_klinik extends MX_Controller {
         $last_visit = $this->Reg_pasien->cek_last_visit( $no_mr );
         // cek konsul internal
         $data_konsul_internal = $this->Reg_pasien->cek_konsul_internal( $no_mr, $tgl_kunjungan );
-        // echo '<pre>'; print_r($last_visit);die;
+        
+        $status_kepesertaan = null;
+        if($data_pasien[0]->kode_perusahaan == 120){
+            // cek data kepesertaan BPJS
+            $status_kepesertaan = $this->Ws_index->searchMemberByNomorKartu( $data_pasien[0]->no_kartu_bpjs, date('Y-m-d') );
+        }
+        
+        // echo '<pre>'; print_r($status_kepesertaan);die;
 
         $data = array(
 
@@ -207,6 +214,7 @@ class Reg_klinik extends MX_Controller {
             'pending' => $data_transaksi_pending,
             'last_visit' => $last_visit,
             'konsul_internal' => $data_konsul_internal,
+            'status_kepesertaan' => $status_kepesertaan,
 
         );
         
@@ -638,10 +646,14 @@ class Reg_klinik extends MX_Controller {
             $kode_bagian_masuk = $this->regex->_genRegex($_POST['reg_klinik_rajal'],'RGXQSL');
             $jd_id =  $this->input->post('jd_id');
             $id_tc_pesanan = ($this->input->post('id_tc_pesanan')) ? $this->input->post('id_tc_pesanan') : NULL;
+            $jeniskunjungan = ($_POST['jeniskunjunganbpjs'] > 0) ? $_POST['jeniskunjunganbpjs'] : 3;
+            $nomorreferensi = ($jeniskunjungan == 3) ? $_POST['noSuratSKDP'] : $_POST['noRujukan'];
+
 
             if(empty($query)){
                 
-                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title, $no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id, $kode_faskes, $tgl_registrasi, $nomorrujukan, $jeniskunjunganbpjs);
+                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title, $no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id, $kode_faskes, $tgl_registrasi, $nomorrujukan, $jeniskunjunganbpjs, $_POST['nama_referral'], $_POST['asal_instansi_referral']);
+
                 $no_registrasi = $data_registrasi['no_registrasi'];
                 $no_kunjungan = $data_registrasi['no_kunjungan'];
 
@@ -676,7 +688,7 @@ class Reg_klinik extends MX_Controller {
             }else{
                 $no_registrasi = $query->no_registrasi;
                 // update tc_registrasi
-                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['jd_id' => $_POST['jd_id'], 'kode_bagian_masuk' => $_POST['reg_klinik_rajal'], 'kode_dokter' => $_POST['reg_dokter_rajal'], 'tgl_jam_masuk' => $tgl_registrasi, 'id_tc_pesanan' => $id_tc_pesanan ]);
+                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['jd_id' => $_POST['jd_id'], 'kode_bagian_masuk' => $_POST['reg_klinik_rajal'], 'kode_dokter' => $_POST['reg_dokter_rajal'], 'tgl_jam_masuk' => $tgl_registrasi, 'id_tc_pesanan' => $id_tc_pesanan, 'norujukan' => $nomorreferensi ]);
                 $this->db->trans_commit();
             }
 
@@ -690,9 +702,7 @@ class Reg_klinik extends MX_Controller {
             $jam_praktek_mulai = ($dt_jadwal->jd_jam_mulai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai) : '08:00';
             $jam_praktek_selesai = ($dt_jadwal->jd_jam_selesai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_selesai) : '10:00';
             $kuota_dr = ($dt_jadwal->jd_kuota) ? $dt_jadwal->jd_kuota : 10;
-            $jeniskunjungan = ($_POST['jeniskunjunganbpjs'] > 0) ? $_POST['jeniskunjunganbpjs'] : 3;
-            $nomorreferensi = ($jeniskunjungan == 3) ? $_POST['noSuratSKDP'] : $_POST['noRujukan'];
-
+            
             if(!isset($_POST['post_ranap'])) : 
 
                 $config_antrol = array(
@@ -774,7 +784,7 @@ class Reg_klinik extends MX_Controller {
                             'assesmentPel' => $_POST['assesmentPel'],
                             'skdp' => array('noSurat' => $_POST['noSuratSKDP'], "kodeDPJP" => trim($_POST['kodeDokterDPJPPerjanjianBPJS']) ),
                             'dpjpLayan' => trim($_POST['kodeDokterDPJPPerjanjianBPJS']),
-                            'noTelp' => $_POST['noTelp'],
+                            'noTelp' => $_POST['hpPasien'],
                             'user' => $_POST['user'],
                             ),
                         ),
@@ -820,7 +830,7 @@ class Reg_klinik extends MX_Controller {
                         'kodeJnsPelayanan' => $this->form_validation->set_value('jnsPelayanan'),
                         'kodeKelasRawat' => ($this->form_validation->set_value('jnsPelayanan')==1)?$this->form_validation->set_value('kelasRawat'):"3",
                         'kodePoli' =>$this->form_validation->set_value('kodePoliHidden'),
-                        'noTelp' =>  $this->form_validation->set_value('noTelp'),
+                        'noTelp' =>  $this->input->post('hpPasien'),
                         'lakaLantas' => ($this->form_validation->set_value('lakalantas'))?$this->form_validation->set_value('lakalantas'):"0", 
                         'penjamin' => $this->form_validation->set_value('penjamin'), 
                         'lokasiLaka' => $this->form_validation->set_value('lokasiLaka'),

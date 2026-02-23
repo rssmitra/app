@@ -2091,122 +2091,105 @@ class References extends MX_Controller {
 
 	public function getItemBarangDetailRetur()
 	{
-		$isNonMedis = isset($_GET['flag']) && $_GET['flag'] == 'non_medis';
-		
-		// Initialize table names based on flag
-		$tables = array(
-			'kode_bagian' => $isNonMedis ? '070101' : '060201',
-			'barang' => $isNonMedis ? 'mt_barang_nm' : 'mt_barang',
-			'depo_stok' => $isNonMedis ? 'mt_depo_stok_nm' : 'mt_depo_stok',
-			'penerimaan' => $isNonMedis ? 'tc_penerimaan_barang_nm' : 'tc_penerimaan_barang',
-			'gudang' => $isNonMedis ? 'Gudang Non Medis' : 'Gudang Medis'
-		);
+		$kode_bagian = ($_GET['flag']=='non_medis') ? '070101' : '060201' ;
+		$table = ($_GET['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+		$join = ($_GET['flag']=='non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+		$nama_gudang = ($_GET['flag']=='non_medis') ? 'Gudang Non Medis' : 'Gudang Medis' ;
+		$mt_barang = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+		$mt_rekap_stok = ($_GET['flag'] == 'non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+		$mt_depo_stok = ($_GET['flag'] == 'non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
+		$tc_penerimaan = ($_GET['flag'] == 'non_medis') ? 'tc_penerimaan_barang_nm' : 
+		'tc_penerimaan_barang' ;
+		$tc_permintaan_inst = ($_GET['flag'] == 'non_medis') ? 'tc_permintaan_inst_nm' : 'tc_permintaan_inst' ;
 
-		// Get input parameters with defaults
-		$kode_brg = isset($_GET['kode_brg']) ? $_GET['kode_brg'] : '';
-		$from_unit = isset($_GET['from_unit']) ? $_GET['from_unit'] : '';
-		$retur_type = isset($_GET['retur']) ? $_GET['retur'] : '';
-		$qty = isset($_GET['qty']) ? $_GET['qty'] : 0;
-		
+		$this->db->from($table.' as a');
+		$this->db->join($mt_depo_stok.' as b', '(b.kode_brg=a.kode_brg AND b.kode_bagian = '.$_GET['from_unit'].')' , 'left');
+		$this->db->where('a.kode_brg', $_GET['kode_brg']);
+		if($_GET['retur']=='lainnya'){
+			$this->db->where('b.kode_bagian', $_GET['from_unit']);
+		}else{
+			$this->db->where('b.kode_bagian', $kode_bagian);
+		}
+		$result = $this->db->get()->row();
+		// print_r($this->db->last_query());die;
 		$html = '';
+		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;
+		$warning_stok = ($result->jml_sat_kcl <= 0) ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '' ;
+		$link_image = ( $result->path_image != NULL ) ? PATH_IMG_MST_BRG.$result->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
 
-		// Form retur unit ke gudang
-		if($retur_type == 'lainnya') {
-
-			// Query item detail
-			$this->db->from($tables['barang'].' as a');
-			$this->db->join($tables['depo_stok'].' as b', 
-				'(b.kode_brg=a.kode_brg AND b.kode_bagian = '."'".$from_unit."'".') ', 'left');
-			$this->db->where('a.kode_brg', $kode_brg);
-			$this->db->where('b.kode_bagian', $retur_type == 'lainnya' ? $from_unit : $tables['kode_bagian']);
-			$barang = $this->db->get()->row();
-
-			if(!$barang) {
-				echo json_encode(array('data' => null, 'html' => '<div class="alert alert-danger">Data barang tidak ditemukan</div>'));
-				return;
-			}
-
-			// Prepare display values
-			$stok_color = $barang->jml_sat_kcl <= 0 ? 'red' : 'green';
-			$stok_akhir = '<span style="color: '.$stok_color.'; font-weight: bold">'.$barang->jml_sat_kcl.'</span>';
-			$warning_stok = $barang->jml_sat_kcl <= 0 ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '';
-			$link_image = $barang->path_image ? PATH_IMG_MST_BRG.$barang->path_image : PATH_IMG_MST_BRG.'no-image.jpg';
-
-			$html .= $this->_buildReturUnitHtml($barang, $stok_akhir, $qty, $tables['gudang']);
-		}
-		// Form retur penerimaan barang
-		elseif($retur_type == 'penerimaan_brg') {
-			$result = $this->_buildPenerimaanHtml($tables['penerimaan'], $tables['barang'], $kode_brg);
-
-			$html .= $result['html'];
-			$barang = $result['result'];
-		}
-
-		echo json_encode(array('data' => $barang, 'html' => $html));
-	}
-
-	private function _buildReturUnitHtml($barang, $stok_akhir, $qty, $nama_gudang)
-	{
-		return '<div class="widget-box">
-					<div class="widget-body" style="background: #edf3f4;">
-						<div class="widget-main">
-							<b><span style="font-size: 13px">'.$barang->kode_brg.' - '.$barang->nama_brg.'</span></b><br>
-							<table width="100%">
-								<input type="hidden" id="stok_akhir_unit" value="'.$barang->jml_sat_kcl.'">
-								<tr>
-									<td style="text-align: right">
-										<div class="alert alert-warning center" style="width: 150px;" id="div_retur_qty">
-											<strong style="font-size: 14px"><span id="stok_akhir_unit_txt">'.$stok_akhir.'</span> '.$barang->satuan_kecil.'</strong><br>
-											<span id="unit_name">Unit</span>
-										</div>
-									</td>
-									<td width="150px" style="text-align: center;">
-										<i class="fa fa-sign-out bigger-250"></i>
-									</td>
-									<td>
-										<div class="alert alert-success center" style="width: 150px;">
-											<strong style="font-size: 14px" id="retur_qty_text">'.$qty.' '.$barang->satuan_kecil.'</strong><br>
-											'.strtoupper($nama_gudang).'
-										</div>
-									</td>
-								</tr>
-							</table>
+		// form retur unit ke gudang
+		if( $_GET['retur'] == 'lainnya' ){
+			$html .= '<div class="widget-box">
+						<div class="widget-body" style="background: #edf3f4;">
+							<div class="widget-main">
+								<b><span style="font-size: 13px">'.$result->kode_brg.' - '.$result->nama_brg.'</span></b><br>
+								<table width="100%">
+									<input type="hidden" id="stok_akhir_unit" value="'.$result->jml_sat_kcl.'">
+									<tr>
+										<td style="text-align: right">
+											<div class="alert alert-warning center" style="width: 150px; " id="div_retur_qty">
+												<strong style="font-size: 14px"><span id="stok_akhir_unit_txt">'.$stok_akhir.'</span> '.$result->satuan_kecil.'</strong><br>
+												<span id="unit_name">Unit</span>
+											</div>
+										</td>
+										<td width="150px" style="text-align: center;">
+											<i class="fa fa-sign-out bigger-250"></i>
+										</td>
+										<td>
+											<div class="alert alert-success center" style="width: 150px; ">
+												<strong style="font-size: 14px" id="retur_qty_text">'.$_GET['qty'].' '.$result->satuan_kecil.'</strong><br>
+												'.strtoupper($nama_gudang).'
+											</div>
+										</td>
+										
+									</tr>
+								</table>
+							</div>
 						</div>
-					</div>
-				</div>';
-	}
-
-	private function _buildPenerimaanHtml($table_penerimaan, $table_barang, $kode_brg)
-	{
-		$this->db->select('a.kode_detail_penerimaan_barang, a.kode_penerimaan as kode, tgl_penerimaan as tgl, a.jumlah_kirim_decimal as qty, a.content, b.satuan_besar');
-		$this->db->from($table_penerimaan.'_detail as a');
-		$this->db->join($table_penerimaan.' as z', 'a.id_penerimaan=z.id_penerimaan', 'left');
-		$this->db->join($table_barang.' as b', 'b.kode_brg=a.kode_brg', 'left');
-		$this->db->where('a.kode_brg', $kode_brg);
-		$this->db->where('a.jumlah_kirim > 0');
-		$this->db->limit(3);
-		$this->db->group_by('a.kode_detail_penerimaan_barang, a.kode_penerimaan, a.id_penerimaan, tgl_penerimaan, a.jumlah_kirim_decimal, a.content, b.satuan_besar');
-		$this->db->order_by('z.tgl_penerimaan', 'DESC');
-		$result = $this->db->get()->result();
-
-		$html = '<strong style="color: blue">DATA PENERIMAAN BARANG</strong><br>';
-		$html .= '<table class="table"><tr><th>No</th><th>Kode Penerimaan</th><th>Tanggal</th><th class="center">Jumlah Diterima</th><th class="center">Rasio</th><th class="center">#</th></tr>';
-		
-		$no = 0;
-		foreach($result as $row) {
-			$jml_retur = $row->qty * $row->content;
-			$html .= '<tr>
-				<td>'.++$no.'</td>
-				<td>'.$row->kode.'</td>
-				<td>'.$this->tanggal->formatDate($row->tgl).'</td>
-				<td class="center">'.$row->qty.' '.$row->satuan_besar.'</td>
-				<td class="center">'.$row->content.'</td>
-				<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item('."'".$row->kode_detail_penerimaan_barang."'".', '.$jml_retur.')"><i class="fa fa-sign-out"></i></a></td>
-			</tr>';
+					  </div>';
 		}
-		$html .= '</table>';
 
-		return ['html' => $html, 'result' => $result];
+		// form retur penerimaan brg
+		if( $_GET['retur'] == 'penerimaan_brg' ){
+			// cek penerimaan barang
+			$this->db->select('a.kode_detail_penerimaan_barang, a.kode_penerimaan as kode, tgl_penerimaan as tgl, a.jumlah_kirim_decimal as qty, a.content, b.satuan_besar');
+			$this->db->from($tc_penerimaan.'_detail as a');
+			$this->db->join($tc_penerimaan.' as z', 'a.id_penerimaan=z.id_penerimaan' , 'left');
+			$this->db->join($table.' as b', 'b.kode_brg=a.kode_brg' , 'left');
+			$this->db->where('a.kode_brg', $_GET['kode_brg']);
+			$this->db->where('a.jumlah_kirim > 0');
+			$this->db->limit(3);
+			$this->db->group_by('a.kode_detail_penerimaan_barang, a.kode_penerimaan, a.id_penerimaan, tgl_penerimaan, a.jumlah_kirim_decimal, a.content, b.satuan_besar');
+			$this->db->order_by('z.tgl_penerimaan', 'DESC');
+			$result = $this->db->get()->result();
+			$html .= '<strong style="color: blue">DATA PENERIMAAN BARANG</strong><br>';
+			$html .= '<table class="table">';
+			$html .= '<tr>';
+			$html .= '<th>No</th>';
+			$html .= '<th>Kode Penerimaan</th>';
+			$html .= '<th>Tanggal</th>';
+			$html .= '<th class="center">Jumlah Diterima</th>';
+			$html .= '<th class="center">Rasio</th>';
+			$html .= '<th class="center">#</th>';
+			$html .= '</tr>';
+			$no = 0;
+			foreach($result as $row_ress){
+				$jml_retur = $row_ress->qty * $row_ress->content;
+				$no++;
+				$html .= '<tr>';
+				$html .= '<td>'.$no.'</td>';
+				$html .= '<td>'.$row_ress->kode.'</td>';
+				$html .= '<td>'.$this->tanggal->formatDate($row_ress->tgl).'</td>';
+				$html .= '<td class="center">'.$row_ress->qty.' '.$row_ress->satuan_besar.'</td>';
+				$html .= '<td class="center">'.$row_ress->content.'</td>';
+				$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item('."'".$row_ress->kode_detail_penerimaan_barang."'".', '.$jml_retur.')"><i class="fa fa-sign-out"></i></a></td>';
+				$html .= '</tr>';
+			}
+			$html .= '</table>';
+		}
+
+
+		echo json_encode( array('data' => $result, 'html' => $html ) );
 	}
 
 	public function getDataTransaksiFarmasi($kode_trans_far)

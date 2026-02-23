@@ -252,7 +252,7 @@ class App_persetujuan_pemb extends MX_Controller {
             }
 
             // update detail
-            $rincian_brg = $this->db->where('(status_po is null or status_po=0)')->get_where($table.'_det', array('id_tc_permohonan' => $id) )->result();
+            $rincian_brg = $this->db->where_in('id_tc_permohonan_det', $_POST['permohonan_det_ids'])->where('(status_po is null or status_po=0)')->get($table.'_det')->result();
             // print_r($rincian_brg); die;
             $keys = [];
             $rincian = [];
@@ -269,8 +269,8 @@ class App_persetujuan_pemb extends MX_Controller {
                 }
                 $jml_acc['updated_date'] = date('Y-m-d H:i:s');
                 $jml_acc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                $this->App_persetujuan_pemb->update($table.'_det', array('id_tc_permohonan' => $id, 'kode_brg' => $_POST['selected'][$keys]), $jml_acc);
-                $newId = $id;
+                $this->App_persetujuan_pemb->update($table.'_det', array('id_tc_permohonan_det' => $row->id_tc_permohonan_det), $jml_acc);
+                $newId = $row->id_tc_permohonan_det;
                 // $this->logs->save($table.'_det', $row->id_tc_permohonan_det, 'update record', json_encode($jml_acc), 'id_tc_permohonan_det');
             }
 

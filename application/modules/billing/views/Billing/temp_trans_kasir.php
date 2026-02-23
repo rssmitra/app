@@ -1,6 +1,7 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <style type="text/css">
     input[type=checkbox]{
@@ -203,6 +204,38 @@ function getSum(total, num) {
 function payment(){
 
     preventDefault();
+
+    // Validasi kunjungan yang belum selesai (tgl_keluar = NULL)
+    var belumSelesai = (typeof window._kunjunganBelumSelesai !== 'undefined') ? window._kunjunganBelumSelesai : [];
+    if (belumSelesai.length > 0) {
+        var unitListHtml = belumSelesai.map(function(item) {
+            return '<li style="text-align:left"><b>' + item.nama_bagian + '</b></li>';
+        }).join('');
+
+        Swal.fire({
+            title: 'Ada Kunjungan Belum Selesai!',
+            html: '<p style="margin-bottom:8px">Kunjungan berikut belum memiliki tanggal keluar:</p>' +
+                  '<ul style="padding-left:20px; margin-bottom:8px">' + unitListHtml + '</ul>' +
+                  '<p style="color:#888; font-size:13px">Apakah tetap ingin melanjutkan proses pembayaran?</p>',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '<i class="fa fa-money"></i> Ya, Lanjutkan',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                _doPayment();
+            }
+        });
+        return;
+    }
+
+    _doPayment();
+}
+
+function _doPayment(){
     $('#btn_lanjutkan_pembayaran').attr('disabled', true);
     // ceklist nk
     var status_nk = $(".table_billing_data input[name=checklist_nk]:checked").map(function(){
@@ -211,7 +244,7 @@ function payment(){
         }
     }).toArray();
     var total_nk = status_nk.reduce(getSum, 0);
-    
+
     var kode_trans_pelayanan_nk = $(".table_billing_data input[name=checklist_nk]:checked").map(function(){
         return $(this).val();
     }).toArray();
@@ -238,7 +271,6 @@ function payment(){
 
     $('#billing_data').html(loading);
     getMenuTabs('billing/Billing/payment_view/<?php echo $no_registrasi?>/<?php echo $tipe?>', 'billing_data');
-
 }
 
 function pembayaran_um(){
@@ -299,6 +331,9 @@ function submitApprovalKepalaKeuangan() {
     // Cek apakah ini mode rollback
     var isRollback = $('#modal-approval-kepala-keuangan').data('rollback-mode') === true;
     var rollbackNoReg = $('#modal-approval-kepala-keuangan').data('rollback-no-reg');
+    // Cek apakah ini mode diskon
+    var isDiskon  = $('#modal-approval-kepala-keuangan').data('diskon-mode') === true;
+    var diskonNk  = $('#modal-approval-kepala-keuangan').data('diskon-nk');
 
     $.ajax({
         url: 'billing/Billing/verify_code',
@@ -312,7 +347,19 @@ function submitApprovalKepalaKeuangan() {
         success: function(response) {
             if (response.status === 200) {
                 $('#modal-approval-kepala-keuangan').modal('hide');
-                if (isRollback && rollbackNoReg) {
+                if (isDiskon && diskonNk) {
+                    // Aktifkan semua input diskon pada unit yang diapprove
+                    var $tbl = $('#tbl_' + diskonNk);
+                    $tbl.find('[data-lock="approval"]').prop('disabled', false);
+                    // Update tombol Tambahkan Diskon
+                    $('#btn_diskon_' + diskonNk)
+                        .prop('disabled', true)
+                        .removeClass('btn-warning')
+                        .addClass('btn-success')
+                        .html('<i class="fa fa-check"></i> Diskon Aktif');
+                    // Reset mode diskon
+                    $('#modal-approval-kepala-keuangan').data('diskon-mode', false).data('diskon-nk', '');
+                } else if (isRollback && rollbackNoReg) {
                     // Jalankan rollback setelah verifikasi sukses
                     $.ajax({
                         url: "billing/Billing/rollback_kasir",
@@ -391,6 +438,8 @@ $('#modal-approval-kepala-keuangan').on('show.bs.modal', function () {
 });
 $('#modal-approval-kepala-keuangan').on('hidden.bs.modal', function () {
   $('.modal-backdrop').removeClass('approval-kepala-keuangan-backdrop');
+  // Reset semua mode agar tidak bocor ke trigger berikutnya
+  $(this).data('diskon-mode', false).data('diskon-nk', '');
 });
 </script>
 

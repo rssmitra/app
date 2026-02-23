@@ -195,6 +195,80 @@ class Verifikasi_permintaan extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function rollback()
+    {
+        $this->db->trans_begin();
+        
+        $id = $this->input->post('id') ? $this->regex->_genRegex($this->input->post('id'), 'RGXINT') : 0;
+        $flag = $this->input->post('flag') ? $this->regex->_genRegex($this->input->post('flag'), 'RGXQSL') : '';
+        
+        if ($id == 0 || empty($flag)) {
+            echo json_encode(array('status' => 301, 'message' => 'Data tidak valid'));
+            return;
+        }
+
+        // Tentukan tabel berdasarkan flag
+        $table = ($flag == 'medis') ? 'tc_permintaan_inst' : 'tc_permintaan_inst_nm';
+        
+        // Get data permintaan
+        $permintaan = $this->db->get_where($table, array('id_tc_permintaan_inst' => $id))->row();
+        
+        if (!$permintaan) {
+            echo json_encode(array('status' => 301, 'message' => 'Data permintaan tidak ditemukan'));
+            return;
+        }
+
+        // Rollback Approval - reset field approval ke status sebelum verifikasi
+        $data_rollback = array(
+            'no_acc' => null,
+            'tgl_acc' => null,
+            'acc_by' => null,
+            'acc_note' => null,
+            'status_acc' => null,
+            'send_to_verify' => 0,
+            'updated_date' => date('Y-m-d H:i:s'),
+            'updated_by' => json_encode(array(
+                'user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id, 'RGXINT'),
+                'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname, 'RGXQSL')
+            )),
+        );
+
+        // Update permintaan header - rollback approval fields
+        $this->Verifikasi_permintaan->update($table, array('id_tc_permintaan_inst' => $id), $data_rollback);
+        
+        // Rollback detail - reset verifikasi fields
+        $detail_brg = $this->db->get_where($table . '_det', array('id_tc_permintaan_inst' => $id))->result();
+        
+        if (!empty($detail_brg)) {
+            foreach ($detail_brg as $brg) {
+                $dt_rollback_detail = array(
+                    'status_verif' => 0,
+                    'jml_acc_atasan' => null,
+                    'keterangan_verif' => null,
+                );
+                
+                $this->Verifikasi_permintaan->update($table . '_det', 
+                    array('id_tc_permintaan_inst_det' => $brg->id_tc_permintaan_inst_det), 
+                    $dt_rollback_detail
+                );
+            }
+        }
+
+        // Save logs
+        $this->logs->save($table, $id, 'rollback approval status', json_encode($data_rollback), 'id_tc_permintaan_inst');
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Gagal Dilakukan'));
+        } else {
+            $this->db->trans_commit();
+            echo json_encode(array(
+                'status' => 200, 
+                'message' => 'Proses Rollback Berhasil Dilakukan. Status verifikasi dikembalikan ke belum diverifikasi.'
+            ));
+        }
+    }
+
 }
 
 

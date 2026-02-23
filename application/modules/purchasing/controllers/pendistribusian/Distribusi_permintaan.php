@@ -69,6 +69,8 @@ class Distribusi_permintaan extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Distribusi_permintaan->get_datatables();
+
+        // echo $this->db->last_query();die;
         
         $data = array();
         $no = $_POST['start'];
@@ -84,7 +86,14 @@ class Distribusi_permintaan extends MX_Controller {
             $row[] = '';
             $row[] = $row_list->id_tc_permintaan_inst;
             
-             // === KOLOM ACTION : DISTRIBUSI ===
+            $btn_rollback = '';
+            // === KOLOM ACTION : DISTRIBUSI ===
+            if ($row_list->tgl_input_terima == null && $row_list->yg_terima == null){
+                $btn_rollback = '<a href="javascript:void(0)" onclick="rollbackStatus(\''.$row_list->id_tc_permintaan_inst.'\',\''.$_GET['flag'].'\')" 
+                class="label label-xs label-danger" style="width:100%">
+                Rollback
+                </a>';
+            }
 
             if ($row_list->total_diterima == 0) {
 
@@ -94,6 +103,9 @@ class Distribusi_permintaan extends MX_Controller {
                    class="label label-xs label-primary" style="width:100%">
                    Distribusi
                 </a>
+
+                '.$btn_rollback.'
+
               </div>';
 
             } elseif ($row_list->total_diterima < $row_list->total_permintaan) {
@@ -382,6 +394,86 @@ class Distribusi_permintaan extends MX_Controller {
         $this->load->view('pendistribusian/Distribusi_permintaan/print_preview_retur', $data);
     }
 
+    public function rollback()
+    {
+        $this->db->trans_begin();
+        
+        $id = $this->input->post('id') ? $this->regex->_genRegex($this->input->post('id'), 'RGXINT') : 0;
+        $flag = $this->input->post('flag') ? $this->regex->_genRegex($this->input->post('flag'), 'RGXQSL') : '';
+        
+        if ($id == 0 || empty($flag)) {
+            echo json_encode(array('status' => 301, 'message' => 'Data tidak valid'));
+            return;
+        }
+
+        // Tentukan tabel berdasarkan flag
+        $table = ($flag == 'medis') ? 'tc_permintaan_inst' : 'tc_permintaan_inst_nm';
+        
+        // Get data permintaan yang akan di-rollback
+        $permintaan = $this->db->get_where($table, array('id_tc_permintaan_inst' => $id))->row();
+        
+        if (!$permintaan) {
+            echo json_encode(array('status' => 301, 'message' => 'Data permintaan tidak ditemukan'));
+            return;
+        }
+
+        // Cek apakah sudah ada penerimaan
+        if ($permintaan->tgl_input_terima != null && $permintaan->yg_terima != null) {
+            echo json_encode(array('status' => 301, 'message' => 'Tidak dapat rollback. Data sudah diterima.'));
+            return;
+        }
+
+        // Rollback Approval - hanya reset field approval, tidak rollback pengiriman
+        $data_rollback = array(
+            'no_acc' => null,
+            'tgl_acc' => null,
+            'acc_by' => null,
+            'acc_note' => null,
+            'status_acc' => null,
+            'send_to_verify' => null,
+            'updated_date' => date('Y-m-d H:i:s'),
+            'updated_by' => json_encode(array(
+                'user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id, 'RGXINT'),
+                'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname, 'RGXQSL')
+            )),
+        );
+
+        // Update permintaan header - rollback approval fields saja
+        $this->Distribusi_permintaan->update($table, array('id_tc_permintaan_inst' => $id), $data_rollback);
+        
+        // Rollback detail - reset verifikasi fields
+        $detail_brg = $this->db->get_where($table . '_det', array('id_tc_permintaan_inst' => $id))->result();
+        
+        if (!empty($detail_brg)) {
+            foreach ($detail_brg as $brg) {
+                $dt_rollback_detail = array(
+                    'status_verif' => 0,
+                    'jml_acc_atasan' => null,
+                    'keterangan_verif' => null,
+                );
+                
+                $this->Distribusi_permintaan->update($table . '_det', 
+                    array('id_tc_permintaan_inst_det' => $brg->id_tc_permintaan_inst_det), 
+                    $dt_rollback_detail
+                );
+            }
+        }
+
+        // Save logs
+        $this->logs->save($table, $id, 'rollback approval status', json_encode($data_rollback), 'id_tc_permintaan_inst');
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Gagal Dilakukan'));
+        } else {
+            $this->db->trans_commit();
+            echo json_encode(array(
+                'status' => 200, 
+                'message' => 'Proses Rollback Berhasil Dilakukan. Status approval dikembalikan ke sebelum verifikasi.'
+            ));
+        }
+    }
+
 
 
 
@@ -639,7 +731,7 @@ class Distribusi_permintaan extends MX_Controller {
         
     }
 
-
+    
 
 }
 

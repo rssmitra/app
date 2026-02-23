@@ -2144,8 +2144,8 @@ class Pl_pelayanan extends MX_Controller {
             $vk_dt = array('status_batal' => 1, 'tgl_keluar' => date('Y-m-d H:i:s'), 'cancel_by' => $this->session->userdata('user')->user_id, 'cancel_date' => date('Y-m-d H:i:s') );
             $this->db->update('ri_pasien_vk', $vk_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
         }
-        // batal fisioterapi
-        elseif($_POST['kode_bag']=='050301'){
+        // batal penunjang medis
+        elseif(in_array($_POST['kode_bag'], array('050301', '050101', '050201') ) ){
             $fisio_dt = array('status_batal' => 1, 'tgl_selesai' => date('Y-m-d H:i:s'), 'status_daftar' => 2,  'cancel_by' => $this->session->userdata('user')->user_id, 'cancel_date' => date('Y-m-d H:i:s') );
             $this->db->update('pm_tc_penunjang', $fisio_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
         }

@@ -149,7 +149,7 @@ class Pl_pelayanan_mcu_model extends CI_Model {
 		}else{
 			$this->db->where(''.$this->table.'.id_pl_tc_poli',$id);
 			$query = $this->db->get();
-			//print_r($this->db->last_query());die;
+			// print_r($this->db->last_query());die;
 			return $query->row();
 		}
 		

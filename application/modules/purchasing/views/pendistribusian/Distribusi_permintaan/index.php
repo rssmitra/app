@@ -94,6 +94,38 @@ $('select[name="search_by"]').change(function () {
 
 });
 
+// Fungsi Rollback Status
+function rollbackStatus(id, flag) {
+  if (confirm('Apakah Anda yakin ingin melakukan rollback?\nData akan dikembalikan ke status sebelumnya dan stok akan di-restore.')) {
+    $.ajax({
+      url: '<?php echo base_url(); ?>purchasing/pendistribusian/Distribusi_permintaan/rollback',
+      type: 'POST',
+      data: {
+        id: id,
+        flag: flag
+      },
+      dataType: 'json',
+      beforeSend: function() {
+        achtungShowLoader();
+      },
+      success: function(response) {
+        achtungHideLoader();
+        if (response.status == 200) {
+          alert(response.message);
+          // Reload datatable
+          $('#dynamic-table').DataTable().ajax.reload();
+        } else {
+          alert('Error: ' + response.message);
+        }
+      },
+      error: function() {
+        achtungHideLoader();
+        alert('Terjadi kesalahan saat melakukan rollback');
+      }
+    });
+  }
+}
+
 </script>
 <div class="page-header">
   <h1>
@@ -260,8 +292,8 @@ $(document).ready(function() {
       "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": base_url+'/get_data?'+params,
-          "type": "POST"
+          "url": base_url+'/get_data?from_tgl='+$('input[name="from_tgl"]').val()+'&to_tgl='+$('input[name="to_tgl"]').val()+'&kode_bagian='+$('select[name="kode_bagian"]').val()+'&status_penerimaan='+$('select[name="status_penerimaan"]').val()+'&'+params,
+          "type": "POST",
       },
       "columnDefs": [
           { 
