@@ -7,7 +7,7 @@
 
 final Class Daftar_pasien {
 
-    public function daftar_registrasi($title='',$no_mr='', $kode_perusahaan='', $kode_kelompok='', $kode_dokter='', $kode_bagian_masuk='', $umur_saat_pelayanan='',$no_sep='',$jd_id='', $kode_faskes='', $tgl_registrasi='', $nomorrujukan='', $jeniskunjunganbpjs='') {
+    public function daftar_registrasi($title=NULL,$no_mr=NULL, $kode_perusahaan=NULL, $kode_kelompok=NULL, $kode_dokter=NULL, $kode_bagian_masuk=NULL, $umur_saat_pelayanan=NULL,$no_sep=NULL,$jd_id=NULL, $kode_faskes=NULL, $tgl_registrasi=NULL, $nomorrujukan=NULL, $jeniskunjunganbpjs=NULL, $nama_referral=NULL, $asal_instansi_referral=NULL) {
         
         $CI =& get_instance();
         $CI->load->library('session'); 
@@ -42,6 +42,8 @@ final Class Daftar_pasien {
             'jeniskunjunganbpjs' => $jeniskunjunganbpjs,
             'less_then_min_visit' => isset($_POST['less_then_min_visit'])?$_POST['less_then_min_visit']:'',
             'no_induk' => isset($CI->session->userdata('user')->user_id)?$CI->session->userdata('user')->user_id:0,
+            'nama_referral' => $nama_referral,
+            'asal_instansi_referral' => $asal_instansi_referral,
             'created_date' => date('Y-m-d H:i:s'),
             'updated_date' => date('Y-m-d H:i:s'),
         );

@@ -456,7 +456,7 @@ final Class Graph_master {
         
         // modul casemix table chart
         if($params['prefix']==343){
-            $query = "SELECT month(a.tgl_transaksi_kasir) as bulan, SUM(a.csm_dk_total_klaim) AS total_format_money 
+            $query = "SELECT month(a.tgl_transaksi_kasir) as bulan, SUM(CAST(a.csm_dk_total_klaim AS BIGINT)) AS total_format_money
                         FROM csm_dokumen_klaim a
                         WHERE YEAR(a.tgl_transaksi_kasir) = ".date('Y')."
                         GROUP BY month(a.tgl_transaksi_kasir) ORDER BY month(a.tgl_transaksi_kasir) ASC";   
@@ -465,6 +465,7 @@ final Class Graph_master {
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
             /*excecute query*/
             $data = $db->query($query)->result_array();
+
         }
 
         if($params['prefix']==344){
@@ -480,15 +481,36 @@ final Class Graph_master {
         }
 
         if($params['prefix']==345){
-            $query = "SELECT created_by as petugas, COUNT(a.no_registrasi) AS total_format_money 
-                        FROM csm_dokumen_klaim a
-                        WHERE YEAR(a.tgl_transaksi_kasir) = ".date('Y')." AND MONTH(a.tgl_transaksi_kasir) = ".date('m')."
-                        GROUP BY created_by ORDER BY created_by ASC";   
+            $query = "SELECT
+                        CASE 
+                            WHEN a.created_by IS NULL OR LTRIM(RTRIM(a.created_by)) = '' 
+                                THEN 'Scheduler System'
+                            ELSE a.created_by
+                        END AS petugas,
+                        
+                        COUNT(a.no_registrasi) AS total_format_money
+
+                    FROM csm_dokumen_klaim a
+
+                    WHERE
+                        a.tgl_transaksi_kasir >= '".date('Y-m-01')."'
+                        AND a.tgl_transaksi_kasir <  '".date('Y-m-01', strtotime('first day of next month'))."'
+
+                    GROUP BY
+                        CASE 
+                            WHEN a.created_by IS NULL OR LTRIM(RTRIM(a.created_by)) = '' 
+                                THEN 'Scheduler System'
+                            ELSE a.created_by
+                        END
+
+                    ORDER BY petugas ASC";   
             $fields = array('Nama_Petugas' => 'petugas', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Total Costing Bulan '.$CI->tanggal->getBulan(date('m')).' '.date('Y').'</span></small>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
             /*excecute query*/
             $data = $db->query($query)->result_array();
+            
+            // echo '<pre>';print_r($data);die;
         }
 
         // modul farmasi
@@ -1399,6 +1421,41 @@ final Class Graph_master {
             // echo '<pre>';print_r($chart_data);die;
             return $chart_data;
         }
+    }
+
+    public function TableStyleOneData($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+
+        $html = '';
+        $html .= '<table class="table table-striped table-bordered table-condensed">';
+        $html .= '<thead><tr>';
+        foreach ($fields as $kf => $vf) {
+            $html .= '<th>'.$kf.'</th>';
+        }
+        $html .= '</tr></thead>';
+        $html .= '<tbody>';
+        foreach ($data as $key => $row) {
+            $html .= '<tr>';
+            foreach ($fields as $kf => $vf) {
+                $val = isset($row[$vf]) ? strtoupper($row[$vf]) : '';
+                if ($vf === 'bulan') {
+                    $val = $CI->tanggal->getBulan((int)$val);
+                } elseif ($vf === 'total_format_money') {
+                    $val = number_format($val, 0, ',', '.');
+                }
+                $html .= '<td>'.$val.'</td>';
+            }
+            $html .= '</tr>';
+        }
+        $html .= '</tbody>';
+        $html .= '</table>';
+
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
     }
 
     public function TableStyleCustom263($fields, $params, $data){

@@ -977,7 +977,7 @@ final Class Master {
 			'harga_persediaan' => $dpp,
 			'harga_satuan_persediaan' => $harga_satuan, // harga satuan persediaan kecil
 			'harga_jual_ppn' => $harga_jual_ppn,
-			'harga_jual' => $harga_jual,
+			'harga_jual' => $harga_jual_baru,
 		);
 
 		return $result;
