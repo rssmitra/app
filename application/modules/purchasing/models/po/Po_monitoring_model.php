@@ -6,7 +6,7 @@ class Po_monitoring_model extends CI_Model {
 	var $table_nm = 'tc_po_nm_det';
 	var $table = 'tc_po_det';
 	var $column = array('d.no_po','c.namasupplier');
-	var $select = 'd.id_tc_po, d.no_po, d.tgl_po, d.ppn, d.total_sbl_ppn, d.total_stl_ppn, d.discount_harga, d.term_of_pay, b.username, d.diajukan_oleh, d.disetujui_oleh, c.namasupplier, d.jenis_po, e.nama_brg, a.kode_brg, e.satuan_besar, a.jumlah_besar, a.content';
+	var $select = 'd.id_tc_po, d.no_po, d.tgl_po, d.ppn, d.total_sbl_ppn, d.total_stl_ppn, d.discount_harga, d.term_of_pay, b.username, d.diajukan_oleh, d.disetujui_oleh, c.namasupplier, d.jenis_po, e.nama_brg, a.kode_brg, e.satuan_besar, a.content';
 	var $order = array('d.tgl_po' => 'ASC');
 
 	public function __construct()
@@ -24,6 +24,7 @@ class Po_monitoring_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->select('MAX(f.updated_date) as tgl_terima');
 		$this->db->select('SUM(jumlah_kirim) as jumlah_kirim');
+		$this->db->select('a.jumlah_besar_acc as jumlah_besar');
 		$this->db->from(''.$table.' a');
 		$this->db->join(''.$tc_po.' d','d.id_tc_po=a.id_tc_po', 'left');
 		$this->db->join(''.$tc_penerimaan_barang_detail.' f','f.id_tc_po_det=a.id_tc_po_det', 'left');
@@ -60,7 +61,9 @@ class Po_monitoring_model extends CI_Model {
 				$this->db->where('YEAR(d.tgl_po) = ', $_GET['year']);
 			}elseif ( $_GET['search_by'] == 'no_po' ) {
 				$this->db->like( 'd.no_po', $_GET['keyword'] );
-				$this->db->where('YEAR(d.tgl_po) = ', $_GET['year']);
+				if( isset($_GET['year_nopo']) && $_GET['year_nopo'] != '' ){
+					$this->db->where('YEAR(d.tgl_po) = ', $_GET['year_nopo']);
+				}
 			}else{
 				$this->db->where('MONTH(d.tgl_po) = ', date('m'));
 				$this->db->where('YEAR(d.tgl_po) = ', date('Y'));
@@ -72,6 +75,7 @@ class Po_monitoring_model extends CI_Model {
 
 		$this->db->where('a.jumlah_besar > 0 ');
 
+		$this->db->group_by('a.jumlah_besar_acc');
 		$this->db->group_by($this->select);
 		$this->db->group_by('CAST(a.harga_satuan as NUMERIC), CAST(a.harga_satuan_netto as NUMERIC), CAST(a.jumlah_harga as NUMERIC), CAST(a.jumlah_harga_netto as NUMERIC), CAST(a.discount as NUMERIC)');
 
@@ -127,7 +131,9 @@ class Po_monitoring_model extends CI_Model {
 				$this->db->where('YEAR(d.tgl_po) = ', $_GET['year']);
 			}elseif ( $_GET['search_by'] == 'no_po' ) {
 				$this->db->like( 'd.no_po', $_GET['keyword'] );
-				$this->db->where('YEAR(d.tgl_po) = ', $_GET['year']);
+				if( isset($_GET['year_nopo']) && $_GET['year_nopo'] != '' ){
+					$this->db->where('YEAR(d.tgl_po) = ', $_GET['year_nopo']);
+				}
 			}else{
 				$this->db->where('MONTH(d.tgl_po) = ', date('m'));
 				$this->db->where('YEAR(d.tgl_po) = ', date('Y'));

@@ -240,9 +240,13 @@
           </div>
 
           <div id="div_keyword" style="display:none">
-            <label class="control-label col-md-1">Keyword</label>
+            <label class="control-label col-md-1">No. PO</label>
             <div class="col-md-2" style="margin-left: -15px">
-              <input type="text" class="form-control" name="keyword" id="keyword_form">
+              <input type="text" class="form-control" name="keyword" id="keyword_form" placeholder="Masukan No. PO">
+            </div>
+            <label class="control-label col-md-1">Tahun</label>
+            <div class="col-md-1" style="margin-left: -15px">
+              <?php echo $this->master->get_tahun(date('Y'),'year_nopo','year_nopo','form-control','','')?>
             </div>
           </div>
 
