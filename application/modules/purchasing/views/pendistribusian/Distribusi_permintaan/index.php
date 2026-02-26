@@ -1,5 +1,6 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script type="text/javascript">
   jQuery(function($) {
@@ -96,34 +97,63 @@ $('select[name="search_by"]').change(function () {
 
 // Fungsi Rollback Status
 function rollbackStatus(id, flag) {
-  if (confirm('Apakah Anda yakin ingin melakukan rollback?\nData akan dikembalikan ke status sebelumnya dan stok akan di-restore.')) {
-    $.ajax({
-      url: '<?php echo base_url(); ?>purchasing/pendistribusian/Distribusi_permintaan/rollback',
-      type: 'POST',
-      data: {
-        id: id,
-        flag: flag
-      },
-      dataType: 'json',
-      beforeSend: function() {
-        achtungShowLoader();
-      },
-      success: function(response) {
-        achtungHideLoader();
-        if (response.status == 200) {
-          alert(response.message);
-          // Reload datatable
-          $('#dynamic-table').DataTable().ajax.reload();
-        } else {
-          alert('Error: ' + response.message);
+  Swal.fire({
+    title: 'Konfirmasi Rollback',
+    text: 'Apakah Anda yakin ingin melakukan rollback? Data akan dikembalikan ke status sebelumnya dan stok akan di-restore.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Rollback',
+    cancelButtonText: 'Batal',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#6c757d',
+  }).then(function(result) {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: '<?php echo base_url(); ?>purchasing/pendistribusian/Distribusi_permintaan/rollback',
+        type: 'POST',
+        data: {
+          id: id,
+          flag: flag
+        },
+        dataType: 'json',
+        beforeSend: function() {
+          achtungShowLoader();
+        },
+        success: function(response) {
+          achtungHideLoader();
+          if (response.status == 200) {
+            Swal.fire({
+              title: 'Berhasil!',
+              text: response.message,
+              icon: 'success',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#3085d6',
+            }).then(function() {
+              $('#dynamic-table').DataTable().ajax.reload();
+            });
+          } else {
+            Swal.fire({
+              title: 'Gagal!',
+              text: response.message,
+              icon: 'error',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#d33',
+            });
+          }
+        },
+        error: function() {
+          achtungHideLoader();
+          Swal.fire({
+            title: 'Terjadi Kesalahan!',
+            text: 'Terjadi kesalahan saat melakukan rollback.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#d33',
+          });
         }
-      },
-      error: function() {
-        achtungHideLoader();
-        alert('Terjadi kesalahan saat melakukan rollback');
-      }
-    });
-  }
+      });
+    }
+  });
 }
 
 </script>

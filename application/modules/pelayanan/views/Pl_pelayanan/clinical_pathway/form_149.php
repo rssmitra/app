@@ -90,12 +90,12 @@ jQuery(function($) {
   <td>Umur</td>
   <td>
     <div style="display:inline-flex; align-items:center;">
-      <input type="text" class="input_type input-sm"
+      <input type="text" class="input_type input-sm" style="width: 150px"
         name="form_149[umur]"
         id="umur"
         onchange="fillthis('umur')"
         value="<?php echo isset($data_pasien->umur)?$data_pasien->umur:''; ?>">
-      <span style="margin-left:6px;">Tahun</span>
+      
     </div>
   </td>
 </tr>

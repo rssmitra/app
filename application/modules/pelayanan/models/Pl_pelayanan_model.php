@@ -250,7 +250,8 @@ class Pl_pelayanan_model extends CI_Model {
 
 	public function get_detail_kunjungan($no_kunjungan)
 	{
-		$this->db->select('nama_pasien, almt_ttp_pasien, umur, tc_registrasi.no_mr, jen_kelamin, tgl_lhr, tempat_lahir, tc_registrasi.kode_perusahaan');
+		$this->db->select('nama_pasien, almt_ttp_pasien, tc_registrasi.no_mr, jen_kelamin, tgl_lhr, tempat_lahir, tc_registrasi.kode_perusahaan');
+		$this->db->select('dbo.fn_HitungUmur(CAST(tgl_lhr as DATE), CAST(tc_registrasi.tgl_jam_masuk as DATE)) as umur', FALSE);
 		$this->db->from('tc_kunjungan');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi = tc_kunjungan.no_registrasi','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr = tc_kunjungan.no_mr','left');

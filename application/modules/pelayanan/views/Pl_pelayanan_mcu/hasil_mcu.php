@@ -64,7 +64,7 @@ function en_dict(){
 
       /* ================= IDENTIFICATION ================= */
       'nama' => 'patient name',
-      'no. rm' => 'medical record number',
+      'no. RM' => 'medical record number',
       'jenis kelamin' => 'sex',
       'umur' => 'age',
       'tempat / tgl lahir' => 'place / date of birth',
@@ -104,6 +104,7 @@ function en_dict(){
       'lainnya' => 'others',
 
       'sakit kuning' => 'jaundice',
+      'penyakit hati' => 'liver disease',
       'kencing manis' => 'diabetes mellitus',
       'hipertensi' => 'hypertension',
       'kencing batu' => 'renal calculi',
@@ -130,6 +131,7 @@ function en_dict(){
       'tenggorokan' => 'throat',
       'leher' => 'neck',
       'kel getah bening' => 'lymph nodes',
+      'konjungtiva' => 'conjunctiva',
 
       /* ================= EXTREMITIES ================= */
       'anggota gerak' => 'limbs',
@@ -153,12 +155,13 @@ function en_dict(){
 
       /* ================= ABDOMEN ================= */
       'abdomen' => 'abdomen',
-      'hati atau limpa' => 'hepatosplenomegaly',
-      'hati / limpa' => 'hepatosplenomegaly',
+      'hati atau limpa' => 'hepar and spleen',
+      'hati / limpa' => 'hepar and spleen',
       'nyeri tekan' => 'tenderness',
       'tumor' => 'palpable mass',
       'tak teraba' => 'non-palpable',
       'kulit / turgor' => 'skin turgor / skin elasticity',
+      'anus' => 'anal',
 
       /* ================= EKG ================= */
       'irama' => 'cardiac rhythm',
@@ -208,7 +211,7 @@ function en($text){
 
 /* bilingual label */
 function label_en($text){
-    return ucwords($text).' <br><span class="en">('.en($text).')</span>';
+    return '<span style="font-size: 0.9em">'.ucwords($text).'</span> <br><span class="en">('.en($text).')</span>';
 }
 
 /* bilingual section title */
@@ -242,7 +245,7 @@ function val_en($value){
         <td class="title"><?php echo label_en('nama') ?></td>
         <td width="5px">:</td>
         <td width="40%"> <?php echo ucwords(strtolower($kunjungan->nama_pasien)) ?></td>
-        <td><?php echo label_en('no. rm') ?></td>
+        <td><?php echo label_en('no. RM') ?></td>
         <td>: <?php echo $kunjungan->no_mr ?></td>
       </tr>
       <tr>
@@ -302,7 +305,7 @@ function val_en($value){
       if(!is_object($value)){
         echo '
         <td width="5px">:</td>
-        <td width="50%"> '.ucfirst($value).' </td>
+        <td width="50%"> '.ucfirst(nl2br($value)).' </td>
       </tr>';
       }else{
         echo '

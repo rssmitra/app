@@ -255,6 +255,18 @@ class Permintaan_stok_unit extends MX_Controller {
 
         if($_POST['id_tc_permintaan_inst'] !=''){
 
+            // cek duplikat kode_brg pada detail permintaan (hanya saat insert baru, bukan update)
+            if($_POST['id_tc_permintaan_inst_det'] == ''){
+                $cek_duplikat = $this->db->where(array(
+                    'id_tc_permintaan_inst' => $_POST['id_tc_permintaan_inst'],
+                    'kode_brg' => $_POST['kode_brg'],
+                ))->count_all_results($table.'_det');
+                if($cek_duplikat > 0){
+                    echo json_encode(array('status' => 302, 'message' => 'Barang <strong>'.$_POST['nama_brg'].'</strong> ('.$_POST['kode_brg'].') sudah ada dalam daftar permintaan'));
+                    return;
+                }
+            }
+
             $dt_detail = array(
                 'id_dd_user' => $this->session->userdata('user')->user_id,
                 'id_tc_permintaan_inst' => $_POST['id_tc_permintaan_inst'],
@@ -267,7 +279,7 @@ class Permintaan_stok_unit extends MX_Controller {
             );
             $dt_detail['created_date'] = date('Y-m-d H:i:s');
             $dt_detail['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-            
+
             if($_POST['id_tc_permintaan_inst_det'] != ''){
                 $this->Permintaan_stok_unit->update($table.'_det', ['id_tc_permintaan_inst_det' => $_POST['id_tc_permintaan_inst_det']], $dt_detail);
                 $id_permintaan_inst_det = $_POST['id_tc_permintaan_inst_det'];
@@ -277,6 +289,19 @@ class Permintaan_stok_unit extends MX_Controller {
             $this->db->trans_commit();
 
         }else{
+
+            // cek duplikat kode_brg pada cart session (hanya saat insert baru, bukan update)
+            if($_POST['id_tc_permintaan_inst_det'] == ''){
+                $cek_duplikat_cart = $this->db->where(array(
+                    'user_id_session' => $this->session->userdata('user')->user_id,
+                    'kode_brg' => $_POST['kode_brg'],
+                    'flag_form' => isset($_POST['flag_form'])?$_POST['flag_form']:'',
+                ))->count_all_results('tc_permintaan_inst_cart_log');
+                if($cek_duplikat_cart > 0){
+                    echo json_encode(array('status' => 302, 'message' => 'Barang <strong>'.$_POST['nama_brg'].'</strong> ('.$_POST['kode_brg'].') sudah ada dalam daftar permintaan'));
+                    return;
+                }
+            }
 
             $dataexc = array(
                 'kode_brg' => $_POST['kode_brg'],
@@ -458,6 +483,13 @@ class Permintaan_stok_unit extends MX_Controller {
         $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
         $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
         if($id!=null){
+            // cek terlebih dahulu apakah sudah ada detail barangnya
+            $count_detail = $this->db->where('id_tc_permintaan_inst', $id)->count_all_results($table.'_det');
+            if($count_detail == 0){
+                echo json_encode(array('status' => 302, 'message' => 'Belum ada item barang yang diisi pada permintaan ini'));
+                return;
+            }
+
             if($this->Permintaan_stok_unit->update($table, ['id_tc_permintaan_inst' => $id], ['send_to_verify' => 1])){
                 echo json_encode(array('status' => 200, 'message' => 'Proses Kirim Data Berhasil Dilakukan'));
 

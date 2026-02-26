@@ -23,6 +23,43 @@ jQuery(function($) {
 
 $(document).ready(function() {
 
+    // BMI Calculation
+    function hitungBMI() {
+      var tb = parseFloat($('#fisik_tinggi_badan').val());
+      var bb = parseFloat($('#fisik_berat_badan').val());
+      if (tb > 0 && bb > 0) {
+        var bmi = bb / Math.pow(tb / 100, 2);
+        var bmiRounded = bmi.toFixed(1);
+        $('#fisik_bmi').val(bmiRounded);
+
+        var kategori, warna;
+        if (bmi < 18.5) {
+          kategori = 'Berat Badan Kurang'; warna = 'label-info';
+        } else if (bmi < 25.0) {
+          kategori = 'Normal'; warna = 'label-success';
+        } else if (bmi < 30.0) {
+          kategori = 'Berat Badan Lebih'; warna = 'label-warning';
+        } else if (bmi < 35.0) {
+          kategori = 'Obesitas I'; warna = 'label-danger';
+        } else if (bmi < 40.0) {
+          kategori = 'Obesitas II'; warna = 'label-danger';
+        } else {
+          kategori = 'Obesitas III'; warna = 'label-danger';
+        }
+        $('#bmi_kategori').text(kategori).removeClass('label-info label-success label-warning label-danger').addClass('label ' + warna).show();
+      } else {
+        $('#fisik_bmi').val('');
+        $('#bmi_kategori').hide();
+      }
+    }
+
+    $('#fisik_tinggi_badan, #fisik_berat_badan').on('input', function() {
+      hitungBMI();
+    });
+
+    // Hitung BMI saat halaman load (mode edit)
+    hitungBMI();
+
     $('#btn_pemeriksaan_fisik').click(function (e) {   
       e.preventDefault();
 
@@ -188,16 +225,21 @@ $(document).ready(function() {
     </div>
 
     <div class="form-group">
-                      
+
       <label class="control-label col-sm-3">BMI (Index Masa Tubuh)</label>
-      
+
       <div class="col-md-2">
-        
-        <input type="text" class="form-control" name="fisik_bmi" id="fisik_bmi" value="<?php echo isset($bmi)?$bmi:''?>"  >
-      
+        <input type="text" class="form-control" name="fisik_bmi" id="fisik_bmi" value="<?php echo isset($bmi)?$bmi:''?>" readonly style="background-color:#f5f5f5;">
       </div>
-    
-    
+
+      <div class="col-md-4" style="padding-top:7px;">
+        <span id="bmi_kategori" class="label" style="font-size:13px; padding:5px 10px; display:none;"></span>
+        <small class="text-muted" style="margin-left:8px;">
+          <i class="fa fa-info-circle"></i>
+          &lt;18.5 Kurang &nbsp;|&nbsp; 18.5–24.9 Normal &nbsp;|&nbsp; 25–29.9 Lebih &nbsp;|&nbsp; &ge;30 Obesitas
+        </small>
+      </div>
+
     </div>
 
 
@@ -315,6 +357,7 @@ $(document).ready(function() {
     </div>
 
     <br><p><b><i class="fa fa-edit"></i> Mulut / Gigi </b></p>
+    <?php $mg = (isset($pemeriksaan_fisik->mulut_gigi) && is_object($pemeriksaan_fisik->mulut_gigi)) ? $pemeriksaan_fisik->mulut_gigi : new stdClass(); ?>
 
     <div class="form-group">
         <label class="control-label col-sm-2" for="">Gigi Atas Kanan</label>
@@ -322,7 +365,7 @@ $(document).ready(function() {
           <select id="gigi_upright" class="form-control" name="gigi_upright">
               <?php 
               foreach($gigi as $row){
-                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas == $row->value)?'selected':'';
+                $selected = (isset($mg->gigi_kanan_atas) && $mg->gigi_kanan_atas == $row->value)?'selected':'';
                 echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
               }
             ?>
@@ -330,11 +373,11 @@ $(document).ready(function() {
         </div>
         <label class="control-label col-sm-2" for="">Gigi ke-</label>
         <div class="col-md-2">    
-          <input type="text" class="form-control" name="gigi_upright_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas_ke:''?>">
+          <input type="text" class="form-control" name="gigi_upright_ke" value="<?php echo isset($mg->gigi_kanan_atas_ke)?$mg->gigi_kanan_atas_ke:''?>">
         </div>
         <label class="control-label col-sm-1" for="">Catatan</label>
         <div class="col-md-3">    
-          <input type="text" class="form-control" name="gigi_upright_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_atas)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_atas:''?>">
+          <input type="text" class="form-control" name="gigi_upright_note" value="<?php echo isset($mg->catatan_gigi_kanan_atas)?$mg->catatan_gigi_kanan_atas:''?>">
         </div>
     </div>
 
@@ -344,7 +387,7 @@ $(document).ready(function() {
           <select id="gigi_upleft" class="form-control" name="gigi_upleft">
               <?php 
               foreach($gigi as $row){
-                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas == $row->value)?'selected':'';
+                $selected = (isset($mg->gigi_kiri_atas) && $mg->gigi_kiri_atas == $row->value)?'selected':'';
                 echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
               }
             ?>
@@ -352,11 +395,11 @@ $(document).ready(function() {
         </div>
         <label class="control-label col-sm-2" for="">Gigi ke-</label>
         <div class="col-md-2">    
-          <input type="text" class="form-control" name="gigi_upleft_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas_ke:''?>">
+          <input type="text" class="form-control" name="gigi_upleft_ke" value="<?php echo isset($mg->gigi_kiri_atas_ke)?$mg->gigi_kiri_atas_ke:''?>">
         </div>
         <label class="control-label col-sm-1" for="">Catatan</label>
         <div class="col-md-3">    
-          <input type="text" class="form-control" name="gigi_upleft_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_atas)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_atas:''?>">
+          <input type="text" class="form-control" name="gigi_upleft_note" value="<?php echo isset($mg->catatan_gigi_kiri_atas)?$mg->catatan_gigi_kiri_atas:''?>">
         </div>
     </div>
 
@@ -366,7 +409,7 @@ $(document).ready(function() {
           <select id="gigi_downright" class="form-control" name="gigi_downright">
               <?php 
               foreach($gigi as $row){
-                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah == $row->value)?'selected':'';
+                $selected = (isset($mg->gigi_kanan_bawah) && $mg->gigi_kanan_bawah == $row->value)?'selected':'';
                 echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
               }
             ?>
@@ -374,11 +417,11 @@ $(document).ready(function() {
         </div>
         <label class="control-label col-sm-2" for="">Gigi ke-</label>
         <div class="col-md-2">    
-          <input type="text" class="form-control" name="gigi_downright_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah_ke:''?>">
+          <input type="text" class="form-control" name="gigi_downright_ke" value="<?php echo isset($mg->gigi_kanan_bawah_ke)?$mg->gigi_kanan_bawah_ke:''?>">
         </div>
         <label class="control-label col-sm-1" for="">Catatan</label>
         <div class="col-md-3">    
-          <input type="text" class="form-control" name="gigi_downright_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_bawah)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_bawah:''?>">
+          <input type="text" class="form-control" name="gigi_downright_note" value="<?php echo isset($mg->catatan_gigi_kanan_bawah)?$mg->catatan_gigi_kanan_bawah:''?>">
         </div>
     </div>
 
@@ -388,7 +431,7 @@ $(document).ready(function() {
           <select id="gigi_downleft" class="form-control" name="gigi_downleft">
               <?php 
               foreach($gigi as $row){
-                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah == $row->value)?'selected':'';
+                $selected = (isset($mg->gigi_kiri_bawah) && $mg->gigi_kiri_bawah == $row->value)?'selected':'';
                 echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
               }
             ?>
@@ -396,25 +439,25 @@ $(document).ready(function() {
         </div>
         <label class="control-label col-sm-2" for="">Gigi ke-</label>
         <div class="col-md-2">    
-          <input type="text" class="form-control" name="gigi_downleft_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah_ke:''?>">
+          <input type="text" class="form-control" name="gigi_downleft_ke" value="<?php echo isset($mg->gigi_kiri_bawah_ke)?$mg->gigi_kiri_bawah_ke:''?>">
         </div>
         <label class="control-label col-sm-1" for="">Catatan</label>
         <div class="col-md-3">    
-          <input type="text" class="form-control" name="gigi_downleft_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_bawah)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_bawah:''?>">
+          <input type="text" class="form-control" name="gigi_downleft_note" value="<?php echo isset($mg->catatan_gigi_kiri_bawah)?$mg->catatan_gigi_kiri_bawah:''?>">
         </div>
     </div>
 
     <div class="form-group">
         <label class="control-label col-sm-2" for="">Lidah</label>   
         <div class="col-md-4">
-          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'pemeriksaan_fisik_lidah')), isset($pemeriksaan_fisik)?$pemeriksaan_fisik->mulut_gigi->lidah:'', 'fisik_lidah', 'fisik_lidah', 'form-control', '', '') ?>
+          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'pemeriksaan_fisik_lidah')), isset($mg->lidah)?$mg->lidah:'', 'fisik_lidah', 'fisik_lidah', 'form-control', '', '') ?>
         </div>
     </div>
 
     <div class="form-group">
       <label class="control-label col-sm-2">Keterangan</label>
       <div class="col-md-9">
-        <textarea name="keterangan_mulut" id="keterangan_mulut" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->mulut_gigi->keterangan)?$pemeriksaan_fisik->mulut_gigi->keterangan:''?></textarea>
+        <textarea name="keterangan_mulut" id="keterangan_mulut" class="form-control" style="height:80px !important;"><?php echo isset($mg->keterangan)?$mg->keterangan:''?></textarea>
       </div>
     </div>
 

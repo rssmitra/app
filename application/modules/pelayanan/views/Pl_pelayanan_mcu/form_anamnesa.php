@@ -82,9 +82,9 @@ $(document).ready(function() {
                       
       <label class="control-label col-sm-2">Keluhan</label>
       
-      <div class="col-md-8">
+      <div class="col-md-10">
         
-        <textarea name="keluhan_utama" id="keluhan_utama" cols="50" style="height:100px !important;"><?php echo isset($anamnesa)?$anamnesa->keluhan_utama:'' ?></textarea>
+        <textarea name="keluhan_utama" id="keluhan_utama" cols="50" style="height:100px !important; width: 100%"><?php echo isset($anamnesa)?$anamnesa->keluhan_utama:'' ?></textarea>
       
       </div>
     
@@ -95,7 +95,7 @@ $(document).ready(function() {
 
     <div class="form-group">
   
-        <label class="control-label col-sm-3" for="Province">Sakit Kuning</label>
+        <label class="control-label col-sm-3" for="Province">Penyakit Hati</label>
   
         <div class="col-md-3">
 
@@ -103,7 +103,7 @@ $(document).ready(function() {
 
               <label>
 
-                <input name="riwayat_sakit_kuning" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->sakit_kuning=='Ada')?'checked="checked"':'':'' ?>/>
+                <input name="riwayat_penyakit_hati" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa->riwayat_penyakit_masa_lampau->penyakit_hati)?($anamnesa->riwayat_penyakit_masa_lampau->penyakit_hati=='Ada')?'checked="checked"':'':'' ?>/>
 
                 <span class="lbl"> Ada</span>
 
@@ -111,7 +111,7 @@ $(document).ready(function() {
 
               <label>
 
-                <input name="riwayat_sakit_kuning" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->sakit_kuning=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
+                <input name="riwayat_penyakit_hati" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa->riwayat_penyakit_masa_lampau->penyakit_hati)?($anamnesa->riwayat_penyakit_masa_lampau->penyakit_hati=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
 
                 <span class="lbl"> Tidak Ada</span>
 
@@ -242,7 +242,7 @@ $(document).ready(function() {
 
             <label>
 
-              <input name="riwayat_operasi" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->operasi=='Ada')?'checked="checked"':'':'' ?>/>
+              <input name="riwayat_operasi" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->operasi=='Ada')?'checked="checked"':'':'' ?> onchange="toggleJenisOperasi(this)"/>
 
               <span class="lbl"> Ada</span>
 
@@ -250,7 +250,7 @@ $(document).ready(function() {
 
             <label>
 
-              <input name="riwayat_operasi" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->operasi=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
+              <input name="riwayat_operasi" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->operasi=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?> onchange="toggleJenisOperasi(this)"/>
 
               <span class="lbl"> Tidak Ada</span>
 
@@ -258,6 +258,28 @@ $(document).ready(function() {
 
         </div>
 
+      </div>
+
+      <script>
+        function toggleJenisOperasi(el) {
+          document.getElementById('jenis_operasi_wrap').style.display = (el.value === 'Ada') ? '' : 'none';
+          if (el.value !== 'Ada') document.getElementById('jenis_operasi').value = '';
+        }
+        function toggleAlergiDetail(field, el) {
+          var wrap = document.getElementById('alergi_' + field + '_detail_wrap');
+          wrap.style.display = (el.value === 'Ada') ? '' : 'none';
+          if (el.value !== 'Ada') document.getElementById('alergi_' + field + '_detail').value = '';
+        }
+      </script>
+
+    </div>
+
+    <div id="jenis_operasi_wrap" class="form-group" style="<?php echo (isset($anamnesa->riwayat_penyakit_masa_lampau->operasi) && $anamnesa->riwayat_penyakit_masa_lampau->operasi=='Ada') ? '' : 'display:none;' ?>">
+
+      <label class="control-label col-sm-3" for="jenis_operasi">Jenis Operasi</label>
+
+      <div class="col-md-9">
+        <input name="jenis_operasi" type="text" class="form-control" id="jenis_operasi" value="<?php echo isset($anamnesa->riwayat_penyakit_masa_lampau->jenis_operasi) ? $anamnesa->riwayat_penyakit_masa_lampau->jenis_operasi : '' ?>"/>
       </div>
 
     </div>
@@ -290,29 +312,11 @@ $(document).ready(function() {
 
       </div>
 
-      <label class="control-label col-sm-2" for="Province">Lain-lain</label>
+      <label class="control-label col-sm-2" for="riwayat_lainnya">Lain-lain</label>
 
       <div class="col-md-4">
 
-        <div class="radio">
-
-            <label>
-
-              <input name="riwayat_lainnya" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->lainnya=='Ada')?'checked="checked"':'':'' ?>/>
-
-              <span class="lbl"> Ada</span>
-
-            </label>
-
-            <label>
-
-              <input name="riwayat_lainnya" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_masa_lampau->lainnya=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
-
-              <span class="lbl"> Tidak Ada</span>
-
-            </label>
-
-        </div>
+        <input name="riwayat_lainnya" type="text" class="form-control" id="riwayat_lainnya" value="<?php echo isset($anamnesa->riwayat_penyakit_masa_lampau->lainnya) ? $anamnesa->riwayat_penyakit_masa_lampau->lainnya : '' ?>"/>
 
       </div>
 
@@ -491,29 +495,11 @@ $(document).ready(function() {
 
     <div class="form-group">
       
-      <label class="control-label col-sm-3" for="Province">Lain-lain</label>
+      <label class="control-label col-sm-3" for="riwayat_keluarga_lainnya">Lain-lain</label>
 
-      <div class="col-md-3">
+      <div class="col-md-9">
 
-        <div class="radio">
-
-            <label>
-
-              <input name="riwayat_keluarga_lainnya" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_keluarga->lainnya=='Ada')?'checked="checked"':'':'' ?>/>
-
-              <span class="lbl"> Ada</span>
-
-            </label>
-
-            <label>
-
-              <input name="riwayat_keluarga_lainnya" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->riwayat_penyakit_keluarga->lainnya=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
-
-              <span class="lbl"> Tidak Ada</span>
-
-            </label>
-
-        </div>
+        <input name="riwayat_keluarga_lainnya" type="text" class="form-control" id="riwayat_keluarga_lainnya" value="<?php echo isset($anamnesa->riwayat_penyakit_keluarga->lainnya) ? $anamnesa->riwayat_penyakit_keluarga->lainnya : '' ?>"/>
 
       </div>
 
@@ -523,16 +509,16 @@ $(document).ready(function() {
     <br><p><b><i class="fa fa-edit"></i> Catatan khusus alergi </b></p>
 
     <div class="form-group">
-  
-        <label class="control-label col-sm-3" for="Province">Makanan</label>
-  
+
+        <label class="control-label col-sm-3" for="Province">Udara</label>
+
         <div class="col-md-3">
 
           <div class="radio">
 
               <label>
 
-                <input name="alergi_makanan" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_makanan=='Ada')?'checked="checked"':'':'' ?>/>
+                <input name="alergi_udara" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_udara=='Ada')?'checked="checked"':'':'' ?> onchange="toggleAlergiDetail('udara', this)"/>
 
                 <span class="lbl"> Ada</span>
 
@@ -540,7 +526,7 @@ $(document).ready(function() {
 
               <label>
 
-                <input name="alergi_makanan" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_makanan=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
+                <input name="alergi_udara" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_udara=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?> onchange="toggleAlergiDetail('udara', this)"/>
 
                 <span class="lbl"> Tidak Ada</span>
 
@@ -550,15 +536,22 @@ $(document).ready(function() {
 
         </div>
 
-        <label class="control-label col-sm-2" for="Province">Udara</label>
-  
-        <div class="col-md-4">
+        <div id="alergi_udara_detail_wrap" class="col-md-5" style="<?php echo (isset($anamnesa->alergi->alergi_udara) && $anamnesa->alergi->alergi_udara=='Ada') ? '' : 'display:none;' ?>">
+          <input name="alergi_udara_detail" type="text" id="alergi_udara_detail" class="form-control" placeholder="Sebutkan jenis alergi udara..." value="<?php echo isset($anamnesa->alergi->alergi_udara_detail) ? $anamnesa->alergi->alergi_udara_detail : '' ?>"/>
+        </div>
+
+    </div>
+    <div class="form-group">
+
+        <label class="control-label col-sm-3" for="Province">Makanan</label>
+
+        <div class="col-md-3">
 
           <div class="radio">
 
               <label>
 
-                <input name="alergi_udara" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_udara=='Ada')?'checked="checked"':'':'' ?>/>
+                <input name="alergi_makanan" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_makanan=='Ada')?'checked="checked"':'':'' ?> onchange="toggleAlergiDetail('makanan', this)"/>
 
                 <span class="lbl"> Ada</span>
 
@@ -566,7 +559,7 @@ $(document).ready(function() {
 
               <label>
 
-                <input name="alergi_udara" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_udara=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
+                <input name="alergi_makanan" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_makanan=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?> onchange="toggleAlergiDetail('makanan', this)"/>
 
                 <span class="lbl"> Tidak Ada</span>
 
@@ -576,10 +569,14 @@ $(document).ready(function() {
 
         </div>
 
+        <div id="alergi_makanan_detail_wrap" class="col-md-5" style="<?php echo (isset($anamnesa->alergi->alergi_makanan) && $anamnesa->alergi->alergi_makanan=='Ada') ? '' : 'display:none;' ?>">
+          <input name="alergi_makanan_detail" type="text" id="alergi_makanan_detail" class="form-control" placeholder="Sebutkan jenis alergi makanan..." value="<?php echo isset($anamnesa->alergi->alergi_makanan_detail) ? $anamnesa->alergi->alergi_makanan_detail : '' ?>"/>
+        </div>
+
     </div>
 
     <div class="form-group">
-  
+
       <label class="control-label col-sm-3" for="Province">Obat</label>
 
       <div class="col-md-3">
@@ -588,7 +585,7 @@ $(document).ready(function() {
 
               <label>
 
-                <input name="alergi_obat" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_obat=='Ada')?'checked="checked"':'':'' ?>/>
+                <input name="alergi_obat" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_obat=='Ada')?'checked="checked"':'':'' ?> onchange="toggleAlergiDetail('obat', this)"/>
 
                 <span class="lbl"> Ada</span>
 
@@ -596,7 +593,7 @@ $(document).ready(function() {
 
               <label>
 
-                <input name="alergi_obat" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_obat=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
+                <input name="alergi_obat" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_obat=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?> onchange="toggleAlergiDetail('obat', this)"/>
 
                 <span class="lbl"> Tidak Ada</span>
 
@@ -605,30 +602,20 @@ $(document).ready(function() {
           </div>
 
         </div>
+
+        <div id="alergi_obat_detail_wrap" class="col-md-5" style="<?php echo (isset($anamnesa->alergi->alergi_obat) && $anamnesa->alergi->alergi_obat=='Ada') ? '' : 'display:none;' ?>">
+          <input name="alergi_obat_detail" type="text" id="alergi_obat_detail" class="form-control" placeholder="Sebutkan jenis alergi obat..." value="<?php echo isset($anamnesa->alergi->alergi_obat_detail) ? $anamnesa->alergi->alergi_obat_detail : '' ?>"/>
+        </div>
+
+    </div>
+
+    <div class="form-group">
         
-        <label class="control-label col-sm-2" for="Province">Lain-lain</label>
+        <label class="control-label col-sm-3" for="alergi_lainnya">Lain-lain</label>
 
-        <div class="col-md-4">
+        <div class="col-md-9">
 
-          <div class="radio">
-
-              <label>
-
-                <input name="alergi_lainnya" type="radio" class="ace" value="Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_lainnya=='Ada')?'checked="checked"':'':'' ?>/>
-
-                <span class="lbl"> Ada</span>
-
-              </label>
-
-              <label>
-
-                <input name="alergi_lainnya" type="radio" class="ace" value="Tidak Ada" <?php echo isset($anamnesa)?($anamnesa->alergi->alergi_lainnya=='Tidak Ada')?'checked="checked"':'':'checked="checked"' ?>/>
-
-                <span class="lbl"> Tidak Ada</span>
-
-              </label>
-
-          </div>
+          <input name="alergi_lainnya" type="text" class="form-control" id="alergi_lainnya" value="<?php echo isset($anamnesa->alergi->alergi_lainnya) ? $anamnesa->alergi->alergi_lainnya : '' ?>"/>
 
         </div>
 

@@ -2017,34 +2017,40 @@ class Templates extends MX_Controller {
         $jk = ($data->reg_data->jk == 'L')?'Pria':'Wanita';
         // echo'<pre>';print_r($data_pm);die;
         if($flag=='RAD'){
-            $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
+            $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil);
+            $time_isihasil = date('H:i:s', strtotime($data_pm->tgl_isihasil));
+            if (empty($data_pm->tgl_isihasil) || $time_isihasil == '00:00:00') {
+                $tgl_laporan = $this->tanggal->formatDateTime(date('Y-m-d H:i:s', strtotime($data_pm->tgl_periksa) + 45 * 60));
+            } else {
+                $tgl_laporan = $this->tanggal->formatDateTime($data_pm->tgl_isihasil);
+            }
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
-                            <td width="100px">No. RM <br><span style="font-style:italic; font-size: 10px">Medical Record Number</span></td>
-                            <td width="250px">: '.$data->reg_data->no_mr.'</td>
-                            <td width="150px">No. Penunjang</td>
+                            <td width="120px">No. RM <br><span style="font-style:italic; font-size: 0.7em">(Medical Record Number)</span></td>
+                            <td width="200px">: '.$data->reg_data->no_mr.'</td>
+                            <td width="150px">No. Penunjang <br><span style="font-style:italic; font-size: 0.7em">(Order Number)</span></td>
                             <td width="250px">: '.$pm.'</td>
                         </tr>
                         <tr>
-                            <td width="100px" align="left">Nama Pasien</td>
-                            <td width="250px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
-                            <td width="150px">Dokter Pengirim</td>
+                            <td width="120px" align="left">Nama Pasien <br><span style="font-style:italic; font-size: 0.7em">(Patient Name)</span></td>
+                            <td width="200px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
+                            <td width="150px">Dokter Pengirim <br><span style="font-style:italic; font-size: 0.7em">(Referring Doctor)</span></td>
                             <td width="250px">: '.$data->reg_data->nama_pegawai.'</td>
                         </tr>
                         <tr>
-                            <td width="100px">Umur</td>
-                            <td width="250px">: '.$data->reg_data->umur_lengkap.'</td>
-                            <td width="150px">Tanggal Pemeriksaan</td>
+                            <td width="120px">Umur <br><span style="font-style:italic; font-size: 0.7em">(Age)</span></td>
+                            <td width="200px">: '.$data->reg_data->umur_lengkap.'</td>
+                            <td width="150px">Tanggal Pemeriksaan <br><span style="font-style:italic; font-size: 0.7em">(Examination Date)</span></td>
                             <td align="left" width="200px">: '.$this->tanggal->formatDateTime($data_pm->tgl_periksa).'</td>
-                            
+
                         </tr>
 
                         <tr>
-                            <td width="100px">Jenis Kelamin</td>
-                            <td width="250px">: '.$jk.'</td>
-                            <td width="150px">Laporan Pemeriksaan</td>
-                            <td width="250px">: '.$this->tanggal->formatDateTime($data_pm->tgl_isihasil).'</td>
-                        </tr>                    
+                            <td width="120px">Jenis Kelamin <br><span style="font-style:italic; font-size: 0.7em">(Gender)</span></td>
+                            <td width="200px">: '.$jk.'</td>
+                            <td width="150px">Tanggal Laporan <br><span style="font-style:italic; font-size: 0.7em">(Report Date)</span></td>
+                            <td width="250px">: '.$tgl_laporan.'</td>
+                        </tr>
                     </table>';
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 

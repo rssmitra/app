@@ -1,5 +1,6 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script type="text/javascript">
   jQuery(function($) {
@@ -395,36 +396,53 @@ function print_data(myid){
 }
 
 function kirim_permintaan(myid, flag){
-  if(confirm('Apakah Anda yakin akan mengirim permintaan ini?')){
-    $.ajax({
-        url: base_url+'/kirim_permintaan',
-        type: "post",
-        data: {
-          ID: myid,
-          flag: flag,
-        },
-        dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        success: function(response) {
-          if(response.status === 200){
-            $.achtung({message: response.message, timeout:5});
-            reload_table();
-          } else {
-            $.achtung({message: response.message, timeout:5, className: 'achtungFail'});
+  Swal.fire({
+    title: 'Konfirmasi',
+    text: 'Apakah Anda yakin akan mengirim permintaan ini?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Kirim',
+    cancelButtonText: 'Batal',
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+  }).then(function(result){
+    if(result.isConfirmed){
+      $.ajax({
+          url: base_url+'/kirim_permintaan',
+          type: "post",
+          data: {
+            ID: myid,
+            flag: flag,
+          },
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();
+          },
+          success: function(response) {
+            if(response.status === 200){
+              $.achtung({message: response.message, timeout:5});
+              reload_table();
+            } else if(response.status === 302){
+              Swal.fire({
+                title: 'Perhatian!',
+                text: response.message,
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+              });
+            } else {
+              $.achtung({message: response.message, timeout:5, className: 'achtungFail'});
+            }
+          },
+          error: function(xhr, status, error) {
+            $.achtung({message: 'Terjadi kesalahan saat mengirim permintaan', timeout:5, className: 'achtungFail'});
+          },
+          complete: function() {
+            achtungHideLoader();
           }
-        },
-        error: function(xhr, status, error) {
-          $.achtung({message: 'Terjadi kesalahan saat mengirim permintaan', timeout:5, className: 'achtungFail'});
-        },
-        complete: function() {
-          achtungHideLoader();
-        }
-    });
-  } else {
-    return false;
-  }
+      });
+    }
+  });
 }
 
 </script>

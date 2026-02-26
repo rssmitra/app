@@ -2,6 +2,7 @@
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>
 jQuery(function($) {
@@ -262,11 +263,11 @@ function insert_cart_log(){
         var jsonResponse = JSON.parse(data);
 
         if(jsonResponse.status === 200){
-          
+
           cartData.ajax.url("purchasing/pendistribusian/Permintaan_stok_unit/get_detail_cart?flag="+jsonResponse.flag+"&id="+$('#id').val()).load();
           // reset form input
-          $('#inputKeyBarang').val('');         
-          $('#kode_brg_hidden').val('');         
+          $('#inputKeyBarang').val('');
+          $('#kode_brg_hidden').val('');
           $('#nama_brg_hidden').val('');
           $('#satuan_brg_hidden').val('');
           $('#harga_brg_hidden').val('');
@@ -274,7 +275,15 @@ function insert_cart_log(){
           $('#qtyStok').val('');
           $('#qtyBarang').val('');
           $('#keterangan_permintaan').val('');
-          
+
+        }else if(jsonResponse.status === 302){
+          Swal.fire({
+            title: 'Barang Sudah Ada!',
+            html: jsonResponse.message,
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+          });
         }else{
           $('#div_detail_brg').html( '<span style="color: red">- '+jsonResponse.message+' -</span>' );
         }

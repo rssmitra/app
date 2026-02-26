@@ -72,12 +72,14 @@
     No Verifikasi. <?php echo isset($dt_detail_brg[0])?$dt_detail_brg[0]->no_acc:''?><br>
     Tanggal Verifikasi. <?php echo isset($dt_detail_brg[0])?($dt_detail_brg[0]->tgl_acc !='0000-00-00 00:00:00')?$this->tanggal->formatDateDmy($dt_detail_brg[0]->tgl_acc):'-':''?><br>
     Disetujui Oleh. <?php echo isset($dt_detail_brg[0])?$dt_detail_brg[0]->acc_by:''?><br>
-    Status Verifikasi. 
+    Status Verifikasi.
     <?php
-      if($dt_detail_brg[0]->tgl_acc == null){
-        echo '<span style="color: red">Belum diverifikasi</span>';
-      }else{
-        echo isset($dt_detail_brg[0])?($dt_detail_brg[0]->status_acc == 1)?'<span style="color: green">Disetujui</span>':'<span style="color: red">Ditolak</span>':'';
+      if(isset($dt_detail_brg[0])){
+        if($dt_detail_brg[0]->tgl_acc == null){
+          echo '<span style="color: red">Belum diverifikasi</span>';
+        }else{
+          echo ($dt_detail_brg[0]->status_acc == 1)?'<span style="color: green">Disetujui</span>':'<span style="color: red">Ditolak</span>';
+        }
       }
     ?>
     <br>

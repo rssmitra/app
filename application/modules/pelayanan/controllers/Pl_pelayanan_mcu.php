@@ -525,12 +525,13 @@ class Pl_pelayanan_mcu extends MX_Controller {
             $dataexec = array(
                 'keluhan_utama' => $this->form_validation->set_value('keluhan_utama'),
                 'riwayat_penyakit_masa_lampau' => array(
-                                        'sakit_kuning' => $this->input->post('riwayat_sakit_kuning'),
+                                        'penyakit_hati' => $this->input->post('riwayat_penyakit_hati'),
                                         'kencing_manis' => $this->input->post('riwayat_kencing_manis'),
                                         'hipertensi' => $this->input->post('riwayat_hipertensi'),
                                         'kencing_batu' => $this->input->post('riwayat_kencing_batu'),
                                         'asma' => $this->input->post('riwayat_asma'),
                                         'operasi' => $this->input->post('riwayat_operasi'),
+                                        'jenis_operasi' => $this->input->post('riwayat_jenis_operasi'),
                                         'penyakit_karena_kecelakaan' => $this->input->post('riwayat_krn_kecelakaan'),
                                         'lainnya' => $this->input->post('riwayat_lainnya')
                                     ),   
@@ -545,8 +546,11 @@ class Pl_pelayanan_mcu extends MX_Controller {
                                     ),
                 'alergi' => array(
                                     'alergi_makanan' => $this->input->post('alergi_makanan'),
+                                    'alergi_makanan_detail' => $this->input->post('alergi_makanan_detail'),
                                     'alergi_udara' => $this->input->post('alergi_udara'),
+                                    'alergi_udara_detail' => $this->input->post('alergi_udara_detail'),
                                     'alergi_obat' => $this->input->post('alergi_obat'),
+                                    'alergi_obat_detail' => $this->input->post('alergi_obat_detail'),
                                     'alergi_lainnya' => $this->input->post('alergi_lainnya')
                                 )
                

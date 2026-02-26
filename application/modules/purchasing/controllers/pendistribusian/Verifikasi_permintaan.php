@@ -145,7 +145,7 @@ class Verifikasi_permintaan extends MX_Controller {
                 // insert detail barang
                 $dt_detail= array(
                     'status_verif' => isset($_POST['selected'][$id_tc_permintaan_inst_det]) ? $this->regex->_genRegex(1,'RGXINT') : 0,
-                    'jml_acc_atasan' => $_POST['jml_acc'][$id_tc_permintaan_inst_det] ,
+                    'jml_acc_atasan' => (isset($_POST['jml_acc'][$id_tc_permintaan_inst_det]) && $_POST['jml_acc'][$id_tc_permintaan_inst_det] !== '') ? (int)$_POST['jml_acc'][$id_tc_permintaan_inst_det] : null,
                     'keterangan_verif' => $this->regex->_genRegex($_POST['keterangan_verif'][$id_tc_permintaan_inst_det],'RGXQSL'),
                     'created_date' => date('Y-m-d H:i:s'),
                     'created_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
