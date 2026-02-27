@@ -2016,9 +2016,11 @@ class Templates extends MX_Controller {
         $jk = ($data->reg_data->jk == 'L')?'Pria':'Wanita';
         // echo'<pre>';print_r($data_pm);die;
         if($flag=='RAD'){
-            $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil);
+            $tgl_pemeriksaan = ($data_pm->tgl_periksa != '') ? $this->tanggal->formatDateTime($data_pm->tgl_periksa) : '';
             $time_isihasil = date('H:i:s', strtotime($data_pm->tgl_isihasil));
-            if (empty($data_pm->tgl_isihasil) || $time_isihasil == '00:00:00') {
+            if (empty($tgl_pemeriksaan)) {
+                $tgl_laporan = '';
+            } elseif ($time_isihasil == '00:00:00') {
                 $tgl_laporan = $this->tanggal->formatDateTime(date('Y-m-d H:i:s', strtotime($data_pm->tgl_periksa) + 45 * 60));
             } else {
                 $tgl_laporan = $this->tanggal->formatDateTime($data_pm->tgl_isihasil);
