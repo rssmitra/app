@@ -1633,7 +1633,7 @@ class Templates extends MX_Controller {
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
                     <tr>
-                        <td colspan="3" align="center"><br><b>HASIL PEMERIKSAAN RADIOLOGI</b><br><span style="font-style:italic">Radiology Examination Report</span><hr></td>
+                        <td colspan="3" align="center"><br><b>HASIL PEMERIKSAAN RADIOLOGI</b><br><span style="font-style:italic">Radiology Examination Report</span></td>
                     </tr> 
                     ';
             
@@ -1643,18 +1643,17 @@ class Templates extends MX_Controller {
                     //$no++;
                     $html .= '      
                             <tr>
-                                <th width="100px"><b>Pemeriksaan</b><br><span style="font-style:italic">Examination</span> </th>
-                                <td width="10px" valign="top">:</td>
-                                <th width="550px">'.$name.'</th>
+                                <th width="100px" style="border-top:1px solid #000;"><b>Pemeriksaan</b><br><span style="font-style:italic; font-size: 0.8em">(Examination)</span> </th>
+                                <td width="10px" valign="top" style="border-top:1px solid #000;">:</td>
+                                <th width="550px" style="border-top:1px solid #000;">'.$name.'</th>
                             </tr>
-                            <hr>
                             <tr>
-                                <td valign="top" width="100px"><b>Hasil</b><br><span style="font-style:italic">Result</span> </td>
+                                <td valign="top" width="100px"><b>Hasil</b><br><span style="font-style:italic; font-size: 0.8em">(Result)</span> </td>
                                 <td width="10px" valign="top">:</td>
                                 <td>'.nl2br($value->hasil).'</td>
                             </tr>
                             <tr>
-                                <td valign="top" width="100px"><b>Kesan</b><br><span style="font-style:italic">Impression</span> </td>
+                                <td valign="top" width="100px"><b>Kesan</b><br><span style="font-style:italic; font-size: 0.8em">(Impression)</span> </td>
                                 <td width="10px" valign="top">:</td>
                                 <td>'.nl2br($value->keterangan).'</td>
                             </tr>';
@@ -1664,7 +1663,7 @@ class Templates extends MX_Controller {
             }
             
             $html .= '<hr><tr>
-                        <td valign="top" width="100px"><b>Catatan</b><br><span style="font-style:italic">Notes</span> </td>
+                        <td valign="top" width="100px"><b>Catatan</b><br><span style="font-style:italic; font-size: 0.8em">(Notes)</span> </td>
                         <td width="10px" valign="top">:</td>
                         <td>'.trim($data_pm->catatan_hasil).'</td>
                     </tr>';
@@ -2026,29 +2025,29 @@ class Templates extends MX_Controller {
             }
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
-                            <td width="120px">No. RM <br><span style="font-style:italic; font-size: 0.7em">(Medical Record Number)</span></td>
-                            <td width="200px">: '.$data->reg_data->no_mr.'</td>
-                            <td width="150px">No. Penunjang <br><span style="font-style:italic; font-size: 0.7em">(Order Number)</span></td>
+                            <td width="150px">No. RM <span style="font-style:italic; font-size: 0.8em">(Med Record Number)</span></td>
+                            <td width="180px" style="vertical-align: middle">: '.$data->reg_data->no_mr.'</td>
+                            <td width="170px">No. Penunjang <span style="font-style:italic; font-size: 0.8em">(Order Number)</span></td>
                             <td width="250px">: '.$pm.'</td>
                         </tr>
                         <tr>
-                            <td width="120px" align="left">Nama Pasien <br><span style="font-style:italic; font-size: 0.7em">(Patient Name)</span></td>
-                            <td width="200px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
-                            <td width="150px">Dokter Pengirim <br><span style="font-style:italic; font-size: 0.7em">(Referring Doctor)</span></td>
+                            <td width="150px" align="left">Nama Pasien <span style="font-style:italic; font-size: 0.8em">(Patient Name)</span></td>
+                            <td width="180px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
+                            <td width="170px">Dokter Pengirim <span style="font-style:italic; font-size: 0.8em">(Reff Doctor)</span></td>
                             <td width="250px">: '.$data->reg_data->nama_pegawai.'</td>
                         </tr>
                         <tr>
-                            <td width="120px">Umur <br><span style="font-style:italic; font-size: 0.7em">(Age)</span></td>
-                            <td width="200px">: '.$data->reg_data->umur_lengkap.'</td>
-                            <td width="150px">Tanggal Pemeriksaan <br><span style="font-style:italic; font-size: 0.7em">(Examination Date)</span></td>
-                            <td align="left" width="200px">: '.$this->tanggal->formatDateTime($data_pm->tgl_periksa).'</td>
+                            <td width="150px">Umur <span style="font-style:italic; font-size: 0.8em">(Age)</span></td>
+                            <td width="180px">: '.$data->reg_data->umur_lengkap.'</td>
+                            <td width="170px">Tgl Pemeriksaan <span style="font-style:italic; font-size: 0.8em">(Exam Date)</span></td>
+                            <td align="left" width="180px">: '.$this->tanggal->formatDateTime($data_pm->tgl_periksa).'</td>
 
                         </tr>
 
                         <tr>
-                            <td width="120px">Jenis Kelamin <br><span style="font-style:italic; font-size: 0.7em">(Gender)</span></td>
-                            <td width="200px">: '.$jk.'</td>
-                            <td width="150px">Tanggal Laporan <br><span style="font-style:italic; font-size: 0.7em">(Report Date)</span></td>
+                            <td width="150px">Jenis Kelamin <span style="font-style:italic; font-size: 0.8em">(Gender)</span></td>
+                            <td width="180px">: '.$jk.'</td>
+                            <td width="170px">Tgl Laporan <span style="font-style:italic; font-size: 0.8em">(Report Date)</span></td>
                             <td width="250px">: '.$tgl_laporan.'</td>
                         </tr>
                     </table>';
@@ -2067,33 +2066,33 @@ class Templates extends MX_Controller {
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
-                            <td width="150px">No. Penunjang <br><span style="font-style:italic; font-size: 0.7em">(Order Number)</span></td>
+                            <td width="150px">No. Penunjang <br><span style="font-style:italic; font-size: 0.8em">(Order Number)</span></td>
                             <td width="250px">: '.$pm_.'</td>
                             <td width="100px">No. RM <br><span style="font-style:italic; font-size: 0.6em">(Medical Record Number)</span></td>
                             <td width="200px">: '.$no_mr.'</td>
                         </tr>
                         <tr>
-                            <td width="150px">Dokter Pengirim <br><span style="font-style:italic; font-size: 0.7em">(Referring Doctor)</span></td>
+                            <td width="150px">Dokter Pengirim <br><span style="font-style:italic; font-size: 0.8em">(Referring Doctor)</span></td>
                             <td width="250px">: '.$dokter_pengirim.'</td>
-                            <td width="100px" align="left">Nama Pasien <br><span style="font-style:italic; font-size: 0.7em">(Patient Name)</span></td>
+                            <td width="100px" align="left">Nama Pasien <br><span style="font-style:italic; font-size: 0.8em">(Patient Name)</span></td>
                             <td width="200px">: '.$nama_pasien.'</td>
                         </tr>
                         <tr>
-                            <td width="150px">Tanggal Pendaftaran <br><span style="font-style:italic; font-size: 0.7em">(Registration Date)</span></td>
+                            <td width="150px">Tanggal Pendaftaran <br><span style="font-style:italic; font-size: 0.8em">(Registration Date)</span></td>
                             <td align="left" width="250px">: '.$tgl_daftar.'</td>
-                            <td width="100px">Umur <br><span style="font-style:italic; font-size: 0.7em">(Age)</span></td>
+                            <td width="100px">Umur <br><span style="font-style:italic; font-size: 0.8em">(Age)</span></td>
                             <td width="200px">: '.$umur.' </td>     
                         </tr>
 
                         <tr>
-                            <td width="150px">Tanggal Pemeriksaan <br><span style="font-style:italic; font-size: 0.7em">(Examination Date)</span></td>
+                            <td width="150px">Tanggal Pemeriksaan <br><span style="font-style:italic; font-size: 0.8em">(Examination Date)</span></td>
                             <td width="250px">: '.$tgl_periksa.'</td>
-                            <td width="100px">Jenis Kelamin <br><span style="font-style:italic; font-size: 0.7em">(Gender)</span></td>
+                            <td width="100px">Jenis Kelamin <br><span style="font-style:italic; font-size: 0.8em">(Gender)</span></td>
                             <td width="200px">: '.$jk_.'</td>
                         </tr>    
                         
                         <tr>
-                        <td width="150px">Ruangan / Kelas <br><span style="font-style:italic; font-size: 0.7em">(Room/ Class</span></td>
+                        <td width="150px">Ruangan / Kelas <br><span style="font-style:italic; font-size: 0.8em">(Room/ Class</span></td>
                         <td width="250px" colspan="3">: '.ucwords($data_pm->nama_bagian).' / '.$data_pm->nama_klas.'</td>
                       
                         </tr>    
