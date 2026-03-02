@@ -14,7 +14,7 @@
         $no=0; 
         $data_lab = isset($penunjang['laboratorium'])?$penunjang['laboratorium']:[];
         foreach($data_lab as $key_p=>$row_p) : 
-          if($key_p <= 9) :
+          // if($key_p <= 9) :
             $no++;
       ?>
       <tr>
@@ -45,7 +45,9 @@
         </td>
         <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html&flag_mcu=<?php echo $row_p->flag_mcu?>', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
       </tr>
-      <?php endif; endforeach; ?>
+      <?php 
+      // endif; 
+    endforeach; ?>
     </tbody>
   </table>
 

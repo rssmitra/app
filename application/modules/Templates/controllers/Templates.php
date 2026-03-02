@@ -2019,7 +2019,7 @@ class Templates extends MX_Controller {
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '') ? $this->tanggal->formatDateTime($data_pm->tgl_periksa) : '';
             $time_isihasil = date('H:i:s', strtotime($data_pm->tgl_isihasil));
             if (empty($tgl_pemeriksaan)) {
-                $tgl_laporan = '';
+                $tgl_laporan = $this->tanggal->formatDateTime($data_pm->tgl_isihasil);
             } elseif ($time_isihasil == '00:00:00') {
                 $tgl_laporan = $this->tanggal->formatDateTime(date('Y-m-d H:i:s', strtotime($data_pm->tgl_periksa) + 45 * 60));
             } else {
