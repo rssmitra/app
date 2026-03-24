@@ -123,6 +123,7 @@ th, td {
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
             <?php
               $no=0; 
+              // print_r($result);die;
               foreach($result as $key_dt=>$row_dt) : $no++; 
                 $arr_tagihan_perusahaan[] = $row_dt->jumlah_tagih_int;
               endforeach;
@@ -133,26 +134,30 @@ th, td {
           </td>
         </tr>
 
-        <tr>
+        <!-- <tr>
           <td style="text-align:right; font-weight: bolder; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Biaya Meterai </td>
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
             <?php
-              $biaya_materai = ($total_tagih_perusahaan > 5000000) ? 10000 : 0; echo number_format($biaya_materai);
+              // $biaya_materai = ($total_tagih_perusahaan > 5000000) ? 10000 : 0; echo number_format($biaya_materai);
             ?>
           </td>
-        </tr>
+        </tr> -->
         <tr>
         <tr>
           <td style="text-align:right; font-weight: bolder; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
           <td style="font-weight: bolder; text-align:right; border: 1px solid black; border-collapse: collapse" nowrap>
-            <?php echo number_format($biaya_materai+$total_tagih_perusahaan); ?>
+            <?php 
+              // echo number_format($biaya_materai+$total_tagih_perusahaan); 
+              echo number_format($total_tagih_perusahaan);             
+            ?>
           </td>
         </tr>
         <tr>
           <td colspan="3" style="text-align:center; border: 1px solid black; border-collapse: collapse; padding: 10px 0 10px 0; "><span style="font-size: 14px !important;"> Terbilang : 
           <b><i>"
             <?php 
-              $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($biaya_materai+$total_tagih_perusahaan))
+              // $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($biaya_materai+$total_tagih_perusahaan))
+              $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($total_tagih_perusahaan))
             ?> 
             Rupiah "</i></b></span>
           </td>
