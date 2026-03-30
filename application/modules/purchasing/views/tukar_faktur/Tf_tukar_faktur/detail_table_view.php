@@ -33,75 +33,78 @@
   }
 
 </script>
-<div class="row">
-  <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/persetujuan_pemb/App_persetujuan_pemb/process')?>" enctype="multipart/form-data" >
+<style>
+  .det-wrap { border: 1px solid #c0d4e8; border-radius: 5px; overflow: hidden; margin: 6px 0 10px; }
+  .det-hdr { background: #1a4f8a; color: #fff; padding: 8px 14px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .det-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .det-tbl thead tr { background: #2c6fad; color: #fff; }
+  .det-tbl thead th { padding: 8px 10px; text-align: center; font-weight: 600; border: 1px solid #1e5590; }
+  .det-tbl tbody tr:nth-child(even) { background: #f5f9fd; }
+  .det-tbl tbody tr:hover { background: #e8f0f9; }
+  .det-tbl tbody td { padding: 7px 10px; border: 1px solid #d0dce8; vertical-align: middle; }
+  .det-tbl .footer-row td { background: #eef4fb; font-weight: 600; border: 1px solid #d0dce8; padding: 7px 10px; }
+  .det-tbl .terbilang-row td { background: #f8fafd; font-style: italic; border: 1px solid #d0dce8; padding: 7px 10px; }
+</style>
 
-    <!-- PAGE CONTENT BEGINS -->
-      <span style="font-size:12px; font-weight:bold">RINCIAN BARANG PO</span>
-      <table style="font-size:11px;" width="100%">
+<form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/persetujuan_pemb/App_persetujuan_pemb/process')?>" enctype="multipart/form-data">
+
+  <div class="det-wrap">
+    <div class="det-hdr"><i class="fa fa-list"></i> Rincian Barang PO</div>
+    <table class="det-tbl">
       <thead>
-        <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid #cecaca; border-collapse: collapse">
-          <td rowspan="2" style="text-align:center; width: 30px; border: 1px solid #cecaca; border-collapse: collapse">No</td>
-          <td rowspan="2" style="border: 1px solid #cecaca; border-collapse: collapse">Kode & Nama Barang</td>
-          <td rowspan="2" style="text-align:center; width: 50px; border: 1px solid #cecaca; border-collapse: collapse">Rasio</td>
-          <td rowspan="2" style="text-align:center; width: 70px; border: 1px solid #cecaca; border-collapse: collapse">Satuan</td>
-          <td rowspan="2" style="text-align:center; width: 80px; border: 1px solid #cecaca; border-collapse: collapse">Jumlah Pesan</td>
-          <td rowspan="2" style="text-align:center; width: 80px; border: 1px solid #cecaca; border-collapse: collapse">Harga Satuan</td>
-          <td colspan="2" style="text-align:center; width: 70px; border: 1px solid #cecaca; border-collapse: collapse">Diskon</td>
-          <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid #cecaca; border-collapse: collapse">Total Harga</td>
+        <tr>
+          <th rowspan="2" width="30px">No</th>
+          <th rowspan="2">Kode &amp; Nama Barang</th>
+          <th rowspan="2" width="50px">Rasio</th>
+          <th rowspan="2" width="70px">Satuan</th>
+          <th rowspan="2" width="80px">Jumlah Pesan</th>
+          <th rowspan="2" width="80px">Harga Satuan</th>
+          <th colspan="2" width="120px">Diskon</th>
+          <th rowspan="2" width="100px">Total Harga</th>
         </tr>
-        <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid #cecaca; border-collapse: collapse">
-          <td style="text-align:center; width: 60px; border: 1px solid #cecaca; border-collapse: collapse">%</td>
-          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid #cecaca; border-collapse: collapse">Rp</td>
+        <tr>
+          <th width="60px">%</th>
+          <th width="60px">Rp</th>
         </tr>
-    </thead>
-        <tbody>
-        <?php 
-          $no=0; 
-          foreach($po_data as $key_dt=>$row_dt) : $no++; 
+      </thead>
+      <tbody>
+        <?php
+          $no=0;
+          foreach($po_data as $key_dt=>$row_dt) : $no++;
             $total_harga = ($row_dt[0]->harga_satuan - $row_dt[0]->discount_rp) * $row_dt[0]->jumlah_besar_acc;
         ?>
-            <tr>
-              <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $no?></td>
-              <td style="border: 1px solid #cecaca; border-collapse: collapse"><?php echo $row_dt[0]->kode_brg.' - '.$row_dt[0]->nama_brg?></td>
-              <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $row_dt[0]->content?></td>
-              <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $row_dt[0]->satuan_besar?></td>
-              <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $row_dt[0]->jumlah_besar_acc?></td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
-              <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $row_dt[0]->discount; ?></td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($row_dt[0]->discount_rp, 2).',-'; ?></td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($total_harga, 2).',-';?></td>
-            </tr>
-            <?php endforeach;?>
-
-            <tr>
-              <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">DPP </td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($po->total_sbl_ppn, 2)?></td>
-            </tr>
-            <tr>
-              <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">PPN </td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($po->ppn, 2)?></td>
-            </tr>
-
-            <tr>
-              <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">Total </td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($po->total_stl_ppn, 2)?></td>
-            </tr>
-            <tr>
-            <td colspan="9">Terbilang : 
+          <tr>
+            <td class="center"><?php echo $no?></td>
+            <td><?php echo $row_dt[0]->kode_brg.' - '.$row_dt[0]->nama_brg?></td>
+            <td class="center"><?php echo $row_dt[0]->content?></td>
+            <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
+            <td class="center"><?php echo $row_dt[0]->jumlah_besar_acc?></td>
+            <td align="right"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
+            <td class="center"><?php echo $row_dt[0]->discount; ?></td>
+            <td align="right"><?php echo number_format($row_dt[0]->discount_rp, 2).',-'; ?></td>
+            <td align="right"><?php echo number_format($total_harga, 2).',-';?></td>
+          </tr>
+        <?php endforeach;?>
+        <tr class="footer-row">
+          <td colspan="8" align="right">DPP</td>
+          <td align="right"><?php echo number_format($po->total_sbl_ppn, 2)?></td>
+        </tr>
+        <tr class="footer-row">
+          <td colspan="8" align="right">PPN</td>
+          <td align="right"><?php echo number_format($po->ppn, 2)?></td>
+        </tr>
+        <tr class="footer-row">
+          <td colspan="8" align="right">Total</td>
+          <td align="right"><?php echo number_format($po->total_stl_ppn, 2)?></td>
+        </tr>
+        <tr class="terbilang-row">
+          <td colspan="9">Terbilang :
             <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($po->total_stl_ppn))?> Rupiah"</i></b>
-            </td>
-            </tr>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    </tbody>
-      </table>
-    <!-- PAGE CONTENT ENDS -->
-
-    </form>
-
-  </div><!-- /.col -->
-</div><!-- /.row -->
-
-
+</form>

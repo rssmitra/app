@@ -929,8 +929,7 @@ final Class Master {
 		$harga_ppn = $harga_satuan * ($params['ppn'] / 100);
 		
 		// harga satuan netto (setelah ditambah ppn)
-		// $harga_satuan_netto = $harga_satuan + $harga_ppn;
-		$harga_satuan_netto = $harga_satuan;
+		$harga_satuan_netto = $harga_satuan + $harga_ppn;
 
 		// jumlah harga netto
 		$total_harga_netto = $harga_satuan_netto * $params['qty'];
@@ -943,8 +942,8 @@ final Class Master {
 		$dpp = $total_harga_satuan;
 		$total_ppn_val = $dpp * ($params['ppn'] / 100);
 
-		// harga satuan kecil / dibagi rasio
-		$harga_satuan_kecil = $params['hna'] / $params['rasio']; 
+		// harga satuan kecil / dibagi rasio (pakai harga_satuan setelah diskon, bukan HNA)
+		$harga_satuan_kecil = $harga_satuan / $params['rasio'];
 		$harga_satuan_kecil_netto = $harga_satuan_netto / $params['rasio']; 
 		$harga_satuan_kecil_sbl_ppn = $harga_satuan / $params['rasio'];
 		
@@ -975,9 +974,9 @@ final Class Master {
 			'harga_satuan_kecil_netto' => $harga_satuan_kecil_netto, // harga_satuan_kecil ditambah ppn
 			'total_harga_netto' => $total_harga_netto, // adalah total harga sebelum dipotong diskon + ppn
 			'harga_persediaan' => $dpp,
-			'harga_satuan_persediaan' => $harga_satuan, // harga satuan persediaan kecil
+			'harga_satuan_persediaan' => $harga_satuan_kecil, // harga satuan persediaan per satuan kecil
 			'harga_jual_ppn' => $harga_jual_ppn,
-			'harga_jual' => $harga_jual_baru,
+			'harga_jual' => $harga_jual,
 		);
 
 		return $result;

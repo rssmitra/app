@@ -118,11 +118,99 @@ class Riwayat_penerimaan_brg extends MX_Controller {
     }
 
 
+    private function _cek_sudah_distribusi($id_penerimaan, $flag)
+    {
+        $t_penerimaan = ($flag=='medis') ? 'tc_penerimaan_barang' : 'tc_penerimaan_barang_nm';
+        $t_kartu_stok = ($flag=='non_medis') ? 'tc_kartu_stok_nm' : 'tc_kartu_stok';
+        $kode_bagian  = ($flag=='non_medis') ? '070101' : '060201';
+
+        // Jika belum ada detail berarti belum selesai proses penerimaan
+        $cnt_detail = $this->db->where('id_penerimaan', $id_penerimaan)->count_all_results($t_penerimaan.'_detail');
+        if ($cnt_detail == 0) {
+            return false;
+        }
+
+        // Cek apakah ada pengeluaran (distribusi) setelah tanggal penerimaan
+        $sql = "SELECT COUNT(*) as cnt
+                FROM {$t_kartu_stok} ks
+                INNER JOIN {$t_penerimaan}_detail pd ON pd.kode_brg = ks.kode_brg
+                WHERE pd.id_penerimaan = {$id_penerimaan}
+                  AND ks.kode_bagian = '{$kode_bagian}'
+                  AND ks.pengeluaran > 0
+                  AND ks.tgl_input >= (SELECT tgl_penerimaan FROM {$t_penerimaan} WHERE id_penerimaan = {$id_penerimaan})";
+        $result = $this->db->query($sql)->row();
+        return (int)$result->cnt > 0;
+    }
+
+    public function rollback($id_penerimaan)
+    {
+        $flag         = $this->input->get('flag');
+        $t_penerimaan = ($flag=='medis') ? 'tc_penerimaan_barang' : 'tc_penerimaan_barang_nm';
+        $kode_bagian  = ($flag=='non_medis') ? '070101' : '060201';
+        $tc_po        = ($flag=='medis') ? 'tc_po' : 'tc_po_nm';
+
+        // Validasi: cek sudah didistribusikan
+        if ($this->_cek_sudah_distribusi($id_penerimaan, $flag)) {
+            echo json_encode(array('status' => 301, 'message' => 'Rollback gagal: barang dari penerimaan ini sudah pernah didistribusikan ke unit.'));
+            return;
+        }
+
+        // Ambil header penerimaan
+        $header = $this->db->get_where($t_penerimaan, array('id_penerimaan' => $id_penerimaan))->row();
+        if (!$header) {
+            echo json_encode(array('status' => 301, 'message' => 'Data penerimaan tidak ditemukan.'));
+            return;
+        }
+
+        // Ambil detail penerimaan
+        $details = $this->db->get_where($t_penerimaan.'_detail', array('id_penerimaan' => $id_penerimaan))->result();
+
+        $this->db->trans_begin();
+
+        // Reverse stok per item
+        foreach ($details as $det) {
+            $konversi = (float)$det->jumlah_kirim * (int)$det->content;
+            if ($konversi > 0) {
+                $this->stok_barang->stock_process(
+                    $det->kode_brg,
+                    $konversi,
+                    $kode_bagian,
+                    1,
+                    'Rollback Penerimaan '.$header->kode_penerimaan,
+                    'reduce'
+                );
+            }
+        }
+
+        // Hapus detail penerimaan
+        $this->db->delete($t_penerimaan.'_detail', array('id_penerimaan' => $id_penerimaan));
+
+        // Hapus batch log
+        $this->db->delete('tc_penerimaan_brg_batch_log', array('reff_table' => $t_penerimaan, 'reff_id' => $id_penerimaan));
+
+        // Hapus header penerimaan
+        $this->db->delete($t_penerimaan, array('id_penerimaan' => $id_penerimaan));
+
+        // Reset status PO ke belum selesai
+        $this->db->update($tc_po, array('status_kirim' => 0, 'status_selesai' => 0), array('id_tc_po' => $header->id_tc_po));
+
+        // Simpan log
+        $this->logs->save($t_penerimaan, $id_penerimaan, 'rollback penerimaan barang', json_encode(array('id_penerimaan' => $id_penerimaan, 'kode_penerimaan' => $header->kode_penerimaan)), 'id_penerimaan');
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Rollback gagal, silahkan coba kembali.'));
+        } else {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Penerimaan '.$header->kode_penerimaan.' berhasil di-rollback. Status PO kembali ke belum diterima.', 'flag' => $flag));
+        }
+    }
+
     public function get_data()
     {
         /*get data from model*/
         $list = $this->Riwayat_penerimaan_brg->get_datatables();
-        
+
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -150,7 +238,18 @@ class Riwayat_penerimaan_brg extends MX_Controller {
                       <a href="#" onclick="getMenu('."'purchasing/penerimaan/Penerimaan_brg/preview_penerimaan?ID=".$row_list->id_penerimaan."&flag=".$_GET['flag']."'".')" class="btn btn-xs btn-primary" title="Distribusi ke Unit">Distribusi </a>
                     </div>';
 
-                  
+            // Tombol rollback: tampil hanya jika belum ada distribusi
+            $bisa_rollback = !$this->_cek_sudah_distribusi($row_list->id_penerimaan, $_GET['flag']);
+            if ($bisa_rollback) {
+                $row[] = '<div class="center">
+                            <a href="#" onclick="rollback_penerimaan('.$row_list->id_penerimaan.')" class="btn btn-xs btn-danger" title="Rollback Penerimaan">
+                              <i class="fa fa-undo"></i> Rollback
+                            </a>
+                          </div>';
+            } else {
+                $row[] = '<div class="center"><span class="label label-default" title="Sudah didistribusikan, tidak dapat di-rollback"><i class="fa fa-lock"></i></span></div>';
+            }
+
             $data[] = $row;
         }
 

@@ -2,6 +2,30 @@
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 
+<style>
+  .frm-card { border: 1px solid #d0dce8; border-radius: 5px; background: #fff; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(44,111,173,.07); }
+  .frm-card-header { background: #2c6fad; color: #fff; padding: 10px 16px; border-radius: 5px 5px 0 0; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .frm-card-body { padding: 16px 20px; }
+  .frm-actions { display: flex; gap: 8px; justify-content: flex-end; padding: 10px 16px; background: #f0f5fb; border-top: 1px solid #d8e6f3; border-radius: 0 0 5px 5px; }
+
+  .frm-field-row { display: flex; align-items: center; margin-bottom: 10px; }
+  .frm-field-label { min-width: 140px; text-align: right; padding-right: 14px; font-size: 12px; color: #555; font-weight: 600; flex-shrink: 0; }
+  .frm-field-input { flex: 1; }
+
+  .page-header-frm { border-bottom: 3px solid #2c6fad; padding-bottom: 10px; margin-bottom: 16px; }
+  .page-header-frm h1 { font-size: 20px; margin: 0; color: #1a4f8a; font-weight: 700; }
+
+  .sup-display { padding: 14px 16px; min-height: 80px; }
+  .sup-display #detail_supplier { font-size: 12px; color: #444; line-height: 1.8; }
+
+  .jenis-po-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .jenis-po-label { display: flex; align-items: center; gap: 6px; padding: 5px 14px; border: 1px solid #c5d5e8; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #555; transition: all .15s; }
+  .jenis-po-label input[type=radio] { cursor: pointer; }
+  .jenis-po-label:has(input:checked) { background: #2c6fad; border-color: #2c6fad; color: #fff; }
+
+  .hint-text { font-size: 10px; color: #e65100; font-style: italic; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+</style>
+
 <script>
 jQuery(function($) {
 
@@ -16,14 +40,14 @@ jQuery(function($) {
 });
 
 $(document).ready(function(){
-  
+
     $('#form_penerbitan_po').ajaxForm({
       beforeSend: function() {
-        achtungShowLoader();  
+        achtungShowLoader();
       },
       uploadProgress: function(event, position, total, percentComplete) {
       },
-      complete: function(xhr) {     
+      complete: function(xhr) {
         var data=xhr.responseText;
         var jsonResponse = JSON.parse(data);
 
@@ -38,13 +62,13 @@ $(document).ready(function(){
                     }
         achtungHideLoader();
       }
-    }); 
+    });
 
     var flag = ( $('#flag_string').val() ) ? $('#flag_string').val() : '' ;
     var search_by = $('select[name="search_by"]').val();
     var keyword = $('#inputKeyWord').val();
 
-    $('#btn_search_brg').click(function (e) {   
+    $('#btn_search_brg').click(function (e) {
 
         if ( $('#inputKeyWord').val()=='' ) {
           alert('Silahkan Masukan Kata Kunci !'); return false;
@@ -56,22 +80,22 @@ $(document).ready(function(){
 
     });
 
-    $( "#inputKeyWord" ).keypress(function(event) {  
+    $( "#inputKeyWord" ).keypress(function(event) {
         var keycode =(event.keyCode?event.keyCode:event.which);
-        if(keycode ==13){          
-          event.preventDefault();         
-          if($(this).valid()){           
-            search_selected_brg(flag, search_by, keyword);       
-          }         
-          return false;                
-        }       
-    });  
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            search_selected_brg(flag, search_by, keyword);
+          }
+          return false;
+        }
+    });
 
     $('#inputSupplier').typeahead({
         source: function (query, result) {
                 $.ajax({
                     url: "templates/references/getSupplier",
-                    data: 'keyword=' + query,         
+                    data: 'keyword=' + query,
                     dataType: "json",
                     type: "POST",
                     success: function (response) {
@@ -92,11 +116,16 @@ $(document).ready(function(){
             // get detail data supplier
             $.getJSON("<?php echo site_url('Templates/References/getSupplierById') ?>/" + val_item, '', function (response) {
                 // detail supplier
-                $('#detail_supplier').html('<address><strong>'+response.namasupplier+'</strong><br>'+response.alamat+'<br>No. Telp : '+response.telpon1+'</address>');
-                
+                $('#detail_supplier').html(
+                  '<div style="font-size:13px;font-weight:700;color:#1a4f8a;margin-bottom:4px">' + response.namasupplier + '</div>' +
+                  '<div style="font-size:11px;color:#666;line-height:1.7">' +
+                    '<i class="fa fa-map-marker" style="width:14px;color:#999"></i> ' + response.alamat + '<br>' +
+                    '<i class="fa fa-phone" style="width:14px;color:#999"></i> ' + response.telpon1 +
+                  '</div>'
+                );
             });
-            
-            
+
+
         }
     });
 
@@ -119,151 +148,158 @@ function search_selected_brg(flag, search_by, keyword){
 
 
 </script>
-<div class="page-header">
-  <h1>
-    <?php echo $title?>
-  </h1>
+
+<div class="page-header-frm">
+  <h1><?php echo $title?> <small style="font-size:13px;color:#888;font-weight:400"><i class="ace-icon fa fa-angle-double-right"></i> <?php echo ($flag=='medis') ? 'Gudang Medis' : 'Gudang Non Medis'; ?></small></h1>
 </div>
 
-<div class="row">
-  <div class="col-xs-12">
-    <!-- PAGE CONTENT BEGINS -->
-      <div class="widget-body">
-        <div class="widget-main no-padding">
+<form class="form-horizontal" method="post" id="form_penerbitan_po" action="<?php echo site_url('purchasing/po/Po_penerbitan/process')?>" enctype="multipart/form-data" autocomplete="off">
 
-          <form class="form-horizontal" method="post" id="form_penerbitan_po" action="<?php echo site_url('purchasing/po/Po_penerbitan/process')?>" enctype="multipart/form-data" autocomplete="off">
-            <br>
-            <!-- input form hidden -->
-            <input name="id" id="id" value="" class="form-control" type="hidden">
-            <input type="hidden" name="flag" id="flag_string" value="<?php echo $flag?>">
-            <input type="hidden" name="action" id="action" value="create">
+  <!-- hidden inputs -->
+  <input name="id" id="id" value="" type="hidden">
+  <input type="hidden" name="flag" id="flag_string" value="<?php echo $flag?>">
+  <input type="hidden" name="action" id="action" value="create">
 
-            <div class="form-group">
-              <label class="control-label col-md-2">Nomor Periodik</label>
-              <div class="col-md-2">
-                <input name="no_urut_periodik" id="no_urut_periodik" value="<?php echo $no_urut_periodik?>" class="form-control" type="text" placeholder="Auto" readonly>
+  <div class="row" style="margin-bottom:0">
+
+    <!-- Left: PO Info -->
+    <div class="col-xs-6">
+      <div class="frm-card">
+        <div class="frm-card-header"><i class="fa fa-file-text-o"></i> Informasi Purchase Order</div>
+        <div class="frm-card-body">
+
+          <div class="frm-field-row">
+            <span class="frm-field-label">Nomor Periodik</span>
+            <div class="frm-field-input">
+              <input name="no_urut_periodik" id="no_urut_periodik" value="<?php echo $no_urut_periodik?>" class="form-control input-sm" type="text" placeholder="Auto" readonly style="width:100px">
+            </div>
+          </div>
+
+          <div class="frm-field-row">
+            <span class="frm-field-label">Nomor PO</span>
+            <div class="frm-field-input">
+              <input name="no_po" id="no_po" value="<?php echo $no_po?>" class="form-control input-sm" type="text" placeholder="Auto" readonly style="width:180px">
+            </div>
+          </div>
+
+          <div class="frm-field-row">
+            <span class="frm-field-label">SIK AA</span>
+            <div class="frm-field-input">
+              <input name="sipa" id="sipa" value="" class="form-control input-sm" type="text" style="width:180px">
+            </div>
+          </div>
+
+          <div class="frm-field-row">
+            <span class="frm-field-label">Tanggal PO</span>
+            <div class="frm-field-input">
+              <div class="input-group" style="width:165px">
+                <input class="form-control input-sm date-picker" name="tgl_po" id="tgl_po" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
               </div>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">Nomor PO</label>
-              <div class="col-md-2">
-                <input name="no_po" id="no_po" value="<?php echo $no_po?>" class="form-control" type="text" placeholder="Auto" readonly>
+          <div class="frm-field-row">
+            <span class="frm-field-label">Estimasi Kirim</span>
+            <div class="frm-field-input">
+              <div class="input-group" style="width:165px">
+                <input class="form-control input-sm date-picker" name="tgl_kirim" id="tgl_kirim" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d', strtotime("+7 days"));?>"/>
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
               </div>
-              <label class="control-label col-md-1">SIK AA</label>
-              <div class="col-md-2">
-                <input name="sipa" id="sipa" value="" class="form-control" type="text" >
-              </div>
+              <div class="hint-text"><i class="fa fa-exclamation-circle"></i> Maksimal pengiriman 7 hari</div>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">Tanggal PO</label>
-              <div class="col-md-2">
-                <div class="input-group" style="width: 150px;">
-                  <input class="form-control date-picker" name="tgl_po" id="tgl_po" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
-                  <span class="input-group-addon">
-                    <i class="fa fa-calendar bigger-110"></i>
-                  </span>
-                </div>
-              </div>
-              <label class="control-label col-md-2">Estimasi Kirim</label>
-              <div class="col-md-2">
-                <div class="input-group" style="width: 150px;">
-                  <input class="form-control date-picker" name="tgl_kirim" id="tgl_kirim" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d', strtotime("+7 days"));?>"/>
-                  <span class="input-group-addon">
-                    <i class="fa fa-calendar bigger-110"></i>
-                  </span>
-                </div>
-              </div>
-              <span style="color: red"><i>Maximal pengiriman 7 Hari</i></span>
+          <div class="frm-field-row">
+            <span class="frm-field-label">Diajukan Oleh</span>
+            <div class="frm-field-input">
+              <input name="diajukan_oleh" id="diajukan_oleh" value="<?php echo $this->session->userdata('user')->fullname ?>" class="form-control input-sm" type="text">
             </div>
+          </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">Diajukan Oleh</label>
-              <div class="col-md-3">
-                <input name="diajukan_oleh" id="diajukan_oleh" value="<?php echo $this->session->userdata('user')->fullname ?>" class="form-control" type="text">
-              </div>
-              <label class="control-label col-md-2">Disetujui Oleh</label>
-              <div class="col-md-3">
-                <input name="disetujui_oleh" id="disetujui_oleh" value="<?php echo ($flag=='non_medis') ? $this->master->get_ttd_data('ttd_waka_rs_bid_adm', 'label') : $this->master->get_ttd_data('ttd_waka_rs_bid_pl', 'label') ;?>" class="form-control" type="text">
-              </div>
+          <div class="frm-field-row">
+            <span class="frm-field-label">Disetujui Oleh</span>
+            <div class="frm-field-input">
+              <input name="disetujui_oleh" id="disetujui_oleh" value="<?php echo ($flag=='non_medis') ? $this->master->get_ttd_data('ttd_waka_rs_bid_adm', 'label') : $this->master->get_ttd_data('ttd_waka_rs_bid_pl', 'label') ;?>" class="form-control input-sm" type="text">
             </div>
+          </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">KARS</label>
-              <div class="col-md-3">
-                <input name="krs" id="krs" value="<?php echo $this->master->get_ttd_data('ttd_ka_rs', 'label')?>" class="form-control" type="text">
-              </div>
+          <div class="frm-field-row">
+            <span class="frm-field-label">KARS</span>
+            <div class="frm-field-input">
+              <input name="krs" id="krs" value="<?php echo $this->master->get_ttd_data('ttd_ka_rs', 'label')?>" class="form-control input-sm" type="text">
             </div>
+          </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">Jenis PO</label>
-                <div class="col-md-4">
-                  <div class="radio">
-                    <label>
-                      <input name="jenis_po" type="radio" class="ace" value="Rutin" <?php echo isset($value) ? ($value->jenis_po == '2') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
-                      <span class="lbl"> Rutin</span>
-                    </label>
-                    <label>
-                      <input name="jenis_po" type="radio" class="ace" value="Non Rutin" <?php echo isset($value) ? ($value->jenis_po == '3') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
-                      <span class="lbl"> Non Rutin</span>
-                    </label>
-                    <label>
-                      <input name="jenis_po" type="radio" class="ace" value="Cito" <?php echo isset($value) ? ($value->jenis_po == '1') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
-                      <span class="lbl"> Cito</span>
-                    </label>
-                  </div>
-                </div>
-            </div>
-
-            <p><b>PILIH SUPPLIER</b></p>
-            <div class="form-group">
-                <label class="control-label col-md-2">Supplier</label>
-                <div class="col-sm-6">
-                  <input id="inputSupplier" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                  <input type="hidden" name="kodesupplier" id="supplier_id_hidden" class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-2"></label>
-                <div class="col-sm-6" style="margin-left: 10px">
-                <div id="detail_supplier"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">Syarat Pembayaran</label>
-              <div class="col-md-4">
-                <textarea class="form-control" style="height:50px !important" name="term_of_pay">30 hari setelah tukar faktur</textarea>
+          <div class="frm-field-row">
+            <span class="frm-field-label">Jenis PO</span>
+            <div class="frm-field-input">
+              <div class="jenis-po-group">
+                <label class="jenis-po-label">
+                  <input name="jenis_po" type="radio" class="ace" value="Rutin" <?php echo isset($value) ? ($value->jenis_po == '2') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                  <span>Rutin</span>
+                </label>
+                <label class="jenis-po-label">
+                  <input name="jenis_po" type="radio" class="ace" value="Non Rutin" <?php echo isset($value) ? ($value->jenis_po == '3') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                  <span>Non Rutin</span>
+                </label>
+                <label class="jenis-po-label">
+                  <input name="jenis_po" type="radio" class="ace" value="Cito" <?php echo isset($value) ? ($value->jenis_po == '1') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                  <span>Cito</span>
+                </label>
               </div>
             </div>
-            <br>
-
-            <div class="pull-right">
-              <a onclick="getMenu('purchasing/po/Po_penerbitan/view_data?flag=<?php echo $flag?>', 'tabs_form_po')" href="#" class="btn btn-xs btn-success">
-                <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
-                Kembali ke daftar
-              </a>
-              <button type="reset" id="btnReset" class="btn btn-xs btn-danger">
-                <i class="ace-icon fa fa-close icon-on-right bigger-110"></i>
-                Reset
-              </button>
-              <button type="submit" id="btnSave" name="submit" class="btn btn-xs btn-info">
-                <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-                Submit
-              </button>
-            </div>
-
-            <?php echo $view_brg_po?>
-            
-            
-
-          </form>
+          </div>
 
         </div>
       </div>
-    <!-- PAGE CONTENT ENDS -->
-  </div><!-- /.col -->
-</div><!-- /.row -->
+    </div>
 
+    <!-- Right: Supplier + Syarat Bayar -->
+    <div class="col-xs-6">
 
+      <div class="frm-card">
+        <div class="frm-card-header"><i class="fa fa-truck"></i> Pilih Supplier</div>
+        <div class="frm-card-body" style="padding-bottom:10px">
+          <div class="frm-field-row">
+            <span class="frm-field-label">Supplier</span>
+            <div class="frm-field-input">
+              <input id="inputSupplier" class="form-control input-sm" type="text" placeholder="Ketik min. 3 karakter untuk mencari..." autocomplete="off">
+              <input type="hidden" name="kodesupplier" id="supplier_id_hidden">
+            </div>
+          </div>
+        </div>
+        <div class="sup-display">
+          <div id="detail_supplier">
+            <span style="color:#bbb;font-size:12px"><i class="fa fa-info-circle"></i> Pilih supplier dari pencarian di atas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="frm-card">
+        <div class="frm-card-header"><i class="fa fa-credit-card"></i> Syarat Pembayaran</div>
+        <div class="frm-card-body">
+          <textarea class="form-control input-sm" style="height:60px;resize:vertical" name="term_of_pay">30 hari setelah tukar faktur</textarea>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="frm-actions" style="background:#fff;border:1px solid #d0dce8;border-radius:5px;padding:12px 16px;margin-bottom:14px">
+    <a onclick="getMenu('purchasing/po/Po_penerbitan/view_data?flag=<?php echo $flag?>', 'tabs_form_po')" href="#" class="btn btn-sm btn-default">
+      <i class="fa fa-arrow-left"></i> Kembali ke Daftar
+    </a>
+    <button type="reset" id="btnReset" class="btn btn-sm btn-warning">
+      <i class="fa fa-refresh"></i> Reset
+    </button>
+    <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-primary">
+      <i class="fa fa-check"></i> Simpan PO
+    </button>
+  </div>
+
+  <?php echo $view_brg_po?>
+
+</form>

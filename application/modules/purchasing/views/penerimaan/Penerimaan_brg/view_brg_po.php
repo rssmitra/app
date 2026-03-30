@@ -19,7 +19,7 @@
   }
 
   function checkOne(kode_brg) {
-    
+
     var jml_pesan = parseFloat( $('#jml_pesan_'+kode_brg+'').text() );
     var jml_kirim = parseFloat( $('#jml_tlh_dikirim_'+kode_brg+'').text() );
 
@@ -41,130 +41,152 @@
     show_modal_medium('purchasing/penerimaan/Penerimaan_brg/form_input_batch?kode_brg='+kode_brg+'&id_penerimaan='+$('#id').val()+'&id_tc_po_det='+id_tc_po_det+'&flag='+$('#flag_string').val()+'', 'INPUT BATCH');
   }
 </script>
-<div class="row">
-  <div class="col-xs-12">
 
-    <!-- PAGE CONTENT BEGINS -->
-      <p><strong>BARANG YANG DITERIMA</strong></p>
-      <table id="table_brg_penerimaan" class="table table-bordered table-hovered" style="font-size:12px;" width="100%">
-        <thead>
-          <tr style="background-color: #6fb3e0; border: 1px #d8d5d5  solid">
-            <th class="center" width="30px"><input type="checkbox" onClick="checkAll(this);" style="cursor:pointer; width:17px" ></th>
-            <th class="center" width="50px">No</th>
-            <th width="5%">Kode</th>
-            <th>Nama Barang</th>
-            <th class="center" width="10%">Satuan Besar</th>
-            <th class="center" width="7%">Isi Kemasan</th>
-            <th class="center" width="10%">Harga Satuan (HNA)</th>
-            <th class="center" width="10%">Diskon PO</th>
-            <th class="center" width="7%">Pesan</th>
-            <th class="center" width="7%">Terkirim</th>
-            <th class="center" width="7%">Diterima</th>
-            <th class="center" width="10%" style="border: 1px #d8d5d5  solid">No Batch</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php 
-            $no=0; 
-            foreach($dt_detail_brg as $key_dt=>$row_dt) : 
-              // echo '<pre>';print_r($row_dt);die;
-              $count_dt = count($row_dt);
-              if($count_dt > 0){
-                foreach($row_dt as $sub_row_dt){
-                  $jumlah_pesan_arr[$key_dt][] = $sub_row_dt->jumlah_besar_acc;
-                  $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim_decimal;
-                  echo '<input type="hidden" name="id_tc_po_det['.$key_dt.']" id="id_tc_po_det_'.$key_dt.'" value="'.$sub_row_dt->id_tc_po_det.'">';
-                }
-              }else{
-                $jumlah_pesan_arr[$key_dt][] = $row_dt[0]->jumlah_besar_acc;
-                $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim_decimal;
-                echo '<input type="hidden" name="id_tc_po_det['.$key_dt.']" id="id_tc_po_det_'.$key_dt.'" value="'.$row_dt[0]->id_tc_po_det.'">';
-              }
-              $no++; 
+<style>
+  .tbl-brg { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 0; }
+  .tbl-brg thead tr { background: #2c6fad; color: #fff; }
+  .tbl-brg thead th { padding: 9px 10px; text-align: center; font-weight: 600; border: 1px solid #1e5590; white-space: nowrap; }
+  .tbl-brg thead th.text-left { text-align: left; }
+  .tbl-brg tbody tr:nth-child(even) { background: #f5f9fd; }
+  .tbl-brg tbody tr:hover { background: #e8f0f9; }
+  .tbl-brg tbody td { padding: 8px 10px; border: 1px solid #d0dce8; vertical-align: middle; }
+  .tbl-brg tbody td.center { text-align: center; }
+  .tbl-brg tbody td.right { text-align: right; }
 
-              $sisa_blm_diterima = array_sum($jumlah_pesan_arr[$key_dt]) - array_sum($jumlah_kirim_arr[$key_dt]);
-          ?>
+  .tbl-brg .input-rasio { width: 65px; height: 38px; text-align: center; border: 1px solid #c5d5e8; border-radius: 3px; font-size: 12px; padding: 4px 6px; }
+  .tbl-brg .input-terima { height: 38px; text-align: center; border: 1px solid #c5d5e8; border-radius: 3px; font-size: 13px; font-weight: 700; padding: 4px 8px; }
+  .tbl-brg .input-rasio:focus, .tbl-brg .input-terima:focus { border-color: #2c6fad; outline: none; box-shadow: 0 0 0 2px rgba(44,111,173,.15); }
 
-          <tr id="tr_<?php echo $row_dt[0]->kode_brg?>" style="border: 1px #d8d5d5  solid">
-            <!-- checkbox -->
-            
-            <?php if( array_sum($jumlah_pesan_arr[$key_dt]) > array_sum($jumlah_kirim_arr[$key_dt])) : ?>
-            <td class="center" style="border: 1px #d8d5d5  solid">
-              
-              <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" class="form-control" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer;width:17px" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]" <?php echo (!empty($row_dt[0]->no_batch))?'checked':''; ?> >
-            </td>
-            <?php else: ?>
-              <td class="center" style="border: 1px #d8d5d5  solid">
-                <i class="fa fa-check-circle bigger-150 green"></i>
-              </td>
-            <?php endif; ?>
-            <td class="center"><?php echo $no?></td>
-            <td><?php echo $row_dt[0]->kode_brg?></td>
-            <td><?php echo $row_dt[0]->nama_brg?></td>
-            <!-- satuan besar -->
-            <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
+  .badge-done { display: inline-block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 10px; padding: 2px 8px; font-size: 11px; }
+  .badge-pending { display: inline-block; background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; border-radius: 10px; padding: 2px 8px; font-size: 11px; }
+  .badge-batch { display: inline-block; background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; border-radius: 3px; padding: 2px 7px; font-size: 11px; }
 
-            <!-- rasio -->
-            <td class="center">
-                <input type="text" name="rasio[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_rasio_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt[0]->content?>" >
-            </td>
+  .tbl-section-header { background: #1a4f8a; color: #fff; padding: 9px 14px; border-radius: 5px 5px 0 0; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .tbl-section-wrap { border: 1px solid #c0d4e8; border-radius: 5px; overflow: hidden; box-shadow: 0 1px 4px rgba(44,111,173,.07); }
+  .tbl-section-footer { background: #f0f5fb; border-top: 1px solid #d0dce8; padding: 8px 14px; font-size: 11px; color: #777; }
+</style>
 
-            <!-- harga satuan -->
-            <td class="center">
-              <input type="hidden" value="<?php echo $row_dt[0]->harga_satuan?>" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]">
-              <input type="hidden" value="<?php echo $row_dt[0]->harga_satuan_netto?>" name="harga_satuan_netto[<?php echo $row_dt[0]->kode_brg?>]">
-              <?php echo number_format($row_dt[0]->harga_satuan, 2)?> 
-            </td>
-            
-            <td align="center"><?php echo number_format($row_dt[0]->discount, 2)?> %</td>
+<div class="tbl-section-wrap">
+  <div class="tbl-section-header">
+    <i class="fa fa-list-alt"></i> Daftar Barang yang Diterima
+    <span style="font-weight:400;font-size:11px;margin-left:4px;opacity:.8">&mdash; Centang barang yang diterima, isi jumlah, lalu input No. Batch</span>
+  </div>
+  <table id="table_brg_penerimaan" class="tbl-brg">
+    <thead>
+      <tr>
+        <th width="30px"><input type="checkbox" onClick="checkAll(this);" style="cursor:pointer;width:15px;height:15px"></th>
+        <th width="40px">No</th>
+        <th width="5%" class="text-left">Kode</th>
+        <th class="text-left">Nama Barang</th>
+        <th width="8%">Satuan</th>
+        <th width="7%">Isi Kemasan</th>
+        <th width="10%">Harga (HNA)</th>
+        <th width="7%">Diskon PO</th>
+        <th width="6%">Pesan</th>
+        <th width="6%">Terkirim</th>
+        <th width="7%">Diterima</th>
+        <th width="12%">No. Batch</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+        $no=0;
+        foreach($dt_detail_brg as $key_dt=>$row_dt) :
+          // echo '<pre>';print_r($row_dt);die;
+          $count_dt = count($row_dt);
+          if($count_dt > 0){
+            foreach($row_dt as $sub_row_dt){
+              $jumlah_pesan_arr[$key_dt][] = $sub_row_dt->jumlah_besar_acc;
+              $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim_decimal;
+              echo '<input type="hidden" name="id_tc_po_det['.$key_dt.']" id="id_tc_po_det_'.$key_dt.'" value="'.$sub_row_dt->id_tc_po_det.'">';
+            }
+          }else{
+            $jumlah_pesan_arr[$key_dt][] = $row_dt[0]->jumlah_besar_acc;
+            $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim_decimal;
+            echo '<input type="hidden" name="id_tc_po_det['.$key_dt.']" id="id_tc_po_det_'.$key_dt.'" value="'.$row_dt[0]->id_tc_po_det.'">';
+          }
+          $no++;
 
-            <!-- jumlah pesan -->
-            <td class="center" id="jml_pesan_<?php echo $row_dt[0]->kode_brg?>">
-              <?php echo array_sum($jumlah_pesan_arr[$key_dt])?>
-              <input type="hidden" name="jml_pesan[<?php echo $row_dt[0]->kode_brg?>]" id="form_jml_pesan_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo array_sum($jumlah_pesan_arr[$key_dt])?>" >
-            </td>
+          $sisa_blm_diterima = array_sum($jumlah_pesan_arr[$key_dt]) - array_sum($jumlah_kirim_arr[$key_dt]);
+      ?>
 
-            <!-- telah dikirim -->
-            <td class="center" id="jml_tlh_dikirim_<?php echo $row_dt[0]->kode_brg?>">
-              <?php echo array_sum($jumlah_kirim_arr[$key_dt])?>
-              <input type="hidden" name="jml_tlh_dikirim[<?php echo $row_dt[0]->kode_brg?>]" id="form_jml_tlh_dikirim_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo array_sum($jumlah_kirim_arr[$key_dt])?>" >
-              <input type="hidden" name="discount[<?php echo $row_dt[0]->kode_brg?>]" id="form_discount_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt[0]->discount?>" >
-              <input type="hidden" name="ppn[<?php echo $row_dt[0]->kode_brg?>]" id="form_ppn_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt[0]->ppn?>" >
-            </td>
+      <tr id="tr_<?php echo $row_dt[0]->kode_brg?>">
 
-            <!-- penerimaan sekarang -->
-            <td class="center">
-                <input type="text" name="terima_<?php echo $row_dt[0]->kode_brg?>" id="form_input_terima_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" value="<?php echo $sisa_blm_diterima; ?>">
-                
-                <!-- <input type="text" name="terima_<?php echo $row_dt[0]->kode_brg?>" id="form_input_terima_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" value="<?php echo (!empty($row_dt[0]->no_batch))?$row_dt[0]->jml_diterima:''; ?>"> -->
-            </td>
+        <?php if( array_sum($jumlah_pesan_arr[$key_dt]) > array_sum($jumlah_kirim_arr[$key_dt])) : ?>
+        <td class="center">
+          <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer;width:15px;height:15px" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]" <?php echo (!empty($row_dt[0]->no_batch))?'checked':''; ?>>
+        </td>
+        <?php else: ?>
+        <td class="center">
+          <i class="fa fa-check-circle" style="color:#2e7d32;font-size:16px" title="Sudah lengkap diterima"></i>
+        </td>
+        <?php endif; ?>
 
-            <!-- btn input batch -->
-            <td class="center" style="border: 1px #d8d5d5  solid" id="td_input_batch_<?php echo $row_dt[0]->kode_brg?>">
-              <?php if(empty($row_dt[0]->no_batch)) : ?>
-                  <button type="button" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)" class="btn btn-xs btn-danger" id="btn_input_batch_<?php echo $row_dt[0]->kode_brg?>" disabled>Input Batch</button>
-              <?php else: ?>
-                  <a href="#" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)"><?php echo $row_dt[0]->no_batch?></a>
-              <?php endif; ?>
-            </td>
-            
-          </tr>
-          
-          <?php 
-              // endif; 
-            endforeach;
-          ?>
+        <td class="center"><?php echo $no?></td>
+        <td style="font-size:11px;color:#888"><?php echo $row_dt[0]->kode_brg?></td>
+        <td>
+          <strong style="font-size:12px"><?php echo $row_dt[0]->nama_brg?></strong>
+        </td>
+        <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
 
-          <tr style=" border: 1px #d8d5d5  solid; font-size: 11px">
-            <td class="left" colspan="12">* Silahkan lakukan scan barcode pada Box Kemasan Besar dan Kemasan Kecil</td>
-          </tr>
-        </tbody>
-        
-      </table>
-    <!-- PAGE CONTENT ENDS -->
+        <!-- rasio / isi kemasan -->
+        <td class="center">
+          <input type="text" name="rasio[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_rasio_<?php echo $row_dt[0]->kode_brg?>" class="input-rasio" value="<?php echo $row_dt[0]->content?>">
+        </td>
 
+        <!-- harga satuan -->
+        <td class="right">
+          <input type="hidden" value="<?php echo $row_dt[0]->harga_satuan?>" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]">
+          <input type="hidden" value="<?php echo $row_dt[0]->harga_satuan_netto?>" name="harga_satuan_netto[<?php echo $row_dt[0]->kode_brg?>]">
+          <span style="font-size:12px"><?php echo number_format($row_dt[0]->harga_satuan, 2)?></span>
+        </td>
 
-  </div><!-- /.col -->
-</div><!-- /.row -->
+        <td class="center">
+          <span class="badge-pending"><?php echo number_format($row_dt[0]->discount, 2)?>%</span>
+        </td>
 
+        <!-- jumlah pesan -->
+        <td class="center" id="jml_pesan_<?php echo $row_dt[0]->kode_brg?>">
+          <?php echo array_sum($jumlah_pesan_arr[$key_dt])?>
+          <input type="hidden" name="jml_pesan[<?php echo $row_dt[0]->kode_brg?>]" id="form_jml_pesan_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo array_sum($jumlah_pesan_arr[$key_dt])?>">
+        </td>
 
+        <!-- telah dikirim -->
+        <td class="center" id="jml_tlh_dikirim_<?php echo $row_dt[0]->kode_brg?>">
+          <?php echo array_sum($jumlah_kirim_arr[$key_dt])?>
+          <input type="hidden" name="jml_tlh_dikirim[<?php echo $row_dt[0]->kode_brg?>]" id="form_jml_tlh_dikirim_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo array_sum($jumlah_kirim_arr[$key_dt])?>">
+          <input type="hidden" name="discount[<?php echo $row_dt[0]->kode_brg?>]" id="form_discount_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $row_dt[0]->discount?>">
+          <input type="hidden" name="ppn[<?php echo $row_dt[0]->kode_brg?>]" id="form_ppn_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $row_dt[0]->ppn?>">
+        </td>
+
+        <!-- penerimaan sekarang -->
+        <td class="center">
+          <input type="text" name="terima_<?php echo $row_dt[0]->kode_brg?>" id="form_input_terima_<?php echo $row_dt[0]->kode_brg?>" class="form-control input-terima" value="<?php echo $sisa_blm_diterima; ?>">
+        </td>
+
+        <!-- btn input batch -->
+        <td class="center" id="td_input_batch_<?php echo $row_dt[0]->kode_brg?>">
+          <?php if(empty($row_dt[0]->no_batch)) : ?>
+            <button type="button" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)" class="btn btn-xs btn-danger" id="btn_input_batch_<?php echo $row_dt[0]->kode_brg?>" disabled>
+              <i class="fa fa-barcode"></i> Input Batch
+            </button>
+          <?php else: ?>
+            <a href="#" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)" class="badge-batch">
+              <i class="fa fa-barcode"></i> <?php echo $row_dt[0]->no_batch?>
+            </a>
+          <?php endif; ?>
+        </td>
+
+      </tr>
+
+      <?php
+          // endif;
+        endforeach;
+      ?>
+
+    </tbody>
+  </table>
+  <div class="tbl-section-footer">
+    <i class="fa fa-info-circle"></i> Centang barang yang akan diterima, isi jumlah penerimaan, kemudian klik <strong>Input Batch</strong> untuk memasukkan nomor batch &amp; expired date.
+  </div>
+</div>

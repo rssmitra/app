@@ -248,14 +248,19 @@ class Penerimaan_brg extends MX_Controller {
             // submit penyelesaian barang
             if( $_POST['submit'] == 'penerimaan_selesai' ){
                 $dataexc = array();
-                
+                $harga_changes = array();
+
                 foreach ($_POST['is_checked'] as $keys => $rows) {
-                    
+
+                    // get nama barang dan harga lama sebelum diupdate
+                    $brg_info = $this->db->select('nama_brg')->get_where($mt_barang, array('kode_brg' => $rows))->row();
+                    $old_rekap = $this->db->select('harga_beli')->get_where($mt_rekap_stok, array('kode_brg' => $rows, 'kode_bagian_gudang' => $_POST['kode_bagian']))->row();
+
                     // ============= proses mutasi stok
                     $konversi_satuan_kecil = $_POST['terima_'.$rows.''] * $_POST['rasio'][$rows];
                     $kartu_stok = $this->stok_barang->stock_process($rows, $konversi_satuan_kecil, $_POST['kode_bagian'], 1 ,"Nomor PO ".$_POST['no_po']."", 'restore');
                     // ============= end proses mutasi stok
-                    
+
                     // ============= insert penerimaan barang detail
                     $config = array(
                         'kode_brg' => $rows,
@@ -267,7 +272,23 @@ class Penerimaan_brg extends MX_Controller {
                     );
                     // eksekusi rumus untuk mencari harga
                     $harga = $this->master->rumus_harga($config);
-                    // echo '<pre>'; print_r($harga);die;
+
+                    // collect informasi perubahan harga
+                    $harga_lama = $old_rekap ? (float)$old_rekap->harga_beli : 0;
+                    $harga_baru = (float)$harga['harga_jual'];
+                    $harga_changes[] = array(
+                        'kode_brg'               => $rows,
+                        'nama_brg'               => $brg_info ? $brg_info->nama_brg : $rows,
+                        'hna'                    => (float)$harga['hna'],
+                        'disc'                   => (float)$harga['disc'],
+                        'disc_rp'                => (float)$harga['disc_rp'],
+                        'ppn'                    => (float)$harga['ppn'],
+                        'ppn_rp'                 => (float)$harga['harga_jual_ppn'],
+                        'harga_satuan_kecil_sbl_ppn' => (float)$harga['harga_satuan_kecil_sbl_ppn'],
+                        'harga_lama'             => $harga_lama,
+                        'harga_baru'             => $harga_baru,
+                        'selisih'                => $harga_baru - $harga_lama,
+                    );
 
                     $dataexc["kode_brg"] = $rows;
                     $dataexc["id_penerimaan"] = $_POST['id'];
@@ -360,7 +381,7 @@ class Penerimaan_brg extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => isset($newId)?$newId:$id, 'id_tc_po' => $_POST['id_tc_po'], 'action'=> $_POST['submit'] , 'data' => $dataexc));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => isset($newId)?$newId:$id, 'id_tc_po' => $_POST['id_tc_po'], 'action'=> $_POST['submit'] , 'data' => $dataexc, 'harga_changes' => isset($harga_changes)?$harga_changes:array()));
             }
         }
     }
