@@ -20,17 +20,17 @@
 
       <div class="col-md-12">
 
-        <center><h4>LAPORAN RL</h4></center>
+        <div class="glr-rl-title"><i class="fa fa-file-text-o"></i>&nbsp;LAPORAN RL</div>
 
        
-        <ol>
+        <ul class="glr-rl-list">
           <li><a href="<?php echo base_url().'laporan/Global_report/rl?mod=1'?>" target="_blank">RL 1</a></li>
 		    <li><a href="<?php echo base_url().'laporan/Global_report/rl?mod=2'?>" target="_blank">RL 2</a></li>
 		    <li><a href="<?php echo base_url().'laporan/Global_report/rl?mod=3'?>" target="_blank">RL 3</a></li>
 		    <li><a href="<?php echo base_url().'laporan/Global_report/rl?mod=4'?>" target="_blank">RL 4</a></li>
 		    <li><a href="<?php echo base_url().'laporan/Global_report/rl?mod=5'?>" target="_blank">RL 5</a></li>
 		    <li><a href="<?php echo base_url().'laporan/Global_report/rl?mod=6'?>" target="_blank">BOR</a></li>
-        </ol>
+        </ul>
 		</div>
 
     </div><!-- /.col -->

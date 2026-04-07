@@ -24,9 +24,9 @@
       <div class="col-md-12">
 
         <!-- content -->
-        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
+        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-sm glr-btn-back"><i class="fa fa-arrow-left"></i> Menu Laporan</a>
         <br>
-        <h4>Rekapitulasi Stok Awal Bulan, Penerimaan, Distribusi dan Saldo Akhir</h4>
+        <h4 class="glr-form-title">Rekapitulasi Stok Awal Bulan, Penerimaan, Distribusi dan Saldo Akhir</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_gdg_nm" target="_blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
@@ -41,12 +41,12 @@
               <div class="col-md-1">
                 <?php echo $this->master->get_tahun(date('Y'),'year','year','form-control','','');?>
               </div>
-              <div class="col-md-8 no-padding">
-                <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
-                  Proses Pencarian
+              <div>
+                <button type="submit" name="submit" value="data" class="btn btn-sm glr-btn-search">
+                  <i class="fa fa-search"></i>&nbsp;Tampilkan Data
                 </button>
-                <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
-                  Export Excel
+                <button type="submit" name="submit" value="excel" class="btn btn-sm glr-btn-excel">
+                  <i class="fa fa-file-excel-o"></i>&nbsp;Export Excel
                 </button>
               </div>
           </div>

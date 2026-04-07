@@ -21,9 +21,9 @@
       <div class="col-md-12">
 
         <!-- content -->
-        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
+        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-sm glr-btn-back"><i class="fa fa-arrow-left"></i> Menu Laporan</a>
         <br>
-        <h4>Laporan Pengeluaran Obat per Periode Berdasarkan Mutasi Barang
+        <h4 class="glr-form-title">Laporan Pengeluaran Obat per Periode Berdasarkan Mutasi Barang
         </h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data">
         <!-- hidden form -->
@@ -50,16 +50,13 @@
 
           </div>
         
-          <div class="form-group">
-            <label class="control-label col-md-1 ">&nbsp;</label>
-            <div class="col-md-10" style="margin-left: 5px">
-              <button type="submit" name="submit" value="pengadaan_mod_12" class="btn btn-xs btn-default">
-                Proses Pencarian
-              </button>
-              <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
-                Export Excel
-              </button>
-            </div>
+          <div class="glr-action-row">
+            <button type="submit" name="submit" value="data" class="btn btn-sm glr-btn-search">
+              <i class="fa fa-search"></i>&nbsp;Tampilkan Data
+            </button>
+            <button type="submit" name="submit" value="excel" class="btn btn-sm glr-btn-excel">
+              <i class="fa fa-file-excel-o"></i>&nbsp;Export Excel
+            </button>
           </div>
 
         </form>

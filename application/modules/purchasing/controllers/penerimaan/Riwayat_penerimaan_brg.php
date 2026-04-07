@@ -603,6 +603,8 @@ class Riwayat_penerimaan_brg extends MX_Controller {
 
         $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
         $result = $this->Riwayat_penerimaan_brg->get_penerimaan_brg($_GET['flag'], $_GET['ID']);
+
+        // echo $this->db->last_query();die;
         
         $getData = array();
         foreach($result as $row_dt){

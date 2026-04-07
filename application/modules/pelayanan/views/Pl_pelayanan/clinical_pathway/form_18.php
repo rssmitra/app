@@ -137,6 +137,11 @@
     <td colspan="3">: <input type="text" class="input_type" name="form_18[katup_pulmonal]" id="katup_pulmonal" onchange="fillthis('katup_pulmonal')" style="width: 50%" placeholder="PV AccT ms, mPAP mmHg"></td>
   </tr>
 
+  <tr>
+    <td style="vertical-align: middle">TVG (mm)</td>
+    <td colspan="3">: <input type="text" class="input_type" name="form_18[vg]" id="vg" onchange="fillthis('vg')" style="width: 50%" placeholder="TVG"></td>
+  </tr>
+
 </table>
 
 <p style="font-weight: bold">Komentar</p>

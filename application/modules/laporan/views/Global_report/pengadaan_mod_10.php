@@ -48,9 +48,9 @@ function tutup1(id){
       <div class="col-md-12">
 
         <!-- content -->
-        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
+        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-sm glr-btn-back"><i class="fa fa-arrow-left"></i> Menu Laporan</a>
         <br>
-        <h4>Laporan Penerimaan Barang Detail Gudang</h4>
+        <h4 class="glr-form-title">Laporan Penerimaan Barang Detail Gudang</h4>
         <form name="kinerja_dr" class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_penerimaan_detail" target="blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
@@ -95,16 +95,13 @@ function tutup1(id){
               </div>
           </div>
         
-          <div class="form-group">
-            <label class="control-label col-md-2 ">&nbsp;</label>
-            <div class="col-md-10" style="margin-left: 5px">
-              <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
-                Proses Pencarian
-              </button>
-              <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
-                Export Excel
-              </button>
-            </div>
+                    <div class="glr-action-row">
+            <button type="submit" name="submit" value="data" class="btn btn-sm glr-btn-search">
+              <i class="fa fa-search"></i>&nbsp;Tampilkan Data
+            </button>
+            <button type="submit" name="submit" value="excel" class="btn btn-sm glr-btn-excel">
+              <i class="fa fa-file-excel-o"></i>&nbsp;Export Excel
+            </button>
           </div>
 
         </form>

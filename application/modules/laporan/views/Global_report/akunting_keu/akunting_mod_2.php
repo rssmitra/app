@@ -21,7 +21,7 @@
       <div class="col-md-12">
 
         <!-- content -->
-        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-default"> Kembali ke Menu Utama</a>
+        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-sm glr-btn-back"><i class="fa fa-arrow-left"></i> Menu Laporan</a>
         <hr>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data">
         <!-- hidden form -->
@@ -47,12 +47,12 @@
               <div class="col-md-1" style="margin-left: -20px">
                 <?php echo $this->master->get_tahun(date('Y'),'year','year','form-control','','');?>
               </div>
-              <div class="col-md-4" style="margin-left: -1%">
-                <button type="submit" name="submit" value="data" class="btn btn-xs btn-primary">
-                  Tampilkan Data
+              <div style="margin-left: -1%">
+                <button type="submit" name="submit" value="data" class="btn btn-sm glr-btn-search">
+                  <i class="fa fa-search"></i>&nbsp;Tampilkan Data
                 </button>
-                <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
-                  Export Excel
+                <button type="submit" name="submit" value="excel" class="btn btn-sm glr-btn-excel">
+                  <i class="fa fa-file-excel-o"></i>&nbsp;Export Excel
                 </button>
               </div>
           </div>

@@ -246,6 +246,11 @@ $(document).ready(function(){
       backToDefaultForm();
     });
 
+    $('#tabs_catatan').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveCatatanPengkajian');
+    });
+
     
 
     /*onchange form module when click tabs*/   

@@ -405,6 +405,8 @@ class Inv_stok_depo extends MX_Controller {
             $this->db->update('mt_depo_stok', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
         }
 
+        // echo $this->db->last_query();die;
+
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'status_aktif' => $value));
 
     }

@@ -121,12 +121,12 @@ th, td {
     <tbody>
         <?php 
           $no=0; 
-          // echo '<pre>';print_r($penerimaan_data);die;
           foreach($penerimaan_data as $key_dt=>$row_dt) : $no++; 
-            // sum jumlah kirim
-            foreach($row_dt as $key_row=>$val_row){
-              $jumlah_kirim[] = $val_row->jumlah_kirim;
+          // sum jumlah kirim
+          foreach($row_dt as $key_row=>$val_row){
+            $jumlah_kirim[$key_dt][] = $val_row->jumlah_kirim;
             }
+            // echo '<pre>';print_r($val_row);die;
             $subttl = $row_dt[0]->harga * $row_dt[0]->jumlah_kirim;;
             $discount_rp = $subttl * ($row_dt[0]->disc/100);
             $subtotalrp = $subttl - $discount_rp;
@@ -139,8 +139,8 @@ th, td {
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->content?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->satuan_besar?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->jumlah_pesan)?></td>
-              <!-- <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($jumlah_kirim))?></td> -->
-              <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($val_row->jumlah_kirim)?></td>
+              <!-- <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($val_row->jumlah_pesan)?></td> -->
+              <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($jumlah_kirim[$val_row->kode_brg]))?></td>
               <!-- <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga).',-'; ?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->disc; ?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->discount_rp).',-'; ?></td>
