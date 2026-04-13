@@ -1,283 +1,377 @@
-
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<meta charset="utf-8" />
-		<title>SHS 4.0 - Antrian Poliklinik</title>
-
-		<meta name="description" content="top menu &amp; navigation" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
-		<!-- bootstrap & fontawesome -->
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
-    <!-- css date-time -->
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
-    <!-- end css date-time -->
-    <!-- ace styles -->
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" />
-    <link rel="shortcut icon" href="<?php echo base_url().'assets/insani/favicon_rssm.png'; ?>">
-
-	</head>
+<html lang="id">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta charset="utf-8" />
+  <title>ANTRIAN POLIKLINIK — RS Setia Mitra</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
+  <link rel="shortcut icon" href="<?php echo base_url().'assets/insani/favicon_rssm.png'; ?>">
   <style>
-    @font-face { 
-      font-family: 'MyriadPro'; 
-      src: url('<?php echo base_url()?>assets/fonts/MyriadPro-Bold.otf'); 
-    } 
-
-    body{
-      font-family: 'MyriadPro' !important;
-      background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg') fixed !important;
-      background-color: #E6E7E8;
+    @font-face {
+      font-family: 'MyriadPro';
+      src: url('<?php echo base_url()?>assets/fonts/MyriadPro-Bold.otf');
     }
 
-    .page-content {
-        background-color: #E6E7E8;
-       
-        position: relative;
-        margin: 0;
-        padding: 0px 20px 24px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        height: 100% !important;
-        min-height: 670px;
+    :root {
+      --bg:      #0d1b2a;
+      --bg2:     #0f2339;
+      --card-bg: rgba(255,255,255,0.05);
+      --border:  rgba(255,255,255,0.10);
+      --hdr-bg:  linear-gradient(135deg, #0a2d5a 0%, #00669F 100%);
+      --ftr-bg:  linear-gradient(90deg,  #0a2d5a 0%, #00669F 100%);
+      --text:    #e8f4f8;
+      --green:   #4CAF50;
+      --green-l: rgba(76,175,80,0.18);
     }
 
-    .page-header {
-      padding-bottom: 9px;
-      margin: 0px 0 0px !important;
-      border-bottom: 1px solid #eee;
-      background-color: #E6E7E8;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'MyriadPro', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
     }
 
-    .footer{
-      padding: 16px !important;
+    /* ─── LAYOUT UTAMA ─────────────────────────── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .table tr {
-      font-size: 2.2em;
+    /* ─── HEADER ───────────────────────────────── */
+    #hdr {
+      background: var(--hdr-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2vw;
+      height: 68px;
+      flex-shrink: 0;
+      box-shadow: 0 3px 20px rgba(0,0,0,0.45);
+      border-bottom: 2px solid rgba(255,255,255,0.12);
+      gap: 1vw;
+    }
+    .hdr-logos {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .hdr-logos .logo-main { height: 46px; width: auto; object-fit: contain; }
+    .hdr-logos .logo-sep  { width: 1px; height: 36px; background: rgba(255,255,255,0.25); }
+    .hdr-logos .logo-by   { height: 30px; width: auto; object-fit: contain; opacity: 0.8; }
+    .hdr-center {
+      flex: 1;
+      text-align: center;
+    }
+    .hdr-title {
+      font-size: 2.0vw;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .hdr-sub {
+      font-size: 0.9vw;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+    .hdr-clock { text-align: right; flex-shrink: 0; line-height: 1.3; }
+    .hdr-clock .ck-time { font-size: 2.0vw; font-weight: 700; }
+    .hdr-clock .ck-date { font-size: 0.9vw; color: rgba(255,255,255,0.65); }
+
+    /* ─── AREA KONTEN (scrollable) ─────────────── */
+    #content {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
+      padding: 10px;
+    }
+    #content::-webkit-scrollbar       { width: 5px; }
+    #content::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+    #content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+
+    /* ─── GRID POLI ────────────────────────────── */
+    #poli-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
     }
 
-    .table {
-      /* border-collapse: collapse; */
-      width: 100%;
+    /* ─── KARTU POLI ───────────────────────────── */
+    .poli-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .poli-hdr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .poli-icon {
+      width: 2.8vw; height: 2.8vw;
+      min-width: 28px; min-height: 28px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1vw;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .poli-info { flex: 1; min-width: 0; }
+    .poli-name {
+      font-size: 1.15vw;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .poli-dokter {
+      font-size: 0.95vw;
+      color: rgba(255,255,255,0.65);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
     }
 
-    .table td, .table th {
-      border: 0px solid black !important;
-      padding: 8px;
-      color: white
+    /* ─── TABEL ANTRIAN POLI ───────────────────── */
+    .poli-table { width: 100%; border-collapse: collapse; }
+    .poli-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .poli-table tbody tr:last-child { border-bottom: none; }
+    .poli-table tbody td {
+      padding: 8px 10px;
+      font-size: 1.3vw;
+      color: var(--text);
+      vertical-align: middle;
     }
-
-    .table th {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      color: white !important;
+    /* Baris 0: Sedang dilayani – hijau */
+    .poli-table tbody tr.row-serving {
+      background: var(--green-l);
+      border-left: 3px solid var(--green);
     }
-    
+    .poli-table tbody tr.row-serving td { color: #a5d6a7; }
+    /* Baris 1: Berikutnya – normal */
+    .poli-table tbody tr.row-next {
+      background: rgba(255,255,255,0.03);
+    }
+    .poli-table tbody tr.row-next td { color: rgba(255,255,255,0.55); }
 
+    /* Badge nomor antrian */
+    .q-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 1.1vw;
+      font-weight: 800;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .row-serving .q-badge {
+      background: rgba(76,175,80,0.3);
+      color: #a5d6a7;
+    }
+    .serving-icon { float: right; color: var(--green); font-size: 1.0vw; }
+
+    /* Empty placeholder row */
+    .poli-table tbody tr.row-empty td { color: rgba(255,255,255,0.2); font-size: 1.0vw; text-align: center; }
+
+    /* ─── FOOTER ───────────────────────────────── */
+    #ftr {
+      background: var(--ftr-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2vw;
+      height: 52px;
+      flex-shrink: 0;
+      box-shadow: 0 -3px 16px rgba(0,0,0,0.38);
+      border-top: 2px solid rgba(255,255,255,0.10);
+    }
+    .ftr-brand {
+      font-size: 1.2vw;
+      font-weight: 800;
+      letter-spacing: 1px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ftr-brand i { color: rgba(255,255,255,0.7); }
+    .ftr-legend {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 1.0vw;
+      font-weight: 600;
+    }
+    .leg-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .leg-serving { background: rgba(76,175,80,0.22); color: #81c784; }
+    .leg-next    { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.65); }
   </style>
+</head>
+<body>
 
-	<body class="no-skin">
-	
-		<div class="main-container ace-save-state" id="main-container">
-			<script type="text/javascript">
-				try{ace.settings.loadState('main-container')}catch(e){}
-			</script>
+  <div id="app">
 
-			<div class="main-content">
-
-        <div class="col-md-12" style="padding: 10px">
-            <div style="float: left; margin-left: 20px; margin-top: 10px">
-              <img alt="" src="<?php echo base_url().COMP_ICON_INSANI?>" width="300px">
-            </div>
-            <div style="float: right; margin-top: 10px; margin-right: 10px">
-              <span class="title-text"><img alt="" src="<?php echo base_url().COMP_ICON_BY_INSANI?>" width="150"></span>
-            </div>
+    <!-- ═══════════════ HEADER ═══════════════════ -->
+    <div id="hdr">
+      <div class="hdr-logos">
+        <img class="logo-main" src="<?php echo base_url().COMP_ICON_INSANI?>" alt="Logo RS">
+        <div class="logo-sep"></div>
+        <img class="logo-by"   src="<?php echo base_url().COMP_ICON_BY_INSANI?>" alt="By Insani">
+      </div>
+      <div class="hdr-center">
+        <div class="hdr-title"><i class="fa fa-stethoscope" style="margin-right:10px;opacity:.7"></i>Antrian Poliklinik</div>
+        <div class="hdr-sub">RS Setia Mitra — Smart Hospital System 4.0</div>
+      </div>
+      <div class="hdr-clock">
+        <div class="ck-time" id="clock-time">
+          <?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i'); ?> <span style="font-size:.72em;opacity:.7">WIB</span>
         </div>
+        <div class="ck-date">
+          <?php echo date('l, d F Y'); ?>
+        </div>
+      </div>
+    </div>
 
-        
-
-        <div class="col-md-12" style="background: #00669F; color: white; padding: 5px; border-top-left-radius: 15px; border-top-right-radius: 15px">
-          <div style="font-size: 25px; font-weight: bold; float: left; padding-left: 20px">Antrian Poliklinik</div>
-          <div style="text-align: right; font-size: 20px; margin-top: 3px; float: right; margin-right: 20px" >
-            <i class="fa fa-calendar"></i> <?php date_default_timezone_set("Asia/Jakarta"); echo date('l, d F Y') ?> &nbsp; <i class="fa fa-clock-o"></i>  
-            <span id="refresh">&nbsp;
-                <span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></span> WIB
+    <!-- ═══════════════ GRID POLI ════════════════ -->
+    <div id="content">
+      <div id="poli-grid">
+        <?php
+          $accent = ['#2196F3','#4CAF50','#FF9800','#E91E63','#9C27B0','#00BCD4','#FF5722','#3F51B5','#009688','#FFC107'];
+          $ci = 0;
+          foreach ($data_loket as $key => $row) :
+            if (!in_array($row->jd_kode_spesialis, ['013101','012101'])) :
+              $col = $accent[$ci % count($accent)];
+              $ci++;
+        ?>
+        <div class="poli-card" style="border-top: 4px solid <?php echo $col; ?>">
+          <div class="poli-hdr">
+            <div class="poli-icon" style="background:<?php echo $col; ?>">
+              <i class="fa fa-stethoscope"></i>
+            </div>
+            <div class="poli-info">
+              <div class="poli-name"><?php echo trim(strtoupper($row->short_name)); ?></div>
+              <div class="poli-dokter"><i class="fa fa-user-md" style="opacity:.6;margin-right:4px"></i><?php echo substr($row->nama_pegawai, 0, 38); ?></div>
+            </div>
           </div>
+          <table class="poli-table" id="table_<?php echo $row->kode_poli_bpjs; ?>_<?php echo $row->jd_kode_dokter; ?>">
+            <tbody>
+              <tr class="row-serving">
+                <td style="width:5.5vw"><span class="q-badge">– –</span></td>
+                <td>Tidak ada data</td>
+              </tr>
+              <tr class="row-next">
+                <td><span class="q-badge">– –</span></td>
+                <td>–</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <?php endif; endforeach; ?>
+      </div>
+    </div>
 
-				<div class="main-content-inner">
-					<div class="page-content">
-            <div id="page-area-content" >
-              <!-- section antrian poli -->
-              <div id="section_antrian_poli" class="row" style="margin-top: 10px">
-                
-                <div class="col-md-12 no-padding">
+    <!-- ═══════════════ FOOTER ═══════════════════ -->
+    <div id="ftr">
+      <div class="ftr-brand">
+        <i class="fa fa-hospital-o"></i>
+        RS Setia Mitra | <span style="font-weight:400;font-style:italic">Smart Hospital System 4.0 &copy; 2018-<?php echo date('Y'); ?></span>
+      </div>
+      <div class="ftr-legend">
+        <div class="leg-chip leg-serving">
+          <i class="fa fa-check-circle"></i> Sedang Dilayani
+        </div>
+        <div class="leg-chip leg-next">
+          <i class="fa fa-clock-o"></i> Antrian Berikutnya
+        </div>
+      </div>
+    </div>
 
-                  <?php 
-                    $arr_color = array('#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5'); 
-                    shuffle($arr_color);
-                    foreach($data_loket as $key=>$row) : if(!in_array($row->jd_kode_spesialis, ['013101','012101'])) : ?>
-                    <div class="col-md-4" style="padding-bottom:10px; ">
-                      <div style="background: #5882B0 !important; padding: 5px; color: white; border-top-right-radius: 50px; border-top-left-radius: 10px;">
-                        <span style="text-align: center; font-size: 1.5em; font-weight: bold; padding-bottom: 5px"><?php echo trim(strtoupper($row->short_name))?></span><br><span style="text-align: center; font-size: 1.8em; font-weight: bold; padding-bottom: 5px"><?php echo substr($row->nama_pegawai,0,35)?></span>
-                      </div>
-                      <div style="height: 100px">
-                        <table class="table" id="table_<?php echo $row->kode_poli_bpjs?>_<?php echo $row->jd_kode_dokter?>">
-                          <tbody style="background: #00669F">
-                            <tr>
-                              <td align="center">-</td>
-                              <td>-Tidak ada data-</td>
-                            </tr>
-                            <?php for($i=2; $i<3; $i++) : ?>
-                            <tr>
-                              <td align="center">-</td>
-                              <td>-</td>
-                            </tr>
-                            <?php endfor; ?>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  <?php endif; endforeach;?>
+  </div><!-- /#app -->
 
-                </div>
-              </div>
-              
-            </div>
+  <!-- ═══════════════ SCRIPTS ═══════════════════ -->
+  <script type="text/javascript">
+    window.jQuery || document.write("<script src='<?php echo base_url()?>/assets/js/jquery.js'>"+"<"+"/script>");
+  </script>
+  <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery.min.js"></script>
+  <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
 
-					</div><!-- /.page-content -->
-				</div>
+  <script>
+    /* ── Live clock ── */
+    function updateClock() {
+      var now = new Date();
+      var h = String(now.getHours()).padStart(2, '0');
+      var m = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('clock-time').innerHTML =
+        h + ':' + m + ' <span style="font-size:.72em;opacity:.7">WIB</span>';
+    }
+    setInterval(updateClock, 1000);
 
-			</div><!-- /.main-content -->
-      
-			<div class="footer">
-				<div class="footer-inner" style="background: #0765a1;color: white; ">
-					<div class="footer-content" style="background: #0765a1;color:">
-            <!-- <div class="center">
-              <span style="font-size: 1.5em; font-weight: bold; padding: 20px; font-style: italic;">Partners and Integrated System :</span><br>
-              <?php for($i=1; $i<13; $i++) : ?>
-              <img style="padding: 10px" height="80px" src="<?php echo base_url().'assets/insani/partner/'.$i.'.png'?>">
-              <?php endfor;?>
-            </div> -->
-						<span class="bigger-120" style="font-size: 18px !important; font-weight: bold; float: left">
-							<span class="white bolder">RS Setia Mitra</span>
-							| <i>Smart Hospital System 4.0 </i> &copy; 2018-<?php echo date('Y')?>
-						</span>
-            <span style="font-size: 16px; text-align: center; color: white; font-weight: bold; float: right">
-              <i class="fa fa-check-circle bigger-120"></i> Pasien Sedang Dilayani
-              <i class="fa fa-clock-o bigger-120"></i> Antrian Pasien Berikutnya
-            </span>
-					</div>
-				</div>
-			</div>
+    /* ── AJAX load antrian poli ── */
+    $(document).ready(function () {
 
-			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-			</a>
-		</div><!-- /.main-container -->
+      $.getJSON("<?php echo site_url('display_antrian/reload_antrian_poli') ?>", '', function (data) {
 
-		<!-- basic scripts -->
+        $.each(data.result, function (key, val) {
+          $.each(val, function (keys, vals) {
 
-		
-    <!--[if !IE]> -->
-    <script type="text/javascript">
-      window.jQuery || document.write("<script src='<?php echo base_url()?>/assets/js/jquery.js'>"+"<"+"/script>");
-    </script>
+            $('#table_' + key + '_' + keys + ' tbody').remove();
+            var length = vals.length;
 
-    <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery-ui.min.js"></script>
+            $.each(vals, function (k, v) {
+              if (k < 2) {
+                var prefix     = (v.kode_perusahaan == 120) ? 'B' : 'A';
+                var no_str     = v.no_antrian.toString();
+                var no_antrian = (no_str.length == 1) ? '0' + v.no_antrian : v.no_antrian;
+                var rowClass   = (k == 0) ? 'row-serving' : 'row-next';
+                var icon       = (k == 0) ? '<span class="serving-icon"><i class="fa fa-check-circle"></i></span>' : '';
+                $('<tr class="' + rowClass + '">' +
+                    '<td style="width:5.5vw"><span class="q-badge">' + prefix + '&thinsp;' + no_antrian + '</span></td>' +
+                    '<td><span>' + v.nama_pasien.substr(0, 20) + '</span>' + icon + '</td>' +
+                  '</tr>').appendTo($('#table_' + v.kode_poli_bpjs + '_' + v.kode_dokter));
+              }
+              if (length == 1) {
+                $('<tr class="row-next">' +
+                    '<td style="width:5.5vw"><span class="q-badge">– –</span></td>' +
+                    '<td>–</td>' +
+                  '</tr>').appendTo($('#table_' + v.kode_poli_bpjs + '_' + v.kode_dokter));
+              }
+            });
 
-    <script type="text/javascript">
-      if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
-    </script>
-    <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
-
-    <!-- ace scripts -->
-    <script src="<?php echo base_url()?>assets/js/ace/ace.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.ajax-content.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.touch-drag.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.sidebar.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.sidebar-scroll-1.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.submenu-hover.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.widget-box.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.settings.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.settings-rtl.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.settings-skin.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.widget-on-reload.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.searchbox-autocomplete.js"></script>
-
-    <script type="text/javascript"> ace.vars['base'] = '..'; </script>
-    <script src="<?php echo base_url()?>assets/js/ace/elements.onpage-help.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.onpage-help.js"></script>
-    <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
-    
-    <!-- farmnasi -->
-    <script>
-      $(document).ready( function(){
-
-        // setInterval( function () {
-          
-
-          // antrian poli
-          $.getJSON("<?php echo site_url('display_antrian/reload_antrian_poli') ?>", '', function (data) {   
-            
-            // console.log(data.result);
-            $.each(data.result, function (key, val) { 
-              // console.log(val);
-              $.each(val, function (keys, vals) {  
-                console.log(key);
-                $('#table_'+key+'_'+keys+' tbody').remove();
-                var length = vals.length;
-                $.each(vals, function (k, v) {  
-                  // console.log(k);
-                  // console.log(v);
-                  if(k < 2){
-                    var prefix = (v.kode_perusahaan == 120)?'B':'A';
-                    var lgth_no_antrian = v.no_antrian.toString();
-                    // console.log(lgth_no_antrian);
-                    var no_antrian = (lgth_no_antrian.length == 1) ? '0'+v.no_antrian : v.no_antrian;
-                    var icon = (k == 0) ? '<span style="float: right !important"><i class="fa fa-circle green"></i></span>' : '' ;
-                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">'+prefix+' '+no_antrian+' &nbsp;&nbsp;</span></td><td><span>'+v.nama_pasien.substr(0,15)+'</span>'+icon+'</td></tr>').appendTo($('#table_'+v.kode_poli_bpjs+'_'+v.kode_dokter+''));
-                  }
-
-                  if(length == 1){
-                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">X 00 &nbsp;&nbsp;</span></td><td>-</td></tr>').appendTo($('#table_'+v.kode_poli_bpjs+'_'+v.kode_dokter+''));
-                  }
-                  
-                })
-
-                
-
-              })
-              
-            })
-
-            
           });
-
-        // }, 2000 );
-      
-        setInterval("reload_page();",3000);
+        });
 
       });
-      
 
-      function reload_page(){
+      /* Reload halaman setiap 3 detik (refresh data antrian) */
+      setInterval(reload_page, 3000);
 
-        // $('#refresh').load(location.href + ' #time');
-        location.reload(location.href);
+    });
 
-      }
+    function reload_page() { location.reload(location.href); }
+  </script>
 
-    </script>
-
-    
 </body>
 </html>
