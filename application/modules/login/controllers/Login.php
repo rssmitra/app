@@ -21,7 +21,7 @@ class Login extends MX_Controller {
                 'profile_form' => $this->Tmp_apps_config_model->get_by_id(1),
             );
 
-        $this->load->view('login_view', $data);
+        $this->load->view('login_view_2', $data);
 
     }
 
