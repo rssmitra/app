@@ -71,7 +71,7 @@ class Riwayat_reg_sep_fail_model extends CI_Model {
 			$this->db->where(array('CAST(tgl_jam_masuk as DATE) = ' => date('Y-m-d')));
 		} 
 		
-		$this->db->where("(no_sep like '%xxxxx%' or no_sep like '%111111%')");
+		$this->db->where("(no_sep like '%xxx%' or no_sep like '%1111%')");
 		$this->db->where("tc_registrasi.kode_perusahaan", 120);
 
 	}
