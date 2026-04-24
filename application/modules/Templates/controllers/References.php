@@ -2409,6 +2409,58 @@ class References extends MX_Controller {
 		echo json_encode( array('html' => $html) );
 	}
 
+	public function get_riwayat_medis_return_data($mr){
+		
+		$year = date('Y') - 1;
+		$no_mr = (string)$mr;
+
+		// resume medis pasien
+		$limit = isset($_GET['key'])?$_GET['key']:35;
+		$result = $this->db->select('view_cppt.*, view_cppt.tanggal as tgl_periksa, id as kode_riwayat, nama_ppa as dokter_pemeriksa, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien, tc_kunjungan.status_batal')
+		->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = view_cppt.no_kunjungan', 'left')
+		->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')
+		->order_by('no_kunjungan','DESC')
+		->where('flag', 'resume')
+		->where('kode_bagian_tujuan !=', '010901')
+		->where('DATEDIFF(year,tanggal,GETDATE()) < 4 ')->limit($limit)
+		->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr))->result(); 
+		// echo '<pre>';print_r($result);die;
+		// eresep
+		$eresep = $this->db->get_where('fr_tc_pesan_resep_detail', ['no_mr' => $no_mr, 'parent' => '0'])->result();
+
+		// file emr pasien
+		$emr = $this->db->select('csm_dokumen_export.*, tc_kunjungan.no_mr, tc_kunjungan.no_kunjungan')->join('tc_kunjungan', 'tc_kunjungan.no_registrasi=csm_dokumen_export.no_registrasi', 'left')->get_where('csm_dokumen_export', array('tc_kunjungan.no_mr' => $no_mr))->result();
+		$getDataFile = [];
+		foreach ($emr as $key_file => $val_file) {
+			$getDataFile[$val_file->no_registrasi][$val_file->no_kunjungan][] = $val_file;
+		}
+
+		// form pengkajian pasien / form rekam medis
+		$file_pengkajian = $this->db->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr, 'jenis_form !=' => 0))->result();
+		$getDataFilePengkajian = [];
+		foreach ($file_pengkajian as $key_file_pkj => $val_file_pkj) {
+			$getDataFilePengkajian[$val_file_pkj->no_registrasi][$val_file_pkj->no_kunjungan][] = $val_file_pkj;
+		}
+
+		$getDataResep = [];
+		foreach ($eresep as $key_resep => $value_resep) {
+			$getDataResep[$value_resep->no_registrasi][$value_resep->no_kunjungan][$value_resep->kode_pesan_resep][] = $value_resep;
+		}
+
+		// echo '<pre>';print_r($result_key);die;
+		$data = array(
+			'file' => $getDataFile,
+			'file_pkj' => $getDataFilePengkajian,
+			// 'penunjang' => $getDataPm,
+			'result' => $result,
+			// 'obat' => $getData,
+			'eresep' => $getDataResep,
+			'no_mr' => $no_mr,
+			
+		);
+		return $data;
+	}
+
 	public function get_riwayat_pm($mr, $return = ''){
 		
 		$year = date('Y') - 1;

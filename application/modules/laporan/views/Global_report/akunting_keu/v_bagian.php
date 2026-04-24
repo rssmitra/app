@@ -14,7 +14,22 @@
 <head>
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
+
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12px; background: #fff; margin: 10px; }
+    h4 { font-size: 14px; font-weight: 700; color: #1e3a5f; text-align: center; margin-bottom: 8px; }
+    .table { font-size: 11.5px; border-collapse: collapse; width: 100%; margin-bottom: 12px; }
+    .table th { background: linear-gradient(135deg, #0369a1, #0ea5e9); color: #fff; padding: 5px 7px; border: 1px solid #1d4ed8 !important; font-size: 11px; text-align: center; }
+    .table td { padding: 4px 7px; border: 1px solid #e2e8f0 !important; vertical-align: middle; }
+    .table tbody tr:nth-child(even) { background: #f8fafc; }
+    .table tfoot td { background: #f1f5f9; font-weight: 700; border-top: 2px solid #0ea5e9 !important; }
+    table.greyGridTable { border: 1px solid #ccc; border-collapse: collapse; width: 100%; font-size: 11.5px; }
+    table.greyGridTable thead th { background: linear-gradient(135deg, #0369a1, #0ea5e9); color: #fff; padding: 5px 7px; border: 1px solid #1d4ed8; text-align: center; }
+    table.greyGridTable td { border: 1px solid #e2e8f0; padding: 4px 7px; vertical-align: middle; }
+    table.greyGridTable tbody tr:nth-child(even) { background: #f8fafc; }
+    tr[style*="font-weight: bold"] td, tr[style*="font-weight:bold"] td { background: #f1f5f9 !important; font-weight: 700; border-top: 2px solid #0ea5e9 !important; }
+    @media print { body { margin: 0; } }
+  </style>
 </head>
 <body>
   <br>
