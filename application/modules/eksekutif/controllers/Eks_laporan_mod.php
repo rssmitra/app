@@ -35,26 +35,43 @@ class Eks_laporan_mod extends MX_Controller {
         foreach ($list as $row) {
             $no++;
             $shift_cls = isset($badge[$row->shift_mod]) ? $badge[$row->shift_mod] : 'default';
-            $status_cls = $row->status == 'final' ? 'success' : 'default';
+            $is_verified = ($row->status === 'verified');
+            $status_cls  = $is_verified ? 'primary' : ($row->status == 'final' ? 'success' : 'default');
+
+            // Build action buttons
+            $actions = $this->authuser->show_button($link, 'R', $row->id, 2);
+            if (!$is_verified) {
+                $actions .= $this->authuser->show_button($link, 'U', $row->id, 2);
+                $actions .= $this->authuser->show_button($link, 'D', $row->id, 2);
+            }
+            $actions_print = '<button type="button" class="btn btn-xs btn-info" onclick="loadReportModal('.$row->id.')" title="Cetak Laporan"><i class="ace-icon fa fa-print"></i></button>';
+            
+            if ($row->status === 'final') {
+                $actions_verify = ' <button type="button" class="btn btn-xs btn-purple" onclick="verifyLaporan('.$row->id.')" title="Verifikasi"><i class="ace-icon fa fa-check-circle"></i></button>';
+            }else{
+                $actions_verify = '';
+            }
+
+            $status_label = strtoupper($row->status);
+            if ($is_verified) {
+                $status_label = '<i class="fa fa-check-circle" style="margin-right:2px"></i>VERIFIED';
+            }
 
             $data[] = [
                 '<div class="center">
                     <label class="pos-rel">
-                        <input type="checkbox" class="ace" name="selected_id[]" value="'.$row->id.'"/>
+                        <input type="checkbox" class="ace" name="selected_id[]" value="'.$row->id.'"'.($is_verified ? ' disabled' : '').'/>
                         <span class="lbl"></span>
                     </label>
                  </div>',
-                '<div class="center">
-                    '.$this->authuser->show_button($link, 'R', $row->id, 2).'
-                    '.$this->authuser->show_button($link, 'U', $row->id, 2).'
-                    '.$this->authuser->show_button($link, 'D', $row->id, 2).'
-                    <button type="button" class="btn btn-xs btn-info" onclick="loadReportModal('.$row->id.')" title="Cetak Laporan"><i class="ace-icon fa fa-print"></i></button>
-                 </div>',
+                '<div class="center">'.$actions.'</div>',
+                '<div class="center">'.$actions_print.'</div>',
+                '<div class="center">'.$actions_verify.'</div>',
                 '<div class="center">'.$no.'</div>',
                 date('d/m/Y', strtotime($row->tanggal)),
                 htmlspecialchars($row->nama_mod),
                 '<div class="center"><span class="badge badge-'.$shift_cls.'">'.$row->shift_mod.'</span></div>',
-                '<div class="center"><span class="label label-sm label-'.$status_cls.'">'.strtoupper($row->status).'</span></div>',
+                '<div class="center"><span class="label label-sm label-'.$status_cls.'">'.$status_label.'</span></div>',
                 date('d/m/Y H:i', strtotime($row->created_at)),
             ];
         }
@@ -69,16 +86,23 @@ class Eks_laporan_mod extends MX_Controller {
 
     public function form($id = null) {
         if ($id) {
+            $header = $this->Mod->get_header($id);
+            // Jika sudah diverifikasi, paksa read-only
+            if ($header && $header->status === 'verified') {
+                redirect('eksekutif/Eks_laporan_mod/show/'.$id);
+                return;
+            }
             $this->breadcrumbs->push('Edit Laporan', 'eksekutif/Eks_laporan_mod/form/'.$id);
             $flag = 'update';
         } else {
+            $header = null;
             $this->breadcrumbs->push('Input Laporan', 'eksekutif/Eks_laporan_mod/form');
             $flag = 'create';
         }
         $data = [
             'title'       => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
-            'laporan'     => $id ? $this->Mod->get_header($id) : null,
+            'laporan'     => $header,
             'detail'      => $id ? $this->Mod->get_all_sections($id) : null,
             'id'          => $id,
             'flag'        => $flag,
@@ -106,14 +130,21 @@ class Eks_laporan_mod extends MX_Controller {
 
         $post = $this->input->post(null, true);
         $id   = isset($post['id']) && $post['id'] ? (int)$post['id'] : null;
+        $save_status = isset($post['save_status']) && $post['save_status'] === 'draft' ? 'draft' : 'final';
 
         try {
+            // Block update pada laporan yang sudah diverifikasi
+            if ($id && $this->Mod->is_verified($id)) {
+                echo json_encode(['status' => 301, 'message' => 'Laporan sudah diverifikasi dan tidak dapat diubah.']);
+                return;
+            }
+
             if ($id) {
-                $this->Mod->update($id, $post);
-                $msg = 'Laporan MOD berhasil diperbarui.';
+                $this->Mod->update($id, $post, $save_status);
+                $msg = $save_status === 'draft' ? 'Draft laporan berhasil disimpan.' : 'Laporan MOD berhasil diperbarui.';
             } else {
-                $id = $this->Mod->save($post);
-                $msg = 'Laporan MOD berhasil disimpan.';
+                $id = $this->Mod->save($post, $save_status);
+                $msg = $save_status === 'draft' ? 'Draft laporan berhasil disimpan.' : 'Laporan MOD berhasil disimpan.';
             }
 
             $this->_handle_foto_upload($id, $post);
@@ -255,12 +286,58 @@ class Eks_laporan_mod extends MX_Controller {
         $toArray = $id ? explode(',', $id) : [];
 
         if (!empty($toArray)) {
+            $skipped = 0;
             foreach ($toArray as $item) {
-                $this->Mod->delete((int)$item);
+                $result = $this->Mod->delete((int)$item);
+                if ($result === false) $skipped++;
             }
-            echo json_encode(['status' => 200, 'message' => 'Laporan MOD berhasil dihapus.']);
+            if ($skipped > 0 && $skipped == count($toArray)) {
+                echo json_encode(['status' => 301, 'message' => 'Laporan yang sudah diverifikasi tidak dapat dihapus.']);
+            } elseif ($skipped > 0) {
+                echo json_encode(['status' => 200, 'message' => 'Berhasil dihapus, '.$skipped.' laporan terverifikasi dilewati.']);
+            } else {
+                echo json_encode(['status' => 200, 'message' => 'Laporan MOD berhasil dihapus.']);
+            }
         } else {
             echo json_encode(['status' => 301, 'message' => 'Tidak ada item yang dipilih.']);
         }
+    }
+
+    public function verify() {
+        $id = $this->input->post('id', true);
+        if (!$id) {
+            echo json_encode(['status' => 301, 'message' => 'ID tidak valid.']);
+            return;
+        }
+
+        $header = $this->Mod->get_header((int)$id);
+        if (!$header) {
+            echo json_encode(['status' => 301, 'message' => 'Laporan tidak ditemukan.']);
+            return;
+        }
+        if ($header->status !== 'final') {
+            echo json_encode(['status' => 301, 'message' => 'Hanya laporan berstatus Final yang dapat diverifikasi.']);
+            return;
+        }
+
+        $this->Mod->verify((int)$id);
+        echo json_encode(['status' => 200, 'message' => 'Laporan berhasil diverifikasi.']);
+    }
+
+    public function search_karyawan() {
+        $keyword = $this->input->post('keyword', true);
+        if (!$keyword || strlen($keyword) < 2) {
+            echo json_encode([]);
+            return;
+        }
+        $result = $this->db->like('nama_pegawai', $keyword)
+                           ->order_by('nama_pegawai', 'ASC')
+                           ->limit(15)
+                           ->get('mt_karyawan')->result();
+        $arr = [];
+        foreach ($result as $r) {
+            $arr[] = $r->nama_pegawai;
+        }
+        echo json_encode($arr);
     }
 }

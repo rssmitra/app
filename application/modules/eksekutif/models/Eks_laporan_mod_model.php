@@ -20,10 +20,13 @@ class Eks_laporan_mod_model extends CI_Model {
     private function _main_query() {
         $this->db->select($this->select);
         $this->db->from($this->table);
+       
     }
 
     private function _get_datatables_query() {
         $this->_main_query();
+        $this->db->select('tc_mod_lainnya.keterangan_lain');
+         $this->db->join('tc_mod_lainnya', 'tc_mod_lainnya.laporan_id = tc_mod_laporan.id', 'left');
         $i = 0;
         foreach ($this->column as $item) {
             if (!empty($_POST['search']['value'])) {
@@ -98,18 +101,20 @@ class Eks_laporan_mod_model extends CI_Model {
     // SAVE (INSERT)
     // ----------------------------------------------------------------
 
-    public function save($post) {
+    public function save($post, $status = 'final') {
         $user = $this->session->userdata('username') ?: 'system';
 
         // 1. Header
         $this->db->query("
-            INSERT INTO tc_mod_laporan (tanggal, nama_mod, shift_mod, created_by, status)
-            VALUES (?, ?, ?, ?, 'final')
+            INSERT INTO tc_mod_laporan (tanggal, nama_mod, shift_mod, created_by, status, user_id)
+            VALUES (?, ?, ?, ?, ?, ?)
         ", [
             $post['tanggal'],
             strtoupper($post['nama_mod']),
             $post['shift_mod'],
             $user,
+            $status,
+            $this->session->userdata('user')->user_id,
         ]);
         $id = $this->db->query("SELECT SCOPE_IDENTITY() AS id")->row()->id;
 
@@ -121,16 +126,17 @@ class Eks_laporan_mod_model extends CI_Model {
     // UPDATE
     // ----------------------------------------------------------------
 
-    public function update($id, $post) {
+    public function update($id, $post, $status = 'final') {
         $user = $this->session->userdata('username') ?: 'system';
 
         $this->db->query("
-            UPDATE tc_mod_laporan SET tanggal=?, nama_mod=?, shift_mod=?, updated_by=?, updated_at=GETDATE()
+            UPDATE tc_mod_laporan SET tanggal=?, nama_mod=?, shift_mod=?, status=?, updated_by=?, updated_at=GETDATE()
             WHERE id=?
         ", [
             $post['tanggal'],
             strtoupper($post['nama_mod']),
             $post['shift_mod'],
+            $status,
             $user,
             $id,
         ]);
@@ -439,8 +445,23 @@ class Eks_laporan_mod_model extends CI_Model {
         return $this->db->query("SELECT * FROM tc_mod_lainnya WHERE laporan_id=?", [$id])->row();
     }
 
+    public function verify($id) {
+        $user = $this->session->userdata('username') ?: 'system';
+        $this->db->query("
+            UPDATE tc_mod_laporan SET status='verified', verified_by=?, verified_at=GETDATE()
+            WHERE id=? AND status='final'
+        ", [$user, $id]);
+    }
+
+    public function is_verified($id) {
+        $row = $this->db->query("SELECT status FROM tc_mod_laporan WHERE id=?", [$id])->row();
+        return $row && $row->status === 'verified';
+    }
+
     public function delete($id) {
+        if ($this->is_verified($id)) return false;
         $this->db->query("DELETE FROM tc_mod_laporan WHERE id=?", [$id]);
+        return true;
     }
 
     // ----------------------------------------------------------------

@@ -690,8 +690,8 @@
       <div class="col-md-4">
         <div class="form-group">
           <label class="mod-label">Nama MOD <span class="text-danger">*</span></label>
-          <input class="form-control" name="nama_mod" type="text" placeholder="Nama Manager On Duty"
-                 value="<?php echo htmlspecialchars($v($L,'nama_mod')) ?>" required>
+          <input class="form-control" name="nama_mod" id="inputNamaMod" type="text" placeholder="Ketik nama pegawai..."
+                 value="<?php echo htmlspecialchars($v($L,'nama_mod')) ?>" autocomplete="off" required>
         </div>
       </div>
       <div class="col-md-4">
@@ -1540,13 +1540,13 @@
 <!-- ===================== 17. KETERANGAN LAINNYA ===================== -->
 <div class="mod-section">
   <div class="mod-section-head">
-    <span class="section-num">17</span> Keterangan Lainnya
+    <span class="section-num">17</span> Kesimpulan & Keterangan Lainnya
   </div>
   <div class="mod-section-body">
     <div class="form-group">
       <label class="mod-label">
         <i class="fa fa-pencil-square-o" style="margin-right:4px"></i>
-        Keterangan Lainnya
+        Kesimpulan & Keterangan Lainnya
       </label>
       <textarea class="form-control" name="keterangan_lain"
                 placeholder="Tuliskan keterangan lainnya yang perlu dilaporkan..."
@@ -1571,9 +1571,13 @@
         <i class="ace-icon fa fa-close icon-on-right bigger-110"></i>
         Reset
       </button>
+      <button type="button" id="btnDraft" name="btnDraft" class="btn btn-sm btn-warning" style="margin-left:6px">
+        <i class="ace-icon fa fa-floppy-o icon-on-right bigger-110"></i>
+        Simpan Draft
+      </button>
       <button type="button" id="btnSave" name="btnSave" class="btn btn-sm btn-info" style="margin-left:6px">
         <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-        Simpan
+        Simpan Final & Lihat Laporan
       </button>
       <?php endif; ?>
     </div>
@@ -1582,6 +1586,7 @@
 
 </form>
 
+<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script>
 var Swal = window.Swal || window.Sweetalert2;
 
@@ -1592,21 +1597,53 @@ try {
     .next().on(ace.click_event, function(){ $(this).prev().focus(); });
 } catch(e) {}
 
-/* ── handler AJAX — gunakan delegasi dari document agar
-   pasti terikat meski ada JS error sebelumnya ──────────── */
-$(document).off('click.modform').on('click.modform', '#btnSave', function(e) {
-  e.preventDefault();
+/* ── Typeahead Nama MOD ──────────────────────────────────── */
+try {
+  $('#inputNamaMod').typeahead({
+    source: function(query, result) {
+      $.ajax({
+        url: '<?php echo site_url("eksekutif/Eks_laporan_mod/search_karyawan") ?>',
+        data: { keyword: query },
+        dataType: 'json',
+        type: 'POST',
+        success: function(response) {
+          result($.map(response, function(item) { return item; }));
+        }
+      });
+    },
+    afterSelect: function(item) {
+      $('#inputNamaMod').val(item);
+    }
+  });
+} catch(e) {}
 
-  var $btn     = $(this);
-  var $form    = $('#form_mod');
-
+/* ── handler AJAX — fungsi umum untuk simpan ──────────── */
+function submitModForm(status) {
+  var $form = $('#form_mod');
   if (!$form.length) return;
 
-  var formData = new FormData($form[0]);
+  var isDraft  = (status === 'draft');
+  var $btnDraft = $('#btnDraft');
+  var $btnSave  = $('#btnSave');
+  var formData  = new FormData($form[0]);
+  formData.append('save_status', status);
 
   achtungShowLoader();
-  $btn.prop('disabled', true)
-      .html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+  $btnDraft.prop('disabled', true);
+  $btnSave.prop('disabled', true);
+
+  if (isDraft) {
+    $btnDraft.html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+  } else {
+    $btnSave.html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+  }
+
+  function resetButtons() {
+    $btnDraft.prop('disabled', false)
+        .html('<i class="ace-icon fa fa-floppy-o icon-on-right bigger-110"></i> Simpan Draft');
+    $btnSave.prop('disabled', false)
+        .html('<i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i> Simpan & Lihat Laporan');
+  }
 
   $.ajax({
     url         : $form.attr('action'),
@@ -1620,24 +1657,40 @@ $(document).off('click.modform').on('click.modform', '#btnSave', function(e) {
       var res;
       try { res = JSON.parse(responseText); } catch(err) {
         Swal.fire({ icon:'error', title:'Error', text:'Response tidak valid dari server.' });
-        $btn.prop('disabled', false)
-            .html('<i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i> Simpan');
+        resetButtons();
         return;
       }
 
       if (res.status === 200) {
-        Swal.fire({
-          icon             : 'success',
-          title            : 'Berhasil Disimpan!',
-          text             : res.message,
-          confirmButtonText: 'Lihat Laporan',
-          confirmButtonColor: '#0ea5e9',
-          timer            : 2500,
-          timerProgressBar : true,
-          allowOutsideClick: false
-        }).then(function() {
-          loadReportModal(res.url_id);
-        });
+        // Update hidden id agar edit berikutnya pakai update, bukan insert baru
+        $form.find('input[name="id"]').val(res.url_id);
+
+        if (isDraft) {
+          Swal.fire({
+            icon             : 'success',
+            title            : 'Draft Tersimpan!',
+            text             : res.message,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#0ea5e9',
+            timer            : 2000,
+            timerProgressBar : true
+          });
+          resetButtons();
+        } else {
+          Swal.fire({
+            icon             : 'success',
+            title            : 'Berhasil Disimpan!',
+            text             : res.message,
+            confirmButtonText: 'Lihat Laporan',
+            confirmButtonColor: '#0ea5e9',
+            timer            : 2500,
+            timerProgressBar : true,
+            allowOutsideClick: false
+          }).then(function() {
+            loadReportModal(res.url_id);
+          });
+          resetButtons();
+        }
       } else {
         Swal.fire({
           icon              : 'error',
@@ -1645,17 +1698,25 @@ $(document).off('click.modform').on('click.modform', '#btnSave', function(e) {
           text              : res.message,
           confirmButtonColor: '#ef4444'
         });
-        $btn.prop('disabled', false)
-            .html('<i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i> Simpan');
+        resetButtons();
       }
     },
     error: function(xhr) {
       achtungHideLoader();
       Swal.fire({ icon:'error', title:'Error', text:'Terjadi kesalahan: HTTP ' + xhr.status });
-      $btn.prop('disabled', false)
-          .html('<i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i> Simpan');
+      resetButtons();
     }
   });
+}
+
+$(document).off('click.modform').on('click.modform', '#btnSave', function(e) {
+  e.preventDefault();
+  submitModForm('final');
+});
+
+$(document).off('click.moddraft').on('click.moddraft', '#btnDraft', function(e) {
+  e.preventDefault();
+  submitModForm('draft');
 });
 
 /* ── muat konten laporan ke modal via AJAX ───────────────── */
@@ -1862,7 +1923,7 @@ $(document).on('click', '#foto-lightbox-overlay', function() {
 /* ── Auto-sum: hitung Total otomatis dari sub-field penjamin ── */
 (function(){
   var rules = {
-    'igd_jml':    ['igd_bpjs','igd_umum','igd_asuransi','igd_naker','igd_Karyawan', 'igd_ranap', 'igd_doa', 'igd_doe', 'igd_jml_rujukan_ditolak', 'igd_jml_menolak_ranap'],
+    'igd_jml':    ['igd_bpjs','igd_umum','igd_asuransi','igd_naker','igd_Karyawan'],
     'rj_jml':     ['rj_bpjs','rj_umum','rj_asuransi','rj_naker','rj_Karyawan','rj_ranap'],
     'hd_jml':     ['hd_bpjs','hd_umum','hd_asuransi','hd_ranap'],
     'ri_jml':     ['ri_bpjs','ri_umum','ri_asuransi','ri_naker','ri_rencana_op'],
@@ -1871,9 +1932,9 @@ $(document).on('click', '#foto-lightbox-overlay', function() {
     'nicu_total': ['nicu_bpjs','nicu_umum','nicu_asuransi'],
     'vk_jml':     ['vk_bpjs','vk_umum','vk_asuransi','vk_jml_rujukan','vk_jml_ditolak'],
     'pna_jml':    ['pna_bpjs','pna_umum','pna_asuransi','pna_jml_bayi_sakit'],
-    'lab_jml':    ['lab_bpjs','lab_umum','lab_asuransi','lab_naker','lab_Karyawan','lab_pk','lab_pa'],
+    'lab_jml':    ['lab_bpjs','lab_umum','lab_asuransi','lab_naker','lab_Karyawan'],
     'frm_jml':    ['frm_bpjs','frm_umum','frm_asuransi','frm_naker','frm_Karyawan','frm_obat_bebas'],
-    'rad_jml':    ['rad_bpjs','rad_umum','rad_asuransi','rad_naker','rad_xray','rad_usg']
+    'rad_jml':    ['rad_bpjs','rad_umum','rad_asuransi','rad_naker']
   };
 
   // Build reverse lookup: source field → target total

@@ -60,7 +60,9 @@
         <thead>
           <tr>
             <th width="30px" class="center"></th>
-            <th width="150px">&nbsp;</th>
+            <th width="120px">Aksi</th>
+            <th width="30px">Cetak</th>
+            <th width="30px">Verifikasi</th>
             <th width="40px" class="center">No</th>
             <th>Tanggal</th>
             <th>Nama MOD</th>
@@ -168,5 +170,40 @@ function printModReport() {
   printWin.document.close();
   printWin.focus();
   setTimeout(function() { printWin.print(); }, 600);
+}
+
+function verifyLaporan(id) {
+  Swal.fire({
+    icon: 'question',
+    title: 'Verifikasi Laporan?',
+    text: 'Laporan yang sudah diverifikasi tidak dapat diedit atau dihapus.',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Verifikasi',
+    cancelButtonText: 'Batal',
+    confirmButtonColor: '#7b1fa2',
+    reverseButtons: true
+  }).then(function(result) {
+    if (!result.isConfirmed) return;
+    achtungShowLoader();
+    $.ajax({
+      url: '<?php echo site_url("eksekutif/Eks_laporan_mod/verify") ?>',
+      type: 'POST',
+      data: { id: id },
+      dataType: 'json',
+      success: function(res) {
+        achtungHideLoader();
+        if (res.status === 200) {
+          Swal.fire({ icon:'success', title:'Berhasil!', text:res.message, timer:2000, timerProgressBar:true });
+          reload_table();
+        } else {
+          Swal.fire({ icon:'error', title:'Gagal!', text:res.message });
+        }
+      },
+      error: function(xhr) {
+        achtungHideLoader();
+        Swal.fire({ icon:'error', title:'Error', text:'Terjadi kesalahan: HTTP ' + xhr.status });
+      }
+    });
+  });
 }
 </script>
