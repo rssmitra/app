@@ -189,8 +189,70 @@ class Verifikasi_permintaan extends MX_Controller {
         echo json_encode( array('html' => $temp_view) );
     }
 
+    public function get_data_mutasi()
+    {
+        $kode_brg    = isset($_GET['kode_brg']) ? $_GET['kode_brg'] : '';
+        $kode_bagian = isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '';
+        $flag        = isset($_GET['flag']) ? $_GET['flag'] : 'medis';
+        $search_val  = (isset($_POST['search']['value']) && $_POST['search']['value'] != '') ? $_POST['search']['value'] : '';
+
+        $table = ($flag == 'non_medis') ? 'tc_kartu_stok_nm' : 'tc_kartu_stok';
+
+        // Count filtered
+        $this->db->from($table);
+        $this->db->join('tmp_user', 'tmp_user.user_id='.$table.'.petugas', 'left');
+        $this->db->where($table.'.kode_bagian', $kode_bagian);
+        $this->db->where('kode_brg', $kode_brg);
+        $this->db->where('DATEDIFF(day,tgl_input,GETDATE()) < 120');
+        if($search_val != ''){
+            $this->db->like('keterangan', $search_val);
+        }
+        $count_filtered = $this->db->count_all_results();
+
+        // Get data with pagination
+        $this->db->select($table.'.tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, keterangan, fullname');
+        $this->db->from($table);
+        $this->db->join('tmp_user', 'tmp_user.user_id='.$table.'.petugas', 'left');
+        $this->db->where($table.'.kode_bagian', $kode_bagian);
+        $this->db->where('kode_brg', $kode_brg);
+        $this->db->where('DATEDIFF(day,tgl_input,GETDATE()) < 120');
+        $this->db->order_by($table.'.id_kartu', 'DESC');
+        if($search_val != ''){
+            $this->db->like('keterangan', $search_val);
+        }
+        if(isset($_POST['length']) && $_POST['length'] != -1){
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+
+        $list = $this->db->get()->result();
+
+        $data = array();
+        $no = isset($_POST['start']) ? $_POST['start'] : 0;
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
+            $row[] = '<div class="center">'.number_format($row_list->stok_awal).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->pemasukan).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->pengeluaran).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->stok_akhir).'</div>';
+            $row[] = $row_list->keterangan;
+            $row[] = $row_list->fullname;
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => isset($_POST['draw']) ? $_POST['draw'] : 0,
+            "recordsTotal" => $count_filtered,
+            "recordsFiltered" => $count_filtered,
+            "data" => $data,
+        );
+        echo json_encode($output);
+    }
+
     public function find_data()
-    {   
+    {
         $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
     }

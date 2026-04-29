@@ -51,6 +51,7 @@ define('COMP_FAX', '(021) 7656875');
 define('NO_IZIN_RS', '02202020784404410003');
 define('EMAIL_RS', 'info@rssetiamitra.co.id');
 define('KARS', 'dr. Roswin Rosnim Djafar, MARS');
+define('NO_PSE', '012514.01/DJAI.PSE/12/2023');
 
 // insani care
 define('COMP_ICON_INSANI', 'assets/insani/Logo-Rssm.png');

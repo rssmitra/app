@@ -1,6 +1,279 @@
+<style>
+/* ===== Observasi Harian Keperawatan — Professional Redesign ===== */
+
+/* — Page title — */
+.obs-page-title {
+  font-size: 15px; font-weight: 700; color: #0f172a;
+  text-align: center; padding: 12px 0 6px;
+  letter-spacing: .5px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+.obs-page-title i { color: #0ea5e9; margin-right: 8px; }
+
+/* — Section header cards — */
+.obs-section-hdr {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; margin: 18px 0 12px;
+  border-radius: 8px; font-size: 13px; font-weight: 700;
+  border: 1px solid transparent;
+}
+.obs-section-hdr i.obs-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0; color: #fff;
+}
+.obs-hdr-blue    { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+.obs-hdr-blue i.obs-icon    { background: #3b82f6; }
+.obs-hdr-orange  { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
+.obs-hdr-orange i.obs-icon  { background: #f97316; }
+.obs-hdr-pink    { background: #fdf2f8; border-color: #fbcfe8; color: #9d174d; }
+.obs-hdr-pink i.obs-icon    { background: #ec4899; }
+.obs-hdr-green   { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+.obs-hdr-green i.obs-icon   { background: #22c55e; }
+.obs-hdr-purple  { background: #faf5ff; border-color: #e9d5ff; color: #6b21a8; }
+.obs-hdr-purple i.obs-icon  { background: #a855f7; }
+
+/* — Date/ID row — */
+.obs-meta-row {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  align-items: center; margin-bottom: 14px;
+  padding: 10px 14px; background: #f8fafc;
+  border: 1px solid #e2e8f0; border-radius: 8px;
+}
+.obs-meta-row .form-group { margin-bottom: 0; }
+.obs-meta-row label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .3px; }
+
+/* — Form labels — */
+.obs-form-label, .obs-sub-title {
+  font-size: 12px; font-weight: 700; color: #334155;
+  margin-bottom: 3px;
+}
+.obs-sub-title {
+  font-size: 12.5px; padding: 5px 10px;
+  background: #f8fafc; border-left: 3px solid #94a3b8;
+  border-radius: 0 6px 6px 0; margin: 8px 0 6px; color: #475569;
+}
+
+/* — Form controls — */
+.obs-form textarea.form-control {
+  border-color: #d1d5db; border-radius: 6px; font-size: 12px;
+  resize: vertical; transition: border-color .15s;
+}
+.obs-form textarea.form-control:focus {
+  border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+}
+.obs-form input.form-control {
+  border-color: #d1d5db; border-radius: 6px; font-size: 12px;
+}
+.obs-form input.form-control:focus {
+  border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+}
+.obs-form .input-group-addon {
+  background: #f8fafc; border-color: #d1d5db;
+  color: #64748b; font-size: 12px;
+}
+
+/* — Save button — */
+.obs-btn-save {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 18px; border: none; border-radius: 7px;
+  background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+  color: #fff; font-size: 12px; font-weight: 600;
+  cursor: pointer; box-shadow: 0 2px 6px rgba(29,78,216,.2);
+  transition: all .18s; margin: 8px 0 4px;
+}
+.obs-btn-save:hover {
+  background: linear-gradient(135deg, #1e40af, #0284c7);
+  box-shadow: 0 3px 10px rgba(29,78,216,.3);
+  transform: translateY(-1px);
+}
+
+/* — Tables — */
+.obs-table { width: 100%; font-size: 11.5px; border-collapse: separate; border-spacing: 0; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; margin-top: 8px; margin-bottom: 14px; }
+.obs-table thead tr th {
+  background: #f8fafc; color: #334155;
+  font-size: 10.5px; font-weight: 700;
+  padding: 7px 6px; border-bottom: 2px solid #e2e8f0;
+  border-right: 1px solid #f1f5f9;
+  text-transform: uppercase; letter-spacing: .2px;
+  text-align: center; vertical-align: middle;
+}
+.obs-table thead tr th:last-child { border-right: none; }
+.obs-table tbody tr td {
+  padding: 6px; border-top: 1px solid #f1f5f9;
+  color: #334155; vertical-align: middle; background: #fff;
+  font-size: 11.5px;
+}
+.obs-table tbody tr:hover td { background: #f0f9ff; }
+
+/* — Vital signs labels — */
+.obs-vital-group { font-size: 12px; font-weight: 700; color: #334155; padding: 6px 10px; background: #f8fafc; border-left: 3px solid #94a3b8; border-radius: 0 6px 6px 0; margin: 10px 0 6px; }
+.obs-vital-group.obs-vg-td    { border-left-color: #0f172a; }
+.obs-vital-group.obs-vg-nadi  { border-left-color: #dc2626; color: #dc2626; }
+.obs-vital-group.obs-vg-suhu  { border-left-color: #2563eb; color: #2563eb; }
+.obs-vital-group.obs-vg-spo2  { border-left-color: #16a34a; color: #16a34a; }
+.obs-vital-group.obs-vg-ssp   { border-left-color: #7c3aed; }
+.obs-vital-group.obs-vg-motor { border-left-color: #0891b2; }
+.obs-vital-group.obs-vg-cm    { border-left-color: #0369a1; }
+.obs-vital-group.obs-vg-ck    { border-left-color: #be185d; }
+.obs-vital-group.obs-vg-resp  { border-left-color: #ea580c; }
+.obs-vital-group.obs-vg-cvp   { border-left-color: #4338ca; }
+
+/* — IWL info box — */
+.obs-info-box {
+  background: #f8fafc; border: 1px solid #e2e8f0;
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 12px; color: #475569; margin: 6px 0 10px;
+  line-height: 1.6;
+}
+.obs-info-box b { color: #0f172a; }
+
+/* — Section content wrapper — */
+.obs-form-grid {
+  display: grid; gap: 12px; margin-bottom: 8px;
+}
+.obs-form-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.obs-form-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.obs-form-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+@media(max-width:900px) { .obs-form-grid.cols-4, .obs-form-grid.cols-3 { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width:600px) { .obs-form-grid.cols-4, .obs-form-grid.cols-3, .obs-form-grid.cols-2 { grid-template-columns: 1fr; } }
+.obs-form-card {
+  background: #fff; border: 1px solid #e2e8f0;
+  border-radius: 8px; padding: 10px 12px;
+}
+.obs-form-card label { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 4px; display: block; }
+.obs-form-card textarea { height: 55px !important; }
+
+/* — Nav tabs inside hemodinamik — */
+#myTab2.nav-tabs { border-bottom: 2px solid #e2e8f0; }
+#myTab2.nav-tabs > li > a { font-size: 12px; font-weight: 600; color: #64748b; border-radius: 6px 6px 0 0; }
+#myTab2.nav-tabs > li > a:hover { background: #f8fafc; color: #334155; }
+#myTab2.nav-tabs > li.active > a { background: #fff; color: #0f172a; border-bottom: 2px solid #0ea5e9; font-weight: 700; }
+
+/* — Main observasi tabs — */
+#obsTab.nav-tabs {
+  border-bottom: 2px solid #e2e8f0; margin: 0;
+  background: #f8fafc; border-radius: 8px 8px 0 0;
+  padding: 6px 6px 0;
+}
+#obsTab.nav-tabs > li { margin-bottom: -2px; }
+#obsTab.nav-tabs > li > a {
+  font-size: 11.5px; font-weight: 600; color: #64748b;
+  border: 1px solid transparent; border-radius: 8px 8px 0 0;
+  padding: 9px 15px; transition: all .15s; white-space: nowrap;
+}
+#obsTab.nav-tabs > li > a:hover {
+  background: #fff; color: #334155;
+  border-color: #e2e8f0 #e2e8f0 transparent;
+}
+#obsTab.nav-tabs > li.active > a,
+#obsTab.nav-tabs > li.active > a:hover,
+#obsTab.nav-tabs > li.active > a:focus {
+  background: #fff; color: #0f172a; font-weight: 700;
+  border-color: #e2e8f0 #e2e8f0 #fff;
+}
+#obsTab.nav-tabs > li > a > i { margin-right: 5px; }
+.obs-tab-blue > i { color: #3b82f6 !important; }
+.obs-tab-orange > i { color: #f97316 !important; }
+.obs-tab-pink > i { color: #ec4899 !important; }
+.obs-tab-green > i { color: #22c55e !important; }
+.obs-tab-purple > i { color: #a855f7 !important; }
+#obsTab.nav-tabs > li.active > a.obs-tab-blue { border-top: 2px solid #3b82f6; }
+#obsTab.nav-tabs > li.active > a.obs-tab-orange { border-top: 2px solid #f97316; }
+#obsTab.nav-tabs > li.active > a.obs-tab-pink { border-top: 2px solid #ec4899; }
+#obsTab.nav-tabs > li.active > a.obs-tab-green { border-top: 2px solid #22c55e; }
+#obsTab.nav-tabs > li.active > a.obs-tab-purple { border-top: 2px solid #a855f7; }
+.obs-tab-content {
+  border: 1px solid #e2e8f0; border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 18px 14px; background: #fff;
+  min-height: 200px;
+}
+
+/* — Keperawatan Modal — */
+#modalKeperawatan .modal-header {
+  background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+  color: #fff; border-radius: 8px 8px 0 0;
+  padding: 12px 18px; border-bottom: none;
+}
+#modalKeperawatan .modal-header .modal-title {
+  font-size: 14px; font-weight: 700;
+}
+#modalKeperawatan .modal-header .close {
+  color: #fff; opacity: .8; text-shadow: none; font-size: 20px;
+}
+#modalKeperawatan .modal-header .close:hover { opacity: 1; }
+#modalKeperawatan .modal-content {
+  border: none; border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.18);
+}
+#modalKeperawatan .modal-body { padding: 18px 20px; }
+#modalKeperawatan .modal-body label {
+  font-size: 11.5px; font-weight: 700; color: #334155;
+  text-transform: uppercase; letter-spacing: .3px;
+}
+#modalKeperawatan .modal-body .form-control {
+  border-color: #d1d5db; border-radius: 6px; font-size: 12px;
+}
+#modalKeperawatan .modal-body .form-control:focus {
+  border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+}
+#modalKeperawatan .modal-body textarea.form-control {
+  resize: vertical; height: 55px !important;
+}
+#modalKeperawatan .modal-body .obs-sub-title {
+  font-size: 12.5px; padding: 5px 10px;
+  background: #f8fafc; border-left: 3px solid #94a3b8;
+  border-radius: 0 6px 6px 0; margin: 10px 0 8px;
+  color: #475569; font-weight: 700;
+}
+#modalKeperawatan .modal-footer {
+  border-top: 1px solid #e2e8f0; padding: 12px 18px;
+}
+#modalKeperawatan .modal-footer .obs-btn-save {
+  margin: 0;
+}
+#modalKeperawatan .modal-footer .btn-default {
+  border-radius: 7px; font-size: 12px; font-weight: 600;
+}
+
+/* — Monitoring Modal — */
+#modalMonitoring .modal-header {
+  background: linear-gradient(135deg, #9d174d, #ec4899);
+  color: #fff; border-radius: 8px 8px 0 0;
+  padding: 12px 18px; border-bottom: none;
+}
+#modalMonitoring .modal-header .modal-title { font-size: 14px; font-weight: 700; }
+#modalMonitoring .modal-header .close { color: #fff; opacity: .8; text-shadow: none; font-size: 20px; }
+#modalMonitoring .modal-header .close:hover { opacity: 1; }
+#modalMonitoring .modal-content {
+  border: none; border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.18);
+}
+#modalMonitoring .modal-body { padding: 18px 20px; }
+#modalMonitoring .modal-body label {
+  font-size: 11.5px; font-weight: 700; color: #334155;
+}
+#modalMonitoring .modal-body .form-control {
+  border-color: #d1d5db; border-radius: 6px; font-size: 12px;
+}
+#modalMonitoring .modal-body .form-control:focus {
+  border-color: #f9a8d4; box-shadow: 0 0 0 3px rgba(236,72,153,.08);
+}
+#modalMonitoring .modal-footer {
+  border-top: 1px solid #e2e8f0; padding: 12px 18px;
+}
+#modalMonitoring .modal-footer .obs-btn-save { margin: 0; }
+#modalMonitoring .modal-footer .btn-default {
+  border-radius: 7px; font-size: 12px; font-weight: 600;
+}
+</style>
+
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
 <script src="<?php echo base_url()?>assets/js/custom/chart.js"></script>
+<script src="<?php echo base_url()?>assets/js/sweetalert2.all.min.js"></script>
 <script type="text/javascript">
 
 jQuery(function($) {  
@@ -25,21 +298,6 @@ jQuery(function($) {
     }
   }).on('focus', function() {
     $('#jam_monitor').timepicker('showWidget');
-  }).next().on(ace.click_event, function(){
-    $(this).prev().focus();
-  });
-
-  $('#jam_monitor2').timepicker({
-    minuteStep: 1,
-    showSeconds: true,
-    showMeridian: false,
-    disableFocus: true,
-    icons: {
-      up: 'fa fa-chevron-up',
-      down: 'fa fa-chevron-down'
-    }
-  }).on('focus', function() {
-    $('#jam_monitor2').timepicker('showWidget');
   }).next().on(ace.click_event, function(){
     $(this).prev().focus();
   });
@@ -74,21 +332,6 @@ jQuery(function($) {
     $(this).prev().focus();
   });
 
-  $('#jam_monitor5').timepicker({
-    minuteStep: 1,
-    showSeconds: true,
-    showMeridian: false,
-    disableFocus: true,
-    icons: {
-      up: 'fa fa-chevron-up',
-      down: 'fa fa-chevron-down'
-    }
-  }).on('focus', function() {
-    $('#jam_monitor5').timepicker('showWidget');
-  }).next().on(ace.click_event, function(){
-    $(this).prev().focus();
-  });
-
   $('#jam_monitor6').timepicker({
     minuteStep: 1,
     showSeconds: true,
@@ -114,9 +357,9 @@ $(document).ready(function() {
       "serverSide": true, //Feature control DataTables' server-side processing mode.
       "ordering": false,
       "searching": false,
-      "bPaginate": true,
+      "bPaginate": false,
       "bInfo": false,
-      "pageLength": 5,
+      // "pageLength": 5,
       "dom": 'rtip',
       // Load data for the table's content from an Ajax source
       "ajax": {
@@ -149,9 +392,9 @@ $(document).ready(function() {
       "serverSide": true, //Feature control DataTables' server-side processing mode.
       "ordering": false,
       "searching": false,
-      "bPaginate": true,
+      "bPaginate": false,
       "bInfo": false,
-      "pageLength": 5,
+      // "pageLength": 5,
       "dom": 'rtip',
       // Load data for the table's content from an Ajax source
       "ajax": {
@@ -183,9 +426,9 @@ $(document).ready(function() {
       "serverSide": true, //Feature control DataTables' server-side processing mode.
       "ordering": false,
       "searching": false,
-      "bPaginate": true,
+      "bPaginate": false,
       "bInfo": false,
-      "pageLength": 5,
+      // "pageLength": 5,
       "dom": 'rtip',
       // Load data for the table's content from an Ajax source
       "ajax": {
@@ -200,9 +443,9 @@ $(document).ready(function() {
       "serverSide": true, //Feature control DataTables' server-side processing mode.
       "ordering": false,
       "searching": false,
-      "bPaginate": true,
+      "bPaginate": false,
       "bInfo": false,
-      "pageLength": 5,
+      // "pageLength": 5,
       "dom": 'rtip',
       // Load data for the table's content from an Ajax source
       "ajax": {
@@ -215,9 +458,149 @@ $(document).ready(function() {
 
   // load grafik hemodinamik
   load_graph();
-  
+
+  // Fix DataTable columns & reload chart when switching tabs
+  $('#obsTab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
+    if($(e.target).attr('href') == '#tab_hemodinamik'){
+      load_graph();
+    }
+  });
+
+  // --- Modal Keperawatan ---
+  // Open modal for adding new data
+  $('#btn_add_keperawatan').click(function () {
+    $('#id').val('');
+    $('#jam_monitor5').val('');
+    $('#intake_enteral').val('');
+    $('#intake_parenteral').val('');
+    $('#obat_enteral').val('');
+    $('#obat_parenteral').val('');
+    $('#polavent').val('');
+    $('#lain_alergi').val('');
+    $('#catatan').val('');
+    $('#modalKeperawatanLabel').html('<i class="fa fa-plus"></i> Tambah Data Observasi Keperawatan');
+    $('#modalKeperawatan').modal('show');
+  });
+
+  // Submit from modal
+  $('#btn_save_work_day').click(function (e) {
+    e.preventDefault();
+    var btn_value = $(this).val();
+    var formData = $('#form_pelayanan').serialize() + '&submit=' + btn_value;
+    // Append modal fields (since modal is outside #form_pelayanan)
+    formData += '&jam_monitor5=' + encodeURIComponent($('#jam_monitor5').val());
+    formData += '&intake_enteral=' + encodeURIComponent($('#intake_enteral').val());
+    formData += '&intake_parenteral=' + encodeURIComponent($('#intake_parenteral').val());
+    formData += '&obat_enteral=' + encodeURIComponent($('#obat_enteral').val());
+    formData += '&obat_parenteral=' + encodeURIComponent($('#obat_parenteral').val());
+    formData += '&polavent=' + encodeURIComponent($('#polavent').val());
+    formData += '&lain_alergi=' + encodeURIComponent($('#lain_alergi').val());
+    formData += '&catatan=' + encodeURIComponent($('#catatan').val());
+
+    $.ajax({
+      url: $('#form_pelayanan').attr('action'),
+      data: formData,
+      dataType: 'json',
+      type: 'POST',
+      complete: function (xhr) {
+        var jsonResponse = JSON.parse(xhr.responseText);
+        if (jsonResponse.status === 200) {
+          $('#modalKeperawatan').modal('hide');
+          tbl_observasi_harian_keperawatan.ajax.reload();
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: jsonResponse.message,
+            timer: 2000,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: jsonResponse.message
+          });
+        }
+        achtungHideLoader();
+      }
+    });
+  });
+
+  // Init timepicker inside modal after shown
+  $('#modalKeperawatan').on('shown.bs.modal', function () {
+    $('#jam_monitor5').timepicker({
+      minuteStep: 1,
+      showSeconds: true,
+      showMeridian: false,
+      disableFocus: true,
+      icons: { up: 'fa fa-chevron-up', down: 'fa fa-chevron-down' }
+    });
+  });
+
+  // --- Modal Monitoring ---
+  var monitoringFields = ['jam_monitor2','kesadaran','pupil','ref','gcs','sup','inf',
+    'cm_enteral','cm_parenteral','cm_train','ck_urin','ck_ngt','ck_bab',
+    'resp_pola','resp_tv','resp_rr','resp_fo2','resp_peep','cvp','catatan_monitoring'];
+
+  $('#btn_add_monitoring').click(function () {
+    $('#id').val('');
+    $.each(monitoringFields, function(i, f){ $('#'+f).val(''); });
+    $('#modalMonitoringLabel').html('<i class="fa fa-plus"></i> Tambah Data Monitoring Perkembangan');
+    $('#modalMonitoring').modal('show');
+  });
+
+  // Submit from monitoring modal
+  $('#btn_save_monitoring').click(function (e) {
+    e.preventDefault();
+    var btn_value = $(this).val();
+    var formData = $('#form_pelayanan').serialize() + '&submit=' + btn_value;
+    $.each(monitoringFields, function(i, f){
+      formData += '&' + f + '=' + encodeURIComponent($('#'+f).val());
+    });
+
+    $.ajax({
+      url: $('#form_pelayanan').attr('action'),
+      data: formData,
+      dataType: 'json',
+      type: 'POST',
+      complete: function (xhr) {
+        var jsonResponse = JSON.parse(xhr.responseText);
+        if (jsonResponse.status === 200) {
+          $('#modalMonitoring').modal('hide');
+          dt_montoring_perkembangan_pasien.ajax.reload();
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: jsonResponse.message,
+            timer: 2000,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: jsonResponse.message
+          });
+        }
+        achtungHideLoader();
+      }
+    });
+  });
+
+  // Init timepicker inside monitoring modal
+  $('#modalMonitoring').on('shown.bs.modal', function () {
+    $('#jam_monitor2').timepicker({
+      minuteStep: 1,
+      showSeconds: true,
+      showMeridian: false,
+      disableFocus: true,
+      icons: { up: 'fa fa-chevron-up', down: 'fa fa-chevron-down' }
+    });
+  });
+
   // proses
-  $('#btn_save_perkembangan_pasien, #btn_save_work_day, #btn_hemodinamik, #btn_monitor_perkembangan_pasien, #btn_deskripsi_lainnya, #btn_keseimbangan_cairan, #btn_program_pemberian_obat').click(function (e) {   
+  $('#btn_save_perkembangan_pasien, #btn_hemodinamik, #btn_deskripsi_lainnya, #btn_keseimbangan_cairan, #btn_program_pemberian_obat').click(function (e) {   
     e.preventDefault();
     var btn_value = $(this).val();
     $.ajax({
@@ -285,7 +668,7 @@ function edit_row(id, flag){
       $('#tgl_monitor').val(response_data.data.tgl_monitor);
 
       if(flag == 'tbl_observasi_harian_keperawatan'){
-        
+
         $('#id').val(response_data.data.id);
         $('#intake_enteral').val(response_data.data.intake_enteral);
         $('#intake_parenteral').val(response_data.data.intake_parenteral);
@@ -295,6 +678,8 @@ function edit_row(id, flag){
         $('#lain_alergi').val(response_data.data.lain_alergi);
         $('#catatan').val(response_data.data.catatan);
         $('#jam_monitor5').val(response_data.data.jam);
+        $('#modalKeperawatanLabel').html('<i class="fa fa-edit"></i> Edit Data Observasi Keperawatan');
+        $('#modalKeperawatan').modal('show');
 
       }
 
@@ -311,7 +696,7 @@ function edit_row(id, flag){
       }
 
       if(flag == 'btn_monitor_perkembangan_pasien'){
-        
+
         $('#id').val(response_data.data.id);
         $('#jam_monitor2').val(response_data.data.jam);
         $('#kesadaran').val(response_data.data.kesadaran);
@@ -333,6 +718,8 @@ function edit_row(id, flag){
         $('#resp_peep').val(response_data.data.resp_peep);
         $('#cvp').val(response_data.data.cvp);
         $('#catatan_monitoring').val(response_data.data.catatan);
+        $('#modalMonitoringLabel').html('<i class="fa fa-edit"></i> Edit Data Monitoring Perkembangan');
+        $('#modalMonitoring').modal('show');
 
       }
 
@@ -474,123 +861,65 @@ function hitung_balans_cairan(){
 <div class="row">
   <div class="col-md-12">
 
-    <center><span style="font-weight: bold; font-size: 20px !important">OBSERVASI HARIAN KEPERAWATAN PASIEN</span></center>
-    <br>
+    <div class="obs-page-title">
+      <i class="fa fa-clipboard"></i>OBSERVASI HARIAN KEPERAWATAN PASIEN
+    </div>
+
     <!-- hidden form -->
     <input type="hidden" name="tipe_monitoring" id="tipe_monitoring" value="UMUM">
-    
 
-    <!-- TANGGAL -->
-    <div class="form-group">
-        <label class="control-label col-sm-1" for="">ID</label>
-        <div class="col-md-2">
-          <input type="text" name="id" id="id" readonly class="form-control">
+    <!-- Date/ID row -->
+    <div class="obs-meta-row obs-form">
+      <div>
+        <label>ID Record</label>
+        <input type="text" name="id" id="id" readonly class="form-control" style="width:100px" placeholder="-">
+      </div>
+      <div>
+        <label>Tanggal Observasi</label>
+        <div class="input-group" style="width:160px">
+          <input name="tgl_monitor" id="tgl_monitor" placeholder="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo date('Y-m-d')?>">
+          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
         </div>
+      </div>
     </div>
 
-    <div class="form-group">
-        <label class="control-label col-sm-1" for="">*Tanggal</label>
-        <div class="col-md-2">
-          <div class="input-group">
-              <input name="tgl_monitor" id="tgl_monitor" placeholder="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo date('Y-m-d')?>">
-              <span class="input-group-addon">
-                <i class="ace-icon fa fa-calendar"></i>
-              </span>
-          </div>
-        </div>
-    </div>
-    <!-- END TANGGAL -->
+    <!-- Observasi Tabs -->
+    <ul class="nav nav-tabs" id="obsTab">
+      <li class="active"><a data-toggle="tab" href="#tab_keperawatan" class="obs-tab-blue"><i class="fa fa-list-alt"></i> Keperawatan</a></li>
+      <li><a data-toggle="tab" href="#tab_obat" class="obs-tab-blue"><i class="fa fa-medkit"></i> Obat / Cairan</a></li>
+      <li><a data-toggle="tab" href="#tab_hemodinamik" class="obs-tab-orange"><i class="fa fa-heartbeat"></i> Hemodinamik</a></li>
+      <li><a data-toggle="tab" href="#tab_monitoring" class="obs-tab-pink"><i class="fa fa-line-chart"></i> Monitoring</a></li>
+      <li><a data-toggle="tab" href="#tab_catatan" class="obs-tab-green"><i class="fa fa-flask"></i> Catatan Khusus</a></li>
+      <li><a data-toggle="tab" href="#tab_cairan" class="obs-tab-purple"><i class="fa fa-tint"></i> Keseimbangan Cairan</a></li>
+    </ul>
+    <div class="tab-content obs-tab-content">
 
-    <!-- FORM OBSERVASI HARIAN KEPERAWATAN -->
+    <!-- Tab 1: Rencana Keperawatan -->
+    <div id="tab_keperawatan" class="tab-pane fade in active">
     <div class="row">
       <div class="col-md-12">
 
-        <h3 class="header smaller lighter blue padding-10" style="background: #0d5280; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
-          RENCANA KEPERAWATAN HARIAN PASIEN
-        </h3>
-
-        <div class="form-group">
-            <label class="control-label col-sm-1" for="">*Jam Input</label>
-            <div class="col-md-2">
-              <div class="input-group">
-                  <input id="jam_monitor5" name="jam_monitor5"  type="text" class="form-control" value="<?php echo date('H:i:s')?>">
-                  <span class="input-group-addon">
-                    <i class="fa fa-clock-o bigger-110"></i>
-                  </span>
-              </div>
-            </div>
+        <div style="margin-bottom: 12px">
+          <button type="button" class="obs-btn-save" id="btn_add_keperawatan"><i class="fa fa-plus"></i> Tambah Data</button>
         </div>
-        <br>
-        
-        <div class="col-md-3 no-padding">
-          <b><u>INTAKE</u></b><br>
-              <div style="width: 100%">
-                  Enteral<br>
-                  <textarea class="form-control" style="height: 50px !important;" name="intake_enteral" id="intake_enteral"></textarea>
-              </div>
-              <br>
-              <div style="width: 100%">
-                  Parenteral<br>
-                  <textarea class="form-control" style="height: 50px !important;" name="intake_parenteral" id="intake_parenteral"></textarea>
-              </div>
-        </div>
-
-        <div class="col-md-3 ">
-          <b><u>PEMBERIAN OBAT</u></b><br>
-            <div style="width: 100%">
-                Enteral/Lain-lain<br>
-                <textarea class="form-control" style="height: 50px !important;" name="obat_enteral" id="obat_enteral"></textarea>
-            </div>
-            <br>
-            <div style="width: 100%">
-                Parenteral<br>
-                <textarea class="form-control" style="height: 50px !important;" name="obat_parenteral" id="obat_parenteral"></textarea>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-          <b>&nbsp;</b><br>
-            <div style="width: 100%">
-                Polavent<br>
-                <textarea class="form-control" style="height: 50px !important;" name="polavent" id="polavent"></textarea>
-            </div>
-            <br>
-            <div style="width: 100%">
-                Lain-lain (Alergi)<br>
-                <textarea class="form-control" style="height: 50px !important;" name="lain_alergi" id="lain_alergi"></textarea>
-            </div>
-        </div>
-
-        <div class="col-md-3 no-padding">
-          <b>&nbsp;</b><br>
-            <div style="width: 100%">
-                Catatan Dokter<br>
-                <textarea class="form-control" style="height: 120px !important;" name="catatan" id="catatan"></textarea>
-            </div>
-        </div>
-
-        <div class="col-md-12 no-padding" style="padding-top: 3px !important">
-          <button type="submit" name="btn_work_day" value="btn_work_day" class="btn btn-xs btn-primary" id="btn_save_work_day"><i class="fa fa-save"></i> Simpan</button>
-        </div>
-        <br>
 
         <div class="col-md-12 no-padding">
-          <table class="table" style="margin-top: 10px" id="tbl_observasi_harian_keperawatan">
+          <table class="table obs-table" style="margin-top: 10px" id="tbl_observasi_harian_keperawatan">
             <thead>
-              <tr style="background:#e7e7e7; color: black">
-                <th style="background:#e7e7e7; color: black" rowspan="2" width="50px">#</th>
-                <th style="background:#e7e7e7; color: black; width: 120px" rowspan="2" class="center">Tanggal</th>
-                <th style="background:#e7e7e7; color: black" colspan="2" class="center">Intake</th>
-                <th style="background:#e7e7e7; color: black" rowspan="2" class="center" style="vertical-align: middle; width: 200px">Polavent</th>
-                <th style="background:#e7e7e7; color: black" colspan="2" class="center">Obat</th>
-                <th style="background:#e7e7e7; color: black" rowspan="2" class="center" style="vertical-align: middle; width: 200px">Lain-lain (Alergi)</th>
-                <th style="background:#e7e7e7; color: black" rowspan="2" class="center" style="vertical-align: middle; width: 200px">Catatan Dokter</th>
+              <tr>
+                <th rowspan="2" width="50px">#</th>
+                <th rowspan="2" class="center" style="width: 120px">Tanggal</th>
+                <th colspan="2" class="center">Intake</th>
+                <th rowspan="2" class="center" style="width: 200px">Polavent</th>
+                <th colspan="2" class="center">Obat</th>
+                <th rowspan="2" class="center" style="width: 200px">Lain-lain (Alergi)</th>
+                <th rowspan="2" class="center" style="width: 200px">Catatan Dokter</th>
               </tr>
-              <tr style="background:#e7e7e7; color: black">
-                <th class="center" style="width: 130px; background:#e7e7e7; color: black">enteral</th>
-                <th class="center" style="width: 130px; background:#e7e7e7; color: black">parenteral</th>
-                <th class="center" style="width: 130px; background:#e7e7e7; color: black">enteral/lain-lain</th>
-                <th class="center" style="width: 130px; background:#e7e7e7; color: black">parenteral</th>
+              <tr>
+                <th class="center" style="width: 130px">Enteral</th>
+                <th class="center" style="width: 130px">Parenteral</th>
+                <th class="center" style="width: 130px">Enteral/Lain-lain</th>
+                <th class="center" style="width: 130px">Parenteral</th>
               </tr>
             </thead>
             <tbody>
@@ -600,15 +929,12 @@ function hitung_balans_cairan(){
 
       </div>
     </div>
-    <!-- END FORM OBSERVASI HARIAN KEPERAWATAN -->
+    </div><!-- /tab_keperawatan -->
 
-    <!-- FORM PROGRAM PEMBERIAN OBAT CAIRAN DLL -->
+    <!-- Tab 2: Program Pemberian Obat -->
+    <div id="tab_obat" class="tab-pane fade">
     <div class="row">
       <div class="col-md-12">
-
-        <h3 class="header smaller lighter blue padding-10" style="background: #0d5280; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
-          PROGRAM PEMBERIAN OBAT/CAIRAN/NUTRISI
-        </h3>
         
         <div style="width: 100%; padding-bottom: 5px">
             Jam Pemberian Obat/Infus : <br>
@@ -634,19 +960,19 @@ function hitung_balans_cairan(){
         </div>
 
         <div class="col-md-12 no-padding" style="padding-top: 3px !important">
-          <button type="submit" name="btn_program_pemberian_obat" value="btn_program_pemberian_obat" class="btn btn-xs btn-primary" id="btn_program_pemberian_obat"><i class="fa fa-save"></i> Simpan</button>
+          <button type="submit" name="btn_program_pemberian_obat" value="btn_program_pemberian_obat" class="obs-btn-save" id="btn_program_pemberian_obat"><i class="fa fa-save"></i> Simpan</button>
         </div>
         <br>
 
         <div class="col-md-12 no-padding">
-          <table class="table" style="margin-top: 10px" id="tbl_program_pemberian_obat">
+          <table class="table obs-table" style="margin-top: 10px" id="tbl_program_pemberian_obat">
             <thead>
-              <tr style="background:#e7e7e7; color: black">
-                <th style="background:#e7e7e7; color: black" width="50px">#</th>
-                <th style="background:#e7e7e7; color: black; width: 50px" class="center">Tanggal Jam</th>
-                <th style="background:#e7e7e7; color: black; width: 50px" class="center">Petugas</th>
-                <th style="background:#e7e7e7; color: black; width: 250px" class="left">Cairan Infus</th>
-                <th style="background:#e7e7e7; color: black; width: 250px" class="left">Nutrisi Enteral</th>
+              <tr>
+                <th width="50px">#</th>
+                <th class="center" style="width: 50px">Tanggal Jam</th>
+                <th class="center" style="width: 50px">Petugas</th>
+                <th class="left" style="width: 250px">Cairan Infus</th>
+                <th class="left" style="width: 250px">Nutrisi Enteral</th>
               </tr>
             </thead>
             <tbody>
@@ -656,14 +982,12 @@ function hitung_balans_cairan(){
 
       </div>
     </div>
-    <!-- END FORM PROGRAM PEMBERIAN OBAT CAIRAN DLL -->
+    </div><!-- /tab_obat -->
 
-    <!-- HEMODINAMIK -->
-    <div class="row" style="padding: 10px !important">
-      <div class="col-md-12 no-padding">
-        <h3 class="header smaller lighter blue padding-10" style="background: #ef8122; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
-            HEMODINAMIK (Tanggal. <span class="selected_date"><?php echo date('Y-m-d')?></span>)
-          </h3>
+    <!-- Tab 3: Hemodinamik -->
+    <div id="tab_hemodinamik" class="tab-pane fade">
+    <div class="row">
+      <div class="col-md-12">
         <div class="col-md-3 no-padding">
           <div class="form-group">
               <label class="control-label col-sm-6" for="">*Jam Input</label>
@@ -677,7 +1001,7 @@ function hitung_balans_cairan(){
               </div>
           </div>
           <br>
-          <span style="font-weight: bold; padding: 10px">1. TD (Tekanan Darah)</span>
+          <div class="obs-vital-group obs-vg-td">1. TD (Tekanan Darah)</div>
           <br>
           <div class="form-group">
               <label class="control-label col-sm-6">Sistolik (mmHg)</label>
@@ -694,7 +1018,7 @@ function hitung_balans_cairan(){
           </div>
           <br>
 
-          <span style="font-weight: bold; padding: 10px; color: red">2. FN (Frekuensi Nadi)</span>
+          <div class="obs-vital-group obs-vg-nadi">2. FN (Frekuensi Nadi)</div>
           <br>
           <div class="form-group no-padding">
               <label class="control-label col-sm-6"> Nadi (bpm)</label>
@@ -703,7 +1027,7 @@ function hitung_balans_cairan(){
               </div>
           </div>
           <br>
-          <span style="font-weight: bold; padding: 10px; color: blue">3. SH (Suhu)</span>
+          <div class="obs-vital-group obs-vg-suhu">3. SH (Suhu)</div>
           <br>
           <div class="form-group no-padding">
               <label class="control-label col-sm-6">Suhu (&#x2103;)</label>
@@ -712,7 +1036,7 @@ function hitung_balans_cairan(){
               </div>
           </div>
           <br>
-          <span style="font-weight: bold; padding: 10px; color: green">4. SPO2</span>
+          <div class="obs-vital-group obs-vg-spo2">4. SPO2</div>
           <br>
           <div class="form-group no-padding">
               <label class="control-label col-sm-6">Saturasi Oksigen</label>
@@ -723,12 +1047,12 @@ function hitung_balans_cairan(){
           
           <br>
           <div>
-            <b style="font-style: italic">Catatan Pemeriksaan</b><br>
+            <label style="font-weight:600;color:#475569;font-size:12px">Catatan Pemeriksaan</label><br>
             <textarea class="form-control" style="height: 100px !important;" name="catatan_hemodinamik" id="catatan_hemodinamik"></textarea>
           </div>
           <br>
           <div class="col-md-12 no-padding" style="padding-top: 3px !important">
-            <button type="submit" name="btn_hemodinamik" value="btn_hemodinamik" class="btn btn-xs btn-primary" id="btn_hemodinamik"><i class="fa fa-save"></i> Simpan</button>
+            <button type="submit" name="btn_hemodinamik" value="btn_hemodinamik" class="obs-btn-save" id="btn_hemodinamik"><i class="fa fa-save"></i> Simpan</button>
           </div>
           
         </div>
@@ -761,18 +1085,18 @@ function hitung_balans_cairan(){
               </div>
 
               <div id="tabel_monitoring_tab" class="tab-pane fade">
-                <p style="font-size: 14px; font-weight: bold">H E M O D I N A M I K</p>
-                <table class="table" id="dt_hemodinamik">
+                <p style="font-size: 13px; font-weight: 700; color: #9a3412; letter-spacing: 2px; margin-bottom: 8px">H E M O D I N A M I K</p>
+                <table class="table obs-table" id="dt_hemodinamik">
                   <thead>
-                    <tr style="background:#e7e7e7; color: black">
-                      <th style="width: 70px; background:#e7e7e7; color: black">#</th>
-                      <th style="width: 100px; background:#e7e7e7; color: black" class="center">Tanggal Jam</th>
-                      <th style="width: 70px; background:#e7e7e7; color: black" class="center">Petugas</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Sistolik<br>(mmHg)</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Diastolik<br>(mmHg)</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Nadi<br>(bpm)</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Suhu<br>(&#x2103;)</th>
-                      <th style="width: 100px; background:#e7e7e7; color: black" class="center">Catatan</th>
+                    <tr>
+                      <th style="width: 70px">#</th>
+                      <th class="center" style="width: 100px">Tanggal Jam</th>
+                      <th class="center" style="width: 70px">Petugas</th>
+                      <th class="center" style="width: 50px">Sistolik<br>(mmHg)</th>
+                      <th class="center" style="width: 50px">Diastolik<br>(mmHg)</th>
+                      <th class="center" style="width: 50px">Nadi<br>(bpm)</th>
+                      <th class="center" style="width: 50px">Suhu<br>(&#x2103;)</th>
+                      <th class="center" style="width: 100px">Catatan</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -788,172 +1112,48 @@ function hitung_balans_cairan(){
         </div>
       </div>
     </div>
-    <!-- END HEMODINAMIK -->
-    
-    <!-- DATA MONITORING PERKEMBANGAN PASIEN -->
-    <div class="row" style="padding: 10px !important">
-      <div class="col-md-12 no-padding">
-        <h3 class="header smaller lighter blue padding-10" style="background: #e01a8e; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
-          DATA MONITORING PERKEMBANGAN PASIEN (Tanggal. <span class="selected_date"><?php echo date('Y-m-d')?></span>)
-        </h3>
-        <div class="col-md-12 no-padding">
-          <div class="form-group">
-              <label class="control-label col-sm-1" for="">*Jam Input</label>
-              <div class="col-md-2">
-                <div class="input-group">
-                    <input id="jam_monitor2" name="jam_monitor2"  type="text" class="form-control" value="<?php echo date('H:i:s')?>">
-                    <span class="input-group-addon">
-                      <i class="fa fa-clock-o bigger-110"></i>
-                    </span>
-                </div>
-              </div>
-          </div>
-          <div style="padding: 5px; font-weight: bold">SSP (Sistem Saraf Pusat)</div>
-          <div class="form-group">
-              <label class="control-label col-sm-1">Kes.</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="kesadaran" id="kesadaran" value="">
-              </div>
-              <label class="control-label col-sm-1">Pupil</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="pupil" id="pupil" value="">
-              </div>
-              <label class="control-label col-sm-1">Ref.</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="ref" id="ref" value="">
-              </div>
-              <label class="control-label col-sm-1">GCS</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="gcs" id="gcs" value="" onclick="show_modal_medium('pelayanan/Pl_pelayanan_ri/info_gcs', 'INFORMASI GCS (Glasgow Coma Scale)')">
-              </div>
-          </div>
+    </div><!-- /tab_hemodinamik -->
 
-          <div style="padding: 5px; font-weight: bold">Motorik</div>
-          <div class="form-group">
-              <label class="control-label col-sm-1">Sup.</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="sup" id="sup" value="">
-              </div>
-              <label class="control-label col-sm-1">Inf.</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="inf" id="inf" value="">
-              </div>
-          </div>
+    <!-- Tab 4: Monitoring Perkembangan -->
+    <div id="tab_monitoring" class="tab-pane fade">
+    <div class="row">
+      <div class="col-md-12">
 
-          <div style="padding: 5px; font-weight: bold">CM (Cairan Masuk)</div>
-          <div class="form-group">
-              <label class="control-label col-sm-1">Ent.</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="cm_enteral" id="cm_enteral" value="">
-              </div>
-              <label class="control-label col-sm-1">Par.</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="cm_parenteral" id="cm_parenteral" value="">
-              </div>
-              <label class="control-label col-sm-1">Train.</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="cm_train" id="cm_train" value="">
-              </div>
-          </div>
-
-          <div style="padding: 5px; font-weight: bold">CK (Cairan Keluar)</div>
-          <div class="form-group">
-              <label class="control-label col-sm-1">Urin</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="ck_urin" id="ck_urin" value="">
-              </div>
-              <label class="control-label col-sm-1">NGT</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="ck_ngt" id="ck_ngt" value="">
-              </div>
-              <label class="control-label col-sm-1">BAB</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="ck_bab" id="ck_bab" value="">
-              </div>
-          </div>
-
-          <div style="padding: 5px; font-weight: bold">Respirasi</div>
-          <div class="form-group">
-              <label class="control-label col-sm-1">Pola</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="resp_pola" id="resp_pola" value="">
-              </div>
-              <label class="control-label col-sm-1">TV</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="resp_tv" id="resp_tv" value="">
-              </div>
-              <label class="control-label col-sm-1">RR</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="resp_rr" id="resp_rr" value="">
-              </div>
-              <label class="control-label col-sm-1">Fo2%</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="resp_fo2" id="resp_fo2" value="">
-              </div>
-              <label class="control-label col-sm-1">Peep</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="resp_peep" id="resp_peep" value="">
-              </div>
-          </div>
-
-          <div style="padding: 5px; font-weight: bold">CVP</div>
-          <div class="form-group">
-              <label class="control-label col-sm-1">CVP</label>
-              <div class="col-md-1">
-                <input type="text" class="form-control" name="cvp" id="cvp" value="">
-              </div>
-              <label class="control-label col-sm-1">Catatan</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" name="catatan_monitoring" id="catatan_monitoring" value="">
-              </div>
-          </div>
-
-        </div>
-        <hr>
-        <div class="col-md-12 no-padding" style="padding-top: 3px !important; padding-bottom: 10px !important">
-          <button type="submit" name="btn_monitor_perkembangan_pasien" value="btn_monitor_perkembangan_pasien" class="btn btn-xs btn-primary" id="btn_monitor_perkembangan_pasien"><i class="fa fa-save"></i> Simpan</button>
+        <div style="margin-bottom: 12px">
+          <button type="button" class="obs-btn-save" id="btn_add_monitoring"><i class="fa fa-plus"></i> Tambah Data</button>
         </div>
 
-        <!-- <div style="padding-top: 10px"><a href="#" class="btn btn-xs btn-primary" onclick="add_row_dt('dt_montoring_perkembangan_pasien')"><i class="fa fa-plus"></i> Tambah Data</a></div> -->
-
-        <table class="table" id="dt_montoring_perkembangan_pasien">
+        <table class="table obs-table" id="dt_montoring_perkembangan_pasien">
           <thead>
-          <tr style="background:#e7e7e7; color: black">
-            <th rowspan="2" width="70px" style="background:#e7e7e7; color: black">#</th>
-            <th rowspan="2" width="80px" class="center" style="background:#e7e7e7; color: black">Tanggal/Jam</th>
+          <tr>
+            <th rowspan="2" width="70px">#</th>
+            <th rowspan="2" width="80px" class="center">Tanggal/Jam</th>
             <th colspan="4" class="center">SSP</th>
-            <th colspan="2" class="center">MOTORIK</th>
-            <th colspan="3" class="center">CAIRAN MASUK</th>
-            <th colspan="3" class="center">CAIRAN KELUAR</th>
-            <th colspan="5" class="center">RESPIRASI</th>
-            <!-- <th colspan="6" class="center">AGD</th> -->
-            <th rowspan="2" class="center" style="background:#e7e7e7; color: black">CVP</th>
-            <th rowspan="2" class="center" style="background:#e7e7e7; color: black">CATATAN</th>
+            <th colspan="2" class="center">Motorik</th>
+            <th colspan="3" class="center">Cairan Masuk</th>
+            <th colspan="3" class="center">Cairan Keluar</th>
+            <th colspan="5" class="center">Respirasi</th>
+            <th rowspan="2" class="center">CVP</th>
+            <th rowspan="2" class="center">Catatan</th>
           </tr>
-          <tr style="background:#e7e7e7; color: black">
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Kes.</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Pupil</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Ref.</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">GCS</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Sup.</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Inf.</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Ent.</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Par.</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Train.</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Urin</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">NGT</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">BAB</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Pola</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">TV</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">RR</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">FO2%</th>
-            <th class="center" style="font-size: 10px; width: 50px; background:#e7e7e7; color: black">Peep</th>
-            <!-- <th class="center" style="font-size: 10px; background:#e7e7e7; color: black">pH</th>
-            <th class="center" style="font-size: 10px; background:#e7e7e7; color: black">pCO2</th>
-            <th class="center" style="font-size: 10px; background:#e7e7e7; color: black">pO2</th>
-            <th class="center" style="font-size: 10px; background:#e7e7e7; color: black">BE</th>
-            <th class="center" style="font-size: 10px; background:#e7e7e7; color: black">HCO2</th>
-            <th class="center" style="font-size: 10px; background:#e7e7e7; color: black">Sat</th> -->
+          <tr>
+            <th class="center" style="font-size: 10px; width: 50px">Kes.</th>
+            <th class="center" style="font-size: 10px; width: 50px">Pupil</th>
+            <th class="center" style="font-size: 10px; width: 50px">Ref.</th>
+            <th class="center" style="font-size: 10px; width: 50px">GCS</th>
+            <th class="center" style="font-size: 10px; width: 50px">Sup.</th>
+            <th class="center" style="font-size: 10px; width: 50px">Inf.</th>
+            <th class="center" style="font-size: 10px; width: 50px">Ent.</th>
+            <th class="center" style="font-size: 10px; width: 50px">Par.</th>
+            <th class="center" style="font-size: 10px; width: 50px">Train.</th>
+            <th class="center" style="font-size: 10px; width: 50px">Urin</th>
+            <th class="center" style="font-size: 10px; width: 50px">NGT</th>
+            <th class="center" style="font-size: 10px; width: 50px">BAB</th>
+            <th class="center" style="font-size: 10px; width: 50px">Pola</th>
+            <th class="center" style="font-size: 10px; width: 50px">TV</th>
+            <th class="center" style="font-size: 10px; width: 50px">RR</th>
+            <th class="center" style="font-size: 10px; width: 50px">FO2%</th>
+            <th class="center" style="font-size: 10px; width: 50px">Peep</th>
           </tr>
           </thead>
           <tbody>
@@ -961,14 +1161,12 @@ function hitung_balans_cairan(){
         </table>
       </div>
     </div>
-    <!-- DATA MONITORING PERKEMBANGAN PASIEN -->
+    </div><!-- /tab_monitoring -->
 
-    <!-- DESKRIPSI/JENIS CAIRAN/CATATAN KHUSUS/DLL -->
-    <div class="row" style="padding: 10px !important">
-      <div class="col-md-12 no-padding">
-        <h3 class="header smaller lighter blue padding-10" style="background: #5a7416; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
-          RENCANA PEMERIKSAAN/KEGIATAN/JENIS CAIRAN/CATATAN KHUSUS/DLL (Tanggal. <span class="selected_date"><?php echo date('Y-m-d')?></span>)
-        </h3>
+    <!-- Tab 5: Catatan Khusus -->
+    <div id="tab_catatan" class="tab-pane fade">
+    <div class="row">
+      <div class="col-md-12">
         <div class="form-group">
             <label class="control-label col-sm-2" for="">*Jam Input</label>
             <div class="col-md-2">
@@ -982,19 +1180,19 @@ function hitung_balans_cairan(){
         </div>
         <br>
         <div>
-          <b style="font-style: italic">Penjelasan Jenis Cairan/ Catatan Khusus Lainnya</b><br>
+          <label style="font-weight:600;color:#475569;font-size:12px">Penjelasan Jenis Cairan / Catatan Khusus Lainnya</label><br>
           <textarea class="form-control" style="height: 100px !important;" name="catatan_khusus" id="catatan_khusus"></textarea>
         </div>
         <div class="col-md-12 no-padding" style="padding-top: 3px !important; padding-bottom: 10px !important">
-          <button type="submit" name="btn_deskripsi_lainnya" value="btn_deskripsi_lainnya" class="btn btn-xs btn-primary" id="btn_deskripsi_lainnya"><i class="fa fa-save"></i> Simpan</button>
+          <button type="submit" name="btn_deskripsi_lainnya" value="btn_deskripsi_lainnya" class="obs-btn-save" id="btn_deskripsi_lainnya"><i class="fa fa-save"></i> Simpan</button>
         </div>
         
-        <table class="table" id="dt_deskripsi_lainnya">
+        <table class="table obs-table" id="dt_deskripsi_lainnya">
           <thead>
-            <tr style="background:#e7e7e7; color: black">
-              <th style="width: 80px; background:#e7e7e7; color: black">#</th>
-              <th class="center" style="width: 100px; background:#e7e7e7; color: black">JAM</th>
-              <th class="center" style="background:#e7e7e7; color: black"> DESKRIPSI/JENIS CAIRAN/CATATAN KHUSUS/DLL </th>
+            <tr>
+              <th style="width: 80px">#</th>
+              <th class="center" style="width: 100px">Jam</th>
+              <th class="center">Deskripsi / Jenis Cairan / Catatan Khusus</th>
             </tr>
           </thead>
           <tbody>
@@ -1003,14 +1201,12 @@ function hitung_balans_cairan(){
 
       </div>
     </div>
-    <!-- END DESKRIPSI/JENIS CAIRAN/CATATAN KHUSUS/DLL -->
+    </div><!-- /tab_catatan -->
 
-    <!-- KESEIMBANGAN CAIRAN -->
-     <div class="row" style="padding: 10px !important">
-      <div class="col-md-12 no-padding">
-        <h3 class="header smaller lighter blue padding-10" style="background: #b378b4; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
-          KESEIMBANGAN CAIRAN (Tanggal. <span class="selected_date"><?php echo date('Y-m-d')?></span>)
-        </h3>
+    <!-- Tab 6: Keseimbangan Cairan -->
+    <div id="tab_cairan" class="tab-pane fade">
+    <div class="row">
+      <div class="col-md-12">
 
           <div class="form-group">
               <label class="control-label col-sm-1" for="">*Jam Input</label>
@@ -1024,9 +1220,10 @@ function hitung_balans_cairan(){
               </div>
           </div>
           
-          <span style="font-weight: bold; font-size: 14px; text-decoration: underline">IWL (Insensible Water Loss)</span>
-          <br>
-          <p>IWL adalah kehilangan cairan yang tidak terukur melalui kulit dan paru-paru. IWL dihitung berdasarkan berat badan, konstanta, dan total jam perawatan pasien.<br>Rumus IWL: <b>IWL = (Konstanta x Berat Badan x Total Jam) / 24</b></p>
+          <div class="obs-info-box">
+            <div style="font-weight:700;font-size:13px;color:#1e40af;margin-bottom:4px"><i class="fa fa-info-circle" style="margin-right:4px"></i> IWL (Insensible Water Loss)</div>
+            <p style="margin:0;font-size:12px;color:#475569">Kehilangan cairan tidak terukur melalui kulit dan paru-paru. Rumus: <b>IWL = (Konstanta x Berat Badan x Total Jam) / 24</b></p>
+          </div>
           <div class="form-group">
               <label class="control-label col-sm-1">Konstanta</label>
               <div class="col-md-1">
@@ -1047,9 +1244,10 @@ function hitung_balans_cairan(){
               <label class="col-sm-1"><span id="txt_total_jam">Ml/Jam</span></label>
           </div>
           <br>
-          <span style="font-weight: bold; font-size: 14px; text-decoration: underline">Balans Cairan</span>
-          <br>
-          <p>Balans cairan adalah selisih antara cairan masuk dan cairan keluar, termasuk IWL. <br>Balans cairan dihitung dengan rumus: <b>Balans Cairan = Cairan Masuk - (Cairan Keluar + IWL)</b></p>
+          <div class="obs-info-box">
+            <div style="font-weight:700;font-size:13px;color:#6b21a8;margin-bottom:4px"><i class="fa fa-calculator" style="margin-right:4px"></i> Balans Cairan</div>
+            <p style="margin:0;font-size:12px;color:#475569">Selisih antara cairan masuk dan cairan keluar termasuk IWL. Rumus: <b>Balans = Cairan Masuk - (Cairan Keluar + IWL)</b></p>
+          </div>
 
           <div class="form-group">
               <label class="control-label col-sm-1">Cairan Masuk</label>
@@ -1068,25 +1266,25 @@ function hitung_balans_cairan(){
           </div>
 
           <div class="col-md-12 no-padding" style="padding-top: 3px !important; padding-bottom: 10px !important">
-            <button type="submit" name="btn_keseimbangan_cairan" value="btn_keseimbangan_cairan" class="btn btn-xs btn-primary" id="btn_keseimbangan_cairan"><i class="fa fa-save"></i> Simpan</button>
+            <button type="submit" name="btn_keseimbangan_cairan" value="btn_keseimbangan_cairan" class="obs-btn-save" id="btn_keseimbangan_cairan"><i class="fa fa-save"></i> Simpan</button>
           </div>
 
-          <table class="table" id="dt_keseimbangan_cairan">
+          <table class="table obs-table" id="dt_keseimbangan_cairan">
           <thead>
-            <tr style="background:#e7e7e7; color: black">
-              <th rowspan="2" style="width: 50px; background:#e7e7e7; color: black">#</th>
-              <th class="center" rowspan="2" style="width: 100px; background:#e7e7e7; color: black">Tanggal/ Jam</th>
-              <th class="center" rowspan="2" style="width: 100px; background:#e7e7e7; color: black">Nama Petugas</th>
-              <th class="center" style="background:#e7e7e7; color: black" colspan="4"> I W L</th>
-              <th class="center" rowspan="2" style="background:#e7e7e7; color: black; width: 80px"> Cairan Masuk<br>(Ml)</th>
-              <th class="center" rowspan="2" style="background:#e7e7e7; color: black; width: 80px"> Cairan Keluar<br>(Ml)</th>
-              <th class="center" rowspan="2" style="background:#e7e7e7; color: black; width: 60px"> Nilai Balans<br>(Ml)</th>
+            <tr>
+              <th rowspan="2" style="width: 50px">#</th>
+              <th class="center" rowspan="2" style="width: 100px">Tanggal/ Jam</th>
+              <th class="center" rowspan="2" style="width: 100px">Nama Petugas</th>
+              <th class="center" colspan="4">IWL</th>
+              <th class="center" rowspan="2" style="width: 80px">Cairan Masuk<br>(Ml)</th>
+              <th class="center" rowspan="2" style="width: 80px">Cairan Keluar<br>(Ml)</th>
+              <th class="center" rowspan="2" style="width: 60px">Nilai Balans<br>(Ml)</th>
             </tr>
             <tr>
-              <th class="center" style="background:#e7e7e7; color: black; width: 60px"> Konstanta </th>
-              <th class="center" style="background:#e7e7e7; color: black; width: 60px"> Berat Badan<br>(Kg) </th>
-              <th class="center" style="background:#e7e7e7; color: black; width: 60px"> Total Jam<br>(Jam)</th>
-              <th class="center" style="background:#e7e7e7; color: black; width: 60px"> Nilai IWL<br>(Ml) </th>
+              <th class="center" style="width: 60px">Konstanta</th>
+              <th class="center" style="width: 60px">Berat Badan<br>(Kg)</th>
+              <th class="center" style="width: 60px">Total Jam<br>(Jam)</th>
+              <th class="center" style="width: 60px">Nilai IWL<br>(Ml)</th>
             </tr>
           </thead>
           <tbody>
@@ -1095,7 +1293,8 @@ function hitung_balans_cairan(){
           
       </div>
     </div>
-    <!-- END KESEIMBANGAN CAIRAN -->
+    </div><!-- /tab_cairan -->
+    </div><!-- /tab-content -->
 
     <!-- RENCANA PEMERIKSAAN DAN KEGIATAN HARIAN -->
     <!-- <div class="row" style="padding: 10px !important">
@@ -1138,6 +1337,262 @@ function hitung_balans_cairan(){
     </div> -->
     <!-- END RENCANA PEMERIKSAAN DAN KEGIATAN HARIAN -->
 
+  </div>
+</div>
+
+<!-- Modal Keperawatan -->
+<div class="modal fade" id="modalKeperawatan" tabindex="-1" role="dialog" aria-labelledby="modalKeperawatanLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalKeperawatanLabel"><i class="fa fa-list-alt"></i> Data Observasi Keperawatan</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Jam Monitor</label>
+              <div class="input-group">
+                <input id="jam_monitor5" name="jam_monitor5" type="text" class="form-control">
+                <span class="input-group-addon"><i class="fa fa-clock-o bigger-110"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-sub-title"><i class="fa fa-sign-in"></i> INTAKE</div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Enteral</label>
+              <textarea class="form-control" name="intake_enteral" id="intake_enteral"></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Parenteral</label>
+              <textarea class="form-control" name="intake_parenteral" id="intake_parenteral"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-sub-title"><i class="fa fa-medkit"></i> PEMBERIAN OBAT</div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Enteral / Lain-lain</label>
+              <textarea class="form-control" name="obat_enteral" id="obat_enteral"></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Parenteral</label>
+              <textarea class="form-control" name="obat_parenteral" id="obat_parenteral"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Polavent</label>
+              <textarea class="form-control" name="polavent" id="polavent"></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Lain-lain (Alergi)</label>
+              <textarea class="form-control" name="lain_alergi" id="lain_alergi"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Catatan Dokter</label>
+              <textarea class="form-control" name="catatan" id="catatan" style="height: 100px !important;"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button> -->
+        <button type="button" class="obs-btn-save" id="btn_save_work_day" value="btn_work_day"><i class="fa fa-save"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Monitoring Perkembangan -->
+<div class="modal fade" id="modalMonitoring" tabindex="-1" role="dialog" aria-labelledby="modalMonitoringLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalMonitoringLabel"><i class="fa fa-line-chart"></i> Data Monitoring Perkembangan Pasien</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Jam Input</label>
+              <div class="input-group">
+                <input id="jam_monitor2" name="jam_monitor2" type="text" class="form-control">
+                <span class="input-group-addon"><i class="fa fa-clock-o bigger-110"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-vital-group obs-vg-ssp" style="margin-top:4px">SSP (Sistem Saraf Pusat)</div>
+        <div class="row" style="margin-top:8px">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Kesadaran</label>
+              <input type="text" class="form-control" name="kesadaran" id="kesadaran">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Pupil</label>
+              <input type="text" class="form-control" name="pupil" id="pupil">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Ref.</label>
+              <input type="text" class="form-control" name="ref" id="ref">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>GCS</label>
+              <input type="text" class="form-control" name="gcs" id="gcs" onclick="show_modal_medium('pelayanan/Pl_pelayanan_ri/info_gcs', 'INFORMASI GCS (Glasgow Coma Scale)')">
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-vital-group obs-vg-motor">Motorik</div>
+        <div class="row" style="margin-top:8px">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Sup.</label>
+              <input type="text" class="form-control" name="sup" id="sup">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Inf.</label>
+              <input type="text" class="form-control" name="inf" id="inf">
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-vital-group obs-vg-cm">CM (Cairan Masuk)</div>
+        <div class="row" style="margin-top:8px">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Enteral</label>
+              <input type="text" class="form-control" name="cm_enteral" id="cm_enteral">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Parenteral</label>
+              <input type="text" class="form-control" name="cm_parenteral" id="cm_parenteral">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Train.</label>
+              <input type="text" class="form-control" name="cm_train" id="cm_train">
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-vital-group obs-vg-ck">CK (Cairan Keluar)</div>
+        <div class="row" style="margin-top:8px">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Urin</label>
+              <input type="text" class="form-control" name="ck_urin" id="ck_urin">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>NGT</label>
+              <input type="text" class="form-control" name="ck_ngt" id="ck_ngt">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>BAB</label>
+              <input type="text" class="form-control" name="ck_bab" id="ck_bab">
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-vital-group obs-vg-resp">Respirasi</div>
+        <div class="row" style="margin-top:8px">
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Pola</label>
+              <input type="text" class="form-control" name="resp_pola" id="resp_pola">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>TV</label>
+              <input type="text" class="form-control" name="resp_tv" id="resp_tv">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>RR</label>
+              <input type="text" class="form-control" name="resp_rr" id="resp_rr">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>FO2%</label>
+              <input type="text" class="form-control" name="resp_fo2" id="resp_fo2">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Peep</label>
+              <input type="text" class="form-control" name="resp_peep" id="resp_peep">
+            </div>
+          </div>
+        </div>
+
+        <div class="obs-vital-group obs-vg-cvp">CVP</div>
+        <div class="row" style="margin-top:8px">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>CVP</label>
+              <input type="text" class="form-control" name="cvp" id="cvp">
+            </div>
+          </div>
+          <div class="col-md-9">
+            <div class="form-group">
+              <label>Catatan</label>
+              <input type="text" class="form-control" name="catatan_monitoring" id="catatan_monitoring">
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
+        <button type="button" class="obs-btn-save" id="btn_save_monitoring" value="btn_monitor_perkembangan_pasien"><i class="fa fa-save"></i> Simpan</button>
+      </div>
+    </div>
   </div>
 </div>
 

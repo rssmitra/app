@@ -1,3 +1,95 @@
+<style>
+  /* ===== Page Header ===== */
+  .page-header { border-bottom: 2px solid #0ea5e9 !important; margin-bottom: 18px; padding-bottom: 10px; }
+  .page-header h1 { font-size: 20px; font-weight: 700; color: #1e3a5f; }
+  .page-header h1 small { font-size: 13px; color: #64748b; }
+
+  /* ===== Search Card ===== */
+  .ri-search-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 18px 22px 14px;
+    -webkit-box-shadow: 0 1px 6px rgba(0,0,0,.07);
+    box-shadow: 0 1px 6px rgba(0,0,0,.07);
+    margin-bottom: 18px;
+  }
+  .ri-form-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0369a1;
+    border-left: 3px solid #0ea5e9;
+    padding-left: 10px;
+    margin: 0 0 14px;
+    line-height: 1.5;
+  }
+  .ri-form-title small {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: #64748b;
+    margin-top: 3px;
+  }
+
+  /* ===== Form controls ===== */
+  .ri-search-card .control-label { font-size: 12px; font-weight: 600; color: #374151; padding-top: 7px; }
+  .ri-search-card .form-control,
+  .ri-search-card select.form-control {
+    font-size: 12.5px; border-color: #d1d5db; border-radius: 6px;
+  }
+  .ri-search-card .form-control:focus {
+    border-color: #0ea5e9;
+    -webkit-box-shadow: 0 0 0 3px rgba(14,165,233,.12);
+    box-shadow: 0 0 0 3px rgba(14,165,233,.12);
+  }
+  .ri-search-card select:not(.form-control) {
+    display: inline-block; height: 32px; padding: 4px 8px;
+    font-size: 12.5px; border: 1px solid #d1d5db; border-radius: 6px;
+    color: #374151; background: #fff;
+  }
+
+  /* ===== Action row ===== */
+  .ri-action-row {
+    padding-top: 10px; margin-top: 4px;
+    border-top: 1px solid #f1f5f9;
+    display: -webkit-flex; display: flex;
+    -webkit-flex-wrap: wrap; flex-wrap: wrap;
+    gap: 6px;
+  }
+  .ri-btn-search {
+    background: -webkit-linear-gradient(135deg, #0369a1, #0ea5e9);
+    background: linear-gradient(135deg, #0369a1, #0ea5e9);
+    border: none; color: #fff !important;
+    font-size: 12.5px; font-weight: 600; border-radius: 6px;
+    padding: 6px 16px; cursor: pointer; text-decoration: none;
+    display: inline-block;
+    -webkit-transition: opacity .18s; transition: opacity .18s;
+  }
+  .ri-btn-search:hover { opacity: .88; color: #fff !important; text-decoration: none; }
+  .ri-btn-reset {
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    color: #475569 !important; font-size: 12.5px; font-weight: 600;
+    border-radius: 6px; padding: 6px 14px; cursor: pointer;
+    text-decoration: none; display: inline-block;
+    -webkit-transition: background .15s; transition: background .15s;
+  }
+  .ri-btn-reset:hover { background: #e2e8f0; color: #1e3a5f !important; text-decoration: none; }
+
+  /* ===== Separator ===== */
+  .ri-search-card hr { border-color: #e2e8f0; margin: 12px 0; }
+
+  /* ===== DataTable override ===== */
+  #dynamic-table thead tr th {
+    background: -webkit-linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+    background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+    color: #fff; font-size: 11.5px; font-weight: 700;
+    border-color: #1d4ed8 !important;
+    white-space: nowrap;
+  }
+  #dynamic-table tbody tr td { font-size: 12px; color: #334155; vertical-align: middle; }
+  #dynamic-table tbody tr:hover { background: #eff6ff !important; }
+</style>
+
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
@@ -16,18 +108,18 @@ jQuery(function($) {
 
 $(document).ready(function(){
 
-  $( "#form_search" )    
-      .keypress(function(event) {  
-        var keycode =(event.keyCode?event.keyCode:event.which);  
-        if(keycode ==13){   
-          event.preventDefault();  
-          $('#btn_search_data').click();  
-          return false;  
-        }  
+  $( "#form_search" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which);
+        if(keycode ==13){
+          event.preventDefault();
+          $('#btn_search_data').click();
+          return false;
+        }
   });
 
-  oTable = $('#dynamic-table').DataTable({ 
-          
+  oTable = $('#dynamic-table').DataTable({
+
     "processing": true, //Feature control the processing indicator.
     "serverSide": true, //Feature control DataTables' server-side processing mode.
     "ordering": false,
@@ -45,11 +137,11 @@ $(document).ready(function(){
         "type": "POST"
     },
     "columnDefs": [
-        { 
+        {
           "targets": [ -1 ], //last column
           "orderable": false, //set not orderable
         },
-        {"aTargets" : [0], "mData" : 2, "sClass":  "details-control"}, 
+        {"aTargets" : [0], "mData" : 2, "sClass":  "details-control"},
         { "visible": false, "targets": [1,2] },
       ],
 
@@ -61,7 +153,7 @@ $(document).ready(function(){
             var data = oTable.row( $(this).parents('tr') ).data();
             var no_registrasi = data[ 0 ];
             var tipe = data[ 1 ];
-            
+
 
             if ( row.child.isShown() ) {
                 // This row is already open - close it
@@ -70,18 +162,18 @@ $(document).ready(function(){
             }
             else {
                 /*data*/
-               
+
                 $.getJSON("billing/Billing/getDetail/" + no_registrasi + "/" + tipe, '', function (data) {
                     response_data = data;
                      // Open this row
                     row.child( format( response_data ) ).show();
                     tr.addClass('shown');
                 });
-               
+
             }
     } );
 
-    
+
       $('#btn_search_data').click(function (e) {
           e.preventDefault();
           $.ajax({
@@ -90,7 +182,7 @@ $(document).ready(function(){
           data: $('#form_search').serialize(),
           dataType: "json",
           beforeSend: function() {
-            achtungShowLoader();  
+            achtungShowLoader();
           },
           success: function(data) {
             achtungHideLoader();
@@ -119,7 +211,7 @@ function getBillingDetail(noreg, type, field){
       //alert(response_data.html); return false;
       $('#detail_item_billing_'+noreg+'').html(data.html);
   });
- 
+
 }
 
 function find_data_reload(result=''){
@@ -131,24 +223,24 @@ function find_data_reload(result=''){
 
 function rollback(no_registrasi, no_kunjungan){
 
-  preventDefault();  
+  preventDefault();
 
   achtungShowLoader();
 
   $.ajax({
       url: "pelayanan/Pl_pelayanan_ri/rollback",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan },            
+      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan },
       dataType: "json",
       type: "POST",
       complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        if(jsonResponse.status === 200){
+          $.achtung({message: jsonResponse.message, timeout:5});
           getMenu('pelayanan/Pl_pelayanan_ri');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
-        } 
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }
         achtungHideLoader();
       }
   });
@@ -156,7 +248,7 @@ function rollback(no_registrasi, no_kunjungan){
 }
 
 if(!ace.vars['touch']) {
-        $('.chosen-select').chosen({allow_single_deselect:true}); 
+        $('.chosen-select').chosen({allow_single_deselect:true});
     //resize the chosen on window resize
 
     $(window)
@@ -186,111 +278,100 @@ if(!ace.vars['touch']) {
 
     <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data">
 
-      <center>
-          <h4>FORM PENCARIAN DATA PASIEN <?php echo ($is_icu=='N')?'RAWAT INAP':'ICU'; ?><br><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data Pasien Rawat Inap yang masih dirawat sampai Hari ini yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?> </small></h4>
-            <!-- <?php if($is_icu=='N'): ?>
-              <label class="label label-xs label-success">&nbsp;&nbsp;</label> LA (Lantai Atas)
-              <label class="label label-xs label-danger">&nbsp;&nbsp;</label> LB (Lantai Bawah)
-              <label class="label label-xs label-primary">&nbsp;&nbsp;</label> VK (Ruang Bersalin dan Nifas)
-              <label class="label label-xs label-inverse">&nbsp;&nbsp;</label> Lain-lain
-            <?php endif ?> -->
-      </center>
-    
-      <br>
-      <!-- hidden form -->
-      <input type="hidden" name="is_icu" value="<?php echo $is_icu ?>" id="is_icu">
-      <div class="form-group">
-          <label class="control-label col-md-2">Pencarian berdasarkan</label>
-          <div class="col-md-2">
-            <select name="search_by" id="search_by" class="form-control">
-              <option value="">-Silahkan Pilih-</option>
-              <option value="no_mr" selected>No MR</option>
-              <option value="nama_pasien">Nama Pasien</option>
-            </select>
-          </div>
+      <!-- Search Card -->
+      <div class="ri-search-card">
 
-          <label class="control-label col-md-1">Keyword</label>
-          <div class="col-md-2">
-            <input type="text" class="form-control" name="keyword" id="keyword_form">
-          </div>
+        <div class="ri-form-title">
+          <i class="fa fa-search" style="margin-right:6px;color:#0ea5e9"></i>
+          Form Pencarian Data Pasien <?php echo ($is_icu=='N')?'Rawat Inap':'ICU'; ?>
+          <small>Data Pasien yang masih dirawat sampai hari ini, <?php echo $this->tanggal->formatDate(date('Y-m-d'))?></small>
+        </div>
 
-          <label class="control-label col-md-1">Status</label>
-          <div class="col-md-2">
-              <select name="status_ranap" id="status_ranap" style="margin-left:-4%">
-                <option value="" selected>- Silahkan Pilih -</option>
-                <option value="masih dirawat">Masih dirawat</option>
-                <option value="sudah pulang">Sudah Pulang</option>
-                <!-- <option value="belum lunas">Sudah Lunas</option> -->
+        <!-- hidden form -->
+        <input type="hidden" name="is_icu" value="<?php echo $is_icu ?>" id="is_icu">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Pencarian berdasarkan</label>
+            <div class="col-md-2">
+              <select name="search_by" id="search_by" class="form-control">
+                <option value="">-Silahkan Pilih-</option>
+                <option value="no_mr" selected>No MR</option>
+                <option value="nama_pasien">Nama Pasien</option>
               </select>
-          </div>
+            </div>
 
-      </div>
+            <label class="control-label col-md-1">Keyword</label>
+            <div class="col-md-2">
+              <input type="text" class="form-control" name="keyword" id="keyword_form">
+            </div>
 
-      <div class="form-group">
-          <label class="control-label col-md-2">Pilih Penjamin</label>
-          <div class="col-md-3">
-            <select name="penjamin" id="penjamin" class="form-control">
-                <option value="" selected>- Semua -</option>
-                <option value="120">BPJS Kesehatan</option>
-                <option value="229">BPJS Ketenagakerjaan</option>
-                <option value="1">Asuransi</option>
-                <option value="0">Umum</option>
-              </select>
-          </div>
-          <label class="control-label col-md-1">Dokter</label>
-          <div class="col-md-4">
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'kode_dokter', 'kode_dokter', 'chosen-select form-control', '', '') ?>
-          </div>
-      </div>
-      <div class="form-group">
-          <label class="control-label col-md-2">&nbsp;</label>
-          <div class="col-md-4" style="margin-left:6px">
-            <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
-              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-              Search
-            </a>
-            <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
-              <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-              Reset
-            </a>
-          </div>
-      </div>
-     
-    <hr class="separator">
-    <!-- div.dataTables_borderWrap -->
-    <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan_ri" class="table table-bordered table-hover">
-        <thead>
-          <tr>  
-            <th width="50px">&nbsp;</th>
-            <th width="50px">&nbsp;</th>
-            <th></th>
-            <th></th>
-            <th>No MR</th>
-            <th>Nama Pasien</th>
-            <th>Tanggal Masuk</th>
-            <th width="150px">Ruangan</th>
-            <th>Penjamin</th>
-            <th>Dokter yang merawat</th>
-            <!-- <th>Kelas</th> -->
-            <!-- <th>Hak Kelas</th> -->
-            <th class="center"> InaCBG</th>
-            <th class="center"> Billing</th>
-            <th>Status</th>          
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+            <label class="control-label col-md-1">Status</label>
+            <div class="col-md-2">
+                <select name="status_ranap" id="status_ranap" class="form-control">
+                  <option value="" selected>- Silahkan Pilih -</option>
+                  <option value="masih dirawat">Masih dirawat</option>
+                  <option value="sudah pulang">Sudah Pulang</option>
+                </select>
+            </div>
+        </div>
 
-    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Pilih Penjamin</label>
+            <div class="col-md-3">
+              <select name="penjamin" id="penjamin" class="form-control">
+                  <option value="" selected>- Semua -</option>
+                  <option value="120">BPJS Kesehatan</option>
+                  <option value="229">BPJS Ketenagakerjaan</option>
+                  <option value="1">Asuransi</option>
+                  <option value="0">Umum</option>
+                </select>
+            </div>
+            <label class="control-label col-md-1">Dokter</label>
+            <div class="col-md-4">
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'kode_dokter', 'kode_dokter', 'chosen-select form-control', '', '') ?>
+            </div>
+        </div>
+
+        <div class="ri-action-row">
+          <a href="#" id="btn_search_data" class="ri-btn-search">
+            <i class="fa fa-search"></i>&nbsp;Cari Data
+          </a>
+          <a href="#" id="btn_reset_data" class="ri-btn-reset">
+            <i class="fa fa-refresh"></i>&nbsp;Reset
+          </a>
+        </div>
+
+      </div><!-- /.ri-search-card -->
+
+      <hr class="separator">
+      <!-- div.dataTables_borderWrap -->
+      <div style="margin-top:-27px">
+        <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan_ri" class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th width="50px">&nbsp;</th>
+              <th width="50px">&nbsp;</th>
+              <th></th>
+              <th></th>
+              <th>No MR</th>
+              <th>Nama Pasien</th>
+              <th>Tanggal Masuk</th>
+              <th width="150px">Ruangan</th>
+              <th>Penjamin</th>
+              <th>Dokter yang merawat</th>
+              <!-- <th>Kelas</th> -->
+              <!-- <th>Hak Kelas</th> -->
+              <th class="center"> InaCBG</th>
+              <th class="center"> Billing</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
 
     </form>
 
   </div><!-- /.col -->
 </div><!-- /.row -->
-
-<!-- <script src="<?php //echo base_url().'assets/js/custom/als_datatable.js'?>"></script> -->
-
-
-

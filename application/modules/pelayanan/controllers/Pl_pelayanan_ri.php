@@ -810,6 +810,31 @@ class Pl_pelayanan_ri extends MX_Controller {
         $this->load->view('Pl_pelayanan_ri/form_askep', $data);
     }
 
+    public function hand_over($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_ri'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['type']='Ranap';
+        $data['status_pulang'] = $data['value']->status_pulang;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // monitor perkembangan pasie
+        $askep = $this->db->order_by('id', 'DESC')->get_where('th_asuhan_keperawatan', ['no_kunjungan' => $no_kunjungan])->result();
+        $data['askep'] = $askep;
+        // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_hand_over', $data);
+    }
+
     public function ews($id='', $no_kunjungan='')
     {
          /*breadcrumbs for edit*/
@@ -2198,6 +2223,89 @@ class Pl_pelayanan_ri extends MX_Controller {
                  echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
              }
  
+         }
+    }
+
+    public function process_handover()
+    {
+         $this->load->library('form_validation');
+         $val = $this->form_validation;
+
+         $val->set_rules('no_mr', 'MR Pasien', 'trim|required', array('required' => 'MR Pasien tidak ditemukan'));
+         $val->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
+         $val->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
+         $val->set_rules('diagnosa_masuk', 'Diagnosa Masuk', 'trim|required');
+            $val->set_rules('nama_pasien', 'Nama Pasien', 'trim|required');
+
+         $val->set_message('required', "Silahkan isi field \"%s\"");
+
+         if ($val->run() == FALSE)
+         {
+             $val->set_error_delimiters('<div style="color:white">', '</div>');
+             echo json_encode(array('status' => 301, 'message' => validation_errors()));
+         }
+         else
+         {
+            $this->db->trans_begin();
+
+            $post = function($field, $default = '-'){
+                $value = trim((string) $this->input->post($field, true));
+                return ($value !== '') ? $value : $default;
+            };
+
+            $catatan_handover = [];
+            $catatan_handover[] = 'S (Situation)';
+            $catatan_handover[] = 'Diagnosa Masuk: '.$post('diagnosa_masuk');
+            $catatan_handover[] = 'Nama Pasien: '.$post('nama_pasien');
+            $catatan_handover[] = 'No. RM: '.$post('no_rm', $post('no_mr'));
+            $catatan_handover[] = 'Umur: '.$post('umur');
+            $catatan_handover[] = 'Ruang / Kamar: '.$post('ruangan');
+            $catatan_handover[] = '';
+            $catatan_handover[] = 'B (Background)';
+            $catatan_handover[] = 'Keluhan Saat Ini: '.$post('keluhan');
+            $catatan_handover[] = 'Riwayat Penyakit: '.$post('riwayat_penyakit');
+            $catatan_handover[] = 'Alergi: '.$post('alergi');
+            $catatan_handover[] = 'Terapi dari DPJP: '.$post('terapi_dpjp');
+            $catatan_handover[] = '';
+            $catatan_handover[] = 'A (Assessment)';
+            $catatan_handover[] = 'Kesadaran: '.$post('kesadaran');
+            $catatan_handover[] = 'Tekanan Darah (TD): '.$post('td');
+            $catatan_handover[] = 'Nadi: '.$post('nadi');
+            $catatan_handover[] = 'Nafas: '.$post('nafas');
+            $catatan_handover[] = 'Suhu: '.$post('suhu');
+            $catatan_handover[] = 'Pemeriksaan Fisik: '.$post('fisik');
+            $catatan_handover[] = 'Hasil Lab: '.$post('lab');
+            $catatan_handover[] = 'IV Lines / Fluids: '.$post('iv_lines');
+            $catatan_handover[] = 'X-Ray: '.$post('xray');
+            $catatan_handover[] = '';
+            $catatan_handover[] = 'R (Recommendation)';
+            $catatan_handover[] = 'Tindakan yang Sudah Dilakukan: '.$post('tindakan');
+            $catatan_handover[] = 'Instruksi Dokter: '.$post('instruksi_dokter');
+
+            $dataexc = [
+                'tgl_askep' => date('Y-m-d'),
+                'jam_askep' => date('H:i:s'),
+                'no_registrasi' => $_POST['no_registrasi'],
+                'no_kunjungan' => $_POST['no_kunjungan'],
+                'no_mr' => $post('no_mr', $post('no_rm', '')),
+                'catatan_askep' => implode("\n", $catatan_handover),
+                'jenis_catatan' => 'hand_over',
+                'created_date' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('user')->fullname,
+            ];
+            $this->db->insert('th_asuhan_keperawatan', $dataexc);
+
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Hand Over Berhasil Disimpan'));
+             }
+
          }
     }
 

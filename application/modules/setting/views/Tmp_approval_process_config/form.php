@@ -88,13 +88,22 @@ $(document).ready(function(){
                 <div class="form-group">
                   <label class="control-label col-md-2">Function</label>
                   <div class="col-md-3">
-                    <input name="function" id="function" value="<?php echo isset($value)?$value->function:''?>" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+                    <input name="function" id="function" value="<?php echo isset($value)?$value->function_modul:''?>" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="control-label col-md-2">Secret Code</label>
                   <div class="col-md-2">
-                    <input name="secret_code" id="secret_code" value="<?php echo isset($value)?$value->secret_code:str_pad(mt_rand(0, pow(10, 6)-1), 6, '0', STR_PAD_LEFT)?>" class="form-control" type="text" readonly >
+                    <div class="input-group">
+                      <input name="secret_code" id="secret_code" value="<?php echo isset($value)?$value->secret_code:str_pad(mt_rand(0, pow(10, 6)-1), 6, '0', STR_PAD_LEFT)?>" class="form-control" type="text" readonly >
+                      <?php if($flag != 'read'):?>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-warning btn-sm" onclick="$('#secret_code').val(String(Math.floor(Math.random()*1000000)).padStart(6,'0'));" title="Generate ulang secret code">
+                          <i class="fa fa-refresh"></i>
+                        </button>
+                      </span>
+                      <?php endif; ?>
+                    </div>
                   </div>
                 </div>
                 <div class="form-group">

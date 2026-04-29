@@ -589,8 +589,10 @@
   $ko    = $D ? $D['kamar_op']     : [];
   $lab   = $D ? $D['lab']          : null;
   $frm   = $D ? $D['farmasi']      : null;
+  $frmc  = $D && isset($D['farmasi_cito']) ? $D['farmasi_cito'] : [];
   $rad   = $D ? $D['radiologi']    : null;
   $lain  = $D ? $D['lainnya']      : null;
+  $obkos = $D && isset($D['obat_kosong']) ? $D['obat_kosong'] : [];
 
   $ok = ['pagi'=>[], 'sore'=>[], 'malam'=>[]];
   foreach ($ko as $row) $ok[$row->shift][] = $row;
@@ -1250,6 +1252,33 @@
     </button>
     <?php endforeach; ?>
     <?php mod_foto_widget('kamar_op', $fotos, $flag); ?>
+
+    <hr class="mod-divider">
+    <p class="mod-sub-head"><i class="fa fa-exclamation-circle"></i> Obat/Alkes Kosong (Ranap/OK)</p>
+    <div class="detail-header-row" style="padding-left:0">
+      <div style="flex:8;padding-right:4px">Nama Obat/Alkes</div>
+      <div style="flex:0 0 34px"></div>
+    </div>
+    <div id="obat-kosong-list">
+      <?php if (!empty($obkos)): foreach ($obkos as $row): ?>
+      <div class="mod-row-detail obat-kosong-row">
+        <div class="row">
+          <div class="col-md-11"><input class="form-control" name="obat_kosong_nama[]" type="text" placeholder="Nama Obat/Alkes yang kosong" value="<?php echo htmlspecialchars($row->nama_obat_alkes) ?>"></div>
+          <div class="col-md-1"><button type="button" class="btn btn-xs btn-danger btn-del-row" onclick="removeRow(this)" title="Hapus baris"><i class="fa fa-trash-o"></i></button></div>
+        </div>
+      </div>
+      <?php endforeach; else: ?>
+      <div class="mod-row-detail obat-kosong-row">
+        <div class="row">
+          <div class="col-md-11"><input class="form-control" name="obat_kosong_nama[]" type="text" placeholder="Nama Obat/Alkes yang kosong"></div>
+          <div class="col-md-1"><button type="button" class="btn btn-xs btn-danger btn-del-row" onclick="removeRow(this)" title="Hapus baris"><i class="fa fa-trash-o"></i></button></div>
+        </div>
+      </div>
+      <?php endif; ?>
+    </div>
+    <button type="button" class="btn btn-primary btn-xs btn-add-row" onclick="addObatKosongRow()">
+      <i class="fa fa-plus"></i> Tambah Obat/Alkes Kosong
+    </button>
   </div>
 </div>
 
@@ -1334,7 +1363,44 @@
         <label class="mod-label">Obat Bebas</label>
         <input class="form-control mod-number" name="frm_obat_bebas" type="number" min="0" value="<?php echo $v($frm,'obat_bebas',0) ?>">
       </div>
+      <div class="num-block" style="min-width:140px">
+        <label class="mod-label">Obat Ditinggal</label>
+        <input class="form-control mod-number" name="frm_obat_ditinggal" type="number" min="0" value="<?php echo $v($frm,'jml_obat_ditinggal',0) ?>">
+      </div>
     </div>
+
+    <hr class="mod-divider">
+    <p class="mod-sub-head"><i class="fa fa-ambulance"></i> Obat/Alkes Cito (Pembelian ke Luar Cito)</p>
+    <div class="detail-header-row" style="padding-left:0">
+      <div style="flex:4;padding-right:4px">Nama Obat/Alkes</div>
+      <div style="flex:2;padding-right:4px">Jumlah</div>
+      <div style="flex:3;padding-right:4px">Harga (Rp)</div>
+      <div style="flex:0 0 34px"></div>
+    </div>
+    <div id="frm-cito-list">
+      <?php if (!empty($frmc)): foreach ($frmc as $row): ?>
+      <div class="mod-row-detail frm-cito-row">
+        <div class="row">
+          <div class="col-md-5"><input class="form-control" name="frm_cito_nama[]" type="text" placeholder="Nama Obat/Alkes" value="<?php echo htmlspecialchars($row->nama_obat) ?>"></div>
+          <div class="col-md-2"><input class="form-control" name="frm_cito_jumlah[]" type="number" min="0" placeholder="Jumlah" value="<?php echo $row->jumlah ?>"></div>
+          <div class="col-md-4"><input class="form-control" name="frm_cito_harga[]" type="text" placeholder="Harga" value="<?php echo $row->harga ?>"></div>
+          <div class="col-md-1"><button type="button" class="btn btn-xs btn-danger btn-del-row" onclick="removeRow(this)" title="Hapus baris"><i class="fa fa-trash-o"></i></button></div>
+        </div>
+      </div>
+      <?php endforeach; else: ?>
+      <div class="mod-row-detail frm-cito-row">
+        <div class="row">
+          <div class="col-md-5"><input class="form-control" name="frm_cito_nama[]" type="text" placeholder="Nama Obat/Alkes"></div>
+          <div class="col-md-2"><input class="form-control" name="frm_cito_jumlah[]" type="number" min="0" placeholder="Jumlah"></div>
+          <div class="col-md-4"><input class="form-control" name="frm_cito_harga[]" type="text" placeholder="Harga"></div>
+          <div class="col-md-1"><button type="button" class="btn btn-xs btn-danger btn-del-row" onclick="removeRow(this)" title="Hapus baris"><i class="fa fa-trash-o"></i></button></div>
+        </div>
+      </div>
+      <?php endif; ?>
+    </div>
+    <button type="button" class="btn btn-primary btn-xs btn-add-row" onclick="addFrmCitoRow()">
+      <i class="fa fa-plus"></i> Tambah Obat/Alkes Cito
+    </button>
     <?php mod_foto_widget('farmasi', $fotos, $flag); ?>
   </div>
 </div>
@@ -1374,6 +1440,10 @@
       <div class="num-block">
         <label class="mod-label">USG</label>
         <input class="form-control mod-number" name="rad_usg" type="number" min="0" value="<?php echo $v($rad,'usg',0) ?>">
+      </div>
+      <div class="num-block" style="min-width:200px">
+        <label class="mod-label">Rontgen Belum Expertise</label>
+        <input class="form-control mod-number" name="rad_belum_expertise" type="number" min="0" value="<?php echo $v($rad,'jml_rontgen_belum_expertise',0) ?>">
       </div>
     </div>
     <?php mod_foto_widget('radiologi', $fotos, $flag); ?>
@@ -1571,10 +1641,12 @@
         <i class="ace-icon fa fa-close icon-on-right bigger-110"></i>
         Reset
       </button>
+      <?php if (!$laporan || $laporan->status !== 'final'): ?>
       <button type="button" id="btnDraft" name="btnDraft" class="btn btn-sm btn-warning" style="margin-left:6px">
         <i class="ace-icon fa fa-floppy-o icon-on-right bigger-110"></i>
         Simpan Draft
       </button>
+      <?php endif; ?>
       <button type="button" id="btnSave" name="btnSave" class="btn btn-sm btn-info" style="margin-left:6px">
         <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
         Simpan Final & Lihat Laporan
@@ -1852,6 +1924,24 @@ var perinaRowTpl = '<div class="mod-row-detail perina-detail-row"><div class="ro
 
 function addPerinaRow() { $('#perina-detail-list').append(perinaRowTpl); }
 
+/* ── Farmasi Cito ──────────────────────────────────────────────── */
+var frmCitoRowTpl = '<div class="mod-row-detail frm-cito-row"><div class="row">'
+  + '<div class="col-md-5"><input class="form-control" name="frm_cito_nama[]" type="text" placeholder="Nama Obat/Alkes"></div>'
+  + '<div class="col-md-2"><input class="form-control" name="frm_cito_jumlah[]" type="number" min="0" placeholder="Jumlah"></div>'
+  + '<div class="col-md-4"><input class="form-control" name="frm_cito_harga[]" type="text" placeholder="Harga"></div>'
+  + '<div class="col-md-1"><button type="button" class="btn btn-xs btn-danger btn-del-row" onclick="removeRow(this)" title="Hapus baris"><i class="fa fa-trash-o"></i></button></div>'
+  + '</div></div>';
+
+function addFrmCitoRow() { $('#frm-cito-list').append(frmCitoRowTpl); }
+
+/* ── Obat/Alkes Kosong (Ranap/OK) ──────────────────────────────── */
+var obatKosongRowTpl = '<div class="mod-row-detail obat-kosong-row"><div class="row">'
+  + '<div class="col-md-11"><input class="form-control" name="obat_kosong_nama[]" type="text" placeholder="Nama Obat/Alkes yang kosong"></div>'
+  + '<div class="col-md-1"><button type="button" class="btn btn-xs btn-danger btn-del-row" onclick="removeRow(this)" title="Hapus baris"><i class="fa fa-trash-o"></i></button></div>'
+  + '</div></div>';
+
+function addObatKosongRow() { $('#obat-kosong-list').append(obatKosongRowTpl); }
+
 /* ── Foto Kondisi Lapangan ───────────────────────────────────── */
 var _fotoCounter = {};
 
@@ -1926,7 +2016,7 @@ $(document).on('click', '#foto-lightbox-overlay', function() {
     'igd_jml':    ['igd_bpjs','igd_umum','igd_asuransi','igd_naker','igd_Karyawan'],
     'rj_jml':     ['rj_bpjs','rj_umum','rj_asuransi','rj_naker','rj_Karyawan','rj_ranap'],
     'hd_jml':     ['hd_bpjs','hd_umum','hd_asuransi','hd_ranap'],
-    'ri_jml':     ['ri_bpjs','ri_umum','ri_asuransi','ri_naker','ri_rencana_op'],
+    'ri_jml':     ['ri_bpjs','ri_umum','ri_asuransi','ri_naker'],
     'icu_total':  ['icu_bpjs','icu_umum','icu_asuransi'],
     'picu_total': ['picu_bpjs','picu_umum','picu_asuransi'],
     'nicu_total': ['nicu_bpjs','nicu_umum','nicu_asuransi'],

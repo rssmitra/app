@@ -14,7 +14,7 @@ class Eks_laporan_mod_model extends CI_Model {
 
     var $table  = 'tc_mod_laporan';
     var $column = ['tc_mod_laporan.tanggal','tc_mod_laporan.nama_mod','tc_mod_laporan.shift_mod','tc_mod_laporan.status'];
-    var $select = 'tc_mod_laporan.id, tc_mod_laporan.tanggal, tc_mod_laporan.nama_mod, tc_mod_laporan.shift_mod, tc_mod_laporan.status, tc_mod_laporan.created_at';
+    var $select = 'tc_mod_laporan.id, tc_mod_laporan.tanggal, tc_mod_laporan.nama_mod, tc_mod_laporan.shift_mod, tc_mod_laporan.status, tc_mod_laporan.created_at, tc_mod_laporan.user_id';
     var $order  = ['tc_mod_laporan.tanggal' => 'DESC', 'tc_mod_laporan.created_at' => 'DESC'];
 
     private function _main_query() {
@@ -91,8 +91,10 @@ class Eks_laporan_mod_model extends CI_Model {
             'kamar_op'       => $this->get_kamar_operasi($id),
             'lab'            => $this->get_laboratorium($id),
             'farmasi'        => $this->get_farmasi($id),
+            'farmasi_cito'   => $this->get_farmasi_cito($id),
             'radiologi'      => $this->get_radiologi($id),
             'lainnya'        => $this->get_lainnya($id),
+            'obat_kosong'    => $this->get_obat_kosong($id),
             'fotos'          => $this->get_fotos_grouped($id),
         ];
     }
@@ -148,8 +150,8 @@ class Eks_laporan_mod_model extends CI_Model {
             'tc_mod_intensive', 'tc_mod_intensive_detail',
             'tc_mod_vk', 'tc_mod_vk_detail', 'tc_mod_perina', 'tc_mod_perina_detail',
             'tc_mod_kamar_operasi',
-            'tc_mod_laboratorium', 'tc_mod_farmasi', 'tc_mod_radiologi',
-            'tc_mod_lainnya',
+            'tc_mod_laboratorium', 'tc_mod_farmasi', 'tc_mod_farmasi_cito', 'tc_mod_radiologi',
+            'tc_mod_lainnya', 'tc_mod_obat_kosong',
         ];
         foreach ($tables as $tbl) {
             $this->db->query("DELETE FROM $tbl WHERE laporan_id=?", [$id]);
@@ -340,22 +342,37 @@ class Eks_laporan_mod_model extends CI_Model {
 
         // 11. Farmasi
         $this->db->query("
-            INSERT INTO tc_mod_farmasi (laporan_id,jml_resep,bpjs,umum,asuransi,naker,rssm,obat_bebas)
-            VALUES (?,?,?,?,?,?,?,?)
+            INSERT INTO tc_mod_farmasi (laporan_id,jml_resep,bpjs,umum,asuransi,naker,rssm,obat_bebas,jml_obat_ditinggal)
+            VALUES (?,?,?,?,?,?,?,?,?)
         ", [
             $id,
             $p('frm_jml'), $p('frm_bpjs'), $p('frm_umum'), $p('frm_asuransi'), $p('frm_naker'), $p('frm_rssm'),
-            $p('frm_obat_bebas'),
+            $p('frm_obat_bebas'), $p('frm_obat_ditinggal'),
         ]);
+
+        // 11b. Farmasi Cito (Obat/Alkes Cito / Pembelian ke Luar Cito)
+        if (!empty($post['frm_cito_nama'])) {
+            foreach ($post['frm_cito_nama'] as $k => $v) {
+                if (empty($v)) continue;
+                $this->db->query("
+                    INSERT INTO tc_mod_farmasi_cito (laporan_id,nama_obat,jumlah,harga)
+                    VALUES (?,?,?,?)
+                ", [
+                    $id, $v,
+                    isset($post['frm_cito_jumlah'][$k]) ? $post['frm_cito_jumlah'][$k] : 0,
+                    isset($post['frm_cito_harga'][$k])  ? str_replace(['.', ','], ['', '.'], $post['frm_cito_harga'][$k]) : 0,
+                ]);
+            }
+        }
 
         // 12. Radiologi
         $this->db->query("
-            INSERT INTO tc_mod_radiologi (laporan_id,jml_pasien,bpjs,umum,asuransi,naker,xray,usg)
-            VALUES (?,?,?,?,?,?,?,?)
+            INSERT INTO tc_mod_radiologi (laporan_id,jml_pasien,bpjs,umum,asuransi,naker,xray,usg,jml_rontgen_belum_expertise)
+            VALUES (?,?,?,?,?,?,?,?,?)
         ", [
             $id,
             $p('rad_jml'), $p('rad_bpjs'), $p('rad_umum'), $p('rad_asuransi'), $p('rad_naker'),
-            $p('rad_xray'), $p('rad_usg'),
+            $p('rad_xray'), $p('rad_usg'), $p('rad_belum_expertise'),
         ]);
 
         // 13-17. Lainnya
@@ -375,6 +392,17 @@ class Eks_laporan_mod_model extends CI_Model {
             $p('kebersihan_tunggu',''), $p('kebersihan_toilet',''), $p('kebersihan_lobby',''),
             $p('keterangan_lain',''),
         ]);
+
+        // 18. Obat/Alkes Kosong (Ranap/OK)
+        if (!empty($post['obat_kosong_nama'])) {
+            foreach ($post['obat_kosong_nama'] as $k => $v) {
+                if (empty($v)) continue;
+                $this->db->query("
+                    INSERT INTO tc_mod_obat_kosong (laporan_id,nama_obat_alkes)
+                    VALUES (?,?)
+                ", [$id, $v]);
+            }
+        }
     }
 
     // ----------------------------------------------------------------
@@ -437,12 +465,20 @@ class Eks_laporan_mod_model extends CI_Model {
         return $this->db->query("SELECT * FROM tc_mod_farmasi WHERE laporan_id=?", [$id])->row();
     }
 
+    public function get_farmasi_cito($id) {
+        return $this->db->query("SELECT * FROM tc_mod_farmasi_cito WHERE laporan_id=? ORDER BY id", [$id])->result();
+    }
+
     public function get_radiologi($id) {
         return $this->db->query("SELECT * FROM tc_mod_radiologi WHERE laporan_id=?", [$id])->row();
     }
 
     public function get_lainnya($id) {
         return $this->db->query("SELECT * FROM tc_mod_lainnya WHERE laporan_id=?", [$id])->row();
+    }
+
+    public function get_obat_kosong($id) {
+        return $this->db->query("SELECT * FROM tc_mod_obat_kosong WHERE laporan_id=? ORDER BY id", [$id])->result();
     }
 
     public function verify($id) {

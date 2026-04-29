@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Tmp_approval_process_config_model extends CI_Model {
 
 	var $table = 'user_approval_modul';
-	var $column = array('user_approval_modul.function');
+	var $column = array('user_approval_modul.function_modul');
 	var $select = 'user_approval_modul.*, tmp_user.fullname';
 
 	var $order = array('user_approval_modul.id' => 'DESC', 'user_approval_modul.updated_date' => 'DESC');

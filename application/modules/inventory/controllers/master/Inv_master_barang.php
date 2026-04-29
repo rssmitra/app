@@ -319,6 +319,7 @@ class Inv_master_barang extends MX_Controller {
                     'kode_bagian_gudang' => $kode_gudang, 
                     'created_date' => date('Y-m-d H:i:s'),
                     'created_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
+                    'is_active' => 1,
                 );
 
                 if( $val->set_value('flag') == 'medis' ){
@@ -329,7 +330,6 @@ class Inv_master_barang extends MX_Controller {
                 $this->db->insert($t_rekap_stok, $arr_dt_rekap_stok );
                 /*save logs*/
                 $this->logs->save($t_rekap_stok, $arr_dt_rekap_stok['kode_rekap_stok'], 'insert new record on '.$this->title.' module', json_encode($arr_dt_rekap_stok),'kode_rekap_stok');
-
                 $last_kode_rekap_stok = $arr_dt_rekap_stok['kode_rekap_stok'];
             
             }

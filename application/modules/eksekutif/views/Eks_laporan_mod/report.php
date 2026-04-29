@@ -441,6 +441,21 @@
   <?php endforeach; ?>
   <?php rpt_foto_block_page('kamar_op', $fotos, $foto_base); ?>
 
+  <?php if (!empty($obat_kosong)): ?>
+  <p style="margin:10px 0 4px;font-weight:600;font-size:12.5px">Obat/Alkes Kosong (Ranap/OK)</p>
+  <table class="mod-table">
+    <thead><tr><th>#</th><th>Nama Obat/Alkes</th></tr></thead>
+    <tbody>
+    <?php foreach ($obat_kosong as $i => $r): ?>
+    <tr>
+      <td><?php echo $i+1 ?></td>
+      <td><?php echo htmlspecialchars($r->nama_obat_alkes) ?></td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+  </table>
+  <?php endif; ?>
+
   <!-- 9. LABORATORIUM -->
   <div class="mod-section-title">9. Laboratorium</div>
   <div class="mod-kv">
@@ -484,7 +499,27 @@
       <span class="mod-kv-label">Obat Bebas</span>
       <span class="mod-kv-val"><?php echo $n($farmasi,'obat_bebas') ?></span>
     </div>
+    <div class="mod-kv-item">
+      <span class="mod-kv-label">Jumlah Obat Ditinggal</span>
+      <span class="mod-kv-val"><?php echo $n($farmasi,'jml_obat_ditinggal') ?></span>
+    </div>
   </div>
+  <?php if (!empty($farmasi_cito)): ?>
+  <p style="margin:8px 0 4px;font-weight:600;font-size:12.5px">Obat/Alkes Cito (Pembelian ke Luar Cito)</p>
+  <table class="mod-table">
+    <thead><tr><th>#</th><th>Nama Obat/Alkes</th><th>Jumlah</th><th>Harga (Rp)</th></tr></thead>
+    <tbody>
+    <?php foreach ($farmasi_cito as $i => $r): ?>
+    <tr>
+      <td><?php echo $i+1 ?></td>
+      <td><?php echo htmlspecialchars($r->nama_obat) ?></td>
+      <td><?php echo $r->jumlah ?></td>
+      <td><?php echo number_format($r->harga, 0, ',', '.') ?></td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+  </table>
+  <?php endif; ?>
   <?php rpt_foto_block_page('farmasi', $fotos, $foto_base); ?>
 
   <!-- 11. RADIOLOGI -->
@@ -507,6 +542,10 @@
     <div class="mod-kv-item">
       <span class="mod-kv-label">USG</span>
       <span class="mod-kv-val"><?php echo $n($radiologi,'usg') ?></span>
+    </div>
+    <div class="mod-kv-item">
+      <span class="mod-kv-label">Hasil Rontgen Belum Expertise</span>
+      <span class="mod-kv-val"><?php echo $n($radiologi,'jml_rontgen_belum_expertise') ?></span>
     </div>
   </div>
   <?php rpt_foto_block_page('radiologi', $fotos, $foto_base); ?>

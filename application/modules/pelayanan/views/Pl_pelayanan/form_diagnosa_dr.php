@@ -453,8 +453,20 @@
 </script>
 
 <script type="text/javascript">
-    
-    jQuery(function($) {  
+
+    function toggleRiwayat(targetId, value) {
+        var el = document.getElementById(targetId);
+        if (!el) return;
+        if (value === 'ada') {
+            el.style.display = 'block';
+            el.querySelector('textarea').focus();
+        } else {
+            el.style.display = 'none';
+            el.querySelector('textarea').value = '';
+        }
+    }
+
+    jQuery(function($) {
 
         $('.date-picker').datepicker({    
 
@@ -474,12 +486,48 @@
 
     });
 
-    // var minutesCount = 0; 
-    // var secondCount = 0; 
-    // var centiSecondCount = 0;
-    // var minutes = document.getElementById("minutes");
-    // var second = document.getElementById("second");
-    // var centiSecond = document.getElementById("centiSecond");
+    /* ── Stopwatch — Waktu Pelayanan ────────────────────────── */
+    var _swInterval  = null;
+    var _swRunning   = false;
+    var _swElapsed   = 0; // total detik berjalan
+
+    function _swRender() {
+        var m  = Math.floor(_swElapsed / 60);
+        var s  = _swElapsed % 60;
+        $('#sw-minutes').text(m < 10 ? '0' + m : m);
+        $('#sw-seconds').text(s < 10 ? '0' + s : s);
+    }
+
+    function startStopWatch() {
+        if (_swRunning) return;
+        _swRunning = true;
+        $('#sw-btn-start').hide();
+        $('#sw-btn-pause').show();
+        $('#sw-status').text('Berjalan').css('color','#16a34a');
+        _swInterval = setInterval(function () {
+            _swElapsed++;
+            _swRender();
+        }, 1000);
+    }
+
+    function pauseStopWatch() {
+        if (!_swRunning) return;
+        _swRunning = false;
+        clearInterval(_swInterval);
+        _swInterval = null;
+        $('#sw-btn-start').show();
+        $('#sw-btn-pause').hide();
+        $('#sw-status').text('Dijeda').css('color','#d97706');
+    }
+
+    function resetStopWatch() {
+        pauseStopWatch();
+        _swElapsed = 0;
+        _swRender();
+        $('#sw-status').text('Siap').css('color','#64748b');
+        $('#sw-btn-start').show();
+        $('#sw-btn-pause').hide();
+    }
 
     $('#pl_diagnosa').typeahead({
         source: function (query, result) {
@@ -1028,6 +1076,166 @@
 audio, canvas, progress, video {
     border: 0px !important;
 }
+
+/* ── SOAP Form Redesign — scoped to #fdd-wrap ─────────────────── */
+#fdd-wrap { font-family: 'Segoe UI', system-ui, Arial, sans-serif; font-size: 13px; }
+#fdd-wrap * { box-sizing: border-box; }
+
+.fdd-patient-hdr {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd; border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+}
+.fdd-soap-badge {
+  font-size: 16px; font-weight: 900; letter-spacing: 5px;
+  color: #0369a1; background: #fff;
+  border: 2px solid #bae6fd; border-radius: 8px;
+  padding: 8px 14px; flex-shrink: 0; white-space: nowrap;
+}
+.fdd-patient-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+.fdd-patient-meta { font-size: 12px; color: #64748b; margin-top: 4px; }
+.fdd-patient-meta i { color: #0ea5e9; }
+
+.fdd-section {
+  border-radius: 10px; border: 1px solid #e2e8f0;
+  overflow: visible; margin-bottom: 14px;
+  background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,.05);
+}
+.fdd-section-hdr {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-bottom: 1px solid rgba(0,0,0,.06);
+  border-radius: 10px 10px 0 0;
+}
+.fdd-section-tag {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; flex-shrink: 0;
+}
+.fdd-section-title { font-size: 13px; font-weight: 700; }
+.fdd-section-sub { font-size: 11px; color: #94a3b8; margin-left: auto; white-space: nowrap; }
+.fdd-section-body { padding: 14px 16px; }
+
+.fdd-section-s .fdd-section-hdr  { background: #eff6ff; border-bottom-color: #bfdbfe; }
+.fdd-section-s .fdd-section-tag  { background: #3b82f6; color: #fff; }
+.fdd-section-s .fdd-section-title{ color: #1d4ed8; }
+.fdd-section-o .fdd-section-hdr  { background: #ecfeff; border-bottom-color: #a5f3fc; }
+.fdd-section-o .fdd-section-tag  { background: #0891b2; color: #fff; }
+.fdd-section-o .fdd-section-title{ color: #0e7490; }
+.fdd-section-a .fdd-section-hdr  { background: #fffbeb; border-bottom-color: #fde68a; }
+.fdd-section-a .fdd-section-tag  { background: #d97706; color: #fff; }
+.fdd-section-a .fdd-section-title{ color: #92400e; }
+.fdd-section-p .fdd-section-hdr  { background: #f0fdf4; border-bottom-color: #bbf7d0; }
+.fdd-section-p .fdd-section-tag  { background: #16a34a; color: #fff; }
+.fdd-section-p .fdd-section-title{ color: #15803d; }
+.fdd-section-pulang .fdd-section-hdr  { background: #faf5ff; border-bottom-color: #e9d5ff; }
+.fdd-section-pulang .fdd-section-tag  { background: #9333ea; color: #fff; font-size: 13px; }
+.fdd-section-pulang .fdd-section-title{ color: #6b21a8; }
+
+#fdd-wrap .fdd-label {
+  display: block; font-size: 12px; font-weight: 700;
+  color: #374151; margin-bottom: 5px; margin-top: 0;
+}
+#fdd-wrap .fdd-hint {
+  display: block; font-size: 11px; color: #9ca3af;
+  font-weight: 400; margin-top: 1px;
+}
+#fdd-wrap .fdd-required { color: #ef4444; margin-left: 2px; }
+
+/* ── Riwayat radio group ── */
+.fdd-riwayat-group {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+}
+.fdd-radio-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+.fdd-radio-opt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  transition: border-color .15s, background .15s;
+}
+.fdd-radio-opt:has(input:checked) {
+  border-color: #0ea5e9;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+.fdd-radio-opt input[type="radio"] {
+  accent-color: #0ea5e9;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.fdd-vitals {
+  display: grid; grid-template-columns: repeat(5,1fr);
+  gap: 8px; margin-bottom: 14px;
+}
+@media(max-width:900px){ .fdd-vitals{ grid-template-columns:repeat(3,1fr); } }
+@media(max-width:600px){ .fdd-vitals{ grid-template-columns:repeat(2,1fr); } }
+.fdd-vital-card {
+  background: #f8fafc; border: 1.5px solid #e2e8f0;
+  border-radius: 9px; padding: 9px 11px;
+  display: flex; flex-direction: column; gap: 3px;
+  transition: border-color .15s, background .15s;
+}
+.fdd-vital-card:focus-within { border-color: #0891b2; background: #ecfeff; }
+.fdd-vital-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .5px; line-height: 1.4; }
+.fdd-vital-unit  { font-size: 10px; color: #94a3b8; font-weight: 400; }
+#fdd-wrap .fdd-vital-input {
+  border: none !important; background: transparent !important;
+  padding: 2px 0 !important; font-size: 16px !important;
+  font-weight: 700 !important; color: #0e7490 !important;
+  width: 100% !important; outline: none !important;
+  box-shadow: none !important; height: auto !important;
+  line-height: 1.3 !important;
+}
+
+.fdd-lokalis-toggle {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 14px 0 10px; padding: 10px 12px;
+  background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px;
+}
+.fdd-lokalis-toggle label { margin: 0; cursor: pointer; font-size: 13px; }
+
+#pl_diagnosa_sekunder_hidden_txt {
+  padding: 6px 8px; border: 1.5px solid #e2e8f0;
+  border-radius: 8px; min-height: 34px;
+  margin-top: 6px; line-height: 26px; background: #f8fafc;
+}
+
+.fdd-footer {
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 6px 0 16px; gap: 10px;
+}
+.fdd-btn-save {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 28px;
+  background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+  color: #fff !important; border: none; border-radius: 9px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  font-family: inherit; box-shadow: 0 3px 12px rgba(29,78,216,.3);
+  transition: all .18s; text-decoration: none;
+}
+.fdd-btn-save:hover {
+  background: linear-gradient(135deg,#1e40af,#0284c7);
+  box-shadow: 0 4px 16px rgba(29,78,216,.4);
+  transform: translateY(-1px); color: #fff !important;
+}
 </style>
 
 <!-- input type hidden -->
@@ -1036,16 +1244,36 @@ audio, canvas, progress, video {
 
 <audio id="container" autoplay=""></audio>
 
-<!-- <span>Waktu Pelayanan</span><br>
-<div class="pull-left" style="font-size: 20px; font-weight: bold"> 
-    <span id="minutes">00</span> : <span id="second">00</span> : <span id="centiSecond">00</span>
-</div> -->
-<div class="pull-right">
-    <!-- <button type="button" class="btn btn-xs btn-inverse" id="startCount" onclick="startStopWatch()">Start <i class="fa fa-play"></i></button>
-    <button type="button" class="btn btn-xs btn-inverse" id="pauseCount" onclick="pauseStopWatch()">Stop <i class="fa fa-pause"></i></button> -->
-    <button type="button" class="btn btn-xs btn-success" onclick="speak()" id="callPatientPoli">Call <i class="fa fa-bullhorn bigger-120"></i></button>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;margin-bottom:8px;">
+
+  <!-- Timer display -->
+  <div style="display:flex;align-items:center;gap:6px;">
+    <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">Waktu Pelayanan</span>
+    <div style="display:flex;align-items:center;gap:2px;background:#fff;border:1.5px solid #cbd5e1;border-radius:8px;padding:4px 12px;">
+      <span id="sw-minutes" style="font-size:22px;font-weight:900;color:#0f172a;font-family:monospace;min-width:28px;text-align:center;">00</span>
+      <span style="font-size:20px;font-weight:700;color:#94a3b8;margin:0 1px;">:</span>
+      <span id="sw-seconds" style="font-size:22px;font-weight:900;color:#0f172a;font-family:monospace;min-width:28px;text-align:center;">00</span>
+    </div>
+    <span id="sw-status" style="font-size:11px;font-weight:600;color:#64748b;">Siap</span>
+  </div>
+
+  <!-- Timer controls -->
+  <div style="display:flex;align-items:center;gap:6px;margin-left:auto;">
+    <button type="button" id="sw-btn-start" onclick="startStopWatch()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border:none;border-radius:7px;background:#16a34a;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">
+      <i class="fa fa-play"></i> Mulai
+    </button>
+    <button type="button" id="sw-btn-pause" onclick="pauseStopWatch()" style="display:none;align-items:center;gap:5px;padding:6px 12px;border:none;border-radius:7px;background:#d97706;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">
+      <i class="fa fa-pause"></i> Jeda
+    </button>
+    <button type="button" onclick="resetStopWatch()" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:7px;background:#fff;color:#64748b;font-size:12px;font-weight:600;cursor:pointer;" title="Reset timer">
+      <i class="fa fa-refresh"></i>
+    </button>
+    <button type="button" onclick="speak()" id="callPatientPoli" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border:none;border-radius:7px;background:#0369a1;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">
+      <i class="fa fa-bullhorn"></i> Panggil
+    </button>
+  </div>
+
 </div>
-<br>
 
 <div class="hr dotted"></div>
 
@@ -1097,145 +1325,225 @@ audio, canvas, progress, video {
 </div>
 
 
-<div class="col-md-4 no-padding" style="margin-top: 14px">
-    <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
-    <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : $this->tanggal->formatDateTimeFormDmy($value->tgl_jam_poli)?></span> <br>
-</div>
-<div class="col-md-8">
-    <p style="text-align: right; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
-</div>
+<div id="fdd-wrap">
 
-
-<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Subjective)</span>
-<div style="margin-top: 6px">
-    <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> <span style="color:red">* </span> <br><span style="font-size: 11px; font-style: italic">(Masukan anamnesa minimal 8 karakter)</span> </label>
-    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important" id="pl_anamnesa"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
-    <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
-</div>
-<br>
-
-<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Objective)</span>
-
-<div style="margin-top: 6px">
-    <label for="form-field-8"> <i><b>Vital Sign</b></i><br><span style="font-size: 11px; font-style: italic">(Masukan tanda-tanda vital)</span></label>
-    <table class="table">
-        <tr style="font-size: 11px; background: beige;">
-            <th>Tinggi Badan (Cm)</th>
-            <th>Berat Badan (Kg)</th>
-            <th>Tekanan Darah (mmHg)</th>
-            <th>Nadi (bpm)</th>
-            <th>Suhu Tubuh (C&deg;)</th>
-        </tr>
-        <tbody>
-        <tr style="background: aliceblue;">
-            <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_dr_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
-            </td>
-            <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_dr_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
-            </td>
-            <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_dr_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
-            </td>
-            <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_dr_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
-            </td>
-            <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_dr_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <label for="form-field-8"> <b>Pemeriksaan Fisik</b><br><span style="font-size: 11px; font-style: italic">(Mohon dijelaskan kondisi fisik pasien)</span></label>
-    <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
-    <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
-    
-    <label for="form-field-8">
-        <label><input type="checkbox" class="ace" name="checklist_status_lokaslis" id="checklist_status_lokaslis" <?php echo(isset($riwayat->anatomi_tagging) && $riwayat->anatomi_tagging != null)?'checked':''?> ><span class="lbl"> <b>Status Lokalis</b></span></label>
-         <br><span style="font-size: 11px; font-style: italic">(Mohon di<i>tagging</i> status lokalis pada gambar anatomi tubuh pasien)</span>
-    </label>
-    <!-- status lokalis -->
-    <div id="form_status_lokalis" <?php echo(isset($riwayat->anatomi_tagging) && $riwayat->anatomi_tagging != null)?'':'style="display: none;"'?>>
-        <div class="form-group">
-            <label class="control-label col-sm-2">Anatomi</label>
-            <div class="col-md-4">
-                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), isset($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
-            </div>
-        </div>  
-        <br>
-        
-        <div class="col-md-12">
-            <center><span style="font-weight: bold;font-size: 18px">VISUALISASI STATUS LOKALIS</span></center>
-            <div style="display:flex;justify-content:center;align-items:flex-start;">
-                <div id="anatomi-tag-list-left" style="min-width:180px;max-width:220px;position:relative;"></div>
-                <div id="anatomi-tagging-container" style="position:relative; display:inline-block; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:8px; padding:8px;">
-                    <!-- Overlay dan Modal Input Label Tag -->
-                    <div id="tag-modal-overlay" style="display:none;"></div>
-                    <div id="tag-input-modal" style="display:none;">
-                        <div style="padding:20px 18px 16px 18px; display:flex; flex-direction:column; align-items:center; gap:12px;">
-                            <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:100%; max-width:320px; font-size:15px;">
-                            <div style="display:flex; gap:10px; width:100%; justify-content:flex-end;">
-                            <button type="button" id="tag-save-btn" class="btn btn-sm btn-primary" style="min-width:80px;">Simpan</button>
-                            <button type="button" id="tag-cancel-btn" class="btn btn-sm btn-default" style="min-width:80px;">Batal</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="margin:10px 0 0 0; text-align:center;">
-                        <label style="font-weight:500;">Mode:</label>
-                        <select id="draw-mode" style="width:120px; margin:0 8px;">
-                            <!-- <option value="point">Titik</option> -->
-                            <option value="#">Pilih mode</option>
-                            <option value="rect">Rectangle</option>
-                            <!-- <option value="polygon">Polygon</option> -->
-                            <option value="freehand">Freehand</option>
-                        </select>
-                        <input type="color" id="draw-color" value="#ff0000" style="margin-left:8px; vertical-align:middle;">
-                        <span id="draw-instruction" style="margin-left:10px;color:#888;font-size:12px;"></span>
-                        <button type="button" id="draw-cancel-btn" class="btn btn-xs btn-default" style="display:none; margin-left:8px;">Batal Gambar</button>
-                    </div>
-
-                    <?php
-                        $img_anatomi = isset($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
-                    ?>
-                    <div style="position:relative; width:500px; height:auto;">
-                        <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px; height:auto; display:block; border-radius:8px;">
-                        <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
-                        <svg id="anatomi-svg-areas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
-                        <canvas id="anatomi-draw-canvas" width="500" height="650" style="position:absolute;left:0;top:0;width:500px; height:650px;pointer-events:auto;z-index:20;background:transparent; border-radius:8px;"></canvas>
-                    </div>
-                    
-                </div>
-                <div id="anatomi-tag-list-right" style="min-width:180px;max-width:220px;position:relative;"></div>
-            </div>
-            <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
-            <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width: 100% !important; display: none"><?php echo $riwayat->anatomi_tagging?></textarea>
-        </div>
+  <!-- Patient + Doctor Header -->
+  <div class="fdd-patient-hdr">
+    <span class="fdd-soap-badge">S O A P</span>
+    <div>
+      <div class="fdd-patient-name"><?php echo isset($value->no_mr)?$value->no_mr.' &mdash; ':''?><?php echo isset($value->nama_pasien)?$value->nama_pasien:''?></div>
+      <div class="fdd-patient-meta">
+        <i class="fa fa-user-md"></i> <?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?>
+        &nbsp;&bull;&nbsp;
+        <i class="fa fa-calendar"></i> <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : $this->tanggal->formatDateTimeFormDmy($value->tgl_jam_poli)?>
+      </div>
     </div>
+  </div>
 
-</div>
-<br>
+  <!-- S — Subjective -->
+  <div class="fdd-section fdd-section-s">
+    <div class="fdd-section-hdr">
+      <span class="fdd-section-tag">S</span>
+      <div>
+        <div class="fdd-section-title">Subjective</div>
+      </div>
+      <span class="fdd-section-sub">Keluhan &amp; anamnesa pasien</span>
+    </div>
+    <div class="fdd-section-body">
+      <label class="fdd-label">Anamnesa / Keluhan Pasien <span class="fdd-required">*</span>
+        <span class="fdd-hint">Masukan anamnesa minimal 8 karakter</span>
+      </label>
+      <textarea class="form-control" name="pl_anamnesa" style="height:100px!important" id="pl_anamnesa"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
+      <input type="hidden" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 
-<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px; ">(Assesment)</span>
+      <!-- Riwayat Penyakit Dahulu -->
+      <div class="fdd-riwayat-group">
+        <label class="fdd-label" style="margin-top:12px;">Riwayat Penyakit Dahulu</label>
+        <div class="fdd-radio-row">
+          <label class="fdd-radio-opt">
+            <input type="radio" name="riwayat_penyakit_dahulu" value="tidak" <?php echo (!isset($riwayat->riwayat_penyakit_dahulu) || $riwayat->riwayat_penyakit_dahulu == '' || $riwayat->riwayat_penyakit_dahulu == 'tidak') ? 'checked' : ''; ?> onchange="toggleRiwayat('riwayat_penyakit_dahulu_txt', this.value)">
+            <span>Tidak Ada</span>
+          </label>
+          <label class="fdd-radio-opt">
+            <input type="radio" name="riwayat_penyakit_dahulu" value="ada" <?php echo (isset($riwayat->riwayat_penyakit_dahulu) && $riwayat->riwayat_penyakit_dahulu == 'ada') ? 'checked' : ''; ?> onchange="toggleRiwayat('riwayat_penyakit_dahulu_txt', this.value)">
+            <span>Ada</span>
+          </label>
+        </div>
+        <div id="riwayat_penyakit_dahulu_txt" style="<?php echo (isset($riwayat->riwayat_penyakit_dahulu) && $riwayat->riwayat_penyakit_dahulu == 'ada') ? '' : 'display:none;'; ?>margin-top:6px;">
+          <textarea class="form-control" name="riwayat_penyakit_dahulu_ket" placeholder="Jelaskan riwayat penyakit dahulu..." style="height:70px!important"><?php echo isset($riwayat->riwayat_penyakit_dahulu_ket) ? $riwayat->riwayat_penyakit_dahulu_ket : ''; ?></textarea>
+        </div>
+      </div>
 
-<div style="margin-top: 6px">
-    <label for="form-field-8"><b>Diagnosa Primer(ICD10)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD10)</i></label>
-    <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
-    <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
-</div>
+      <!-- Riwayat Operasi Sebelumnya -->
+      <div class="fdd-riwayat-group">
+        <label class="fdd-label" style="margin-top:12px;">Riwayat Operasi Sebelumnya</label>
+        <div class="fdd-radio-row">
+          <label class="fdd-radio-opt">
+            <input type="radio" name="riwayat_operasi" value="tidak" <?php echo (!isset($riwayat->riwayat_operasi) || $riwayat->riwayat_operasi == '' || $riwayat->riwayat_operasi == 'tidak') ? 'checked' : ''; ?> onchange="toggleRiwayat('riwayat_operasi_txt', this.value)">
+            <span>Tidak Ada</span>
+          </label>
+          <label class="fdd-radio-opt">
+            <input type="radio" name="riwayat_operasi" value="ada" <?php echo (isset($riwayat->riwayat_operasi) && $riwayat->riwayat_operasi == 'ada') ? 'checked' : ''; ?> onchange="toggleRiwayat('riwayat_operasi_txt', this.value)">
+            <span>Ada</span>
+          </label>
+        </div>
+        <div id="riwayat_operasi_txt" style="<?php echo (isset($riwayat->riwayat_operasi) && $riwayat->riwayat_operasi == 'ada') ? '' : 'display:none;'; ?>margin-top:6px;">
+          <textarea class="form-control" name="riwayat_operasi_ket" placeholder="Jelaskan riwayat operasi sebelumnya..." style="height:70px!important"><?php echo isset($riwayat->riwayat_operasi_ket) ? $riwayat->riwayat_operasi_ket : ''; ?></textarea>
+        </div>
+      </div>
 
-<div style="margin-top: 6px">
-    <label for="form-field-8"><b>Diagnosa Sekunder</b> <br><i style="font-size: 11px">(Klik <b>"enter"</b> untuk menambahkan Diagnosa Sekunder dan dapat diisi lebih dari satu )</i></label>
-    <input type="text" class="form-control" name="pl_diagnosa_sekunder" id="pl_diagnosa_sekunder" placeholder="Masukan keyword ICD 10" value="">
-    <div id="pl_diagnosa_sekunder_hidden_txt" style="padding: 2px; line-height: 23px; border: 1px solid #d5d5d5; min-height: 25px; margin-top: 2px">
+      <!-- Riwayat Alergi -->
+      <div class="fdd-riwayat-group">
+        <label class="fdd-label" style="margin-top:12px;">Riwayat Alergi</label>
+        <div class="fdd-radio-row">
+          <label class="fdd-radio-opt">
+            <input type="radio" name="riwayat_alergi" value="tidak" <?php echo (!isset($riwayat->riwayat_alergi) || $riwayat->riwayat_alergi == '' || $riwayat->riwayat_alergi == 'tidak') ? 'checked' : ''; ?> onchange="toggleRiwayat('riwayat_alergi_txt', this.value)">
+            <span>Tidak Ada</span>
+          </label>
+          <label class="fdd-radio-opt">
+            <input type="radio" name="riwayat_alergi" value="ada" <?php echo (isset($riwayat->riwayat_alergi) && $riwayat->riwayat_alergi == 'ada') ? 'checked' : ''; ?> onchange="toggleRiwayat('riwayat_alergi_txt', this.value)">
+            <span>Ada</span>
+          </label>
+        </div>
+        <div id="riwayat_alergi_txt" style="<?php echo (isset($riwayat->riwayat_alergi) && $riwayat->riwayat_alergi == 'ada') ? '' : 'display:none;'; ?>margin-top:6px;">
+          <textarea class="form-control" name="riwayat_alergi_ket" placeholder="Jelaskan jenis alergi (obat, makanan, dll)..." style="height:70px!important"><?php echo isset($riwayat->riwayat_alergi_ket) ? $riwayat->riwayat_alergi_ket : ''; ?></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- O — Objective -->
+  <div class="fdd-section fdd-section-o">
+    <div class="fdd-section-hdr">
+      <span class="fdd-section-tag">O</span>
+      <div>
+        <div class="fdd-section-title">Objective</div>
+      </div>
+      <span class="fdd-section-sub">Pemeriksaan fisik &amp; tanda vital</span>
+    </div>
+    <div class="fdd-section-body">
+
+      <label class="fdd-label">Tanda Vital (Vital Sign)
+        <span class="fdd-hint">Masukan tanda-tanda vital pasien</span>
+      </label>
+      <div class="fdd-vitals">
+        <div class="fdd-vital-card">
+          <span class="fdd-vital-label">Tinggi Badan <span class="fdd-vital-unit">cm</span></span>
+          <input type="text" class="fdd-vital-input" name="pl_dr_tb" placeholder="—" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
+        </div>
+        <div class="fdd-vital-card">
+          <span class="fdd-vital-label">Berat Badan <span class="fdd-vital-unit">kg</span></span>
+          <input type="text" class="fdd-vital-input" name="pl_dr_bb" placeholder="—" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
+        </div>
+        <div class="fdd-vital-card">
+          <span class="fdd-vital-label">Tekanan Darah <span class="fdd-vital-unit">mmHg</span></span>
+          <input type="text" class="fdd-vital-input" name="pl_dr_td" placeholder="—" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
+        </div>
+        <div class="fdd-vital-card">
+          <span class="fdd-vital-label">Nadi <span class="fdd-vital-unit">bpm</span></span>
+          <input type="text" class="fdd-vital-input" name="pl_dr_nadi" placeholder="—" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
+        </div>
+        <div class="fdd-vital-card">
+          <span class="fdd-vital-label">Suhu Tubuh <span class="fdd-vital-unit">&deg;C</span></span>
+          <input type="text" class="fdd-vital-input" name="pl_dr_suhu" placeholder="—" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
+        </div>
+      </div>
+
+      <label class="fdd-label">Pemeriksaan Fisik
+        <span class="fdd-hint">Mohon dijelaskan kondisi fisik pasien (Keadaan umum, Kesadaran dan Status Generalis) </span>
+      </label>
+      <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height:100px!important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
+      <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>">
+
+      <div class="fdd-lokalis-toggle">
+        <label>
+          <input type="checkbox" class="ace" name="checklist_status_lokaslis" id="checklist_status_lokaslis" <?php echo(isset($riwayat->anatomi_tagging) && $riwayat->anatomi_tagging != null)?'checked':''?>>
+          <span class="lbl"> <i class="fa fa-map-marker" style="color:#0891b2"></i> <b>Status Lokalis</b></span>
+        </label>
+        <span style="font-size:11px;color:#94a3b8">Tagging status lokalis pada gambar anatomi tubuh pasien</span>
+      </div>
+
+      <!-- status lokalis -->
+      <div id="form_status_lokalis" <?php echo(isset($riwayat->anatomi_tagging) && $riwayat->anatomi_tagging != null)?'':'style="display:none;"'?>>
+        <div class="form-group">
+          <label class="control-label col-sm-2">Anatomi</label>
+          <div class="col-md-4">
+            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), isset($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
+          </div>
+        </div>
+        <br>
+        <div class="col-md-12">
+          <center><span style="font-weight:bold;font-size:18px">VISUALISASI STATUS LOKALIS</span></center>
+          <div style="display:flex;justify-content:center;align-items:flex-start;">
+            <div id="anatomi-tag-list-left" style="min-width:180px;max-width:220px;position:relative;"></div>
+            <div id="anatomi-tagging-container" style="position:relative;display:inline-block;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.08);border-radius:8px;padding:8px;">
+              <div id="tag-modal-overlay" style="display:none;"></div>
+              <div id="tag-input-modal" style="display:none;">
+                <div style="padding:20px 18px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+                  <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:100%;max-width:320px;font-size:15px;">
+                  <div style="display:flex;gap:10px;width:100%;justify-content:flex-end;">
+                    <button type="button" id="tag-save-btn" class="btn btn-sm btn-primary" style="min-width:80px;">Simpan</button>
+                    <button type="button" id="tag-cancel-btn" class="btn btn-sm btn-default" style="min-width:80px;">Batal</button>
+                  </div>
+                </div>
+              </div>
+              <div style="margin:10px 0 0 0;text-align:center;">
+                <label style="font-weight:500;">Mode:</label>
+                <select id="draw-mode" style="width:120px;margin:0 8px;">
+                  <option value="#">Pilih mode</option>
+                  <option value="rect">Rectangle</option>
+                  <option value="freehand">Freehand</option>
+                </select>
+                <input type="color" id="draw-color" value="#ff0000" style="margin-left:8px;vertical-align:middle;">
+                <span id="draw-instruction" style="margin-left:10px;color:#888;font-size:12px;"></span>
+                <button type="button" id="draw-cancel-btn" class="btn btn-xs btn-default" style="display:none;margin-left:8px;">Batal Gambar</button>
+              </div>
+              <?php $img_anatomi = isset($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png'; ?>
+              <div style="position:relative;width:500px;height:auto;">
+                <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px;height:auto;display:block;border-radius:8px;">
+                <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
+                <svg id="anatomi-svg-areas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
+                <canvas id="anatomi-draw-canvas" width="500" height="650" style="position:absolute;left:0;top:0;width:500px;height:650px;pointer-events:auto;z-index:20;background:transparent;border-radius:8px;"></canvas>
+              </div>
+            </div>
+            <div id="anatomi-tag-list-right" style="min-width:180px;max-width:220px;position:relative;"></div>
+          </div>
+          <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
+          <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width:100%!important;display:none;"><?php echo $riwayat->anatomi_tagging?></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- A — Assessment -->
+  <div class="fdd-section fdd-section-a">
+    <div class="fdd-section-hdr">
+      <span class="fdd-section-tag">A</span>
+      <div>
+        <div class="fdd-section-title">Assessment</div>
+      </div>
+      <span class="fdd-section-sub">Diagnosa &amp; prosedur tindakan</span>
+    </div>
+    <div class="fdd-section-body">
+
+      <label class="fdd-label">Diagnosa Primer (ICD-10) <span class="fdd-required">*</span>
+        <span class="fdd-hint">Wajib mengisi menggunakan kode ICD-10</span>
+      </label>
+      <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
+      <input type="hidden" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
+
+      <label class="fdd-label" style="margin-top:12px">Diagnosa Sekunder
+        <span class="fdd-hint">Klik <b>Enter</b> untuk menambahkan, dapat diisi lebih dari satu</span>
+      </label>
+      <input type="text" class="form-control" name="pl_diagnosa_sekunder" id="pl_diagnosa_sekunder" placeholder="Masukan keyword ICD 10" value="">
+      <div id="pl_diagnosa_sekunder_hidden_txt">
         <?php
-            $arr_text = isset($riwayat->diagnosa_sekunder) ? explode('|',$riwayat->diagnosa_sekunder) : [];
-            // echo "<pre>";print_r($arr_text);
+            $arr_text = isset($riwayat->diagnosa_sekunder) ? explode('|',$riwayat->diagnosa_sekunder) : array();
             $no_ds = 1;
             foreach ($arr_text as $k => $v) {
                 $len = strlen(trim($v));
-                // echo $len;
                 if($len > 0){
                     $no_ds++;
                     $split = explode(':',$v);
@@ -1245,57 +1553,957 @@ audio, canvas, progress, video {
                         echo '<span class="multi-typeahead" id="txt_icd_'.$no_ds.'"><a href="#" onclick="remove_icd('."'".$no_ds."'".')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '.$v.' </span> </span>';
                     }
                 }
-                
             }
         ?>
-    </div>
-    <input type="hidden" class="form-control" name="konten_diagnosa_sekunder" id="konten_diagnosa_sekunder" value="<?php echo isset($riwayat->diagnosa_sekunder)?$riwayat->diagnosa_sekunder:''?>">
-</div>
-<div style="margin-top: 6px">
-    <label for="form-field-8"><b>Prosedur/ Tindakan(ICD9)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD9)</i></label>
-    <input type="text" class="form-control" name="pl_procedure" id="pl_procedure" placeholder="Masukan keyword ICD 9" value="<?php echo isset($riwayat->text_icd9)?$riwayat->text_icd9:' Other consultation'?>">
-    <input type="hidden" class="form-control" name="pl_procedure_hidden" id="pl_procedure_hidden" value="<?php echo isset($riwayat->kode_icd9)?$riwayat->kode_icd9:'89.08'?>">
-</div>
+      </div>
+      <input type="hidden" name="konten_diagnosa_sekunder" id="konten_diagnosa_sekunder" value="<?php echo isset($riwayat->diagnosa_sekunder)?$riwayat->diagnosa_sekunder:''?>">
 
-<br>
-<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Planning)</span>
-<div style="margin-top: 6px">
-    <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br><i style="font-size: 11px">(Mohon dijelaskan Rencana Asuhan Pasien dan Tindak Lanjutnya)</i></label>
-    <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
-</div>
-<div style="margin-top: 6px">
-    <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br><i style="font-size: 11px">(Secara default untuk pasien BPJS kontrol kembali setelah 31 hari)</i></label><br>
-    <input type="text" class="date-picker" data-date-format="yyyy-mm-dd" name="pl_tgl_kontrol_kembali" id="pl_tgl_kontrol_kembali" class="form-control" style="width: 100% !important" placeholder="ex: <?php echo date('Y-m-d')?>" value="<?php $next_date = date('Y-m-d', strtotime("+31 days")); echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:$next_date?>">
-</div>
-<div style="margin-top: 6px">
-    <label for="form-field-8"><b>Catatan Kontrol</b></label>
-    <textarea name="pl_catatan_kontrol" id="pl_catatan_kontrol" class="form-control" style="height: 70px !important" placeholder="ex. Mohon membawa hasil LAB saat kontrol kembali"><?php echo isset($riwayat->catatan_kontrol_kembali)?$this->master->br2nl($riwayat->catatan_kontrol_kembali):''?></textarea>
-</div>
-<br>
+      <label class="fdd-label" style="margin-top:12px">Prosedur / Tindakan (ICD-9) <span class="fdd-required">*</span>
+        <span class="fdd-hint">Wajib mengisi menggunakan kode ICD-9</span>
+      </label>
+      <input type="text" class="form-control" name="pl_procedure" id="pl_procedure" placeholder="Masukan keyword ICD 9" value="<?php echo isset($riwayat->text_icd9)?$riwayat->text_icd9:' Other consultation'?>">
+      <input type="hidden" name="pl_procedure_hidden" id="pl_procedure_hidden" value="<?php echo isset($riwayat->kode_icd9)?$riwayat->kode_icd9:'89.08'?>">
 
+      <label class="fdd-label" style="margin-top:12px">Keterangan / Catatan Assesmen Lainnya
+        <span class="fdd-hint">Catatan klinis tambahan selain diagnosa dan prosedur di atas</span>
+      </label>
+      <textarea name="pl_catatan_assesmen" id="pl_catatan_assesmen" class="form-control" rows="3" style="height:80px!important" placeholder="Tulis catatan assesmen tambahan jika diperlukan..."><?php echo isset($riwayat->catatan_assesmen) ? htmlspecialchars($riwayat->catatan_assesmen) : '' ?></textarea>
 
-<p><b><i class="fa fa-stethoscope bigger-120"></i> INFORMASI PASIEN PULANG </b></p>
-<div class="form-group">
-    <label class="control-label col-sm-3" for="">Cara Keluar Pasien</label>
-    <div class="col-sm-4">
-        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), ($value->cara_keluar_pasien) ? $value->cara_keluar_pasien : 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
     </div>
-</div>
-<div class="form-group">
-    <label class="control-label col-sm-3" for="">Pasca Pulang</label>
-    <div class="col-sm-4">
-        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), (isset($riwayat->pasca_pulang) && $riwayat->pasca_pulang) ? $riwayat->pasca_pulang : 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
-    </div>
-</div>
+  </div>
 
-<div class="form-group" style="padding-top: 10px">
-    <div class="col-sm-12 no-padding">
-        <?php if(isset($_GET['form']) && $_GET['form'] == 'billing_entry') : ?>
-            <div class="alert alert-danger"><strong>Peringatan!</strong><br>Session anda bukan sebagai dokter, anda tidak dapat mengubah SOAP</div>
-       <?php else:?>
-       <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> <?php echo ($this->session->userdata('flag_form_pelayanan')) ?  ($this->session->userdata('flag_form_pelayanan') == 'perawat') ? 'Simpan Data' : 'Simpan Data' : 'Simpan Data'?> </button>
-       <?php endif;?>
+  <!-- P — Planning -->
+  <div class="fdd-section fdd-section-p">
+    <div class="fdd-section-hdr">
+      <span class="fdd-section-tag">P</span>
+      <div>
+        <div class="fdd-section-title">Planning</div>
+      </div>
+      <span class="fdd-section-sub">Rencana tatalaksana &amp; kontrol</span>
     </div>
-</div>
+    <div class="fdd-section-body">
+
+      <label class="fdd-label">Rencana Asuhan / Anjuran Dokter
+        <span class="fdd-hint">Mohon dijelaskan rencana asuhan pasien dan tindak lanjutnya</span>
+      </label>
+      <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height:100px!important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
+
+      <div class="row" style="margin-top:12px">
+        <div class="col-md-4">
+          <label class="fdd-label">Tanggal Kontrol Kembali
+            <span class="fdd-hint">Default BPJS: 31 hari ke depan</span>
+          </label>
+          <input type="text" class="date-picker form-control" data-date-format="yyyy-mm-dd" name="pl_tgl_kontrol_kembali" id="pl_tgl_kontrol_kembali" style="width:100%!important" placeholder="<?php echo date('Y-m-d')?>" value="<?php $next_date = date('Y-m-d', strtotime("+31 days")); echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:$next_date?>">
+        </div>
+        <div class="col-md-8">
+          <label class="fdd-label">Catatan Kontrol</label>
+          <textarea name="pl_catatan_kontrol" id="pl_catatan_kontrol" class="form-control" style="height:70px!important" placeholder="ex. Mohon membawa hasil LAB saat kontrol kembali"><?php echo isset($riwayat->catatan_kontrol_kembali)?$this->master->br2nl($riwayat->catatan_kontrol_kembali):''?></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Informasi Pasien Pulang -->
+  <div class="fdd-section fdd-section-pulang">
+    <div class="fdd-section-hdr">
+      <span class="fdd-section-tag"><i class="fa fa-sign-out" style="font-size:13px"></i></span>
+      <div>
+        <div class="fdd-section-title">Informasi Pasien Pulang</div>
+      </div>
+    </div>
+    <div class="fdd-section-body">
+      <div class="row">
+        <div class="col-md-6">
+          <label class="fdd-label">Cara Keluar Pasien</label>
+          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), ($value->cara_keluar_pasien) ? $value->cara_keluar_pasien : 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
+        </div>
+        <div class="col-md-6">
+          <label class="fdd-label">Pasca Pulang</label>
+          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), (isset($riwayat->pasca_pulang) && $riwayat->pasca_pulang) ? $riwayat->pasca_pulang : 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer / Save -->
+  <div class="fdd-footer">
+    <?php if(isset($_GET['form']) && $_GET['form'] == 'billing_entry') : ?>
+      <div class="alert alert-danger" style="margin:0;flex:1"><strong>Peringatan!</strong> Session anda bukan sebagai dokter, anda tidak dapat mengubah SOAP</div>
+    <?php else: ?>
+      <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="fdd-btn-save" id="btn_save_data">
+        <i class="fa fa-save"></i> Simpan Data SOAP
+      </button>
+    <?php endif; ?>
+  </div>
+
+</div><!-- /#fdd-wrap -->
 
 <script src="<?php echo base_url()?>assets/js/custom/counter_poli.js"></script>
+
+<!-- ================================================================
+     AI ASSISTANT DOKTER — Floating Panel
+     Voice-to-Text + Claude AI SOAP Structuring
+     ================================================================ -->
+<style>
+/* ---- Scoped to #ai-assistant-wrap ---- */
+#ai-assistant-wrap * { box-sizing: border-box; }
+
+/* Floating toggle button */
+#ai-toggle-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(124,58,237,0.4);
+    transition: all .2s ease;
+}
+#ai-toggle-btn:hover { background: linear-gradient(135deg,#6d28d9,#0891b2); transform: translateY(-2px); box-shadow: 0 6px 22px rgba(124,58,237,0.55); }
+#ai-toggle-btn.ai-recording { animation: ai-pulse 1.4s infinite; }
+@keyframes ai-pulse {
+    0%,100% { box-shadow: 0 4px 18px rgba(239,68,68,.4); }
+    50%      { box-shadow: 0 4px 28px rgba(239,68,68,.8); }
+}
+
+/* Panel */
+#ai-panel {
+    position: fixed;
+    bottom: 88px;
+    right: 28px;
+    z-index: 9999;
+    width: 340px;
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
+    display: none;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+}
+#ai-panel.ai-panel-open { display: flex; }
+
+/* Panel header */
+.ai-panel-hdr {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 16px;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    color: #fff;
+    border-radius: 14px 14px 0 0;
+    font-weight: 700;
+    font-size: 14px;
+}
+.ai-panel-hdr .ai-panel-close {
+    margin-left: auto;
+    background: rgba(255,255,255,.18);
+    border: none;
+    color: #fff;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ai-panel-hdr .ai-panel-close:hover { background: rgba(255,255,255,.3); }
+
+/* Mode tabs */
+#ai-panel .ai-mode-tabs {
+    display: flex;
+    background: #f1f5f9;
+    border-bottom: 1px solid #dde3ed;
+    padding: 6px 6px 0;
+    gap: 4px;
+}
+#ai-panel .ai-tab {
+    flex: 1;
+    padding: 8px 6px;
+    border: 1px solid transparent !important;
+    border-bottom: none !important;
+    border-radius: 7px 7px 0 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    cursor: pointer;
+    text-align: center !important;
+    line-height: 1.4 !important;
+    white-space: nowrap;
+    outline: none !important;
+    transition: background .15s, color .15s;
+    margin-bottom: -1px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+#ai-panel .ai-tab:hover {
+    background: #ede9fe !important;
+    color: #7c3aed !important;
+}
+#ai-panel .ai-tab.active {
+    background: #fff !important;
+    color: #7c3aed !important;
+    border-color: #dde3ed !important;
+    border-bottom-color: #fff !important;
+    position: relative;
+    z-index: 1;
+}
+#ai-panel .ai-tab:focus { outline: none !important; box-shadow: none !important; }
+
+/* Tab content */
+.ai-tab-content { padding: 14px; }
+
+/* Field selector */
+.ai-field-selector { margin-bottom: 12px; }
+.ai-field-selector label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    display: block;
+    margin-bottom: 5px;
+}
+#ai-panel .ai-field-selector select {
+    width: 100% !important;
+    padding: 8px 32px 8px 11px !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    color: #1e293b !important;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04) !important;
+    cursor: pointer;
+    outline: none !important;
+    transition: border-color .15s;
+}
+#ai-panel .ai-field-selector select:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124,58,237,.12) !important;
+}
+
+/* Transcript box */
+.ai-transcript-box {
+    min-height: 80px;
+    max-height: 140px;
+    overflow-y: auto;
+    padding: 9px 11px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-size: 13px;
+    color: #1e293b;
+    line-height: 1.55;
+    font-family: inherit;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 10px;
+}
+.ai-transcript-box:empty::before { content: attr(placeholder); color: #94a3b8; font-style: italic; }
+
+/* Action buttons */
+.ai-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.ai-btn-primary  { padding:7px 13px; border-radius:7px; border:none; cursor:pointer; font-size:12px; font-weight:600; display:flex;align-items:center;gap:5px; background:linear-gradient(135deg,#0a2d5a,#00669F); color:#fff; }
+.ai-btn-primary:hover  { background:linear-gradient(135deg,#0d3872,#0080c0); }
+.ai-btn-secondary{ padding:7px 13px; border-radius:7px; border:none; cursor:pointer; font-size:12px; font-weight:600; display:flex;align-items:center;gap:5px; background:#64748b; color:#fff; }
+.ai-btn-secondary:hover { background:#475569; }
+.ai-btn-success  { padding:7px 13px; border-radius:7px; border:none; cursor:pointer; font-size:12px; font-weight:600; display:flex;align-items:center;gap:5px; background:#16a34a; color:#fff; }
+.ai-btn-success:hover   { background:#15803d; }
+.ai-btn-ghost    { padding:7px 11px; border-radius:7px; border:1.5px solid #e2e8f0; cursor:pointer; font-size:12px; font-weight:500; background:#fff; color:#64748b; display:flex;align-items:center;gap:4px; }
+.ai-btn-ghost:hover     { background:#f1f5f9; }
+
+/* Record status */
+.ai-rec-idle    { text-align:center; padding:7px; border-radius:7px; background:#f1f5f9; color:#64748b; font-size:12px; font-weight:600; margin-bottom:8px; }
+.ai-rec-active  { text-align:center; padding:7px; border-radius:7px; background:#fef2f2; color:#dc2626; font-size:12px; font-weight:600; margin-bottom:8px; animation: ai-pulse-txt 1s infinite; }
+.ai-rec-processing { text-align:center; padding:7px; border-radius:7px; background:#fffbeb; color:#d97706; font-size:12px; font-weight:600; margin-bottom:8px; }
+@keyframes ai-pulse-txt { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+/* Notice */
+.ai-notice { font-size:12px; color:#64748b; background:#f0f9ff; border:1px solid #bae6fd; border-radius:7px; padding:8px 10px; margin-bottom:10px; display:flex; gap:6px; align-items:flex-start; }
+
+/* SOAP result */
+.ai-result-hdr { font-size:12px; font-weight:700; color:#0a2d5a; padding:8px 0 6px; border-top:1px solid #e2e8f0; margin-top:8px; }
+.ai-soap-row { margin-bottom:8px; }
+.ai-soap-row label { font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:3px; }
+.ai-soap-row textarea { width:100%; padding:7px 9px; border:1.5px solid #cbd5e1; border-radius:7px; font-size:12px; color:#1e293b; resize:vertical; font-family:inherit; }
+.ai-soap-row textarea:focus { outline:none; border-color:#00669F; }
+
+/* Fallback textarea */
+.ai-fallback-wrap label { font-size:12px; font-weight:600; color:#475569; display:block; margin-bottom:4px; }
+.ai-fallback-wrap textarea { width:100%; padding:8px 10px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:13px; color:#1e293b; min-height:90px; resize:vertical; font-family:inherit; }
+.ai-fallback-wrap textarea:focus { outline:none; border-color:#00669F; }
+
+/* Footer */
+.ai-panel-footer { padding:8px 14px; font-size:11px; color:#94a3b8; border-top:1px solid #f1f5f9; text-align:center; }
+
+/* Spinner */
+.ai-spinner { display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:ai-spin .7s linear infinite; vertical-align:middle; }
+@keyframes ai-spin { to{transform:rotate(360deg)} }
+
+@media(max-width:480px) {
+    #ai-panel { width:calc(100vw - 24px); right:12px; bottom:76px; }
+    #ai-toggle-btn { right:12px; bottom:16px; }
+}
+</style>
+
+<!-- HTML Panel -->
+<div id="ai-assistant-wrap">
+    <button id="ai-toggle-btn" type="button" title="AI Asisten Dokter">
+        <i class="fa fa-microphone"></i>
+        <span class="ai-btn-label">AI Asisten</span>
+    </button>
+
+    <div id="ai-panel">
+        <div class="ai-panel-hdr">
+            <i class="fa fa-microphone"></i> AI Asisten Dokter
+            <button class="ai-panel-close" type="button" id="ai-panel-close" title="Tutup">×</button>
+        </div>
+
+        <!-- Mode tabs -->
+        <div class="ai-mode-tabs">
+            <button class="ai-tab active" data-tab="dictate" type="button">
+                <i class="fa fa-pencil"></i> Dikte Cepat
+            </button>
+            <button class="ai-tab" data-tab="record" type="button">
+                <i class="fa fa-circle" style="color:#ef4444"></i> Rekam &amp; Susun SOAP
+            </button>
+        </div>
+
+        <!-- Tab: Dictate -->
+        <div id="ai-tab-dictate" class="ai-tab-content">
+            <div class="ai-field-selector">
+                <label>Masukkan ke field:</label>
+                <select id="ai-target-field">
+                    <option value="pl_anamnesa">S — Anamnesa / Keluhan</option>
+                    <option value="pl_pemeriksaan">O — Pemeriksaan Fisik</option>
+                    <option value="pl_pengobatan">P — Rencana Asuhan</option>
+                </select>
+            </div>
+            <div id="ai-live-text" class="ai-transcript-box" placeholder="Tekan Mulai lalu bicara..."></div>
+            <div class="ai-actions">
+                <button id="btn-dictate-start" type="button" class="ai-btn-primary">
+                    <i class="fa fa-microphone"></i> Mulai
+                </button>
+                <button id="btn-dictate-stop" type="button" class="ai-btn-secondary" style="display:none">
+                    <i class="fa fa-stop"></i> Stop
+                </button>
+                <button id="btn-dictate-insert" type="button" class="ai-btn-success" style="display:none">
+                    <i class="fa fa-check"></i> Masukkan ke Form
+                </button>
+                <button id="btn-dictate-clear" type="button" class="ai-btn-ghost" title="Hapus teks">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            <!-- Fallback: no SpeechRecognition -->
+            <div id="ai-dictate-fallback" class="ai-fallback-wrap" style="display:none;margin-top:10px">
+                <label>Ketik catatan manual:</label>
+                <textarea id="ai-dictate-fallback-text" placeholder="Browser tidak mendukung voice. Ketik catatan di sini..."></textarea>
+                <div class="ai-actions" style="margin-top:6px">
+                    <button id="btn-dictate-fallback-insert" type="button" class="ai-btn-success">
+                        <i class="fa fa-check"></i> Masukkan ke Form
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Record & Structure -->
+        <div id="ai-tab-record" class="ai-tab-content" style="display:none">
+            <p class="ai-notice">
+                <i class="fa fa-info-circle" style="color:#0ea5e9;margin-top:1px"></i>
+                <span>Rekam percakapan dokter–pasien. AI akan menyusun SOAP secara otomatis. Teks dikirim ke Claude AI.</span>
+            </p>
+            <div id="ai-rec-status" class="ai-rec-idle">Siap merekam</div>
+            <div id="ai-rec-transcript" class="ai-transcript-box" style="min-height:80px" placeholder="Transkripsi akan muncul di sini..."></div>
+            <div class="ai-actions">
+                <button id="btn-rec-start" type="button" class="ai-btn-primary">
+                    <i class="fa fa-circle" style="color:#ef4444"></i> Mulai Rekam
+                </button>
+                <button id="btn-rec-stop" type="button" class="ai-btn-secondary" style="display:none">
+                    <i class="fa fa-stop"></i> Stop &amp; Proses AI
+                </button>
+            </div>
+            <!-- Fallback -->
+            <div id="ai-rec-fallback" class="ai-fallback-wrap" style="display:none;margin-top:10px">
+                <label>Ketik atau tempel teks percakapan:</label>
+                <textarea id="ai-rec-fallback-text" placeholder="Browser tidak mendukung voice. Tempel transkripsi di sini..."></textarea>
+                <div class="ai-actions" style="margin-top:6px">
+                    <button id="btn-rec-fallback-process" type="button" class="ai-btn-primary">
+                        <i class="fa fa-magic"></i> Proses dengan AI
+                    </button>
+                </div>
+            </div>
+            <!-- AI Result -->
+            <div id="ai-soap-result" style="display:none">
+                <div class="ai-result-hdr"><i class="fa fa-magic"></i> Hasil AI — Review sebelum memasukkan:</div>
+                <div class="ai-soap-row">
+                    <label>S — Subjektif (Anamnesa):</label>
+                    <textarea id="ai-res-s" rows="2"></textarea>
+                </div>
+                <div class="ai-soap-row">
+                    <label>O — Objektif (Pemeriksaan):</label>
+                    <textarea id="ai-res-o" rows="2"></textarea>
+                </div>
+                <div class="ai-soap-row">
+                    <label>A — Assessment <small style="font-weight:400;color:#94a3b8">(referensi, isi manual di form ICD10)</small>:</label>
+                    <textarea id="ai-res-a" rows="2" style="background:#fafafa;color:#64748b"></textarea>
+                </div>
+                <div class="ai-soap-row">
+                    <label>P — Planning (Rencana Asuhan):</label>
+                    <textarea id="ai-res-p" rows="2"></textarea>
+                </div>
+                <div class="ai-actions" style="margin-top:8px">
+                    <button id="btn-ai-insert-all" type="button" class="ai-btn-success">
+                        <i class="fa fa-check-circle"></i> Masukkan S, O, P ke Form
+                    </button>
+                    <button id="btn-ai-discard" type="button" class="ai-btn-ghost">
+                        Buang
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-panel-footer">
+            <i class="fa fa-lock"></i> Powered by Claude AI &middot; Rekaman tidak disimpan
+        </div>
+    </div>
+</div>
+
+<style>
+/* AI Comparison Modal */
+#modal-ai-soap .modal-dialog { max-width:900px; margin:30px auto; }
+#ai-modal-hdr { background:linear-gradient(135deg,#7c3aed,#06b6d4); color:#fff; border-radius:8px 8px 0 0; padding:14px 18px; }
+#ai-modal-hdr .modal-title { font-size:15px; font-weight:700; color:#fff; }
+#ai-modal-hdr .close { color:#fff; opacity:.8; font-size:22px; margin-top:-2px; text-shadow:none; }
+#ai-modal-hdr .close:hover { opacity:1; }
+#ai-modal-body { padding:16px 18px; }
+.ai-modal-col-hdr { padding:7px 12px; border-radius:7px 7px 0 0; font-size:12px; font-weight:700; border:1px solid #e2e8f0; border-bottom:none; margin-bottom:0; }
+.ai-modal-current-hdr { background:#f0f9ff; color:#0369a1; border-color:#bae6fd; }
+.ai-modal-ai-hdr { background:linear-gradient(135deg,#f5f3ff,#ecfeff); color:#7c3aed; border-color:#ddd6fe; }
+.ai-modal-ai-hdr small { font-weight:400; color:#94a3b8; font-size:10px; margin-left:5px; }
+.ai-modal-col-body { border:1px solid #e2e8f0; border-radius:0 0 7px 7px; padding:10px 12px; }
+.ai-modal-section { margin-bottom:10px; }
+.ai-modal-section:last-child { margin-bottom:0; }
+.ai-modal-label { font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+.ai-modal-current-val { background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:7px 10px; min-height:44px; font-size:12px; color:#334155; white-space:pre-wrap; word-break:break-word; line-height:1.5; }
+.ai-modal-current-val.ai-empty { color:#cbd5e1; font-style:italic; }
+.ai-modal-textarea { width:100%; border:1.5px solid #e2e8f0; border-radius:6px; padding:7px 10px; font-size:12px; resize:vertical; color:#334155; background:#fff; font-family:inherit; line-height:1.5; box-sizing:border-box; height: 100px !important }
+.ai-modal-textarea:focus { outline:none; border-color:#7c3aed; box-shadow:0 0 0 2px rgba(124,58,237,.12); }
+.ai-modal-textarea-ref { background:#fafafa !important; color:#94a3b8 !important; }
+#ai-modal-footer { background:#f8fafc; border-top:1px solid #e2e8f0; padding:10px 16px; border-radius:0 0 8px 8px; }
+#ai-modal-transcript-row { margin-top:10px; padding:8px 12px; background:#f8fafc; border-radius:7px; border:1px solid #e2e8f0; font-size:11px; color:#64748b; }
+</style>
+
+<!-- AI SOAP Comparison Modal -->
+<div class="modal fade" id="modal-ai-soap" tabindex="-1" role="dialog" aria-labelledby="ai-modal-title">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="border-radius:8px;overflow:hidden;border:none;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+      <div class="modal-header" id="ai-modal-hdr" style="border-bottom:none;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span>&times;</span></button>
+        <h4 class="modal-title" id="ai-modal-title">
+          <i class="fa fa-magic"></i> Hasil Analisa AI &mdash; Perbandingan SOAP
+        </h4>
+      </div>
+      <div class="modal-body" id="ai-modal-body">
+        <div class="row">
+          <!-- Left: Current SOAP -->
+          <div class="col-md-6">
+            <div class="ai-modal-col-hdr ai-modal-current-hdr">
+              <i class="fa fa-history"></i> SOAP Kunjungan Sebelumnya <small id="ai-modal-prev-date" style="font-weight:400;font-size:10px;color:#94a3b8;margin-left:4px"></small>
+            </div>
+            <div class="ai-modal-col-body">
+              <div id="ai-modal-no-prev" style="display:none;text-align:center;padding:18px 8px;color:#94a3b8;font-size:12px"><i class="fa fa-info-circle" style="display:block;font-size:22px;margin-bottom:6px"></i>Tidak ada riwayat SOAP<br>dengan dokter ini</div>
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">S &mdash; Subjektif (Anamnesa)</div>
+                <div id="modal-cur-s" class="ai-modal-current-val"></div>
+              </div>
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">O &mdash; Objektif (Pemeriksaan)</div>
+                <div id="modal-cur-o" class="ai-modal-current-val"></div>
+              </div>
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">A &mdash; Assessment (Diagnosis)</div>
+                <div id="modal-cur-a" class="ai-modal-current-val"></div>
+              </div>
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">P &mdash; Planning (Pengobatan)</div>
+                <div id="modal-cur-p" class="ai-modal-current-val"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Right: AI Results -->
+          <div class="col-md-6">
+            <div class="ai-modal-col-hdr ai-modal-ai-hdr">
+              <i class="fa fa-magic"></i> Hasil Analisa AI
+              <small>Dapat diedit sebelum dimasukkan</small>
+            </div>
+            <div class="ai-modal-col-body">
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">S &mdash; Subjektif</div>
+                <textarea id="modal-ai-s" class="ai-modal-textarea" rows="3" placeholder="(kosong)"></textarea>
+              </div>
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">O &mdash; Objektif</div>
+                <textarea id="modal-ai-o" class="ai-modal-textarea" rows="3" placeholder="(kosong)"></textarea>
+              </div>
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">A &mdash; Assessment <small style="text-transform:none;letter-spacing:0;font-weight:400;color:#94a3b8">(referensi, isi ICD10 di form)</small></div>
+                <textarea id="modal-ai-a" class="ai-modal-textarea ai-modal-textarea-ref" rows="2" readonly placeholder="(kosong)"></textarea>
+              </div>
+              <div class="ai-modal-section">
+                <div class="ai-modal-label">P &mdash; Planning</div>
+                <textarea id="modal-ai-p" class="ai-modal-textarea" rows="3" placeholder="(kosong)"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="ai-modal-transcript-row" style="display:none">
+          <strong><i class="fa fa-microphone"></i> Transkripsi:</strong> <span id="ai-modal-transcript-text" style="word-break:break-word"></span>
+        </div>
+      </div>
+      <div class="modal-footer" id="ai-modal-footer">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between;width:100%">
+          <div style="font-size:11px;color:#94a3b8"><i class="fa fa-info-circle"></i> Field A tidak diisi otomatis &mdash; gunakan typeahead ICD10 di form</div>
+          <div style="display:flex;gap:8px">
+            <!-- <button type="button" class="btn btn-xs btn-default" data-dismiss="modal" style="font-size:13px">Tutup</button> -->
+            <button type="button" id="btn-modal-ai-insert" class="btn btn-xs" style="background:linear-gradient(135deg,#16a34a,#0ea5e9);color:#fff;font-weight:700;font-size:13px;border:none;border-radius:6px">
+              <i class="fa fa-check-circle"></i> Masukkan ke dalam Form SOAP
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    /* ---- State ---- */
+    var panelOpen      = false;
+    var dictateRunning = false;
+    var recRunning     = false;
+    var dictateText    = '';
+    var recText        = '';
+    var hasSpeech      = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+
+    /* ---- DOM refs ---- */
+    var $panel         = $('#ai-panel');
+    var $toggleBtn     = $('#ai-toggle-btn');
+    var $tabs          = $('.ai-tab');
+    var $tabDictate    = $('#ai-tab-dictate');
+    var $tabRecord     = $('#ai-tab-record');
+    var $liveText      = $('#ai-live-text');
+    var $recTranscript = $('#ai-rec-transcript');
+    var $recStatus     = $('#ai-rec-status');
+    var $soapResult    = $('#ai-soap-result');
+
+    /* ---- Fallback if no SpeechRecognition ---- */
+    if (!hasSpeech) {
+        $('#ai-dictate-fallback').show();
+        $('#btn-dictate-start').hide();
+        $('#ai-rec-fallback').show();
+        $('#btn-rec-start').hide();
+        $('#btn-rec-stop').hide();
+    }
+
+    /* ---- Panel toggle ---- */
+    $toggleBtn.on('click', function() {
+        panelOpen = !panelOpen;
+        $panel.toggleClass('ai-panel-open', panelOpen);
+    });
+    $('#ai-panel-close').on('click', function() {
+        panelOpen = false;
+        $panel.removeClass('ai-panel-open');
+    });
+
+    /* ---- Mode tabs ---- */
+    $tabs.on('click', function() {
+        var tab = $(this).data('tab');
+        $tabs.removeClass('active');
+        $(this).addClass('active');
+        $tabDictate.toggle(tab === 'dictate');
+        $tabRecord.toggle(tab === 'record');
+    });
+
+    /* ============================================================
+       MODE 1: DICTATE — Real-time voice → target SOAP field
+       ============================================================ */
+    var dictateRecog = null;
+    var dictateFinal = '';
+    var dictateInterim = '';
+
+    if (hasSpeech) {
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        dictateRecog = new SR();
+        dictateRecog.lang = 'id-ID';
+        dictateRecog.interimResults = true;
+        dictateRecog.continuous = true;
+        dictateRecog.maxAlternatives = 1;
+
+        dictateRecog.onresult = function(e) {
+            var interim = '';
+            for (var i = e.resultIndex; i < e.results.length; i++) {
+                var t = e.results[i][0].transcript;
+                if (e.results[i].isFinal) {
+                    dictateFinal += t + ' ';
+                } else {
+                    interim += t;
+                }
+            }
+            dictateInterim = interim;
+            $liveText.text(dictateFinal + (interim ? '[' + interim + ']' : ''));
+        };
+
+        dictateRecog.onerror = function(e) {
+            if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+                $('#ai-dictate-fallback').show();
+                $('#btn-dictate-start, #btn-dictate-stop').hide();
+                aiAlert('warning', 'Izin mikrofon ditolak. Gunakan input manual.');
+            } else {
+                aiAlert('warning', 'Mic error: ' + e.error);
+            }
+            stopDictate();
+        };
+
+        dictateRecog.onend = function() {
+            if (dictateRunning) {
+                // auto-restart to keep continuous
+                try { dictateRecog.start(); } catch(ex) {}
+            }
+        };
+    }
+
+    function startDictate() {
+        dictateFinal = '';
+        dictateInterim = '';
+        $liveText.text('');
+        dictateRunning = true;
+        $toggleBtn.addClass('ai-recording');
+        $('#btn-dictate-start').hide();
+        $('#btn-dictate-stop').show();
+        $('#btn-dictate-insert').hide();
+        try { dictateRecog.start(); } catch(ex) {}
+    }
+
+    function stopDictate() {
+        dictateRunning = false;
+        $toggleBtn.removeClass('ai-recording');
+        $('#btn-dictate-start').show();
+        $('#btn-dictate-stop').hide();
+        try { dictateRecog.stop(); } catch(ex) {}
+        var result = $.trim(dictateFinal + dictateInterim);
+        $liveText.text(result);
+        if (result.length > 0) {
+            $('#btn-dictate-insert').show();
+        }
+    }
+
+    $('#btn-dictate-start').on('click', startDictate);
+    $('#btn-dictate-stop').on('click', stopDictate);
+
+    $('#btn-dictate-insert').on('click', function() {
+        var target = $('#ai-target-field').val();
+        var text   = $.trim($liveText.text());
+        if (!target || !text) return;
+        var $field = $('#' + target);
+        if ($field.length) {
+            var existing = $.trim($field.val());
+            $field.val(existing ? existing + '\n' + text : text);
+            $field.focus();
+            aiAlert('success', 'Teks berhasil dimasukkan ke form.');
+            dictateFinal = '';
+            $liveText.text('');
+            $('#btn-dictate-insert').hide();
+        }
+    });
+
+    $('#btn-dictate-clear').on('click', function() {
+        dictateFinal = '';
+        dictateInterim = '';
+        $liveText.text('');
+        $('#btn-dictate-insert').hide();
+    });
+
+    /* Fallback insert (no speech) */
+    $('#btn-dictate-fallback-insert').on('click', function() {
+        var target = $('#ai-target-field').val();
+        var text   = $.trim($('#ai-dictate-fallback-text').val());
+        if (!target || !text) { aiAlert('warning', 'Pilih field dan masukkan teks.'); return; }
+        var $field = $('#' + target);
+        if ($field.length) {
+            var existing = $.trim($field.val());
+            $field.val(existing ? existing + '\n' + text : text);
+            $field.focus();
+            $('#ai-dictate-fallback-text').val('');
+            aiAlert('success', 'Teks berhasil dimasukkan ke form.');
+        }
+    });
+
+    /* ============================================================
+       MODE 2: RECORD & STRUCTURE — voice → Claude → SOAP
+       ============================================================ */
+    var recRecog   = null;
+    var recFinal   = '';
+
+    if (hasSpeech) {
+        var SR2 = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recRecog = new SR2();
+        recRecog.lang = 'id-ID';
+        recRecog.interimResults = true;
+        recRecog.continuous = true;
+        recRecog.maxAlternatives = 1;
+
+        recRecog.onresult = function(e) {
+            var interim = '';
+            for (var i = e.resultIndex; i < e.results.length; i++) {
+                var t = e.results[i][0].transcript;
+                if (e.results[i].isFinal) {
+                    recFinal += t + ' ';
+                } else {
+                    interim += t;
+                }
+            }
+            $recTranscript.text(recFinal + (interim ? '[' + interim + ']' : ''));
+        };
+
+        recRecog.onerror = function(e) {
+            if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+                $('#ai-rec-fallback').show();
+                $('#btn-rec-start, #btn-rec-stop').hide();
+                aiAlert('warning', 'Izin mikrofon ditolak. Gunakan input manual.');
+            } else {
+                aiAlert('warning', 'Mic error: ' + e.error);
+            }
+            stopRec(false);
+        };
+
+        recRecog.onend = function() {
+            if (recRunning) {
+                try { recRecog.start(); } catch(ex) {}
+            }
+        };
+    }
+
+    function startRec() {
+        recFinal = '';
+        $recTranscript.text('');
+        $soapResult.hide();
+        recRunning = true;
+        $toggleBtn.addClass('ai-recording');
+        $recStatus.removeClass('ai-rec-idle ai-rec-processing').addClass('ai-rec-active').text('● Merekam...');
+        $('#btn-rec-start').hide();
+        $('#btn-rec-stop').show();
+        try { recRecog.start(); } catch(ex) {}
+    }
+
+    function stopRec(doProcess) {
+        recRunning = false;
+        $toggleBtn.removeClass('ai-recording');
+        $('#btn-rec-start').show();
+        $('#btn-rec-stop').hide();
+        try { recRecog.stop(); } catch(ex) {}
+        var text = $.trim(recFinal);
+        $recTranscript.text(text);
+        if (doProcess && text.length > 0) {
+            callClaudeAPI(text);
+        } else if (doProcess && text.length === 0) {
+            $recStatus.removeClass('ai-rec-active ai-rec-processing').addClass('ai-rec-idle').text('Siap merekam');
+            aiAlert('warning', 'Tidak ada teks yang direkam.');
+        } else {
+            $recStatus.removeClass('ai-rec-active ai-rec-processing').addClass('ai-rec-idle').text('Siap merekam');
+        }
+    }
+
+    $('#btn-rec-start').on('click', startRec);
+    $('#btn-rec-stop').on('click', function() { stopRec(true); });
+
+    /* Fallback process */
+    $('#btn-rec-fallback-process').on('click', function() {
+        var text = $.trim($('#ai-rec-fallback-text').val());
+        if (!text) { aiAlert('warning', 'Masukkan teks transkripsi terlebih dahulu.'); return; }
+
+        callClaudeAPI(text);
+    });
+
+    /* ---- Claude API call ---- */
+    function callClaudeAPI(text) {
+        $recStatus.removeClass('ai-rec-idle ai-rec-active').addClass('ai-rec-processing').html('<span class="ai-spinner"></span> Memproses AI...');
+        $soapResult.hide();
+
+        $.ajax({
+            url: '<?php echo site_url("pelayanan/Pl_ai_assistant/structure_soap") ?>',
+            type: 'POST',
+            data: { transcription: text, no_mr: $('#noMrHidden').val(), kode_dokter: $('#kode_dokter_poli').val(), no_kunjungan: $('#no_kunjungan').val() },
+            dataType: 'json',
+            timeout: 35000,
+            success: function(res) {
+                $recStatus.removeClass('ai-rec-processing').addClass('ai-rec-idle').text('Siap merekam');
+                if (res.status === 200 && res.data) {
+                    $('#ai-res-s').val(res.data.subjektif  || '');
+                    $('#ai-res-o').val(res.data.objektif   || '');
+                    $('#ai-res-a').val(res.data.assessment || '');
+                    $('#ai-res-p').val(res.data.planning   || '');
+                    openAIModal(res.data, text, res.soap_sebelumnya || null);
+                } else {
+                    aiAlert('error', res.message || 'Gagal memproses AI.');
+                }
+            },
+            error: function(xhr) {
+                $recStatus.removeClass('ai-rec-processing').addClass('ai-rec-idle').text('Siap merekam');
+                var msg = 'Gagal menghubungi server.';
+                try { var r = JSON.parse(xhr.responseText); msg = r.message || msg; } catch(e) {}
+                aiAlert('error', msg);
+            }
+        });
+    }
+
+    /* ---- Open AI Comparison Modal ---- */
+    function openAIModal(aiData, transcription, soapPrev) {
+        function setVal(id, val) {
+            var $el = $(id);
+            if (val) { $el.removeClass('ai-empty').text(val); }
+            else      { $el.addClass('ai-empty').text('(tidak ada data)'); }
+        }
+
+        if (soapPrev) {
+            setVal('#modal-cur-s', soapPrev.subjektif);
+            setVal('#modal-cur-o', soapPrev.objektif);
+            setVal('#modal-cur-a', soapPrev.assessment);
+            setVal('#modal-cur-p', soapPrev.planning);
+            if (soapPrev.tgl_kunjungan) {
+                var d   = new Date(soapPrev.tgl_kunjungan);
+                var fmt = (d.getDate() < 10 ? '0' : '') + d.getDate() + '/' +
+                          (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1) + '/' + d.getFullYear();
+                $('#ai-modal-prev-date').text('(' + fmt + ')');
+            } else {
+                $('#ai-modal-prev-date').text('');
+            }
+            $('#ai-modal-no-prev').hide();
+        } else {
+            setVal('#modal-cur-s', '');
+            setVal('#modal-cur-o', '');
+            setVal('#modal-cur-a', '');
+            setVal('#modal-cur-p', '');
+            $('#ai-modal-prev-date').text('');
+            $('#ai-modal-no-prev').show();
+        }
+
+        $('#modal-ai-s').val(aiData.subjektif  || '');
+        $('#modal-ai-o').val(aiData.objektif   || '');
+        $('#modal-ai-a').val(aiData.assessment || '');
+        $('#modal-ai-p').val(aiData.planning   || '');
+
+        if (transcription && transcription.length > 0) {
+            var preview = transcription.length > 250 ? transcription.substring(0, 250) + '\u2026' : transcription;
+            $('#ai-modal-transcript-text').text(preview);
+            $('#ai-modal-transcript-row').show();
+        } else {
+            $('#ai-modal-transcript-row').hide();
+        }
+
+        $('#modal-ai-soap').modal('show');
+    }
+
+    /* ---- Modal: Insert S, O, P to form ---- */
+    $('#btn-modal-ai-insert').on('click', function() {
+        var s = $.trim($('#modal-ai-s').val());
+        var o = $.trim($('#modal-ai-o').val());
+        var a = $.trim($('#modal-ai-a').val());
+        var p = $.trim($('#modal-ai-p').val());
+
+        if (s) {
+            var ex = $.trim($('#pl_anamnesa').val());
+            $('#pl_anamnesa').val(ex ? ex + '\n' + s : s);
+        }
+        if (o) {
+            var ex = $.trim($('#pl_pemeriksaan').val());
+            $('#pl_pemeriksaan').val(ex ? ex + '\n' + o : o);
+        }
+        if (a) {
+            var ex = $.trim($('#pl_catatan_assesmen').val());
+            $('#pl_catatan_assesmen').val(ex ? ex + '\n' + a : a);
+        }
+        if (p) {
+            var ex = $.trim($('#pl_pengobatan').val());
+            $('#pl_pengobatan').val(ex ? ex + '\n' + p : p);
+        }
+
+        $('#modal-ai-soap').modal('hide');
+        aiAlert('success', 'Data SOAP berhasil dimasukkan ke form.');
+        recFinal = '';
+        $recTranscript.text('');
+        $soapResult.hide();
+    });
+
+    /* ---- Insert all SOAP results to form ---- */
+    $('#btn-ai-insert-all').on('click', function() {
+        var s = $.trim($('#ai-res-s').val());
+        var o = $.trim($('#ai-res-o').val());
+        var p = $.trim($('#ai-res-p').val());
+
+        if (s) {
+            var ex = $.trim($('#pl_anamnesa').val());
+            $('#pl_anamnesa').val(ex ? ex + '\n' + s : s);
+        }
+        if (o) {
+            var ex = $.trim($('#pl_pemeriksaan').val());
+            $('#pl_pemeriksaan').val(ex ? ex + '\n' + o : o);
+        }
+        if (p) {
+            var ex = $.trim($('#pl_pengobatan').val());
+            $('#pl_pengobatan').val(ex ? ex + '\n' + p : p);
+        }
+
+        aiAlert('success', 'Data SOAP berhasil dimasukkan ke form.');
+        $soapResult.hide();
+        recFinal = '';
+        $recTranscript.text('');
+    });
+
+    $('#btn-ai-discard').on('click', function() {
+        $soapResult.hide();
+        recFinal = '';
+        $recTranscript.text('');
+    });
+
+    /* ---- Helper: alert ---- */
+    function aiAlert(type, msg) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                toast: true, position: 'bottom-end', showConfirmButton: false,
+                timer: 3500, timerProgressBar: true,
+                icon: type, title: msg,
+                customClass: { popup: 'swal-ai-toast' }
+            });
+        } else {
+            alert(msg);
+        }
+    }
+
+})();
+</script>
+

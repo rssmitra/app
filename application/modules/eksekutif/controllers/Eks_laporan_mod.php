@@ -16,6 +16,15 @@ class Eks_laporan_mod extends MX_Controller {
             : 'Laporan MOD';
     }
 
+    private function _current_user_id() {
+        $user = $this->session->userdata('user');
+        return $user ? $user->user_id : null;
+    }
+
+    private function _is_owner($row_user_id) {
+        return $this->_current_user_id() == $row_user_id;
+    }
+
     public function index() {
         $data = [
             'title'       => $this->title,
@@ -38,9 +47,10 @@ class Eks_laporan_mod extends MX_Controller {
             $is_verified = ($row->status === 'verified');
             $status_cls  = $is_verified ? 'primary' : ($row->status == 'final' ? 'success' : 'default');
 
-            // Build action buttons
+            // Build action buttons — hanya pemilik yang bisa edit/hapus
+            $is_owner = $this->_is_owner($row->user_id);
             $actions = $this->authuser->show_button($link, 'R', $row->id, 2);
-            if (!$is_verified) {
+            if (!$is_verified && $is_owner) {
                 $actions .= $this->authuser->show_button($link, 'U', $row->id, 2);
                 $actions .= $this->authuser->show_button($link, 'D', $row->id, 2);
             }
@@ -60,7 +70,7 @@ class Eks_laporan_mod extends MX_Controller {
             $data[] = [
                 '<div class="center">
                     <label class="pos-rel">
-                        <input type="checkbox" class="ace" name="selected_id[]" value="'.$row->id.'"'.($is_verified ? ' disabled' : '').'/>
+                        <input type="checkbox" class="ace" name="selected_id[]" value="'.$row->id.'"'.(($is_verified || !$is_owner) ? ' disabled' : '').'/>
                         <span class="lbl"></span>
                     </label>
                  </div>',
@@ -87,8 +97,8 @@ class Eks_laporan_mod extends MX_Controller {
     public function form($id = null) {
         if ($id) {
             $header = $this->Mod->get_header($id);
-            // Jika sudah diverifikasi, paksa read-only
-            if ($header && $header->status === 'verified') {
+            // Jika sudah diverifikasi atau bukan pemilik, paksa read-only
+            if ($header && ($header->status === 'verified' || !$this->_is_owner($header->user_id))) {
                 redirect('eksekutif/Eks_laporan_mod/show/'.$id);
                 return;
             }
@@ -137,6 +147,15 @@ class Eks_laporan_mod extends MX_Controller {
             if ($id && $this->Mod->is_verified($id)) {
                 echo json_encode(['status' => 301, 'message' => 'Laporan sudah diverifikasi dan tidak dapat diubah.']);
                 return;
+            }
+
+            // Block update jika bukan pemilik laporan
+            if ($id) {
+                $header = $this->Mod->get_header($id);
+                if ($header && !$this->_is_owner($header->user_id)) {
+                    echo json_encode(['status' => 301, 'message' => 'Anda tidak memiliki akses untuk mengubah laporan ini.']);
+                    return;
+                }
             }
 
             if ($id) {
@@ -246,8 +265,10 @@ class Eks_laporan_mod extends MX_Controller {
             'kamar_op'      => $this->Mod->get_kamar_operasi($id),
             'lab'           => $this->Mod->get_laboratorium($id),
             'farmasi'       => $this->Mod->get_farmasi($id),
+            'farmasi_cito'  => $this->Mod->get_farmasi_cito($id),
             'radiologi'     => $this->Mod->get_radiologi($id),
             'lainnya'       => $this->Mod->get_lainnya($id),
+            'obat_kosong'   => $this->Mod->get_obat_kosong($id),
             'fotos'         => $this->Mod->get_fotos_grouped($id),
             'id'            => $id,
         ];
@@ -273,8 +294,10 @@ class Eks_laporan_mod extends MX_Controller {
             'kamar_op'      => $this->Mod->get_kamar_operasi($id),
             'lab'           => $this->Mod->get_laboratorium($id),
             'farmasi'       => $this->Mod->get_farmasi($id),
+            'farmasi_cito'  => $this->Mod->get_farmasi_cito($id),
             'radiologi'     => $this->Mod->get_radiologi($id),
             'lainnya'       => $this->Mod->get_lainnya($id),
+            'obat_kosong'   => $this->Mod->get_obat_kosong($id),
             'fotos'         => $this->Mod->get_fotos_grouped($id),
             'id'            => $id,
         ];
@@ -288,13 +311,20 @@ class Eks_laporan_mod extends MX_Controller {
         if (!empty($toArray)) {
             $skipped = 0;
             foreach ($toArray as $item) {
-                $result = $this->Mod->delete((int)$item);
+                $item_id = (int)$item;
+                // Cek kepemilikan sebelum hapus
+                $header = $this->Mod->get_header($item_id);
+                if ($header && !$this->_is_owner($header->user_id)) {
+                    $skipped++;
+                    continue;
+                }
+                $result = $this->Mod->delete($item_id);
                 if ($result === false) $skipped++;
             }
             if ($skipped > 0 && $skipped == count($toArray)) {
-                echo json_encode(['status' => 301, 'message' => 'Laporan yang sudah diverifikasi tidak dapat dihapus.']);
+                echo json_encode(['status' => 301, 'message' => 'Laporan tidak dapat dihapus (terverifikasi atau bukan milik Anda).']);
             } elseif ($skipped > 0) {
-                echo json_encode(['status' => 200, 'message' => 'Berhasil dihapus, '.$skipped.' laporan terverifikasi dilewati.']);
+                echo json_encode(['status' => 200, 'message' => 'Berhasil dihapus, '.$skipped.' laporan dilewati (terverifikasi/bukan milik Anda).']);
             } else {
                 echo json_encode(['status' => 200, 'message' => 'Laporan MOD berhasil dihapus.']);
             }

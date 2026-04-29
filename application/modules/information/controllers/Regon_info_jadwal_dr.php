@@ -468,6 +468,30 @@ class Regon_info_jadwal_dr extends MX_Controller {
         }
     }
 
+    public function verify_code()
+    {
+        $this->load->library('bcrypt');
+        $code     = $this->input->post('kode_verifikasi');
+        $password = $this->input->post('password');
+
+        $this->db->where('function_modul', 'jadwal_dokter');
+        $this->db->where('secret_code', $code);
+        $this->db->join('tmp_user', 'tmp_user.user_id = user_approval_modul.user_id');
+        $userApproval = $this->db->get('user_approval_modul')->row();
+
+        if (!$userApproval) {
+            echo json_encode(array('status' => 401, 'message' => 'Password atau kode verifikasi salah'));
+            return;
+        }
+
+        if (!$this->bcrypt->check_password($password, $userApproval->password)) {
+            echo json_encode(array('status' => 401, 'message' => 'Password atau kode verifikasi salah'));
+            return;
+        }
+
+        echo json_encode(array('status' => 200, 'message' => 'Verifikasi berhasil'));
+    }
+
     public function delete_data_cuti()
     {
         $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;

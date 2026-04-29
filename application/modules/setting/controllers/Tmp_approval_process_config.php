@@ -92,7 +92,7 @@ class Tmp_approval_process_config extends MX_Controller {
                         '.$this->authuser->show_button('setting/Tmp_approval_process_config','D',$row_list->id,2).'
                       </div>'; 
             $row[] = '<div class="center">'.$row_list->id.'</div>';
-            $row[] = strtoupper($row_list->function);
+            $row[] = strtoupper($row_list->function_modul);
             $row[] = $row_list->fullname;
             // Secret code as password field with eye icon
             $row[] = '<div class="input-group" style="max-width:160px;">'
@@ -141,7 +141,7 @@ class Tmp_approval_process_config extends MX_Controller {
 
             $dataexc = array(
                 'user_id' => $this->regex->_genRegex($val->set_value('user_id'), 'RGXINT'),
-                'function' => $this->regex->_genRegex($val->set_value('function'), 'RGXQSL'),
+                'function_modul' => $this->regex->_genRegex($val->set_value('function'), 'RGXQSL'),
                 'secret_code' => $this->regex->_genRegex($val->set_value('secret_code'), 'RGXQSL'),
                 'description' => $this->regex->_genRegex($val->set_value('description'), 'RGXQSL'),
                 'is_active' => $this->input->post('is_active'),

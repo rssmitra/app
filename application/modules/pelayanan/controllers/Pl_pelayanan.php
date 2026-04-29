@@ -618,7 +618,10 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = $nm_perusahaan;
             $row[] = $row_list->no_sep;
 
-            $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
+            $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'</div>';
+
+            $row[] = '<div class="left"><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
+
             // $row[] = $row_list->nama_pegawai;
             $tipe_daftar = ($row_list->tipe_daftar == null) ? '<span style="color: blue; font-weight: bold">[on the spot]</span>' : '<span style="color: green; font-weight: bold">['.$row_list->tipe_daftar.']</span>';
             $row[] = '<div class="center"><b style="font-size:13px;">'.$no.'</b><br>'.$tipe_daftar.'</div>';
@@ -1706,6 +1709,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
         $this->form_validation->set_rules('pl_procedure', 'Prosedur/Tindakan', 'trim');        
+        $this->form_validation->set_rules('pl_catatan_assesmen', 'Catatan Assesmen', 'trim');        
         $this->form_validation->set_rules('pl_tgl_kontrol_kembali', 'Tanggal Kontrol', 'trim');        
         $this->form_validation->set_rules('pl_catatan_kontrol', 'Catatan Kontrol', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
@@ -1716,12 +1720,20 @@ class Pl_pelayanan extends MX_Controller {
         // $this->form_validation->set_rules('check_resep[]', 'Dokter Poli', 'trim|required', array('required' => 'Apakah ada Resep? Jika "Tidak ada" maka pilih "Tidak"'));     
                 
         // form assesment
-        $this->form_validation->set_rules('pl_tb', 'Tinggi Badan', 'trim');        
-        $this->form_validation->set_rules('pl_bb', 'Berat Badan', 'trim');        
-        $this->form_validation->set_rules('pl_td', 'Tekanan Darah', 'trim');        
-        $this->form_validation->set_rules('pl_suhu', 'Suhu', 'trim');        
-        $this->form_validation->set_rules('pl_nadi', 'Nadi', 'trim');        
-        // $this->form_validation->set_rules('pl_resep_farmasi', 'Resep Farmasi', 'trim');        
+        $this->form_validation->set_rules('pl_tb', 'Tinggi Badan', 'trim');
+        $this->form_validation->set_rules('pl_bb', 'Berat Badan', 'trim');
+        $this->form_validation->set_rules('pl_td', 'Tekanan Darah', 'trim');
+        $this->form_validation->set_rules('pl_suhu', 'Suhu', 'trim');
+        $this->form_validation->set_rules('pl_nadi', 'Nadi', 'trim');
+        // $this->form_validation->set_rules('pl_resep_farmasi', 'Resep Farmasi', 'trim');
+
+        // riwayat pasien
+        $this->form_validation->set_rules('riwayat_penyakit_dahulu',     'Riwayat Penyakit Dahulu',    'trim');
+        $this->form_validation->set_rules('riwayat_penyakit_dahulu_ket', 'Keterangan Penyakit Dahulu', 'trim');
+        $this->form_validation->set_rules('riwayat_operasi',             'Riwayat Operasi',            'trim');
+        $this->form_validation->set_rules('riwayat_operasi_ket',         'Keterangan Operasi',         'trim');
+        $this->form_validation->set_rules('riwayat_alergi',              'Riwayat Alergi',             'trim');
+        $this->form_validation->set_rules('riwayat_alergi_ket',          'Keterangan Alergi',          'trim');
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -1770,10 +1782,17 @@ class Pl_pelayanan extends MX_Controller {
                 'nadi' => $this->input->post('pl_dr_nadi'),
                 'kode_icd9' => $this->input->post('pl_procedure_hidden'),
                 'text_icd9' => $this->input->post('pl_procedure'),
+                'catatan_assesmen' => $this->input->post('pl_catatan_assesmen') ?: '',
                 'tgl_kontrol_kembali' => $this->input->post('pl_tgl_kontrol_kembali'),
                 'catatan_kontrol_kembali' => $this->input->post('pl_catatan_kontrol'),
                 'anatomi_tagging' => ($this->input->post('anatomi_tagging')) ? $this->input->post('anatomi_tagging') : '',
                 'anatomi_img' => ($this->input->post('anatomi')) ? $this->input->post('anatomi') : 0,
+                'riwayat_penyakit_dahulu'     => $this->input->post('riwayat_penyakit_dahulu')     ?: 'tidak',
+                'riwayat_penyakit_dahulu_ket' => $this->input->post('riwayat_penyakit_dahulu_ket') ?: '',
+                'riwayat_operasi'             => $this->input->post('riwayat_operasi')             ?: 'tidak',
+                'riwayat_operasi_ket'         => $this->input->post('riwayat_operasi_ket')         ?: '',
+                'riwayat_alergi'              => $this->input->post('riwayat_alergi')              ?: 'tidak',
+                'riwayat_alergi_ket'          => $this->input->post('riwayat_alergi_ket')          ?: '',
             );
 
             if($this->input->post('kode_riwayat')==0){

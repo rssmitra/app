@@ -216,7 +216,12 @@
               <?php echo $input_disabled?>>
           </td>
           <td class="center"><?php echo $no?></td>
-          <td><?php echo $row_dt->kode_brg . $duplikat_label?></td>
+          <td>
+            <a href="javascript:void(0)" onclick="showMutasiBarang('<?php echo $row_dt->kode_brg?>', '<?php echo $row_dt->kode_bagian_minta?>', '<?php echo $flag?>', '<?php echo $row_dt->nama_brg?>')" style="color:#1a4f8a; text-decoration:underline; cursor:pointer; font-weight:600">
+              <?php echo $row_dt->kode_brg?>
+            </a>
+            <?php echo $duplikat_label?>
+          </td>
           <td><?php echo $row_dt->nama_brg?></td>
           <td class="center"><?php echo $is_bhp?></td>
           <td class="center"><?php echo $row_dt->jumlah_stok_sebelumnya?></td>
@@ -270,3 +275,78 @@
   </div>
 
 </form>
+
+<!-- Modal Mutasi Barang -->
+<div class="modal fade" id="modalMutasiBarang" tabindex="-1" role="dialog" aria-labelledby="modalMutasiBarangLabel">
+  <div class="modal-dialog modal-lg" role="document" style="width:900px">
+    <div class="modal-content">
+      <div class="modal-header" style="background:#1a4f8a; color:#fff; padding:10px 15px">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:#fff; opacity:1"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalMutasiBarangLabel"><i class="fa fa-exchange"></i> Mutasi Barang</h4>
+      </div>
+      <div class="modal-body" style="padding:15px">
+        <div style="margin-bottom:10px">
+          <table style="font-size:12px">
+            <tr><td style="width:120px; font-weight:600">Kode Barang</td><td>: <span id="mutasi_kode_brg"></span></td></tr>
+            <tr><td style="font-weight:600">Nama Barang</td><td>: <span id="mutasi_nama_brg"></span></td></tr>
+            <tr><td style="font-weight:600">Unit Bagian</td><td>: <span id="mutasi_kode_bagian"></span></td></tr>
+          </table>
+        </div>
+        <p style="font-size:11px; color:#888; font-style:italic">* Menampilkan data mutasi 120 hari terakhir</p>
+        <table id="tbl-mutasi-brg" class="table table-striped table-bordered table-hover" style="width:100%; font-size:12px">
+          <thead>
+            <tr style="background-color:#2c6fad; color:#fff">
+              <th width="30px">No</th>
+              <th>Tanggal</th>
+              <th>Stok Awal</th>
+              <th>Masuk</th>
+              <th>Keluar</th>
+              <th>Stok Akhir</th>
+              <th>Keterangan</th>
+              <th>Petugas</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="modal-footer" style="padding:8px 15px">
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+function showMutasiBarang(kode_brg, kode_bagian, flag, nama_brg){
+  $('#mutasi_kode_brg').text(kode_brg);
+  $('#mutasi_nama_brg').text(nama_brg);
+  $('#mutasi_kode_bagian').text(kode_bagian);
+
+  var ajaxUrl = 'purchasing/pendistribusian/Verifikasi_permintaan/get_data_mutasi?kode_brg=' + kode_brg + '&kode_bagian=' + kode_bagian + '&flag=' + flag;
+
+  // Destroy previous instance if exists
+  if($.fn.DataTable.isDataTable('#tbl-mutasi-brg')){
+    $('#tbl-mutasi-brg').DataTable().destroy();
+    $('#tbl-mutasi-brg tbody').empty();
+  }
+
+  $('#tbl-mutasi-brg').DataTable({
+    "processing": true,
+    "serverSide": true,
+    "ordering": false,
+    "searching": true,
+    "pageLength": 100,
+    "scrollY": "400px",
+    "ajax": {
+      "url": ajaxUrl,
+      "type": "POST"
+    },
+    "language": {
+      "emptyTable": "Tidak ada data mutasi",
+      "zeroRecords": "Data tidak ditemukan"
+    }
+  });
+
+  $('#modalMutasiBarang').modal('show');
+}
+</script>
