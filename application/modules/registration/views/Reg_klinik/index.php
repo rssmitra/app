@@ -1710,6 +1710,165 @@ function uploadSnapshot() {
     padding-top: 0;
     padding-bottom: 0;
   }
+
+  /* ===== PROFESSIONAL ENHANCEMENTS ===== */
+
+  /* Left column — profile card */
+  #box_identity {
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+  #box_identity .profile-user-img {
+    border-radius: 0;
+  }
+  #no_mr {
+    font-size: 13px !important;
+    font-weight: 700;
+    color: #2c3e50;
+    letter-spacing: .3px;
+  }
+  /* Replace inline blue label styles */
+  .profile-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #00b8a8;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 2px;
+  }
+  .list-group-item {
+    padding: 6px 10px !important;
+    border-color: #f0f4f5 !important;
+  }
+  #box_identity .list-group-item:last-child {
+    border-bottom: none !important;
+  }
+  /* Profile action buttons */
+  #box_identity .btn-block {
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-top: 5px;
+  }
+
+  /* Center column — section header */
+  .reg-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #00b8a8, #009e90);
+    color: #fff;
+    border-radius: 5px;
+    padding: 8px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .5px;
+  }
+  .reg-section-header i {
+    font-size: 15px;
+  }
+  /* Sub-section divider */
+  .reg-subsection {
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 6px 0 6px 0;
+    border-bottom: 2px solid #e8edf1;
+    margin-bottom: 12px;
+  }
+  /* Submit button */
+  #btn_submit .btn {
+    background: linear-gradient(135deg, #00b8a8, #009e90);
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    transition: opacity .2s;
+  }
+  #btn_submit .btn:hover {
+    opacity: .88;
+  }
+  /* SEP sub-header */
+  #form_sep > p b {
+    font-size: 12px;
+    letter-spacing: .4px;
+    color: #2c3e50;
+  }
+
+  /* Right column — tabs */
+  #myTabRegistrationMenu4 > li > a {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 14px;
+  }
+  /* Antrian counter card */
+  .queue-counter-box {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e0e8ec;
+    padding: 12px;
+    margin: 8px 0;
+    text-align: center;
+  }
+  .queue-counter-box .queue-number {
+    font-size: 48px;
+    font-weight: 800;
+    color: #00b8a8;
+    line-height: 1;
+    margin: 6px 0;
+  }
+  .queue-counter-box .queue-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  /* Queue stats row */
+  .queue-stats-row {
+    display: flex;
+    border: 1px solid #e0e8ec;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 6px 0;
+  }
+  .queue-stats-cell {
+    flex: 1;
+    text-align: center;
+    padding: 8px 6px;
+    font-size: 11px;
+    color: #555;
+    border-right: 1px solid #e0e8ec;
+  }
+  .queue-stats-cell:last-child { border-right: none; }
+  .queue-stats-cell .queue-stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: #2c3e50;
+    display: block;
+    margin-top: 2px;
+  }
+  .queue-stats-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #00b8a8;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin: 8px 0 4px;
+  }
+  .queue-btn-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin: 8px 0;
+  }
 </style>
 
 <!-- Webcam Modal -->

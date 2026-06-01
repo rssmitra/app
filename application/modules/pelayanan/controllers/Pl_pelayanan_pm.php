@@ -1597,6 +1597,12 @@ class Pl_pelayanan_pm extends MX_Controller {
         
     }
 
+    public function get_order_detail_json(){
+        $id = $this->input->get('id_pm_tc_penunjang');
+        $result = $this->db->get_where('pm_tc_penunjang_order_detail', array('id_pm_tc_penunjang' => $id))->result();
+        echo json_encode(array('status' => 200, 'data' => $result));
+    }
+
     public function konfirmasi_order(){
         $id = $_POST['ID'];
         if( $this->db->where('id_pm_tc_penunjang', $id)->update('pm_tc_penunjang_order_detail', ['status' => 1, 'konfirmasi_order_date' => date('Y-m-d H:i:s')]) ){

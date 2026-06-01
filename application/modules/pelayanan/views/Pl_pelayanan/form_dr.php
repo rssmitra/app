@@ -427,6 +427,16 @@ function get_riwayat_pm(no_mr){
   });
 }
 
+function get_riwayat_perjanjian(no_mr){
+  $('#cppt_data').html('Loading...'); 
+  $('#cppt_data_on_tabs').html('Loading...'); 
+  
+  $.getJSON("templates/References/get_riwayat_perjanjian/" +no_mr, '', function (data) { 
+      $('#cppt_data').html(data.html); 
+      $('#cppt_data_on_tabs').html(data.html); 
+  });
+}
+
 function getDataAntrianPasien(){
 
   $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val()+'&tgl='+$('#tgl_kunjungan').val()+'&status='+$('#status_pelayanan').val()+'', '', function (data) {
@@ -951,7 +961,7 @@ function show_icare() {
   .fd-sticky-col {
     position: sticky;
     top: 0;
-    height: 100vh;
+    /* height: 100vh; */
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -1079,7 +1089,7 @@ function show_icare() {
             <div class="fd-patient-sub">
               <i class="fa fa-birthday-cake"></i>
               <span id="tgl_lhr"><?php echo isset($value->tgl_lhr)?$this->tanggal->formatDate($value->tgl_lhr):''?></span>
-              &bull; <span id="umur"><?php echo isset($value->umur)?$value->umur:'';?></span> Thn
+              &bull; <span id="umur">(<?php echo isset($value->umur_lengkap)?$value->umur_lengkap:'';?>)</span>
             </div>
           </div>
           <div style="text-align:right;flex-shrink:0">
@@ -1089,8 +1099,25 @@ function show_icare() {
             <?php if($value->flag_ri==1): ?>
               <span class="label label-danger" style="font-size:10px;display:block;margin-bottom:3px">Rawat Inap</span>
             <?php endif; ?>
-            <div style="font-size:11px;color:rgba(255,255,255,0.65)">
-              <?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?>
+            <div style="display:flex;flex-direction:row;align-items:stretch;gap:6px;">
+              <!-- Tgl/Jam Masuk -->
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:linear-gradient(135deg,#1e40af,#2563eb);border-radius:7px;padding:5px 10px;box-shadow:0 1px 6px rgba(37,99,235,.2);">
+                <span style="font-size:8.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.7);white-space:nowrap;">
+                  <i class="fa fa-sign-in" style="margin-right:2px;"></i>Tgl/Jam Masuk
+                </span>
+                <span style="font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap;">
+                  <?php echo isset($value->tgl_jam_poli) ? $this->tanggal->formatDateTime($value->tgl_jam_poli) : '-'?>
+                </span>
+              </div>
+              <!-- Tgl/Jam Keluar -->
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:<?php echo !empty($value->tgl_keluar_poli) ? 'linear-gradient(135deg,#065f46,#059669)' : 'linear-gradient(135deg,#475569,#64748b)'?>;border-radius:7px;padding:5px 10px;box-shadow:0 1px 6px rgba(0,0,0,.12);">
+                <span style="font-size:8.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.7);white-space:nowrap;">
+                  <i class="fa fa-sign-out" style="margin-right:2px;"></i>Tgl/Jam Keluar
+                </span>
+                <span style="font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap;">
+                  <?php echo !empty($value->tgl_keluar_poli) ? $this->tanggal->formatDateTime($value->tgl_keluar_poli) : 'Belum Keluar'?>
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -1246,6 +1273,11 @@ function show_icare() {
             <li>
               <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_pm('<?php echo $no_mr?>')" title="Riwayat Penunjang">
                 <i class="fa fa-bookmark" style="color:#a5d6a7"></i>
+              </a>
+            </li>
+            <li>
+              <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_perjanjian('<?php echo $no_mr?>')" title="Riwayat Perjanjian">
+                <i class="fa fa-calendar" style="color:#a5d6a7"></i>
               </a>
             </li>
           </ul>

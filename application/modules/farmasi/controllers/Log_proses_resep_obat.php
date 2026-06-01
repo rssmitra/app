@@ -71,18 +71,18 @@ class Log_proses_resep_obat extends MX_Controller {
             if (!empty($row_list->kode_bagian_asal)) {
                 $kode_bagian_asal = substr($row_list->kode_bagian_asal, 0, 2);
                 if ($kode_bagian_asal === '02') {
-                    $bagian_asal = 'IGD';
+                    $bagian_asal = '[IGD]';
                 } elseif ($kode_bagian_asal === '01') {
-                    $bagian_asal = 'Poliklinik';
+                    $bagian_asal = '[Poliklinik]';
                 } elseif ($kode_bagian_asal === '03') {
-                    $bagian_asal = 'RI';
+                    $bagian_asal = '[RI]';
                 } else {
                     // fallback: tampilkan kode asli jika tidak cocok
-                    $bagian_asal = $row_list->kode_bagian_asal;
+                    $bagian_asal = '['.$row_list->kode_bagian_asal.']';
                 }
             }
 
-            $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=1'".')">'.$row_list->kode_trans_far.'</a></b><br>['.$bagian_asal.']</div>';
+            $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=1'".')">'.$row_list->kode_trans_far.'</a></b><br>'.$bagian_asal.'</div>';
 
             $color = ($row_list->kode_perusahaan == 120) ? 'green' : 'blue';
 
@@ -119,13 +119,21 @@ class Log_proses_resep_obat extends MX_Controller {
                 $class_btn = 'btn-warning';
             }
 
+            // Buang gelar prefix (bisa bertumpuk: "dr. H. Ahmad") lalu ambil maks 2 kata
+            $nama_raw    = $row_list->nama_pasien;
+            $gelar_regex = '/^(?:(?:dr\.?|drg\.?|drs\.?|prof\.?|ir\.?|h\.?|hj\.?|tn\.?|ny\.?|nn\.?|alm\.?|almh\.?|NY\.?|Tn\.?|By\.?|\.?|\.?|\.?|kh\.?|bpk\.?|ibu|sdr\.?|ustadz(?:ah)?)\s+)+/i';
+            $nama_bersih = trim(preg_replace($gelar_regex, '', $nama_raw));
+            $kata        = preg_split('/\s+/', $nama_bersih);
+            $nama_pasien = str_replace("'", "", implode(' ', array_slice($kata, 0, 3)));
+            
             $btn_status = '<div class="btn-group">
                                 <button data-toggle="dropdown" class="btn btn-xs '.$class_btn.' dropdown-toggle">
                                     '.$title_status.'
                                     <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-warning">
-                                    <li><a href="#" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".', 2)">Ditinggal</a></li>
+                                    <li><a href="#" onclick="call_pasien('."'".$nama_pasien."'".', '."'".$row_list->jen_kelamin."'".')"> <i class="fa fa-play"></i> Panggil Pasien </a></li>
+                                    <li><a href="#" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".', 2)">Ditinggal/Dikirim</a></li>
                                     <li><a href="#" onclick="exc_process('.$row_list->kode_trans_far.', 6, '."'".$row_list->jenis_resep."'".', 1)">Sudah diambil</a></li>
                                 </ul>
                             </div>';

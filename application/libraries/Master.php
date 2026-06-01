@@ -1691,6 +1691,8 @@ final Class Master {
 
 	function get_content_ews($query){
 
+		if (!$query) return [];
+
 		// ews
 		$convert_to_array_ews = explode('|', $query->ews);
 		for($i=0; $i < count($convert_to_array_ews ); $i++){

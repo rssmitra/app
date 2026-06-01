@@ -1,6 +1,143 @@
 <link rel="stylesheet" href="<?php echo base_url().'assets/css/bootstrap-timepicker.css'?>" />
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
 
+<style>
+/* ── CPPT SOAP Styled Sections ── */
+.cppt-section {
+  border-radius: 0 6px 6px 0;
+  padding: 7px 10px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.cppt-s { border-left: 3px solid #0ea5e9; background: #f0f9ff; }
+.cppt-o { border-left: 3px solid #0891b2; background: #f0fdff; }
+.cppt-a { border-left: 3px solid #7c3aed; background: #faf5ff; }
+.cppt-p { border-left: 3px solid #059669; background: #f0fdf4; }
+.cppt-title {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.cppt-s .cppt-title { color: #0369a1; }
+.cppt-o .cppt-title { color: #0891b2; }
+.cppt-a .cppt-title { color: #6d28d9; }
+.cppt-p .cppt-title { color: #065f46; }
+.cppt-flabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: #64748b;
+  display: block;
+  margin: 5px 0 2px;
+}
+.cppt-fval {
+  font-size: 12.5px;
+  color: #1e293b;
+  line-height: 1.5;
+}
+/* Vital signs grid */
+.cppt-ttv {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+.cppt-ttv-item {
+  flex: 1 1 0;
+  min-width: 52px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 5px 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.cppt-ttv-lbl  { font-size: 9px; font-weight: 700; text-transform: uppercase; color: #0891b2; }
+.cppt-ttv-val  { font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.2; }
+.cppt-ttv-unit { font-size: 9px; color: #94a3b8; }
+/* Badge tipe */
+.cppt-badge {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+}
+.cppt-badge-blue  { background: #0369a1; }
+.cppt-badge-green { background: #15803d; }
+/* Header kartu */
+.cppt-card-hdr {
+  background: linear-gradient(135deg,#f0f9ff,#e8f4fd);
+  border-bottom: 1px solid #bae6fd;
+  padding: 7px 10px;
+  border-radius: 6px 6px 0 0;
+  font-size: 12px;
+}
+.cppt-card-hdr .ppa-name  { font-weight: 700; color: #0f172a; }
+.cppt-card-hdr .ppa-role  { color: #475569; font-size: 11px; }
+.cppt-card-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+.cppt-card-body { padding: 8px; }
+/* e-Resep section */
+.cppt-r { border-left: 3px solid #d97706; background: #fffbeb; }
+/* Riwayat pasien list */
+.cppt-riwayat-list { display:flex; flex-direction:column; gap:4px; margin-top:5px; }
+.cppt-riwayat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.cppt-riwayat-item i { flex-shrink:0; margin-top:2px; font-size:12px; }
+.cppt-rw-label { font-weight:700; color:#334155; }
+.cppt-rw-val       { color:#1e293b; }
+.cppt-rw-val.ada   { color:#dc2626; font-weight:600; }
+.cppt-rw-val.tidak { color:#16a34a; }
+.cppt-rw-ket { color:#64748b; font-size:11px; font-style:italic; margin-top:2px; }
+/* e-Resep table */
+.cppt-resep-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+  font-size: 12px;
+}
+.cppt-resep-table th {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  padding: 5px 8px;
+  border-bottom: 2px solid #fde68a;
+}
+.cppt-resep-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #fef3c7;
+  vertical-align: top;
+}
+.cppt-resep-table tr:last-child td { border-bottom: none; }
+</style>
+
 <script type="text/javascript">
   function openSlidePanel(html) {
     preventDefault();
@@ -81,21 +218,6 @@ jQuery(function($) {
 
   });  
 
-  $('#timepicker1').timepicker({
-    minuteStep: 1,
-    showSeconds: true,
-    showMeridian: false,
-    disableFocus: true,
-    icons: {
-      up: 'fa fa-chevron-up',
-      down: 'fa fa-chevron-down'
-    }
-  }).on('focus', function() {
-    $('#timepicker1').timepicker('showWidget');
-  }).next().on(ace.click_event, function(){
-    $(this).prev().focus();
-  });
-    
 
 });
 
@@ -114,38 +236,6 @@ $(document).ready(function() {
           "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>",
           "type": "POST"
       },
-
-    });
-
-    // proses add cppt
-    $('#btn_add_cppt').click(function (e) {   
-      e.preventDefault();
-      $.ajax({
-          url: $('#form_pelayanan').attr('action'),
-          data: $('#form_pelayanan').serialize(),            
-          dataType: "json",
-          type: "POST",
-          complete: function(xhr) {             
-            var data=xhr.responseText;        
-            var jsonResponse = JSON.parse(data);        
-            if(jsonResponse.status === 200){          
-              $.achtung({message: jsonResponse.message, timeout:5});     
-              $('#section_form_cppt').hide('fast');
-              $('#section_history_cppt').show('fast');
-
-              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>').load();
-              // reset form
-              $('#cppt_id').val('');
-              $('#subjective').val('');
-              $('#objective').val('');
-              $('#assesment').val('');
-              $('#plan').val('');
-            }else{           
-              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-            }        
-            achtungHideLoader();        
-          } 
-      });
 
     });
 
@@ -181,11 +271,30 @@ $(document).ready(function() {
       data: $('#form_search').serialize(),
       dataType: "json",
       success: function(result) {
-        window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&no_mr=<?php echo $no_mr?>&'+result.data+'','_blank'); 
+        window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&no_mr=<?php echo $no_mr?>&'+result.data+'','_blank');
       }
     });
   });
 
+  // Typeahead pencarian dokter / PPA
+  $('#filter_nama_ppa').typeahead({
+    source: function (query, result) {
+      $.ajax({
+        url: 'templates/references/getAllDokter',
+        data: { keyword: query },
+        dataType: 'json',
+        type: 'POST',
+        success: function (response) {
+          result($.map(response, function (item) { return item; }));
+        }
+      });
+    },
+    afterSelect: function (item) {
+      var parts = item.split(':');
+      var nama  = parts.length > 1 ? $.trim(parts[1]) : $.trim(item);
+      $('#filter_nama_ppa').val(nama);
+    }
+  });
 
 });
 
@@ -279,6 +388,7 @@ function find_data_reload(result, base_url){
 }
 
 function reset_table(){
+  $('#filter_nama_ppa').val('');
   oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>").load();
   // $("html, body").animate({ scrollTop: "400px" });
 }
@@ -324,124 +434,25 @@ function print_resume(no_registrasi){
 </div>
 
 <div class="row">
-  <div class="col-md-12" id="section_form_cppt" style="display: none">
-
-    <div class="center"><span style="font-size: 14px"><b>FORM CPPT</b></span><br><small>(Dilengkapi setelah PPA melakukan Assesment)</small></div>
-    <br>
-    <div class="form-group">
-        <label class="control-label col-sm-2" for="">*Tanggal/Jam</label>
-          <div class="col-md-6">
-                
-            <div class="input-group">
-                
-                <input name="cppt_tgl" id="cppt_tgl" placeholder="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo date('Y-m-d')?>">
-                <span class="input-group-addon">
-                  
-                  <i class="ace-icon fa fa-calendar"></i>
-                
-                </span>
-
-                <input id="timepicker1" name="cppt_jam" id="cppt_jam" type="text" class="form-control">
-                <span class="input-group-addon">
-                  <i class="fa fa-clock-o bigger-110"></i>
-                </span>
-                
-            </div>
-
-          </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label col-sm-2">PPA</label>
-        <div class="col-md-10">
-          <div class="radio">
-              <label>
-                <input name="ppa" type="radio" class="ace" value="perawat" checked="checked"  />
-                <span class="lbl"> Perawat</span>
-              </label>
-
-              <label>
-                <input name="ppa" type="radio" class="ace" value="dokter"/>
-                <span class="lbl"> Dokter</span>
-              </label>
-
-              <label>
-                <input name="ppa" type="radio" class="ace" value="fisioterapist"/>
-                <span class="lbl"> Fisioterapist</span>
-              </label>
-
-              <label>
-                <input name="ppa" type="radio" class="ace" value="dietizen"/>
-                <span class="lbl"> Dietizen</span>
-              </label>
-
-              <label>
-                <input name="ppa" type="radio" class="ace" value="farmasi klinis"/>
-                <span class="lbl"> Farmasi Klinis</span>
-              </label>
-          </div>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label col-sm-2">Nama PPA</label>
-        <div class="col-md-3">
-          <input type="text" class="form-control" name="nama_ppa" value="<?php echo $this->session->userdata('user')->fullname?>">
-        </div>
-    </div>
-    <hr>
-    <br>
-    <p><b>Form SOAP <i>(Subjective, Objective, Assesment, Plan)</i></b></p>
-
-    <!-- form default pelayanan pasien -->
-    <input type="hidden" name="cppt_id" value="" id="cppt_id">
-    <div>
-        <label class="padding-20" style="padding-top: 10px"><b style="font-size: 18px; color: blue">S</b> (<i>Subjective</i>) <span style="color:red">(*)</span>:</label><br>
-        <div class="col-sm-12 no-padding">
-          <textarea name="subjective" id="subjective" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->subjective)?$riwayat->subjective:''?></textarea>  
-        </div>
-    </div>
-
-    <div>
-        <label class="padding-20" style="padding-top: 10px"><b style="font-size: 18px; color: blue">O</b> (<i>Objective</i>) <span style="color:red">(*)</span>:</label><br>
-        <div class="col-sm-12 no-padding">
-          <textarea name="objective" id="objective" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->objective)?$riwayat->objective:''?></textarea>  
-        </div>
-    </div>
-
-    <div>
-        <label class="padding-20" style="padding-top: 10px"><b style="font-size: 18px; color: blue">A</b> (<i>Assesment</i>) <span style="color:red">(*)</span>:</label><br>
-        <div class="col-sm-12 no-padding">
-          <textarea name="assesment" id="assesment" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->assesment)?$riwayat->assesment:''?></textarea>  
-        </div>
-    </div>
-
-    <div>
-        <label class="padding-20" style="padding-top: 10px"><b style="font-size: 18px; color: blue">P</b> (<i>Plan</i>) <span style="color:red">(*)</span>:</label><br>
-        <div class="col-sm-12 no-padding">
-          <textarea name="plan" id="plan" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->plan)?$riwayat->plan:''?></textarea>  
-        </div>
-    </div>
-
-
-    <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
-        <div class="col-sm-12"><a href="#" class="btn btn-sm btn-primary" id="btn_add_cppt"><i class="fa fa-save"></i> Simpan CPPT</a> 
-        </div>
-    </div>
-
-    <br>
-    <hr>
-  </div>
-
   <div class="col-md-12" id="section_history_cppt">
-    <!-- add form -->
-    <!-- <div style="">
-      <a href="#" class="btn btn-xs btn-primary" onclick="add_cppt()"><i class="fa fa-plus"></i> Input CPPT</a>
-    </div> -->
-    <center><span style="font-size: 14px"><b>RIWAYAT CATATAN MEDIS DAN RESUME PASIEN RJ/RI</b></span></center><br>
-      <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 
-        <div class="form-group">
+    <!-- Page header -->
+    <div style="text-align:center; margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid #e2e8f0;">
+      <p style="margin:0 0 3px 0;">
+        <b><span style="font-size:20px; color:#0f172a;">
+          <i class="fa fa-list-alt" style="color:#0369a1; margin-right:6px;"></i>
+          Riwayat Catatan Medis
+        </span></b>
+      </p>
+      <small style="color:#64748b; font-size:12px;"><i>Catatan Perkembangan Pasien Terintegrasi (RJ / RI)</i></small>
+    </div>
+
+    <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
+
+      <!-- Filter card -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
+
+        <div class="form-group" style="margin-bottom:8px;">
 
             <label class="control-label col-md-1">Tanggal</label>
             <div class="col-md-2">
@@ -453,7 +464,7 @@ function print_resume(no_registrasi){
               </div>
             </div>
 
-            <label class="control-label col-md-1" style="margin-left: -10px">s/d</label>
+            <label class="control-label col-md-1" style="margin-left:-10px">s/d</label>
             <div class="col-md-2">
               <div class="input-group">
                 <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
@@ -463,7 +474,6 @@ function print_resume(no_registrasi){
               </div>
             </div>
 
-            <!-- tipe RI/RJ -->
             <label class="control-label col-md-1">Tipe</label>
             <div class="col-md-2">
               <div class="radio">
@@ -478,39 +488,51 @@ function print_resume(no_registrasi){
               </div>
             </div>
 
+        </div>
 
-            <div class="col-md-4 no-padding">
-              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default" style="margin-left: 19%">
-                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-                Search
+        <div class="form-group" style="margin-bottom:0;">
+
+            <label class="control-label col-md-1">Dokter / PPA</label>
+            <div class="col-md-3">
+              <div class="input-group">
+                <input type="text" class="form-control typeahead" id="filter_nama_ppa" name="nama_ppa"
+                       placeholder="Ketik nama dokter..." autocomplete="off">
+                <span class="input-group-addon" style="cursor:pointer;" onclick="$('#filter_nama_ppa').val('').focus();">
+                  <i class="fa fa-times"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-md-5 no-padding" style="padding-top:3px;">
+              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-primary">
+                <i class="fa fa-search"></i> Cari
               </a>
-              <a href="#" id="btn_reset_data_cppt" class="btn btn-xs btn-warning">
-                <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-                Reset
+              <a href="#" id="btn_reset_data_cppt" class="btn btn-xs btn-default">
+                <i class="fa fa-refresh"></i> Reset
               </a>
               <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
-                <i class="fa fa-file-pdf-o bigger-110"></i>
-                Export PDF
+                <i class="fa fa-file-pdf-o"></i> Export PDF
               </a>
             </div>
 
         </div>
-          
-        <table id="table-cppt" class="table table-bordered table-hover">
-          <thead>
-            <tr>  
-              <th width="30px">No</th>
-              <th width="150px">Tanggal/Jam/PPA</th>
-              <th>SOAP/Pengkajian Pasien</th>
-              <th width="120px">Verifikasi DPJP</th>
-              <th width="100px">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
 
-      </form>
+      </div><!-- /filter card -->
+
+      <table id="table-cppt" class="table table-bordered table-hover table-condensed">
+        <thead style="background:linear-gradient(135deg,#f0f9ff,#e8f4fd); border-bottom:2px solid #bae6fd;">
+          <tr>
+            <th width="30px"  style="color:#0369a1;">#</th>
+            <th width="160px" style="color:#0369a1;">Tanggal / Jam / PPA</th>
+            <th               style="color:#0369a1;">SOAP / Pengkajian Pasien</th>
+            <th width="130px" style="color:#0369a1;">Verifikasi DPJP</th>
+            <th width="100px" style="color:#0369a1;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+    </form>
   </div>
   
 </div>

@@ -305,116 +305,6 @@ class E_resep extends MX_Controller {
         echo json_encode($output);
     }
 
-    
-    public function add_resep_obat(){
-
-        // print_r($_POST);die;
-        // form validation
-        $this->form_validation->set_rules('kode_pesan_resep', 'kode_pesan_resep', 'trim|required');
-        $this->form_validation->set_rules('no_registrasi', 'no_registrasi', 'trim|required');
-        $this->form_validation->set_rules('no_kunjungan', 'no_kunjungan', 'trim|required');
-        $this->form_validation->set_rules('kode_brg', 'kode_brg', 'trim');
-        $this->form_validation->set_rules('nama_brg', 'nama_brg', 'trim|required');
-        $this->form_validation->set_rules('jml_dosis', 'jml_dosis', 'trim|required');
-        $this->form_validation->set_rules('jml_dosis_obat', 'jml_dosis_obat', 'trim|required');
-        $this->form_validation->set_rules('satuan_obat', 'satuan_obat', 'trim|required');
-        $this->form_validation->set_rules('aturan_pakai', 'aturan_pakai', 'trim');
-        $this->form_validation->set_rules('no_mr', 'no_mr', 'trim|required');
-        $this->form_validation->set_rules('keterangan', 'keterangan', 'trim');
-        // $this->form_validation->set_rules('jml_hari', 'jml_hari', 'trim|required');
-        $this->form_validation->set_rules('jml_pesan', 'jml_pesan', 'trim|required');
-        $this->form_validation->set_rules('tipe_obat', 'Tipe Obat', 'trim|required');
-        $this->form_validation->set_rules('parent', 'Parent', 'trim|required');
-        
-
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();           
-            
-            // cek apakah sudah dilock atau belum
-            $kode_pesan_resep = $this->input->post('kode_pesan_resep');
-            $pesan_resep = $this->db->get_where('fr_tc_pesan_resep', array('kode_pesan_resep' => $kode_pesan_resep))->row();
-            if(isset($pesan_resep->lock_eresep) && $pesan_resep->lock_eresep == 1){
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Resep sudah di kunci, silahkan hubungi petugas farmasi untuk membuka kembali'));
-                return;
-            }
-            $table = ($_POST['id_template'] > 0)? 'fr_tc_template_resep_detail' : 'fr_tc_pesan_resep_detail';
-
-            $id = ($this->input->post('id_pesan_resep_detail')) ? $this->input->post('id_pesan_resep_detail') : "0";
-            
-            // print_r($table);die;
-
-            $dataexc = array(
-                'kode_pesan_resep' => $this->regex->_genRegex($this->form_validation->set_value('kode_pesan_resep'), 'RGXINT'),
-                'no_registrasi' => $this->regex->_genRegex($this->form_validation->set_value('no_registrasi'), 'RGXINT'),
-                'no_kunjungan' => $this->regex->_genRegex($this->form_validation->set_value('no_kunjungan'), 'RGXINT'),
-                'nama_brg' => $this->regex->_genRegex($this->form_validation->set_value('nama_brg'), 'RGXQSL'),
-                'jml_dosis' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis'), 'RGXQSL'),
-                'jml_dosis_obat' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis_obat'), 'RGXQSL'),
-                'satuan_obat' => $this->regex->_genRegex($this->form_validation->set_value('satuan_obat'), 'RGXQSL'),
-                'aturan_pakai' => $this->regex->_genRegex($this->form_validation->set_value('aturan_pakai'), 'RGXQSL'),
-                'no_mr' => $this->regex->_genRegex($this->form_validation->set_value('no_mr'), 'RGXQSL'),
-                'keterangan' => $this->regex->_genRegex($this->form_validation->set_value('keterangan'), 'RGXQSL'),
-                'jml_pesan' => $this->regex->_genRegex($this->form_validation->set_value('jml_pesan'), 'RGXQSL'),
-                'tipe_obat' => $this->regex->_genRegex($this->form_validation->set_value('tipe_obat'), 'RGXQSL'),
-                'parent' => $this->regex->_genRegex($this->form_validation->set_value('parent'), 'RGXQSL'),
-                'tipe_racik' => isset($_POST['tipe_racik']) ? $this->regex->_genRegex($_POST['tipe_racik'], 'RGXQSL') : '0',
-            );
-
-            if($table == 'fr_tc_template_resep_detail'){
-                $dataexc['id_template'] = $_POST['id_template'];
-                $dataexc['id'] = rand(0,999999);
-            }
-
-            if( $id == 0 ){
-                $kode_brg = ($_POST['submit'] == 'header' && $_POST['tipe_obat'] == 'racikan') ? 'R'.rand(0,999999) : $this->form_validation->set_value('kode_brg'); 
-
-                $dataexc['kode_brg'] = $this->regex->_genRegex($kode_brg, 'RGXQSL');
-                $dataexc['created_date'] = date('Y-m-d H:i:s');
-                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                // print_r($table);
-                // print_r($dataexc);die;
-                $this->db->insert($table, $dataexc);
-                $newId = $this->db->insert_id();
-                $kode_brg = $kode_brg;
-                $flag = 'insert';
-            }else{
-                $dataexc['kode_brg'] = $this->regex->_genRegex($this->form_validation->set_value('kode_brg'), 'RGXQSL');
-                $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                $this->db->where('id', $id)->update($table, $dataexc);
-                $newId = $id;
-                $kode_brg = $dataexc['kode_brg'];
-                $flag = 'update';
-            }
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'newId' => $newId, 'type' => $table, 'parent' => $kode_brg, 'flag' => $flag));
-            }
-
-        
-        }
-
-    }
-
     public function getrowresep(){
         $data = $this->db->select('fr_tc_pesan_resep_detail.*, mt_barang.nama_brg as nama_obat')->join('mt_barang', 'mt_barang.kode_brg=fr_tc_pesan_resep_detail.kode_brg', 'LEFT')->get_where('fr_tc_pesan_resep_detail', array('id' => $_GET['ID']))->row();
         echo json_encode($data);
@@ -758,6 +648,115 @@ class E_resep extends MX_Controller {
 
     }
 
+    public function add_resep_obat(){
+
+        // print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('kode_pesan_resep', 'kode_pesan_resep', 'trim|required');
+        $this->form_validation->set_rules('no_registrasi', 'no_registrasi', 'trim|required');
+        $this->form_validation->set_rules('no_kunjungan', 'no_kunjungan', 'trim|required');
+        $this->form_validation->set_rules('kode_brg', 'kode_brg', 'trim');
+        $this->form_validation->set_rules('nama_brg', 'nama_brg', 'trim|required');
+        $this->form_validation->set_rules('jml_dosis', 'jml_dosis', 'trim|required');
+        $this->form_validation->set_rules('jml_dosis_obat', 'jml_dosis_obat', 'trim|required');
+        $this->form_validation->set_rules('satuan_obat', 'satuan_obat', 'trim|required');
+        $this->form_validation->set_rules('aturan_pakai', 'aturan_pakai', 'trim');
+        $this->form_validation->set_rules('no_mr', 'no_mr', 'trim|required');
+        $this->form_validation->set_rules('keterangan', 'keterangan', 'trim');
+        // $this->form_validation->set_rules('jml_hari', 'jml_hari', 'trim|required');
+        $this->form_validation->set_rules('jml_pesan', 'jml_pesan', 'trim|required');
+        $this->form_validation->set_rules('tipe_obat', 'Tipe Obat', 'trim|required');
+        $this->form_validation->set_rules('parent', 'Parent', 'trim|required');
+        
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+            
+            // cek apakah sudah dilock atau belum
+            $kode_pesan_resep = $this->input->post('kode_pesan_resep');
+            $pesan_resep = $this->db->get_where('fr_tc_pesan_resep', array('kode_pesan_resep' => $kode_pesan_resep))->row();
+            if(isset($pesan_resep->lock_eresep) && $pesan_resep->lock_eresep == 1){
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Resep sudah di kunci, silahkan hubungi petugas farmasi untuk membuka kembali'));
+                return;
+            }
+            $table = ($_POST['id_template'] > 0)? 'fr_tc_template_resep_detail' : 'fr_tc_pesan_resep_detail';
+
+            $id = ($this->input->post('id_pesan_resep_detail')) ? $this->input->post('id_pesan_resep_detail') : "0";
+            
+            // print_r($table);die;
+
+            $dataexc = array(
+                'kode_pesan_resep' => $this->regex->_genRegex($this->form_validation->set_value('kode_pesan_resep'), 'RGXINT'),
+                'no_registrasi' => $this->regex->_genRegex($this->form_validation->set_value('no_registrasi'), 'RGXINT'),
+                'no_kunjungan' => $this->regex->_genRegex($this->form_validation->set_value('no_kunjungan'), 'RGXINT'),
+                'nama_brg' => $this->regex->_genRegex($this->form_validation->set_value('nama_brg'), 'RGXQSL'),
+                'jml_dosis' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis'), 'RGXQSL'),
+                'jml_dosis_obat' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis_obat'), 'RGXQSL'),
+                'satuan_obat' => $this->regex->_genRegex($this->form_validation->set_value('satuan_obat'), 'RGXQSL'),
+                'aturan_pakai' => $this->regex->_genRegex($this->form_validation->set_value('aturan_pakai'), 'RGXQSL'),
+                'no_mr' => $this->regex->_genRegex($this->form_validation->set_value('no_mr'), 'RGXQSL'),
+                'keterangan' => $this->regex->_genRegex($this->form_validation->set_value('keterangan'), 'RGXQSL'),
+                'jml_pesan' => $this->regex->_genRegex($this->form_validation->set_value('jml_pesan'), 'RGXQSL'),
+                'jml_hari' => $this->regex->_genRegex($this->input->post('jml_hari') ? $this->input->post('jml_hari') : '0', 'RGXQSL'),
+                'tipe_obat' => $this->regex->_genRegex($this->form_validation->set_value('tipe_obat'), 'RGXQSL'),
+                'parent' => $this->regex->_genRegex($this->form_validation->set_value('parent'), 'RGXQSL'),
+                'tipe_racik' => isset($_POST['tipe_racik']) ? $this->regex->_genRegex($_POST['tipe_racik'], 'RGXQSL') : '0',
+            );
+
+            if($table == 'fr_tc_template_resep_detail'){
+                $dataexc['id_template'] = $_POST['id_template'];
+                $dataexc['id'] = rand(0,999999);
+            }
+
+            if( $id == 0 ){
+                $kode_brg = ($_POST['submit'] == 'header' && $_POST['tipe_obat'] == 'racikan') ? 'R'.rand(0,999999) : $this->form_validation->set_value('kode_brg'); 
+
+                $dataexc['kode_brg'] = $this->regex->_genRegex($kode_brg, 'RGXQSL');
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                // print_r($table);
+                // print_r($dataexc);die;
+                $this->db->insert($table, $dataexc);
+                $newId = $this->db->insert_id();
+                $kode_brg = $kode_brg;
+                $flag = 'insert';
+            }else{
+                $dataexc['kode_brg'] = $this->regex->_genRegex($this->form_validation->set_value('kode_brg'), 'RGXQSL');
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->where('id', $id)->update($table, $dataexc);
+                $newId = $id;
+                $kode_brg = $dataexc['kode_brg'];
+                $flag = 'update';
+            }
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'newId' => $newId, 'type' => $table, 'parent' => $kode_brg, 'flag' => $flag));
+            }
+
+        
+        }
+
+    }
 
     public function proses_resep()
     {

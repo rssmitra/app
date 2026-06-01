@@ -6,7 +6,7 @@ class References extends MX_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+		$this->load->driver('cache', array('adapter' => 'file', 'backup' => 'file'));
 	}
 	/*here function used for this application*/
 
@@ -2351,22 +2351,23 @@ class References extends MX_Controller {
 	}
 
 	public function get_riwayat_medis($mr){
-		
+
 		$year = date('Y') - 1;
 		$no_mr = (string)$mr;
 
 		// resume medis pasien
 		$limit = isset($_GET['key'])?$_GET['key']:35;
-		// $result = $this->db->select('th_riwayat_pasien.*, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien')->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit($limit)->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_mr' => $no_mr))->result(); 
+		// $result = $this->db->select('th_riwayat_pasien.*, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien')->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit($limit)->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_mr' => $no_mr))->result();
 
-		$result = $this->db->select('view_cppt.*, view_cppt.tanggal as tgl_periksa, id as kode_riwayat, nama_ppa as dokter_pemeriksa, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien, tc_kunjungan.status_batal')
+		$result = $this->db->select('view_cppt.*, view_cppt.tanggal as tgl_periksa, id as kode_riwayat, nama_ppa as dokter_pemeriksa, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien, tc_kunjungan.status_batal, th_riwayat_pasien.riwayat_penyakit_dahulu as rp_penyakit_dahulu, th_riwayat_pasien.riwayat_penyakit_dahulu_ket as rp_penyakit_dahulu_ket, th_riwayat_pasien.riwayat_operasi as rp_operasi, th_riwayat_pasien.riwayat_operasi_ket as rp_operasi_ket, th_riwayat_pasien.riwayat_alergi as rp_alergi, th_riwayat_pasien.riwayat_alergi_ket as rp_alergi_ket, th_riwayat_pasien.anatomi_tagging as rp_anatomi_tagging, th_riwayat_pasien.anatomi_img as rp_anatomi_img', FALSE)
 		->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = view_cppt.no_kunjungan', 'left')
 		->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')
+		->join('th_riwayat_pasien', 'th_riwayat_pasien.no_kunjungan = view_cppt.no_kunjungan', 'left')
 		->order_by('no_kunjungan','DESC')
 		->where('flag', 'resume')
 		->where('kode_bagian_tujuan !=', '010901')
 		->where('DATEDIFF(year,tanggal,GETDATE()) < 4 ')->limit($limit)
-		->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr))->result(); 
+		->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr))->result();
 		// echo '<pre>';print_r($result);die;
 		// eresep
 		$eresep = $this->db->get_where('fr_tc_pesan_resep_detail', ['no_mr' => $no_mr, 'parent' => '0'])->result();
@@ -2525,6 +2526,36 @@ class References extends MX_Controller {
 			return $this->load->view('Templates/templates/view_riwayat_pm_sidebar', $data, true);
 		}else{
 			$html = $this->load->view('Templates/templates/view_riwayat_pm_sidebar', $data, true);
+			echo json_encode( array('html' => $html) );
+		}
+		
+	}
+
+	public function get_riwayat_perjanjian($mr, $return = ''){
+		
+		$year = date('Y') - 1;
+		$no_mr = (string)$mr;
+		$result = $this->db
+			->select('tc_pesanan.*, mt_bagian.nama_bagian, mt_dokter_v.nama_pegawai as nama_dr, mt_perusahaan.nama_perusahaan')
+			->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli', 'left')
+			->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter', 'left')
+			->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan', 'left')
+			->where('DATEDIFF(year,tc_pesanan.tgl_pesanan,GETDATE()) < 2')
+			->order_by('tc_pesanan.tgl_pesanan', 'DESC')
+			->limit(15)
+			->get_where('tc_pesanan', array('no_mr' => $no_mr))->result();
+
+		$data = array(
+			'result' => $result,
+			'no_mr' => $no_mr,
+		);
+
+		// echo '<pre>';print_r($data);die;
+		
+		if($return == 'html'){
+			return $this->load->view('Templates/templates/view_riwayat_perjanjian_sidebar', $data, true);
+		}else{
+			$html = $this->load->view('Templates/templates/view_riwayat_perjanjian_sidebar', $data, true);
 			echo json_encode( array('html' => $html) );
 		}
 		

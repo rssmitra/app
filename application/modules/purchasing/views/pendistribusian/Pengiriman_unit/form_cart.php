@@ -29,7 +29,7 @@ jQuery(function($) {
         
         $('#form_div').hide();
         $('#div_table').show();
-        $('#page-area-content').load('purchasing/pendistribusian/Pengiriman_unit/form_distribusi?flag='+$("input[name='flag_gudang']:checked"). val()+'');
+        $('#page-area-content').load('purchasing/pendistribusian/Distribusi_permintaan/form?flag='+$("input[name='flag_gudang']:checked"). val()+'');
         PopupCenter('purchasing/pendistribusian/Distribusi_permintaan/print_preview/'+jsonResponse.id+'?flag='+$("input[name='flag_gudang']:checked"). val()+'', 'Cetak Bukti Pengiriman Barang ke Unit', 900, 600);
 
       }else{

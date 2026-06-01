@@ -102,14 +102,14 @@
             <strong>Informasi Penting!</strong> Permintaan barang yang sudah melewati 2 minggu tidak akan ditampilkan kembali, untuk melihat riwayat sebelumnya silahkan pilih tanggal diatas untuk pencarian data.
           </div>
 
-          <div class="form-group" style="margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0px">
             <label class="control-label col-md-2" style="font-size:12px">Pilih Bagian/Unit</label>
             <div class="col-md-5">
               <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '' , 'kode_bagian', 'kode_bagian', 'chosen-select form-control', '', '') ?>
             </div>
           </div>
 
-          <div class="form-group" style="margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0px">
             <label class="control-label col-md-2" style="font-size:12px">Tanggal Permintaan</label>
             <div class="col-md-2">
               <div class="input-group">
@@ -126,7 +126,7 @@
             </div>
           </div>
 
-          <div class="form-group" style="margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0px">
             <label class="control-label col-md-2" style="font-size:12px">Jenis Barang</label>
             <div class="col-md-4">
               <div class="radio" style="margin-top:4px">

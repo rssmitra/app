@@ -601,31 +601,31 @@ class Pl_pelayanan_ri_model extends CI_Model {
 	{	
 
 		$this->db->select('
-			v.*, 
-			k.kode_bagian_tujuan, 
-			d.kode_dokter, 
-			d.ttd, 
-			d.nama_pegawai AS dpjp
-		');
+			v.*,
+			k.kode_bagian_tujuan,
+			th_riwayat_pasien.riwayat_penyakit_dahulu     as rp_penyakit_dahulu,
+			th_riwayat_pasien.riwayat_penyakit_dahulu_ket as rp_penyakit_dahulu_ket,
+			th_riwayat_pasien.riwayat_operasi             as rp_operasi,
+			th_riwayat_pasien.riwayat_operasi_ket         as rp_operasi_ket,
+			th_riwayat_pasien.riwayat_alergi              as rp_alergi,
+			th_riwayat_pasien.riwayat_alergi_ket          as rp_alergi_ket,
+			th_riwayat_pasien.anatomi_tagging             as rp_anatomi_tagging,
+			th_riwayat_pasien.anatomi_img                 as rp_anatomi_img
+		', FALSE);
 		$this->db->from('view_cppt v');
 
-		// Subquery tc_kunjungan (ROW_NUMBER)
+		// Optimized: hanya ambil kolom yang dibutuhkan, hindari SELECT * pada full-table scan
 		$subKunjungan = "
-			SELECT *,
-				ROW_NUMBER() OVER(PARTITION BY no_kunjungan ORDER BY id_tc_kunjungan DESC) AS rn
+			SELECT no_kunjungan, kode_bagian_tujuan,
+			       ROW_NUMBER() OVER(PARTITION BY no_kunjungan ORDER BY id_tc_kunjungan DESC) AS rn
 			FROM tc_kunjungan
 		";
-
 		$this->db->join("($subKunjungan) k", "k.no_kunjungan = v.no_kunjungan AND k.rn = 1", "left");
 
-		// Subquery mt_dokter_v (ROW_NUMBER)
-		$subDokter = "
-			SELECT *,
-				ROW_NUMBER() OVER(PARTITION BY kode_dokter ORDER BY kode_dokter) AS rn
-			FROM mt_dokter_v
-		";
+		// mt_dokter_v join dihapus — kolom d.dpjp dan d.ttd tidak digunakan di output
 
-		$this->db->join("($subDokter) d", "d.kode_dokter = k.kode_dokter AND d.rn = 1", "left");
+		// JOIN riwayat pasien (penyakit dahulu, operasi, alergi, status lokalis)
+		$this->db->join('th_riwayat_pasien', 'th_riwayat_pasien.no_kunjungan = v.no_kunjungan', 'left');
 
 		if(isset($_GET['no_registrasi'])){
 			$this->db->where('v.no_registrasi', $_GET['no_registrasi']);
@@ -637,7 +637,11 @@ class Pl_pelayanan_ri_model extends CI_Model {
 
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("CAST(v.tanggal as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
+			$this->db->where("CAST(v.tanggal as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+		}
+
+		if (isset($_GET['nama_ppa']) && $_GET['nama_ppa'] != '') {
+			$this->db->like('v.nama_ppa', $_GET['nama_ppa']);
 		}
 
 		$this->db->where('v.no_mr', $no_mr);

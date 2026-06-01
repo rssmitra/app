@@ -5,7 +5,7 @@ class Farmasi_pesan_resep_model extends CI_Model {
 
 	var $table = 'fr_tc_pesan_resep';
 	var $column = array('fr_tc_pesan_resep.kode_pesan_resep','fr_tc_pesan_resep.tgl_pesan');
-	var $select = 'fr_tc_pesan_resep.*, mt_karyawan.nama_pegawai, mt_bagian.nama_bagian';
+	var $select = 'fr_tc_pesan_resep.*, mt_karyawan.nama_pegawai, mt_bagian.nama_bagian, source';
 
 	var $order = array('fr_tc_pesan_resep.kode_pesan_resep' => 'DESC');
 
@@ -155,7 +155,7 @@ class Farmasi_pesan_resep_model extends CI_Model {
 
 	public function get_detail_data_kunjungan($id)
 	{
-		$this->db->select('tc_kunjungan.no_registrasi, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_dokter, nama_pegawai, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan');
+		$this->db->select('tc_kunjungan.no_registrasi, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_dokter, nama_pegawai, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, th_riwayat_pasien.resep_iter, th_riwayat_pasien.jumlah_iter');
 		$this->db->from('tc_kunjungan');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_registrasi.no_mr','left');

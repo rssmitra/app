@@ -1,3 +1,4 @@
+<script src="<?php echo base_url()?>assets/js/sweetalert2.all.min.js"></script>
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
@@ -415,7 +416,69 @@
     return data.html;
   }
 
+  function cleanPatientName(fullName) {
+    if (!fullName) return '';
+    var name = fullName;
+    // 1. Hapus prefix di awal (Ny., Tn., An., By., dr., Prof., Hj., dll.) — loop untuk prefix bertumpuk
+    var leadingPrefix = /^(?:(?:ny|tn|nn|an|by|bp|bpk|bapak|ibu|sdr|sdri|dr|drs|drg|prof|apt|hj?)\s*\.?\s*)+/gi;
+    var prev;
+    do { prev = name; name = name.replace(leadingPrefix, ''); } while (name !== prev);
+    // 2. Hapus semua yang ada setelah koma pertama (gelar akademik: S.Ked., M.Kes., dll.)
+    name = name.replace(/,.*$/, '');
+    // 3. Hapus singkatan berformat titik (S.Ked., Sp.OG, M.Kes.)
+    name = name.replace(/\b\w+\.\w[\w.]*\b/g, '');
+    // 4. Hapus singkatan satu huruf diikuti titik (H., S.)
+    name = name.replace(/\b[A-Za-z]\.\s?/g, '');
+    // 5. Normalisasi spasi
+    name = name.replace(/\s+/g, ' ').trim();
+    return name;
+  }
+
+  function call_pasien(nama_pasien, jk) {
+    if (!window.speechSynthesis) {
+      Swal.fire({ icon: 'error', title: 'Tidak Didukung', text: 'Browser tidak mendukung fitur Text-to-Speech.', confirmButtonColor: '#e74c3c' });
+      return;
+    }
+
+    // Bersihkan nama dari prefix, gelar, singkatan
+    var nama_bersih = cleanPatientName(nama_pasien);
+
+    var sapaan = (jk === 'L') ? 'Bapak' : 'Ibu';
+    var teks   = sapaan + ' ' + nama_bersih.toLowerCase() + ' silahkan mengambil obat di loket farmasi';
+
+    var _synth  = (typeof synth  !== 'undefined') ? synth  : window.speechSynthesis;
+    var _voices = (typeof voices !== 'undefined') ? voices : _synth.getVoices();
+    var _pitch  = (typeof pitch  !== 'undefined' && pitch)  ? parseFloat(pitch.value)  : 1;
+    var _rate   = (typeof rate   !== 'undefined' && rate)   ? parseFloat(rate.value)   : 1;
+
+    _synth.cancel();
+    var ucap = new SpeechSynthesisUtterance(teks);
+    ucap.pitch  = _pitch;
+    ucap.rate   = _rate;
+    ucap.volume = 1;
+
+    // Gunakan "Google Bahasa Indonesia" — sama seperti script.js
+    for (var i = 0; i < _voices.length; i++) {
+      if (_voices[i].name === 'Google Bahasa Indonesia') {
+        ucap.voice = _voices[i];
+        break;
+      }
+    }
+
+    _synth.speak(ucap);
+    Swal.fire({ icon: 'info', title: 'Memanggil Pasien', html: '<i class="fa fa-volume-up"></i> <b>' + nama_pasien + '</b>', timer: 4000, showConfirmButton: false, timerProgressBar: true });
+  }
+
 </script>
+
+<!-- Hidden TTS controls — harus ada SEBELUM script.js dijalankan -->
+<div style="display:none">
+  <input class="txt" type="text">
+  <input id="pitch" type="range" min="0" max="2" value="1" step="0.1">
+  <input id="rate"  type="range" min="0.5" max="2" value="1" step="0.1">
+  <select id="tts_language"></select>
+</div>
+<script src="<?php echo base_url()?>assets/tts/script.js"></script>
 
 
 <div class="row">

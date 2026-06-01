@@ -18,7 +18,7 @@ class Verifikasi_permintaan_model extends CI_Model {
 	private function _main_query(){
 		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
 		$this->db->select($this->select);
-		$this->db->select('CAST(a.catatan as NVARCHAR(1000)) as catatan');
+		$this->db->select('CAST(catatan as NVARCHAR(1000)) as catatan', FALSE);
 		$this->db->select('b.nama_bagian as bagian_minta, c.fullname as nama_user_input');
 		$this->db->from(''.$table.' a');
 		$this->db->join('mt_bagian b','b.kode_bagian=a.kode_bagian_minta', 'left');
@@ -54,7 +54,7 @@ class Verifikasi_permintaan_model extends CI_Model {
 		$this->db->where('send_to_verify', 1);
 		$this->db->where('version', 1);
 
-		$this->db->group_by('CAST(a.catatan as NVARCHAR(1000))');
+		$this->db->group_by('CAST(a.catatan as NVARCHAR(1000))', FALSE);
 		$this->db->group_by('b.nama_bagian, c.fullname');
 		$this->db->group_by($this->select);
 

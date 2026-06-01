@@ -69,7 +69,10 @@ class Farmasi_pesan_resep extends MX_Controller {
             $row[] = '';
             $btn_delete = ($row_list->status_tebus==null)?'<li><a href="#" id="btn_delete_data" onclick="delete_pesan_resep('.$row_list->kode_pesan_resep.')">Hapus</a></li>':'';
 
-            $row[] = '<div class="center"><div class="btn-group">
+            if($row_list->lock_eresep == 1){
+                $row[] = '<div class="center"><i class="fa fa-lock red bigger-200"></i></div>';
+            }else{
+                 $row[] = '<div class="center"><div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                         </button>
@@ -78,14 +81,18 @@ class Farmasi_pesan_resep extends MX_Controller {
                             '.$btn_delete.'
                         </ul>
                       </div></div>';
+            }
+           
 
             $jenis_resep = ($row_list->jenis_resep == 'prb') ? '<span class="red">[PRB]</span><br>' : '<span class="green">[NON PRB]</span><br>';
             $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
             $row[] = $row_list->kode_pesan_resep;
             $row[] = $row_list->no_registrasi;
-            $iter = ($row_list->resep_iter > 0) ? '<br><span class="label label-success">Iter '.$row_list->resep_iter.'x</span>' : '';
-            $row[] = $row_list->keterangan.''.$iter;
+            $iter = ($row_list->resep_iter > 0) ? '<span style="color: blue; font-weight: bold">ITER '.$row_list->resep_iter.'x</span>' : '';
+            $keterangan = ($row_list->keterangan != '') ? $row_list->keterangan.'<br>' : '';
+            $source = ($row_list->source != '') ? '; <span style="color: gray; font-style: italic">'.$row_list->source.'</span>' : '';
+            $row[] = $keterangan.''.$iter.''.$source;
             // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
             $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai diproses</label><br><span>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</span>';
@@ -117,7 +124,10 @@ class Farmasi_pesan_resep extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Farmasi_pesan_resep->get_by_no_mr($this->input->get('no_mr'));
-        // print_r($this->db->last_query());
+        // echo "<pre>";
+        // print_r($list);
+        // echo "</pre>";
+
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -137,7 +147,7 @@ class Farmasi_pesan_resep extends MX_Controller {
                       </div></div>';
 
             $jenis_resep = ($row_list->jenis_resep == 'prb') ? '<span class="red">[PRB]</span><br>' : '<span class="green">[NON PRB]</span><br>';
-            $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
+            $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'<br>'.$row_list->source.'</div>';
             $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
             $row[] = $row_list->kode_pesan_resep;
             $iter = ($row_list->resep_iter > 0) ? '<br><span class="label label-success">Iter '.$row_list->resep_iter.'x</span>' : '';
@@ -183,7 +193,10 @@ class Farmasi_pesan_resep extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
+        // Auto-add 'source' column if not exists
+        if (!$this->db->field_exists('source', 'fr_tc_pesan_resep')) {
+            $this->db->query("ALTER TABLE fr_tc_pesan_resep ADD COLUMN `source` VARCHAR(20) NULL DEFAULT NULL");
+        }
 
         $this->load->library('form_validation');
         $val = $this->form_validation;
@@ -220,7 +233,15 @@ class Farmasi_pesan_resep extends MX_Controller {
                 'keterangan' => ($this->input->post('keterangan_pesan_resep'))?$this->input->post('keterangan_pesan_resep'):'',
             );
 
-            
+            if ($this->input->post('e_resep') !== null) {
+                $dataexc['e_resep'] = $this->input->post('e_resep');
+            }
+
+            if ($this->input->post('source')) {
+                $dataexc['source'] = $this->regex->_genRegex($this->input->post('source'), 'RGXQSL');
+            }
+
+
             $id = ($this->input->post('kode_pesan_resep'))?$this->regex->_genRegex($this->input->post('kode_pesan_resep'),'RGXINT'):0;
 
             if($id==0){

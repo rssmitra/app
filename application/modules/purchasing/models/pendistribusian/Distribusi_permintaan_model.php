@@ -6,7 +6,7 @@ class Distribusi_permintaan_model extends CI_Model {
 	var $table_nm = 'tc_permintaan_inst_nm';
 	var $table = 'tc_permintaan_inst';
 	var $column = array('a.nomor_permintaan', 'b.nama_bagian');
-	var $select = 'a.id_tc_permintaan_inst, a.nomor_permintaan, a.tgl_permintaan, a.kode_bagian_minta, a.kode_bagian_kirim, a.status_batal, a.tgl_input, a.nomor_pengiriman, a.tgl_pengiriman, a.yg_serah, a.yg_terima, a.tgl_input_terima, a.id_dd_user_terima, a.keterangan_kirim, a.status_selesai, a.jenis_permintaan, a.tgl_acc, a.acc_by, a.status_acc';
+	var $select = 'a.id_tc_permintaan_inst, a.nomor_permintaan, a.tgl_permintaan, a.kode_bagian_minta, a.kode_bagian_kirim, a.status_batal, a.tgl_input, a.nomor_pengiriman, a.tgl_pengiriman, a.yg_serah, a.yg_terima, a.tgl_input_terima, a.id_dd_user_terima, a.keterangan_kirim, a.status_selesai, a.jenis_permintaan, a.tgl_acc, a.acc_by, a.status_acc, a.version';
 	var $order = array('a.id_tc_permintaan_inst' => 'DESC');
 
 	public function __construct()
@@ -19,7 +19,7 @@ class Distribusi_permintaan_model extends CI_Model {
 		$table = ($_GET['flag']=='non_medis') ? $this->table_nm : $this->table;
 
 		$this->db->select($this->select);
-		$this->db->select('CONVERT(NVARCHAR(1000), a.catatan) as catatan', FALSE);
+		$this->db->select('CONVERT(NVARCHAR(1000), catatan) as catatan', FALSE);
 		$this->db->select('b.nama_bagian as bagian_minta, c.fullname as nama_user_input');
 		$this->db->select('det_agg.total_permintaan, det_agg.total_diterima');
 
@@ -53,8 +53,8 @@ class Distribusi_permintaan_model extends CI_Model {
 			$this->db->where('a.kode_bagian_minta', $_GET['kode_bagian']);
 		}
 
-		$this->db->where('a.status_acc', 1);
-		$this->db->where('a.version', 1);
+		// $this->db->where('a.status_acc', 1);
+		// $this->db->where('a.version', 1);
 		
 		// FILTER STATUS PENERIMAAN
 		if (isset($_GET['status_penerimaan']) && $_GET['status_penerimaan'] != '') {
@@ -107,6 +107,7 @@ class Distribusi_permintaan_model extends CI_Model {
 			$this->db->limit($_POST['length'], $_POST['start']);
 		}
 		$query = $this->db->get();
+		// echo $this->db->last_query(); // Debug: tampilkan query terakhir yang dieksekusi
 		return $query->result();
 	}
 

@@ -87,4 +87,29 @@ class Dt_hasil_so_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
+	/**
+	 * Ambil diskon pembelian terakhir per kode_brg berdasarkan PO terbaru.
+	 * Return: array keyed by kode_brg => discount
+	 */
+	public function get_discount_terakhir($flag)
+	{
+		$table = ($flag == 'medis') ? 'tc_po_det' : 'tc_po_nm_det';
+		$sql   = "SELECT kode_brg, discount
+		          FROM (
+		              SELECT kode_brg, discount,
+		                     ROW_NUMBER() OVER (PARTITION BY kode_brg ORDER BY id_tc_po DESC) AS rn
+		              FROM " . $table . "
+		          ) AS ranked
+		          WHERE rn = 1";
+		$this->db->db_debug = FALSE;
+		$query = $this->db->query($sql);
+		$this->db->db_debug = TRUE;
+		if (!$query) return array();
+		$map = array();
+		foreach ($query->result() as $row) {
+			$map[$row->kode_brg] = $row->discount;
+		}
+		return $map;
+	}
+
 }

@@ -109,14 +109,14 @@
         <div class="srch-card-hdr"><i class="fa fa-search"></i> Filter &amp; Pencarian</div>
         <div class="srch-card-body">
 
-          <div class="form-group" style="margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0px">
             <label class="control-label col-md-2" style="font-size:12px">Pilih Bagian/Unit</label>
             <div class="col-md-5">
               <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '' , 'kode_bagian', 'kode_bagian', 'form-control input-sm', '', '') ?>
             </div>
           </div>
 
-          <div class="form-group" style="margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0px">
             <label class="control-label col-md-2" style="font-size:12px">Tanggal Permintaan</label>
             <div class="col-md-2">
               <div class="input-group">
@@ -133,7 +133,7 @@
             </div>
           </div>
 
-          <div class="form-group" style="margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0px">
             <label class="control-label col-md-2" style="font-size:12px">Jenis Barang</label>
             <div class="col-md-4">
               <div class="radio" style="margin-top:4px">
@@ -149,7 +149,7 @@
             </div>
           </div>
 
-          <div class="form-group" style="margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0px">
             <label class="control-label col-md-2" style="font-size:12px">Status</label>
             <div class="col-md-2">
               <select name="status_penerimaan" id="status_penerimaan" class="form-control input-sm">

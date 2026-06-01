@@ -120,7 +120,7 @@ class Pl_pelayanan extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        // echo '<pre>';print_r($data['value']);die;
+        // echo '<pre>';print_r($data);die;
         if($_GET['form'] == 'billing_entry'){
             $this->load->view('Pl_pelayanan/form', $data);
         }else{
@@ -253,8 +253,9 @@ class Pl_pelayanan extends MX_Controller {
         $data['id_pl_tc_poli'] = $id;
         $data['status_pulang'] = (empty($data['value']->tgl_keluar_poli))?0:1;
         $data['kode_klas'] = $kode_klas;
+        $data['kode_profit'] = 2000;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
-        
+
         // txt_call_patient
         $data['txt_call_patient'] = $this->master->get_txt_call_patient(['jk' => $data['value']->jen_kelamin, 'title' => $data['value']->title, 'nama_pasien' => $data['value']->nama_pasien, 'poli' => $data['value']->short_name]);
         $anatomi_tagging = isset($data['riwayat']->anatomi_tagging)?json_decode($data['riwayat']->anatomi_tagging):'';
@@ -271,6 +272,7 @@ class Pl_pelayanan extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
+        // echo "<pre>"; print_r($data);die;
         $this->load->view('Pl_pelayanan/form_diagnosa_dr', $data);
     }
 
@@ -2584,6 +2586,41 @@ class Pl_pelayanan extends MX_Controller {
     
     }
 
+    public function view_detail_resume_medis_sidebar($no_registrasi, $no_kunjungan='') { 
+        
+        $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan);
+        $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($no_registrasi, $no_kunjungan);
+        // eresep
+
+        $data = [
+            'result' => $resume,
+            'penunjang' => $resume['penunjang'],
+            'no_registrasi' => $no_registrasi,
+            'trans_kasir' => $trans_kasir,
+        ];
+
+        $userDob = $data['result']['registrasi']->tgl_lhr;
+ 
+        //Create a DateTime object using the user's date of birth.
+        $dob = new DateTime($userDob);
+     
+        //We need to compare the user's date of birth with today's date.
+        $now = new DateTime();
+
+        //Calculate the time difference between the two dates.
+        $difference = $now->diff($dob);
+
+        //Get the difference in years, as we are looking for the user's age.
+        $umur = $difference->format('%y');
+
+        $data['umur'] = $umur;
+        
+        // echo '<pre>';print_r($resume);die;
+        $html = $this->load->view('Pl_pelayanan/view_resume_medis_sidebar', $data, true);
+        echo json_encode(array('html' => $html, 'data' => $data));
+    
+    }
+
     public function cppt($id='', $no_kunjungan)
     {
         /*breadcrumbs for edit*/
@@ -2606,12 +2643,13 @@ class Pl_pelayanan extends MX_Controller {
         }
 
         $data['no_mr'] = $data['value']->no_mr;
+        $data['no_registrasi'] = $data['value']->no_registrasi;
         $data['id'] = $id;
         $data['kode_klas'] = $kode_klas;
         $data['kode_profit'] = 2000;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['form_type'] = $_GET['form'];
-        
+
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -2897,12 +2935,51 @@ class Pl_pelayanan extends MX_Controller {
         // get th_riwayat_pasien prev
         $th = $this->db->get_where('th_riwayat_pasien', ['kode_riwayat' => $_POST['kode_riwayat']])->row();
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'result' => $th));
-           
+
     }
 
-    
+    public function get_resep_drugs($kode_pesan_resep = '')
+    {
+        if (!$kode_pesan_resep) {
+            echo json_encode(['status' => 400, 'data' => [], 'e_resep' => 0]);
+            return;
+        }
 
-   
+        $hdr = $this->db->select('e_resep, jenis_resep, resep_iter, keterangan')->get_where('fr_tc_pesan_resep', ['kode_pesan_resep' => $kode_pesan_resep])->row();
+        $e_resep = $hdr ? (int)$hdr->e_resep : 0;
+
+        $all = $this->db
+            ->where('kode_pesan_resep', $kode_pesan_resep)
+            ->order_by('id', 'ASC')
+            ->get('fr_tc_pesan_resep_detail')
+            ->result();
+
+        $top = [];
+        $children = [];
+        foreach ($all as $item) {
+            if (trim($item->parent) === '0' || trim($item->parent) === '') {
+                $item->children = [];
+                $top[] = $item;
+            } else {
+                $children[trim($item->parent)][] = $item;
+            }
+        }
+        foreach ($top as &$t) {
+            if ($t->tipe_obat === 'racikan' && isset($children[trim($t->kode_brg)])) {
+                $t->children = $children[trim($t->kode_brg)];
+            }
+        }
+        unset($t);
+
+        $hdr_out = [
+            'jenis_resep' => $hdr ? ($hdr->jenis_resep ?: 'non_prb') : 'non_prb',
+            'resep_iter'  => $hdr ? ($hdr->resep_iter  ?: '0')       : '0',
+            'keterangan'  => $hdr ? ($hdr->keterangan  ?: '')        : '',
+        ];
+        echo json_encode(['status' => 200, 'data' => $top, 'e_resep' => $e_resep, 'hdr' => $hdr_out]);
+    }
+
+
 
 }
 

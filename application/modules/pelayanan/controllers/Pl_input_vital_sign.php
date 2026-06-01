@@ -106,6 +106,8 @@ class Pl_input_vital_sign extends MX_Controller {
             $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'nadi'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->nadi.'" id="nadi_'.$row_list->no_kunjungan.'"></div>';
             $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'suhu'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->suhu.'" id="suhu_'.$row_list->no_kunjungan.'"></div>';
             $row[] = '<div class="center"><a href="#" class="label label-xs label-primary" onclick="getMenu('."'pelayanan/Pl_input_vital_sign/assesmen_rj/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?type=Rajal&no_mr=".$row_list->no_mr."'".')">Assesmen</a></div>';
+            $row[] = isset($row_list->resep_iter) ? $row_list->resep_iter : '';
+            $row[] = isset($row_list->jumlah_iter) ? $row_list->jumlah_iter : '';
 
             if($row_list->status_batal==1){
                 $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
@@ -132,7 +134,6 @@ class Pl_input_vital_sign extends MX_Controller {
 
     public function process(){
 
-        // echo '<pre>';print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
@@ -140,20 +141,17 @@ class Pl_input_vital_sign extends MX_Controller {
         $this->form_validation->set_rules('value', 'Value', 'trim|required');
 
         // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");
 
         if ($this->form_validation->run() == FALSE)
         {
             $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
             echo json_encode(array('status' => 301, 'message' => validation_errors()));
         }
         else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();           
+        {
+            $this->db->trans_begin();
 
-            // cek exist
             $riwayat = $this->db->get_where('th_riwayat_pasien', ['no_kunjungan' => $_POST['no_kunjungan'], 'no_registrasi' => $_POST['no_registrasi']])->row();
 
             $vital_sign = array(
@@ -161,14 +159,13 @@ class Pl_input_vital_sign extends MX_Controller {
                 'no_kunjungan' => $_POST['no_kunjungan'],
                 $_POST['type'] => $this->input->post('value'),
             );
-            // echo '<pre>';print_r($riwayat_diagnosa);die;
-            
+
             if( isset($riwayat->kode_riwayat) ){
                 $this->db->where('kode_riwayat', $riwayat->kode_riwayat)->update('th_riwayat_pasien', $vital_sign);
             }else{
                 $this->db->insert('th_riwayat_pasien', $vital_sign);
             }
-                        
+
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -179,7 +176,64 @@ class Pl_input_vital_sign extends MX_Controller {
                 $this->db->trans_commit();
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
             }
-        
+
+        }
+
+    }
+
+    public function process_all(){
+
+        $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
+        $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
+
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {
+            $this->db->trans_begin();
+
+            $no_registrasi = $this->input->post('no_registrasi');
+            $no_kunjungan  = $this->input->post('no_kunjungan');
+
+            // cek exist
+            $riwayat = $this->db->get_where('th_riwayat_pasien', ['no_kunjungan' => $no_kunjungan, 'no_registrasi' => $no_registrasi])->row();
+
+            $vital_sign = array(
+                'no_mr' => $_POST['no_mr'],
+                'no_registrasi' => $no_registrasi,
+                'no_kunjungan'  => $no_kunjungan,
+                'tinggi_badan'  => $this->input->post('tinggi_badan'),
+                'berat_badan'   => $this->input->post('berat_badan'),
+                'tekanan_darah' => $this->input->post('tekanan_darah'),
+                'nadi'          => $this->input->post('nadi'),
+                'suhu'          => $this->input->post('suhu'),
+                'resep_iter'    => $this->input->post('resep_iter') ? $this->input->post('resep_iter') : 'N',
+                'jumlah_iter'   => ($this->input->post('resep_iter') == 'Y') ? $this->input->post('jumlah_iter') : null,
+            );
+
+            if( isset($riwayat->kode_riwayat) ){
+                $this->db->where('kode_riwayat', $riwayat->kode_riwayat)->update('th_riwayat_pasien', $vital_sign);
+            }else{
+                $this->db->insert('th_riwayat_pasien', $vital_sign);
+            }
+            // echo $this->db->last_query();die;
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+
         }
 
     }

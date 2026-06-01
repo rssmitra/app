@@ -17,8 +17,8 @@
     :root {
       --bg:      #0d1b2a;
       --bg2:     #0f2339;
-      --card-bg: rgba(255,255,255,0.05);
-      --border:  rgba(255,255,255,0.10);
+      --card-bg: #132f4c;
+      --border:  rgba(255,255,255,0.18);
       --hdr-bg:  linear-gradient(135deg, #0a2d5a 0%, #00669F 100%);
       --ftr-bg:  linear-gradient(90deg,  #0a2d5a 0%, #00669F 100%);
       --text:    #e8f4f8;
@@ -163,15 +163,15 @@
     }
     /* Baris 0: Sedang dilayani – hijau */
     .poli-table tbody tr.row-serving {
-      background: var(--green-l);
+      background: rgba(76,175,80,0.28);
       border-left: 3px solid var(--green);
     }
-    .poli-table tbody tr.row-serving td { color: #a5d6a7; }
+    .poli-table tbody tr.row-serving td { color: #c8e6c9; }
     /* Baris 1: Berikutnya – normal */
     .poli-table tbody tr.row-next {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.08);
     }
-    .poli-table tbody tr.row-next td { color: rgba(255,255,255,0.55); }
+    .poli-table tbody tr.row-next td { color: rgba(255,255,255,0.75); }
 
     /* Badge nomor antrian */
     .q-badge {

@@ -1,5 +1,143 @@
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
+
+<style>
+/* ── CPPT SOAP Styled Sections ── */
+.cppt-section {
+  border-radius: 0 6px 6px 0;
+  padding: 7px 10px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.cppt-s { border-left: 3px solid #0ea5e9; background: #f0f9ff; }
+.cppt-o { border-left: 3px solid #0891b2; background: #f0fdff; }
+.cppt-a { border-left: 3px solid #7c3aed; background: #faf5ff; }
+.cppt-p { border-left: 3px solid #059669; background: #f0fdf4; }
+.cppt-title {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.cppt-s .cppt-title { color: #0369a1; }
+.cppt-o .cppt-title { color: #0891b2; }
+.cppt-a .cppt-title { color: #6d28d9; }
+.cppt-p .cppt-title { color: #065f46; }
+.cppt-flabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: #64748b;
+  display: block;
+  margin: 5px 0 2px;
+}
+.cppt-fval {
+  font-size: 12.5px;
+  color: #1e293b;
+  line-height: 1.5;
+}
+/* Vital signs grid */
+.cppt-ttv {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+.cppt-ttv-item {
+  flex: 1 1 0;
+  min-width: 52px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 5px 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.cppt-ttv-lbl  { font-size: 9px; font-weight: 700; text-transform: uppercase; color: #0891b2; }
+.cppt-ttv-val  { font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.2; }
+.cppt-ttv-unit { font-size: 9px; color: #94a3b8; }
+/* Badge tipe */
+.cppt-badge {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+}
+.cppt-badge-blue  { background: #0369a1; }
+.cppt-badge-green { background: #15803d; }
+/* Header kartu */
+.cppt-card-hdr {
+  background: linear-gradient(135deg,#f0f9ff,#e8f4fd);
+  border-bottom: 1px solid #bae6fd;
+  padding: 7px 10px;
+  border-radius: 6px 6px 0 0;
+  font-size: 12px;
+}
+.cppt-card-hdr .ppa-name  { font-weight: 700; color: #0f172a; }
+.cppt-card-hdr .ppa-role  { color: #475569; font-size: 11px; }
+.cppt-card-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+.cppt-card-body { padding: 8px; }
+/* e-Resep section */
+.cppt-r { border-left: 3px solid #d97706; background: #fffbeb; }
+/* Riwayat pasien list */
+.cppt-riwayat-list { display:flex; flex-direction:column; gap:4px; margin-top:5px; }
+.cppt-riwayat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.cppt-riwayat-item i { flex-shrink:0; margin-top:2px; font-size:12px; }
+.cppt-rw-label { font-weight:700; color:#334155; }
+.cppt-rw-val       { color:#1e293b; }
+.cppt-rw-val.ada   { color:#dc2626; font-weight:600; }
+.cppt-rw-val.tidak { color:#16a34a; }
+.cppt-rw-ket { color:#64748b; font-size:11px; font-style:italic; margin-top:2px; }
+/* e-Resep table */
+.cppt-resep-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+  font-size: 12px;
+}
+.cppt-resep-table th {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  padding: 5px 8px;
+  border-bottom: 2px solid #fde68a;
+}
+.cppt-resep-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #fef3c7;
+  vertical-align: top;
+}
+.cppt-resep-table tr:last-child td { border-bottom: none; }
+</style>
+
 <script type="text/javascript">
 
   jQuery(function($) {  
@@ -144,11 +282,30 @@
         data: $('#form_search').serialize(),
         dataType: "json",
         success: function(result) {
-          window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&no_mr=<?php echo $no_mr?>&order_by=v.tanggal&sort=ASC&'+result.data+'','_blank'); 
+          window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&no_mr=<?php echo $no_mr?>&order_by=v.tanggal&sort=ASC&'+result.data+'','_blank');
         }
       });
     });
 
+    // Typeahead pencarian dokter / PPA
+    $('#filter_nama_ppa').typeahead({
+      source: function (query, result) {
+        $.ajax({
+          url: 'templates/references/getAllDokter',
+          data: { keyword: query },
+          dataType: 'json',
+          type: 'POST',
+          success: function (response) {
+            result($.map(response, function (item) { return item; }));
+          }
+        });
+      },
+      afterSelect: function (item) {
+        var parts = item.split(':');
+        var nama  = parts.length > 1 ? $.trim(parts[1]) : $.trim(item);
+        $('#filter_nama_ppa').val(nama);
+      }
+    });
 
   });
 
@@ -261,6 +418,7 @@
   }
 
   function reset_table(){
+    $('#filter_nama_ppa').val('');
     oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $no_registrasi?>").load();
     // $("html, body").animate({ scrollTop: "400px" });
   }
@@ -652,8 +810,23 @@
             </div>
 
 
-            <div class="col-md-4 no-padding">
-              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default" style="margin-left: 19%">
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-1">Dokter / PPA</label>
+            <div class="col-md-3">
+              <div class="input-group">
+                <input type="text" class="form-control typeahead" id="filter_nama_ppa" name="nama_ppa"
+                       placeholder="Ketik nama dokter..." autocomplete="off">
+                <span class="input-group-addon" style="cursor:pointer;" onclick="$('#filter_nama_ppa').val('').focus();">
+                  <i class="fa fa-times"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-md-4 no-padding" style="padding-top:3px;">
+              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Search
               </a>

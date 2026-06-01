@@ -305,6 +305,8 @@ th, td {
 
         <form class="form-horizontal" method="post" id="form_cart" action="<?php echo base_url().$url?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
 
+        <!-- hidden  -->
+         <input type="hidden" name="version" id="version" value="0">
           <div class="col-md-8">
             <span style="font-weight: bold; font-size: 14px">Sumber Stok Barang Unit</span>
             <div class="form-group">

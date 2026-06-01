@@ -1,3 +1,4 @@
+<script src="<?php echo base_url()?>assets/js/sweetalert2.all.min.js"></script>
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
@@ -606,7 +607,7 @@
         $('#keyword_obat<?php echo $ix?>').typeahead({
             source: function (query, result) {
                 $.ajax({
-                    url: "templates/references/getObatByBagianAutoComplete",
+                    url: "templates/references/getObatByBagianAutoCompleteNoInfoStok",
                     data: { keyword:query, bag: '060101'},            
                     dataType: "json",
                     type: "POST",
@@ -697,7 +698,7 @@
     $('#inputKeyObat').typeahead({
         source: function (query, result) {
             $.ajax({
-                url: "templates/references/getObatByBagianAutoComplete",
+                url: "templates/references/getObatByBagianAutoCompleteNoInfoStok",
                 data: { keyword:query, bag: '060101'},            
                 dataType: "json",
                 type: "POST",
@@ -949,7 +950,397 @@
         }
     });
 
+/* ── Pemeriksaan Penunjang Medis Functions ─────────────────────── */
+var pmOrderCount = 0;
 
+function submitOrderPM(){
+    var pmTujuan = $('#pm_tujuan_modal').val();
+    var pmTujuanText = $('#pm_tujuan_modal option:selected').text();
+    var jenisLayanan = $('input[name="jenis_layanan_pm_modal"]:checked').val();
+    var keterangan = $('#keterangan_pm_modal').val();
+
+    if(!pmTujuan || pmTujuan === ''){
+        $.achtung({message: '<i class="fa fa-warning"></i> Silahkan pilih Unit Tujuan Penunjang', timeout: 4, className: 'achtungFail'});
+        return;
+    }
+
+    var formData = {
+        noMrHidden: $('#noMrHidden').val(),
+        no_registrasi_rujuk: $('#no_registrasi').val(),
+        klas_rujuk: $('#kode_klas_val').val() || 16,
+        bagian_asal: $('#kode_bagian_val').val(),
+        asal_pasien_pm: $('#kode_bagian_val').val(),
+        pm_tujuan: pmTujuan,
+        jenis_layanan_pm: jenisLayanan,
+        keterangan_pm: keterangan,
+        kode_perusahaan_hidden: $('#kode_perusahaan_val').val() || '',
+        kode_kelompok_hidden: '',
+        umur_saat_pelayanan_hidden: $('#umur_saat_pelayanan_hidden').val() || '',
+        nama_pasien_hidden: $('#nama_pasien_hidden').val() || ''
+    };
+
+    $.ajax({
+        url: 'registration/Reg_pm/process',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        beforeSend: function(){
+            $('.fdd-pm-btn-submit').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+        },
+        complete: function(xhr){
+            $('.fdd-pm-btn-submit').prop('disabled', false).html('<i class="fa fa-check"></i> Submit Order');
+            var data = xhr.responseText;
+            var json = JSON.parse(data);
+            if(json.status === 200){
+                $.achtung({message: '<i class="fa fa-check-circle"></i> Order Penunjang Medis berhasil disimpan', timeout: 4, className: 'achtungSuccess'});
+                // Reset modal form
+                $('#pm_tujuan_modal').val('');
+                $('input[name="jenis_layanan_pm_modal"][value="0"]').prop('checked', true);
+                $('#keterangan_pm_modal').val('');
+                $('#modal-penunjang-medis').modal('hide');
+
+                // Set radio to Ya and show list
+                $('input[name="ada_penunjang"][value="Y"]').prop('checked', true);
+                $('#fdd_pm_list').slideDown(200);
+
+                // Reload PM order list
+                loadPMOrders();
+            } else {
+                $.achtung({message: json.message, timeout: 5, className: 'achtungFail'});
+            }
+        }
+    });
+}
+
+function loadPMOrders(){
+    var noMr = $('#noMrHidden').val();
+    var bagianAsal = $('#kode_bagian_val').val();
+    var noReg = $('#no_registrasi').val();
+
+    if(!noMr || !noReg) return;
+
+    $.ajax({
+        url: 'pelayanan/Pl_pelayanan_pm/get_data_order?search_by=no_mr&keyword=' + noMr + '&bagian_asal=' + bagianAsal + '&no_reg=' + noReg,
+        type: 'POST',
+        data: { draw: 1, start: 0, length: 50, search: {value: ''} },
+        dataType: 'json',
+        success: function(res){
+            var container = $('#fdd_pm_cards');
+            container.empty();
+            pmOrderCount = 0;
+
+            if(res.data && res.data.length > 0){
+                $('input[name="ada_penunjang"][value="Y"]').prop('checked', true);
+                $('#fdd_pm_list').show();
+
+                $.each(res.data, function(i, row){
+                    pmOrderCount++;
+                    /*
+                     * [0] no_registrasi  [1] no_kunjungan  [2] str_type
+                     * [3] id_pm_tc_penunjang  [4] kode_bagian_tujuan  [5] ''
+                     * [6] dropdown HTML  [7] tgl_masuk  [8] no_mr+nama
+                     * [9] penjamin  [10] asal->tujuan HTML  [11] status HTML
+                     * [12] pengantar buttons HTML
+                     */
+                    var noKunjungan = row[1] || '';
+                    var idPm = row[3] || '';
+                    var kodeBagTujuan = row[4] || '';
+                    var asalTujuan = row[10] || '';
+                    var statusHtml = row[11] || '';
+                    var klas = $('#kode_klas_val').val() || 16;
+                    var btnPengantar = buildPengantarButtons(noKunjungan, idPm, kodeBagTujuan, bagianAsal, noMr, klas);
+
+                    // Determine unit icon & label
+                    var unitIcon = 'fa-flask', unitLabel = 'Penunjang Medis';
+                    if(kodeBagTujuan === '050101'){ unitIcon = 'fa-flask'; unitLabel = 'Laboratorium'; }
+                    else if(kodeBagTujuan === '050201'){ unitIcon = 'fa-x-ray'; unitLabel = 'Radiologi'; }
+                    else if(kodeBagTujuan === '050301'){ unitIcon = 'fa-heartbeat'; unitLabel = 'Fisioterapi'; }
+
+                    var card = '<div class="fdd-pm-card" id="fdd_pm_card_' + idPm + '">' +
+                        '<div class="fdd-pm-card-hdr">' +
+                            '<div class="fdd-pm-card-info">' +
+                                '<span class="fdd-pm-card-num">' + pmOrderCount + '</span>' +
+                                '<div>' +
+                                    '<div class="fdd-pm-card-unit"><i class="fa ' + unitIcon + '"></i> ' + unitLabel + '</div>' +
+                                    '<div class="fdd-pm-card-tujuan">' + asalTujuan + '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="fdd-pm-card-actions">' +
+                                statusHtml +
+                                ' <button type="button" class="fdd-pm-btn-del" onclick="deletePMOrder(\'' + row[0] + '\',\'' + noKunjungan + '\')" title="Hapus"><i class="fa fa-trash"></i></button>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="fdd-pm-card-detail" id="fdd_pm_detail_' + idPm + '">' +
+                            '<div class="fdd-pm-detail-loading"><i class="fa fa-spinner fa-spin"></i> Memuat rincian...</div>' +
+                        '</div>' +
+                        '<div class="fdd-pm-card-footer">' + btnPengantar + '</div>' +
+                    '</div>';
+
+                    container.append(card);
+
+                    // Load examination details for this order
+                    loadPMDetail(idPm, kodeBagTujuan, noMr);
+                });
+            } else {
+                container.html('<div class="fdd-pm-empty-state"><i class="fa fa-inbox"></i> Belum ada order penunjang medis</div>');
+                syncPengobatanTextarea();
+            }
+        }
+    });
+}
+
+function loadPMDetail(idPm, kodeBag, noMr){
+    var el = $('#fdd_pm_detail_' + idPm);
+    $.ajax({
+        url: 'pelayanan/Pl_pelayanan_pm/get_order_detail_json',
+        type: 'GET',
+        data: { id_pm_tc_penunjang: idPm },
+        dataType: 'json',
+        cache: false,   // Paksa fresh response, hindari browser cache
+        success: function(res){
+            if(res.status === 200 && res.data && res.data.length > 0){
+                var chips = '';
+                $.each(res.data, function(j, item){
+                    chips += '<span class="fdd-pm-chip"><i class="fa fa-check-circle"></i> ' + item.nama_tarif + '</span>';
+                });
+                el.html('<div class="fdd-pm-detail-label"><i class="fa fa-list-ul"></i> Rincian Pemeriksaan (' + res.data.length + ')</div><div class="fdd-pm-chips">' + chips + '</div>');
+            } else {
+                el.html('<div class="fdd-pm-detail-empty"><i class="fa fa-info-circle"></i> Belum ada pemeriksaan yang dipilih</div>');
+            }
+            syncPengobatanTextarea();
+        },
+        error: function(){
+            el.html('<div class="fdd-pm-detail-empty"><i class="fa fa-info-circle"></i> Belum ada pemeriksaan yang dipilih</div>');
+            syncPengobatanTextarea();
+        }
+    });
+}
+
+function buildPengantarButtons(noKunjungan, idPm, kodeBagTujuan, bagianAsal, noMr, klas){
+    var labelBuat = 'Buat Pengantar';
+    var formUrl = '';
+
+    var modalTitle = '';
+
+    if(kodeBagTujuan === '050101'){
+        labelBuat = '<i class="fa fa-file-text-o"></i> Pengantar Lab';
+        modalTitle = 'Form Permintaan Pemeriksaan Laboratorium';
+        formUrl = 'pelayanan/Pl_pelayanan/form_lab_detail/' + noKunjungan + '/' + idPm +
+                  '?type=PM&kode_bag=' + kodeBagTujuan + '&kode_bag_asal=' + bagianAsal +
+                  '&no_mr=' + noMr + '&klas=' + klas;
+    } else if(kodeBagTujuan === '050201'){
+        labelBuat = '<i class="fa fa-file-text-o"></i> Pengantar Rad';
+        modalTitle = 'Form Permintaan Pemeriksaan Radiologi';
+        formUrl = 'pelayanan/Pl_pelayanan/form_order_radiologi/' + noKunjungan + '/' + idPm +
+                  '?type=PM&kode_bag=' + kodeBagTujuan + '&kode_bag_asal=' + bagianAsal +
+                  '&no_mr=' + noMr + '&klas=' + klas;
+    } else if(kodeBagTujuan === '050301'){
+        labelBuat = '<i class="fa fa-file-text-o"></i> Pengantar Fisio';
+        modalTitle = 'Form Permintaan Pemeriksaan Fisioterapi';
+        formUrl = 'pelayanan/Pl_pelayanan/form_order_fisio/' + noKunjungan + '/' + idPm +
+                  '?type=PM&kode_bag=' + kodeBagTujuan + '&kode_bag_asal=' + bagianAsal +
+                  '&no_mr=' + noMr + '&klas=' + klas;
+    } else {
+        labelBuat = '<i class="fa fa-file-text-o"></i> Buat Pengantar';
+        modalTitle = 'Form Pengantar Penunjang Medis';
+        formUrl = 'pelayanan/Pl_pelayanan/form_lab_detail/' + noKunjungan + '/' + idPm +
+                  '?type=PM&kode_bag=' + kodeBagTujuan + '&kode_bag_asal=' + bagianAsal +
+                  '&no_mr=' + noMr + '&klas=' + klas;
+    }
+
+    var cetakUrl = 'pelayanan/Pl_pelayanan_pm/preview_pengantar_penunjang/' + noKunjungan +
+                   '?id_pm_tc_penunjang=' + idPm + '&type=PM&kode_bagian=' + kodeBagTujuan +
+                   '&kode_bag_asal=' + bagianAsal + '&no_mr=' + noMr + '&klas=' + klas;
+
+    var html = '<a href="#" onclick="openFormPengantar(\'' + formUrl + '\', \'' + modalTitle + '\')" class="fdd-pm-btn-pengantar">' + labelBuat + '</a>' +
+               '<a href="#" onclick="PopupCenter(\'' + cetakUrl + '\', \'Cetak Pengantar PM\', 800, 600)" class="fdd-pm-btn-cetak"><i class="fa fa-print"></i> Cetak Pengantar</a>';
+    return html;
+}
+
+function openFormPengantar(url, title){
+    title = title || 'Form Pengantar Penunjang Medis';
+    var body = $('#modal-pengantar-pm-body');
+    $('#modal-pengantar-pm-title').html('<i class="fa fa-file-text-o"></i> ' + title);
+    body.html('<div style="text-align:center;padding:40px"><i class="fa fa-spinner fa-spin fa-2x" style="color:#0891b2"></i><p style="margin-top:10px;color:#64748b;font-size:13px">Memuat form pengantar...</p></div>');
+    $('#modal-pengantar-pm').modal('show');
+
+    $.get(url, function(html){
+        body.html(html);
+        // Override the original btn_proses_order_lab click handler
+        overridePengantarSubmit();
+    }).fail(function(){
+        body.html('<div class="alert alert-danger" style="margin:20px;font-size:13px"><i class="fa fa-exclamation-triangle"></i> Gagal memuat form pengantar. Silahkan coba lagi.</div>');
+    });
+}
+
+function overridePengantarSubmit(){
+    // Cegah form di dalam modal melakukan submit biasa (page navigation)
+    $('#modal-pengantar-pm-body form').off('submit').on('submit', function(e){
+        e.preventDefault();
+    });
+    // Unbind semua handler termasuk inline onclick, lalu rebind dengan AJAX handler
+    $(document).off('click', '#btn_proses_order_lab');
+    $('#btn_proses_order_lab').off('click').removeAttr('onclick').on('click', function(e){
+        e.preventDefault();
+
+        // Serialize all inputs inside the modal body + append parent form fields
+        var formData = $('#modal-pengantar-pm-body :input').serialize();
+        formData += '&noMrHidden=' + encodeURIComponent($('#noMrHidden').val());
+        formData += '&no_registrasi=' + encodeURIComponent($('#no_registrasi').val());
+        formData += '&kode_perusahaan=' + encodeURIComponent($('#kode_perusahaan_val').val());
+        formData += '&kode_kelompok=' + encodeURIComponent($('input[name="kode_kelompok"]').val());
+        formData += '&dokter_pemeriksa=' + encodeURIComponent($('#dokter_pemeriksa').val());
+
+        $.ajax({
+            url: 'pelayanan/Pl_pelayanan_pm/process_order_lab',
+            data: formData,
+            dataType: 'json',
+            type: 'POST',
+            beforeSend: function(){
+                $('#btn_proses_order_lab').prop('disabled', true)
+                    .html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+            },
+            success: function(response){
+                $('#btn_proses_order_lab').prop('disabled', false)
+                    .html('<i class="fa fa-save"></i> Simpan dan Proses Permintaan Penunjang');
+
+                if(response.status == 200){
+                    $('#modal-pengantar-pm').modal('hide');
+                    loadPMOrders(); // Refresh kartu & chips segera setelah simpan
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: response.message || 'Permintaan penunjang medis berhasil disimpan.',
+                        confirmButtonColor: '#0891b2',
+                        confirmButtonText: 'OK'
+                    }).then(function() {
+                        loadPMOrders(); // Refresh sekali lagi setelah user klik OK
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: response.message || 'Terjadi kesalahan saat menyimpan.',
+                        confirmButtonColor: '#dc2626',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function(){
+                $('#btn_proses_order_lab').prop('disabled', false)
+                    .html('<i class="fa fa-save"></i> Simpan dan Proses Permintaan Penunjang');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Koneksi gagal. Silahkan coba lagi.',
+                    confirmButtonColor: '#dc2626',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+
+    });
+
+    // ── Override btn_add_tindakan (Radiologi) & btn_add_tindakan_fisio (Fisioterapi) ──
+    // Setiap kali pemeriksaan ditambahkan, langsung refresh chips di planning penunjang
+    // dan sync ke textarea pl_pengobatan — sama seperti perilaku input resep obat.
+    function _overrideAddTindakan(btnId, extraResets) {
+        $(document).off('click', '#' + btnId);
+        $('#' + btnId).off('click').on('click', function(e) {
+            e.preventDefault();
+            var idPm    = $('#id_pm_tc_penunjang').val();
+            var noMr    = $('#noMrHidden').val();
+            var kodeBag = $('#kode_bagian_pm').val();
+            $.ajax({
+                url: 'pelayanan/Pl_pelayanan_pm/process_order_penunjang',
+                data: $('#form_pelayanan').serialize(),
+                dataType: 'json',
+                type: 'POST',
+                success: function(response) {
+                    if (response.status == 200) {
+                        $('#no_kunjungan_pm').val(response.no_kunjungan);
+                        $('#InputKeyTindakan').val('').focus();
+                        $('#pl_kode_tindakan_hidden').val('');
+                        $('#pl_keterangan_tindakan').val('');
+                        if (typeof extraResets === 'function') extraResets();
+                        reset_table();
+                        // Refresh chips di planning penunjang & sync pl_pengobatan
+                        loadPMDetail(idPm, kodeBag, noMr);
+                    } else {
+                        alert('Silahkan cari pasien !');
+                    }
+                }
+            });
+        });
+    }
+
+    _overrideAddTindakan('btn_add_tindakan', null);
+    _overrideAddTindakan('btn_add_tindakan_fisio', function() {
+        $('#xray_foto').val('');
+        $('#kontra_indikasi').val('');
+        $('#pl_diagnosa').val('');
+        $('#pl_diagnosa_hidden').val('');
+    });
+
+    // ── Override delete_transaksi ──
+    // Refresh chips di planning penunjang setelah menghapus pemeriksaan
+    window.delete_transaksi = function(myid) {
+        if (!confirm('Are you sure?')) return false;
+        var idPm    = $('#id_pm_tc_penunjang').val();
+        var noMr    = $('#noMrHidden').val();
+        var kodeBag = $('#kode_bagian_pm').val();
+        $.ajax({
+            url: 'pelayanan/Pl_pelayanan_pm/delete_order',
+            type: 'post',
+            data: { ID: myid },
+            dataType: 'json',
+            beforeSend: function() { achtungShowLoader(); },
+            complete: function(xhr) {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                if (jsonResponse.status === 200) {
+                    $.achtung({ message: jsonResponse.message, timeout: 5 });
+                    reset_table();
+                    loadPMDetail(idPm, kodeBag, noMr);
+                } else {
+                    $.achtung({ message: jsonResponse.message, timeout: 5 });
+                }
+                achtungHideLoader();
+            }
+        });
+    };
+}
+
+function deletePMOrder(noReg, noKunjungan){
+    if(!confirm('Yakin ingin menghapus order penunjang medis ini?')) return;
+    $.ajax({
+        url: 'registration/Reg_pasien/delete_registrasi',
+        type: 'POST',
+        data: { ID: noReg, KunjunganID: noKunjungan },
+        dataType: 'json',
+        complete: function(xhr){
+            var data = xhr.responseText;
+            var json = JSON.parse(data);
+            if(json.status === 200){
+                $.achtung({message: '<i class="fa fa-check-circle"></i> Order berhasil dihapus', timeout: 4, className: 'achtungSuccess'});
+                loadPMOrders();
+            } else {
+                $.achtung({message: json.message, timeout: 5, className: 'achtungFail'});
+            }
+        }
+    });
+}
+
+// ── Pemeriksaan Penunjang toggle & init ──
+$('input[name="ada_penunjang"]').on('change', function(){
+    if($(this).val() === 'Y'){
+        $('#fdd_pm_list').slideDown(200);
+    } else {
+        $('#fdd_pm_list').slideUp(200);
+    }
+});
+
+// Load existing PM orders on page load
+loadPMOrders();
 </script>
 <script src="<?php echo base_url()?>assets/tts/script.js"></script>
 <!-- hidden form -->
@@ -1098,6 +1489,35 @@ audio, canvas, progress, video {
 .fdd-patient-meta { font-size: 12px; color: #64748b; margin-top: 4px; }
 .fdd-patient-meta i { color: #0ea5e9; }
 
+.fdd-iter-alert {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+  border: 1.5px solid #feb9b4; border-left: 4px solid #f6615c;
+  border-radius: 10px; padding: 12px 18px; margin-bottom: 14px;
+  animation: fddIterPulse 2s ease-in-out infinite;
+}
+@keyframes fddIterPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+  50% { box-shadow: 0 0 0 4px rgba(139,92,246,0.1); }
+}
+.fdd-iter-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, #f65c5c, #d92828);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 18px; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(246, 92, 92, 0.3);
+}
+.fdd-iter-body { flex: 1; min-width: 0; }
+.fdd-iter-title {
+  font-size: 13px; font-weight: 700; color: #b62121; margin-bottom: 2px;
+}
+.fdd-iter-desc {
+  font-size: 12px; color: #6b7280; line-height: 1.5;
+}
+.fdd-iter-desc strong {
+  color: #b62121; font-size: 14px;
+}
+
 .fdd-section {
   border-radius: 10px; border: 1px solid #e2e8f0;
   overflow: visible; margin-bottom: 14px;
@@ -1236,6 +1656,251 @@ audio, canvas, progress, video {
   box-shadow: 0 4px 16px rgba(29,78,216,.4);
   transform: translateY(-1px); color: #fff !important;
 }
+
+/* ── Pemeriksaan Penunjang — .fdd-pm-* ────────────────────────── */
+.fdd-pm-section {
+  background: #f0fdfa; border: 1.5px solid #99f6e4; border-radius: 10px;
+  padding: 14px 16px;
+}
+.fdd-pm-question {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.fdd-pm-label {
+  font-size: 13px; font-weight: 700; color: #0f766e;
+  display: flex; align-items: center; gap: 6px;
+}
+.fdd-pm-toggle {
+  display: flex; gap: 6px;
+}
+.fdd-pm-radio {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 14px; border-radius: 7px;
+  border: 1.5px solid #e2e8f0; background: #fff;
+  font-size: 12.5px; font-weight: 600; color: #64748b;
+  cursor: pointer; margin: 0; transition: all .15s;
+}
+.fdd-pm-radio:has(input:checked) {
+  border-color: #0d9488; background: #ccfbf1; color: #0f766e;
+}
+.fdd-pm-radio input[type="radio"] {
+  accent-color: #0d9488; width: 14px; height: 14px; margin: 0; cursor: pointer;
+}
+.fdd-pm-radio-text { white-space: nowrap; }
+
+.fdd-pm-list-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px; font-weight: 700; color: #334155;
+}
+.fdd-pm-list-hdr i { color: #0891b2; margin-right: 4px; }
+.fdd-pm-btn-add {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border: none; border-radius: 7px;
+  background: linear-gradient(135deg, #0d9488, #0891b2);
+  color: #fff; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+}
+.fdd-pm-btn-add:hover { background: linear-gradient(135deg, #0f766e, #0e7490); transform: translateY(-1px); }
+
+/* ── PM Order Cards ── */
+.fdd-pm-card {
+  border: 1.5px solid #e2e8f0; border-radius: 10px;
+  background: #fff; margin-bottom: 10px; overflow: hidden;
+  transition: border-color .15s;
+}
+.fdd-pm-card:hover { border-color: #99f6e4; }
+.fdd-pm-card-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9; gap: 8px; flex-wrap: wrap;
+}
+.fdd-pm-card-info {
+  display: flex; align-items: center; gap: 10px; min-width: 0;
+}
+.fdd-pm-card-num {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: linear-gradient(135deg, #0d9488, #0891b2);
+  color: #fff; font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.fdd-pm-card-unit {
+  font-size: 13px; font-weight: 700; color: #0f766e;
+}
+.fdd-pm-card-unit i { margin-right: 4px; }
+.fdd-pm-card-tujuan {
+  font-size: 11px; color: #64748b; margin-top: 1px;
+}
+.fdd-pm-card-actions {
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.fdd-pm-card-detail {
+  padding: 10px 14px;
+}
+.fdd-pm-card-footer {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 8px 14px; background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+}
+.fdd-pm-detail-label {
+  font-size: 11px; font-weight: 700; color: #475569;
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: .3px;
+}
+.fdd-pm-detail-label i { color: #0891b2; margin-right: 3px; }
+.fdd-pm-chips {
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.fdd-pm-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 6px;
+  background: #ecfdf5; border: 1px solid #a7f3d0;
+  color: #065f46; font-size: 11px; font-weight: 600;
+  white-space: nowrap;
+}
+.fdd-pm-chip i { color: #10b981; font-size: 10px; }
+.fdd-pm-detail-loading {
+  font-size: 11px; color: #94a3b8; font-style: italic;
+  padding: 4px 0;
+}
+.fdd-pm-detail-loading i { margin-right: 4px; }
+.fdd-pm-detail-empty {
+  font-size: 11px; color: #94a3b8; font-style: italic;
+  padding: 4px 0;
+}
+.fdd-pm-detail-empty i { margin-right: 4px; color: #cbd5e1; }
+.fdd-pm-empty-state {
+  text-align: center; color: #94a3b8; font-style: italic;
+  padding: 20px 10px; font-size: 13px;
+}
+.fdd-pm-empty-state i { font-size: 20px; display: block; margin-bottom: 6px; color: #cbd5e1; }
+.fdd-pm-btn-del {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border: none; border-radius: 6px;
+  background: #fee2e2; color: #dc2626; font-size: 12px;
+  cursor: pointer; transition: all .15s;
+}
+.fdd-pm-btn-del:hover { background: #fecaca; transform: scale(1.1); }
+.fdd-pm-badge-biasa {
+  display: inline-block; padding: 2px 8px; border-radius: 5px;
+  background: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 600;
+}
+.fdd-pm-badge-cito {
+  display: inline-block; padding: 2px 8px; border-radius: 5px;
+  background: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700;
+}
+
+/* ── Modal Penunjang Medis ── */
+#modal-penunjang-medis .modal-header {
+  background: linear-gradient(135deg, #0d9488, #0891b2);
+  color: #fff; border-radius: 8px 8px 0 0; padding: 14px 18px;
+  border-bottom: none;
+}
+#modal-penunjang-medis .modal-header .modal-title {
+  font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+}
+#modal-penunjang-medis .modal-header .close {
+  color: #fff; opacity: .8; text-shadow: none; font-size: 22px;
+}
+#modal-penunjang-medis .modal-header .close:hover { opacity: 1; }
+#modal-penunjang-medis .modal-content {
+  border: none; border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.2);
+}
+#modal-penunjang-medis .modal-body { padding: 18px 20px; }
+#modal-penunjang-medis .modal-footer {
+  border-top: 1px solid #f1f5f9; padding: 12px 20px;
+}
+.fdd-pm-form-group { margin-bottom: 14px; }
+.fdd-pm-form-label {
+  display: block; font-size: 12px; font-weight: 700;
+  color: #374151; margin-bottom: 5px;
+}
+.fdd-pm-form-label .fdd-required { color: #ef4444; margin-left: 2px; }
+.fdd-pm-form-select {
+  width: 100%; padding: 0px 0px; border: 1.5px solid #e2e8f0;
+  border-radius: 8px; font-size: 13px; color: #334155;
+  background: #fff; transition: border-color .15s;
+}
+.fdd-pm-form-select:focus { border-color: #0d9488; outline: none; box-shadow: 0 0 0 3px rgba(13,148,136,.1); }
+.fdd-pm-form-textarea {
+  width: 100%; padding: 8px 10px; border: 1.5px solid #e2e8f0;
+  border-radius: 8px; font-size: 13px; color: #334155;
+  background: #fff; resize: vertical; min-height: 60px; transition: border-color .15s;
+}
+.fdd-pm-form-textarea:focus { border-color: #0d9488; outline: none; box-shadow: 0 0 0 3px rgba(13,148,136,.1); }
+.fdd-pm-jenis-row {
+  display: flex; gap: 8px; margin-top: 4px;
+}
+.fdd-pm-jenis-opt {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 7px;
+  border: 1.5px solid #e2e8f0; background: #f8fafc;
+  font-size: 12.5px; font-weight: 600; color: #64748b;
+  cursor: pointer; margin: 0; transition: all .15s;
+}
+.fdd-pm-jenis-opt:has(input:checked) {
+  border-color: #0d9488; background: #ccfbf1; color: #0f766e;
+}
+.fdd-pm-jenis-opt input[type="radio"] {
+  accent-color: #0d9488; width: 14px; height: 14px; margin: 0; cursor: pointer;
+}
+.fdd-pm-btn-submit {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 20px; border: none; border-radius: 8px;
+  background: linear-gradient(135deg, #0d9488, #0891b2);
+  color: #fff; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+}
+.fdd-pm-btn-submit:hover { background: linear-gradient(135deg, #0f766e, #0e7490); transform: translateY(-1px); }
+.fdd-pm-btn-cancel {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+  background: #fff; color: #64748b; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+}
+.fdd-pm-btn-cancel:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+/* ── Pengantar PM buttons in table ── */
+.fdd-pm-btn-pengantar {
+  display: inline-block; padding: 4px 10px; border-radius: 5px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #fff !important; font-size: 11px; font-weight: 600;
+  text-decoration: none !important; white-space: nowrap;
+  transition: all .15s; margin-bottom: 4px;
+}
+.fdd-pm-btn-pengantar:hover {
+  background: linear-gradient(135deg, #1e40af, #1d4ed8);
+  transform: translateY(-1px); color: #fff !important;
+}
+.fdd-pm-btn-cetak {
+  display: inline-block; padding: 4px 10px; border-radius: 5px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff !important; font-size: 11px; font-weight: 600;
+  text-decoration: none !important; white-space: nowrap;
+  transition: all .15s;
+}
+.fdd-pm-btn-cetak:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+  transform: translateY(-1px); color: #fff !important;
+}
+
+/* ── Modal Pengantar PM ── */
+.fdd-pengantar-modal-hdr {
+  background: linear-gradient(135deg, #1d4ed8, #0891b2);
+  color: #fff; border-radius: 8px 8px 0 0; padding: 14px 18px;
+  border-bottom: none;
+}
+.fdd-pengantar-modal-hdr .modal-title {
+  font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+}
+.fdd-pengantar-modal-hdr .close {
+  color: #fff; opacity: .8; text-shadow: none; font-size: 22px;
+}
+.fdd-pengantar-modal-hdr .close:hover { opacity: 1; }
+#modal-pengantar-pm .modal-content {
+  border: none; border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.2);
+}
 </style>
 
 <!-- input type hidden -->
@@ -1340,6 +2005,7 @@ audio, canvas, progress, video {
     </div>
   </div>
 
+  
   <!-- S — Subjective -->
   <div class="fdd-section fdd-section-s">
     <div class="fdd-section-hdr">
@@ -1370,7 +2036,7 @@ audio, canvas, progress, video {
           </label>
         </div>
         <div id="riwayat_penyakit_dahulu_txt" style="<?php echo (isset($riwayat->riwayat_penyakit_dahulu) && $riwayat->riwayat_penyakit_dahulu == 'ada') ? '' : 'display:none;'; ?>margin-top:6px;">
-          <textarea class="form-control" name="riwayat_penyakit_dahulu_ket" placeholder="Jelaskan riwayat penyakit dahulu..." style="height:70px!important"><?php echo isset($riwayat->riwayat_penyakit_dahulu_ket) ? $riwayat->riwayat_penyakit_dahulu_ket : ''; ?></textarea>
+          <textarea class="form-control" name="riwayat_penyakit_dahulu_ket" id="riwayat_penyakit_dahulu_ket" placeholder="Jelaskan riwayat penyakit dahulu..." style="height:70px!important"><?php echo isset($riwayat->riwayat_penyakit_dahulu_ket) ? $riwayat->riwayat_penyakit_dahulu_ket : ''; ?></textarea>
         </div>
       </div>
 
@@ -1388,7 +2054,7 @@ audio, canvas, progress, video {
           </label>
         </div>
         <div id="riwayat_operasi_txt" style="<?php echo (isset($riwayat->riwayat_operasi) && $riwayat->riwayat_operasi == 'ada') ? '' : 'display:none;'; ?>margin-top:6px;">
-          <textarea class="form-control" name="riwayat_operasi_ket" placeholder="Jelaskan riwayat operasi sebelumnya..." style="height:70px!important"><?php echo isset($riwayat->riwayat_operasi_ket) ? $riwayat->riwayat_operasi_ket : ''; ?></textarea>
+          <textarea class="form-control" name="riwayat_operasi_ket" id="riwayat_operasi_ket" placeholder="Jelaskan riwayat operasi sebelumnya..." style="height:70px!important"><?php echo isset($riwayat->riwayat_operasi_ket) ? $riwayat->riwayat_operasi_ket : ''; ?></textarea>
         </div>
       </div>
 
@@ -1406,7 +2072,7 @@ audio, canvas, progress, video {
           </label>
         </div>
         <div id="riwayat_alergi_txt" style="<?php echo (isset($riwayat->riwayat_alergi) && $riwayat->riwayat_alergi == 'ada') ? '' : 'display:none;'; ?>margin-top:6px;">
-          <textarea class="form-control" name="riwayat_alergi_ket" placeholder="Jelaskan jenis alergi (obat, makanan, dll)..." style="height:70px!important"><?php echo isset($riwayat->riwayat_alergi_ket) ? $riwayat->riwayat_alergi_ket : ''; ?></textarea>
+          <textarea class="form-control" name="riwayat_alergi_ket" id="riwayat_alergi_ket" placeholder="Jelaskan jenis alergi (obat, makanan, dll)..." style="height:70px!important"><?php echo isset($riwayat->riwayat_alergi_ket) ? $riwayat->riwayat_alergi_ket : ''; ?></textarea>
         </div>
       </div>
 
@@ -1583,10 +2249,107 @@ audio, canvas, progress, video {
     </div>
     <div class="fdd-section-body">
 
+      <!-- Pemeriksaan Penunjang -->
+      <div class="fdd-pm-section" style="margin-top:14px">
+        <div class="fdd-pm-question">
+          <div class="fdd-pm-label">
+            <i class="fa fa-flask" style="color:#0891b2"></i> Apakah ada Pemeriksaan Penunjang?
+          </div>
+          <div class="fdd-pm-toggle">
+            <label class="fdd-pm-radio">
+              <input type="radio" name="ada_penunjang" value="N" checked>
+              <span class="fdd-pm-radio-text">Tidak</span>
+            </label>
+            <label class="fdd-pm-radio">
+              <input type="radio" name="ada_penunjang" value="Y" onclick="$('#modal-penunjang-medis').modal('show')">
+              <span class="fdd-pm-radio-text">Ya</span>
+            </label>
+          </div>
+        </div>
+        <div id="fdd_pm_list" style="display:none;margin-top:10px">
+          <div class="fdd-pm-list-hdr">
+            <span><i class="fa fa-list"></i> Daftar Order Penunjang Medis</span>
+            <button type="button" class="fdd-pm-btn-add" onclick="$('#modal-penunjang-medis').modal('show')">
+              <i class="fa fa-plus"></i> Tambah
+            </button>
+          </div>
+          <div id="fdd_pm_cards"></div>
+        </div>
+      </div>
+
+      <?php
+        $_resep_hdr = $this->db->where('no_kunjungan', $value->no_kunjungan)
+            ->where('source', 'SOAP')
+            ->order_by('kode_pesan_resep','DESC')->limit(1)->get('fr_tc_pesan_resep')->row();
+        $_has_resep = $_resep_hdr ? true : false;
+      ?>
+      <!-- Resep Dokter -->
+      <div class="fdd-pm-section" style="margin-top:14px">
+
+        <!-- Resep Iter Alert -->
+        <?php if(isset($riwayat->resep_iter) && $riwayat->resep_iter == 'Y') :?>
+        <div class="fdd-iter-alert">
+          <div class="fdd-iter-icon">
+            <i class="fa fa-medkit"></i>
+          </div>
+          <div class="fdd-iter-body">
+            <div class="fdd-iter-title">Pasien Memiliki Resep Iter</div>
+            <div class="fdd-iter-desc">Resep iterasi sebanyak <strong><?php echo isset($riwayat->jumlah_iter) ? $riwayat->jumlah_iter : '-'?>x</strong> pengulangan telah dicatat oleh perawat pada saat input TTV.</div>
+          </div>
+        </div>
+        <?php endif;?>
+        
+        <div class="fdd-pm-question">
+          <div class="fdd-pm-label">
+            <i class="fa fa-medkit" style="color:#0891b2"></i> Apakah ada Resep Dokter?
+          </div>
+          <div class="fdd-pm-toggle">
+            <label class="fdd-pm-radio">
+              <input type="radio" name="ada_resep" value="N" onclick="$('#fdd_resep_list').hide()"
+                <?php echo $_has_resep ? '' : 'checked'?>>
+              <span class="fdd-pm-radio-text">Tidak</span>
+            </label>
+            <label class="fdd-pm-radio">
+              <input type="radio" name="ada_resep" value="Y" onclick="$('#fdd_resep_list').show();openModalResep()"
+                <?php echo $_has_resep ? 'checked' : ''?>>
+              <span class="fdd-pm-radio-text">Ya</span>
+            </label>
+          </div>
+        </div>
+        <div id="fdd_resep_list" style="<?php echo $_has_resep ? '' : 'display:none;'?>margin-top:10px">
+          <?php $_resep_locked = ($_resep_hdr && !empty($_resep_hdr->lock_eresep) && $_resep_hdr->lock_eresep == 1); ?>
+          <div class="fdd-pm-list-hdr">
+            <span><i class="fa fa-medkit"></i> Resep Dokter &mdash; <span id="soap-resep-count">0 obat</span></span>
+            <div style="display:inline-flex;align-items:center;gap:8px;">
+              <?php if($_resep_locked): ?>
+                <span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.3px;box-shadow:0 1px 6px rgba(220,38,38,.3);">
+                  <i class="fa fa-lock"></i> e-Resep Dikunci
+                </span>
+              <?php endif; ?>
+              <button type="button" class="fdd-pm-btn-add"
+                <?php echo $_resep_locked ? 'disabled style="opacity:.45;cursor:not-allowed;pointer-events:none;"' : 'onclick="openModalResep()"'?>>
+                <i class="fa fa-<?php echo $_resep_locked ? 'lock' : 'pencil'?>"></i>
+                <?php echo $_resep_locked ? 'Resep Dikunci' : 'Ubah / Tambah Resep'?>
+              </button>
+            </div>
+          </div>
+          <div id="soap-resep-items"></div>
+          <div id="resep-selesai-wrap" style="margin-top:10px;display:none">
+            <button type="button" class="btn-resep-selesai" id="btn-resep-selesai" onclick="prosesResepSelesai()" style="display:none">
+              <i class="fa fa-check-circle"></i> Resep Selesai
+            </button>
+            <div class="resep-status-done" id="resep-status-done" style="display:none">
+              <i class="fa fa-check-circle"></i> Resep sudah diproses
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      
       <label class="fdd-label">Rencana Asuhan / Anjuran Dokter
         <span class="fdd-hint">Mohon dijelaskan rencana asuhan pasien dan tindak lanjutnya</span>
       </label>
-      <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height:100px!important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
+      <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height:200px!important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
 
       <div class="row" style="margin-top:12px">
         <div class="col-md-4">
@@ -1601,7 +2364,7 @@ audio, canvas, progress, video {
         </div>
       </div>
 
-    </div>
+
   </div>
 
   <!-- Informasi Pasien Pulang -->
@@ -1638,6 +2401,70 @@ audio, canvas, progress, video {
   </div>
 
 </div><!-- /#fdd-wrap -->
+
+<!-- ================================================================
+     Modal Pemeriksaan Penunjang Medis
+     ================================================================ -->
+<div class="modal fade" id="modal-penunjang-medis" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><i class="fa fa-flask"></i> Order Pemeriksaan Penunjang Medis</h4>
+      </div>
+      <div class="modal-body">
+        <div class="fdd-pm-form-group">
+          <label class="fdd-pm-form-label">Unit Tujuan Penunjang <span class="fdd-required">*</span></label>
+          <?php echo $this->master->custom_selection(
+            array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1, 'validasi' => '0500')),
+            '', 'pm_tujuan_modal', 'pm_tujuan_modal', 'fdd-pm-form-select', '', ''
+          ) ?>
+        </div>
+        <div class="fdd-pm-form-group">
+          <label class="fdd-pm-form-label">Jenis Layanan</label>
+          <div class="fdd-pm-jenis-row">
+            <label class="fdd-pm-jenis-opt">
+              <input type="radio" name="jenis_layanan_pm_modal" value="0" checked>
+              <span>Biasa</span>
+            </label>
+            <label class="fdd-pm-jenis-opt">
+              <input type="radio" name="jenis_layanan_pm_modal" value="1">
+              <span>Cito</span>
+            </label>
+          </div>
+        </div>
+        <div class="fdd-pm-form-group">
+          <label class="fdd-pm-form-label">Keterangan</label>
+          <textarea class="fdd-pm-form-textarea" id="keterangan_pm_modal" placeholder="Keterangan pemeriksaan (opsional)"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="fdd-pm-btn-cancel" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
+        <button type="button" class="fdd-pm-btn-submit" onclick="submitOrderPM()"><i class="fa fa-check"></i> Submit Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     Modal Pengantar Penunjang Medis (Form Lab/Rad/Fisio)
+     ================================================================ -->
+<div class="modal fade" id="modal-pengantar-pm" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document" style="width:85%">
+    <div class="modal-content">
+      <div class="modal-header fdd-pengantar-modal-hdr">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="modal-pengantar-pm-title"><i class="fa fa-file-text-o"></i> Form Pengantar Penunjang Medis</h4>
+      </div>
+      <div class="modal-body" id="modal-pengantar-pm-body" style="max-height:75vh;overflow-y:auto;padding:16px 20px">
+        <div style="text-align:center;padding:40px">
+          <i class="fa fa-spinner fa-spin fa-2x" style="color:#0891b2"></i>
+          <p style="margin-top:10px;color:#64748b;font-size:13px">Memuat form pengantar...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="<?php echo base_url()?>assets/js/custom/counter_poli.js"></script>
 
@@ -2505,5 +3332,1115 @@ audio, canvas, progress, video {
     }
 
 })();
+</script>
+
+<!-- ================================================================
+     Modal Order Resep Dokter
+     ================================================================ -->
+<style>
+#modal-resep-dokter .modal-header { background:#0f172a;color:#fff;padding:12px 16px;border-radius:6px 6px 0 0; }
+#modal-resep-dokter .modal-header .modal-title { font-size:15px;font-weight:600; }
+#modal-resep-dokter .modal-header .close { color:#fff;opacity:.7;margin-top:-2px; }
+#modal-resep-dokter .modal-header .close:hover { opacity:1; }
+#modal-resep-dokter .modal-content { border-radius:6px; }
+#modal-resep-dokter .modal-body { padding:16px 18px;max-height:75vh;overflow-y:auto; }
+#modal-resep-dokter .modal-footer { padding:10px 18px;display:flex;align-items:center;justify-content:space-between; }
+
+.rsb-wrap { display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:12px; }
+.rsb-group { display:flex;flex-direction:column;gap:4px; }
+.rsb-label { font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px; }
+.rsb-radios { display:flex;gap:10px;align-items:center; }
+.rsb-radio-opt { display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;font-weight:400; }
+.rsb-radio-opt:has(input:disabled) { opacity:.4; cursor:not-allowed; pointer-events:none; }
+.rsb-ket { flex:1;min-width:180px; }
+.rsb-ket input { width:100%;padding:5px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:13px; }
+
+.reg-grid { display:grid;grid-template-columns:2fr .5fr .5fr .65fr 1fr .5fr .5fr;gap:6px;align-items:end;margin-bottom:6px; }
+.reg-grid2 { display:grid;grid-template-columns:1fr auto;gap:6px;align-items:end;margin-bottom:12px; }
+.reg-grid .rg-col,.reg-grid2 .rg-col { display:flex;flex-direction:column; }
+.reg-grid .rg-lbl,.reg-grid2 .rg-lbl { font-size:11px;font-weight:600;color:#64748b;margin-bottom:3px; }
+.reg-grid input,.reg-grid2 input { padding:5px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:13px;width:100%; }
+.reg-grid input:focus,.reg-grid2 input:focus { outline:none;border-color:#0891b2;box-shadow:0 0 0 2px rgba(8,145,178,.15); }
+
+#resep-drug-table { width:100%;border-collapse:collapse;font-size:12.5px; }
+#resep-drug-table thead th { background:#0f172a;color:#fff;padding:7px 10px;font-weight:600;font-size:11.5px;text-align:left; }
+#resep-drug-table tbody td { padding:6px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle; }
+#resep-drug-table tbody tr:hover { background:#f8fafc; }
+.btn-del-drug { background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:4px;padding:2px 7px;cursor:pointer;font-size:12px; }
+.btn-del-drug:hover { background:#ef4444;color:#fff; }
+.resep-empty-msg { text-align:center;color:#94a3b8;padding:16px;font-size:13px; }
+.resep-kode-info { font-size:11px;color:#64748b; }
+#resep-status-msg { display:none;padding:8px 12px;border-radius:4px;font-size:13px;margin-top:8px; }
+.btn-resep-selesai { background:#16a34a;color:#fff;border:none;border-radius:5px;padding:7px 18px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px; }
+.btn-resep-selesai:hover { background:#15803d; }
+.btn-resep-selesai:disabled { opacity:.5;cursor:not-allowed; }
+.resep-status-done { display:inline-flex;align-items:center;gap:5px;background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;border-radius:5px;padding:7px 14px;font-size:12px;font-weight:600; }
+#resep-status-msg.msg-ok { background:#d1fae5;color:#065f46;border:1px solid #6ee7b7; }
+#resep-status-msg.msg-err { background:#fee2e2;color:#991b1b;border:1px solid #fca5a5; }
+
+/* Resep Tabs */
+.resep-tabs { display:flex;list-style:none;padding:0;margin:0 0 12px 0;gap:4px;border-bottom:2px solid #e2e8f0; }
+.resep-tab { padding:8px 16px;font-size:12.5px;font-weight:600;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:5px; }
+.resep-tab:hover { color:#0f766e; }
+.resep-tab.active { color:#0f766e;border-bottom-color:#0d9488; }
+.resep-tab-content { display:none; }
+.resep-tab-content.active { display:block; }
+
+/* Racikan grid layouts */
+.reg-grid-racikan { display:grid;grid-template-columns:2fr .6fr 1fr .5fr .5fr 1.2fr;gap:6px;align-items:end;margin-bottom:6px; }
+.reg-grid-racikan .rg-col { display:flex;flex-direction:column; }
+.reg-grid-racikan .rg-lbl { font-size:11px;font-weight:600;color:#64748b;margin-bottom:3px; }
+.reg-grid-racikan input,.reg-grid-racikan select { padding:5px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:13px;width:100%;box-sizing:border-box; }
+.reg-grid-racikan input:focus,.reg-grid-racikan select:focus { outline:none;border-color:#0891b2;box-shadow:0 0 0 2px rgba(8,145,178,.15); }
+.reg-grid-racikan-child { display:grid;grid-template-columns:2fr .8fr .8fr 1.5fr auto;gap:6px;align-items:end; }
+.reg-grid-racikan-child .rg-col { display:flex;flex-direction:column; }
+.reg-grid-racikan-child .rg-lbl { font-size:11px;font-weight:600;color:#64748b;margin-bottom:3px; }
+.reg-grid-racikan-child input { padding:5px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:13px;width:100%;box-sizing:border-box; }
+.reg-grid-racikan-child input:focus { outline:none;border-color:#0891b2;box-shadow:0 0 0 2px rgba(8,145,178,.15); }
+
+/* Racikan rows in drug table */
+#resep-drug-table .racikan-hdr-row td { background:#f8fffe;vertical-align:top; }
+.racikan-bahan-wrap { padding:6px 10px;margin-top:4px; }
+.racikan-bahan-wrap .rb-label { font-size:11px;font-style:italic;color:#64748b;margin-bottom:2px; }
+.racikan-bahan-wrap .rb-item { font-size:11px;line-height:1.9; }
+.racikan-bahan-wrap .rb-item .fa-times { color:#ef4444;cursor:pointer;margin-right:4px;font-size:12px; }
+.racikan-bahan-wrap .rb-item .fa-times:hover { opacity:.6; }
+.racikan-bahan-empty { font-size:11px;color:#94a3b8;font-style:italic;padding:4px 0; }
+.btn-edit-racikan { background:none;border:1px solid #f59e0b;color:#d97706;border-radius:4px;padding:2px 7px;cursor:pointer;font-size:12px;margin-right:3px; }
+.btn-edit-racikan:hover { background:#f59e0b;color:#fff; }
+.btn-add-bahan { background:none;border:1px solid #0891b2;color:#0891b2;border-radius:4px;padding:2px 7px;cursor:pointer;font-size:12px;margin-right:3px; }
+.btn-add-bahan:hover { background:#0891b2;color:#fff; }
+</style>
+
+<div class="modal fade" id="modal-resep-dokter" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document" style="width:88%;max-width:960px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" onclick="closeResepModal()">&times;</button>
+        <h4 class="modal-title">
+          <i class="fa fa-medkit"></i> Order Resep Dokter
+          <small style="font-weight:400;margin-left:8px;font-size:13px;opacity:.85">
+            <?php echo isset($value->no_mr) ? htmlspecialchars($value->no_mr) : ''?> &mdash; <?php echo isset($value->nama_pasien) ? htmlspecialchars($value->nama_pasien) : ''?>
+          </small>
+        </h4>
+      </div>
+      <div class="modal-body">
+
+        <!-- Resep header settings -->
+        <div class="rsb-wrap">
+          <div class="rsb-group">
+            <span class="rsb-label">Jenis Resep</span>
+            <div class="rsb-radios">
+              <label class="rsb-radio-opt">
+                <input type="radio" name="resep_jenis_m" value="non_prb"
+                  <?php echo ($_resep_hdr && $_resep_hdr->jenis_resep === 'prb') ? '' : 'checked'?>> Non PRB
+              </label>
+              <label class="rsb-radio-opt">
+                <input type="radio" name="resep_jenis_m" value="prb"
+                  <?php echo ($_resep_hdr && $_resep_hdr->jenis_resep === 'prb') ? 'checked' : ''?>> PRB
+              </label>
+            </div>
+          </div>
+          <?php
+            // Determine iter value: existing header > TTV riwayat > default 0
+            if ($_resep_hdr && $_resep_hdr->resep_iter) {
+                $_iter_val = $_resep_hdr->resep_iter;
+            } elseif (isset($riwayat->resep_iter) && $riwayat->resep_iter == 'Y' && isset($riwayat->jumlah_iter) && $riwayat->jumlah_iter > 0) {
+                $_iter_val = $riwayat->jumlah_iter;
+            } else {
+                $_iter_val = '0';
+            }
+          ?>
+          <div class="rsb-group">
+            <?php $_is_prb = ($_resep_hdr && $_resep_hdr->jenis_resep === 'prb'); ?>
+            <span class="rsb-label">Resep Iter</span>
+            <div class="rsb-radios">
+              <label class="rsb-radio-opt">
+                <input type="radio" name="resep_iter_m" value="0"
+                  <?php echo ($_iter_val == '0' || $_is_prb) ? 'checked' : ''?>
+                  <?php echo $_is_prb ? 'disabled' : ''?>> Tidak
+              </label>
+              <label class="rsb-radio-opt">
+                <input type="radio" name="resep_iter_m" value="1"
+                  <?php echo (!$_is_prb && $_iter_val == '1') ? 'checked' : ''?>
+                  <?php echo $_is_prb ? 'disabled' : ''?>> 1x
+              </label>
+              <label class="rsb-radio-opt">
+                <input type="radio" name="resep_iter_m" value="2"
+                  <?php echo (!$_is_prb && $_iter_val == '2') ? 'checked' : ''?>
+                  <?php echo $_is_prb ? 'disabled' : ''?>> 2x
+              </label>
+            </div>
+          </div>
+          <div class="rsb-group rsb-ket">
+            <span class="rsb-label">Keterangan Resep</span>
+            <input type="text" id="resep_ket_modal" placeholder="Keterangan (opsional)"
+              value="<?php echo $_resep_hdr ? htmlspecialchars($_resep_hdr->keterangan ?: '') : ''?>">
+          </div>
+        </div>
+
+        <!-- Tab navigation -->
+        <ul class="resep-tabs" id="resep-tab-nav">
+          <li class="resep-tab active" data-tab="resep-tab-biasa"><i class="fa fa-pills"></i> Obat Biasa</li>
+          <li class="resep-tab" data-tab="resep-tab-racikan"><i class="fa fa-flask"></i> Racikan</li>
+        </ul>
+
+        <!-- TAB 1: Obat Biasa -->
+        <div class="resep-tab-content active" id="resep-tab-biasa">
+          <div class="reg-grid">
+            <div class="rg-col">
+              <span class="rg-lbl">Nama Obat <span style="color:#ef4444">*</span></span>
+              <input type="text" id="resep_obat_keyword" placeholder="Cari nama obat...">
+              <input type="hidden" id="resep_kode_brg">
+            </div>
+            <div class="rg-col">
+              <span class="rg-lbl">DD <span style="color:#ef4444">*</span></span>
+              <input type="number" id="resep_jml_dosis" placeholder="2" min="1" oninput="calcResepJml()">
+            </div>
+            <div class="rg-col">
+              <span class="rg-lbl">Jml/Dos</span>
+              <input type="number" id="resep_jml_dosis_obat" placeholder="1" min="1" oninput="calcResepJml()">
+            </div>
+            <div class="rg-col">
+              <span class="rg-lbl">Satuan</span>
+              <input type="text" id="resep_satuan_obat" value="Tab">
+            </div>
+            <div class="rg-col">
+              <span class="rg-lbl">Aturan Pakai</span>
+              <input type="text" id="resep_aturan_pakai" value="Sesudah Makan">
+            </div>
+            <div class="rg-col">
+              <span class="rg-lbl">Hari</span>
+              <input type="number" id="resep_jml_hari" placeholder="3" min="1" oninput="calcResepJml()">
+            </div>
+            <div class="rg-col">
+              <span class="rg-lbl">Jml Total</span>
+              <input type="number" id="resep_jml_pesan" min="1">
+            </div>
+          </div>
+          <div class="reg-grid2">
+            <div class="rg-col">
+              <span class="rg-lbl">Keterangan Obat</span>
+              <input type="text" id="resep_ket_obat" placeholder="Keterangan (opsional)">
+            </div>
+            <div>
+              <button type="button" onclick="addObatResepModal()" class="fdd-pm-btn-add" style="margin-top:20px">
+                <i class="fa fa-plus"></i> Tambah Obat
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Racikan -->
+        <div class="resep-tab-content" id="resep-tab-racikan">
+          <!-- Racikan header form -->
+          <div id="racikan-header-form">
+            <div class="reg-grid-racikan">
+              <div class="rg-col">
+                <span class="rg-lbl">Nama Racikan <span style="color:#ef4444">*</span></span>
+                <input type="text" id="resep_nama_racikan" placeholder="Nama racikan...">
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">Qty <span style="color:#ef4444">*</span></span>
+                <input type="number" id="resep_jml_racikan" placeholder="1" min="1">
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">Satuan</span>
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'Bks', 'resep_satuan_racikan', 'resep_satuan_racikan', '', '', '');?>
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">DD</span>
+                <input type="number" id="resep_dd_racikan" placeholder="3" min="1">
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">x Jml</span>
+                <input type="number" id="resep_jmldos_racikan" placeholder="1" min="1">
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">Aturan Pakai</span>
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan', 'resep_anjuran_racikan', 'resep_anjuran_racikan', '', '', '');?>
+              </div>
+            </div>
+            <div class="reg-grid2">
+              <div class="rg-col">
+                <span class="rg-lbl">Keterangan</span>
+                <input type="text" id="resep_ket_racikan" placeholder="Keterangan (opsional)">
+              </div>
+              <div style="display:flex;gap:4px;align-items:end">
+                <button type="button" onclick="saveRacikanHeader()" class="fdd-pm-btn-add" id="btn-save-racikan-hdr" style="margin-top:20px">
+                  <i class="fa fa-save"></i> Simpan Racikan
+                </button>
+                <button type="button" onclick="updateRacikanHeader()" class="fdd-pm-btn-add" id="btn-update-racikan-hdr" style="margin-top:20px;display:none;background:#16a34a">
+                  <i class="fa fa-pencil"></i> Update Racikan
+                </button>
+                <button type="button" onclick="resetRacikanForm()" class="fdd-pm-btn-cancel" style="margin-top:20px">
+                  <i class="fa fa-refresh"></i> Baru
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Racikan child form (shown after header save) -->
+          <div id="racikan-child-form" style="display:none;background:#f1f5f9;padding:10px 12px;border-radius:6px;margin-top:8px">
+            <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:6px">
+              <i class="fa fa-flask" style="color:#0891b2"></i>
+              Bahan Obat Racikan <span id="racikan-child-label" style="color:#0891b2"></span>
+            </div>
+            <div class="reg-grid-racikan-child">
+              <div class="rg-col">
+                <span class="rg-lbl">Cari Obat <span style="color:#ef4444">*</span></span>
+                <input type="text" id="resep_obat_racikan_keyword" placeholder="Cari obat racikan...">
+                <input type="hidden" id="resep_kode_brg_racikan">
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">Dosis <span style="color:#ef4444">*</span></span>
+                <input type="text" id="resep_dosis_racikan" placeholder="Dosis">
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">Satuan</span>
+                <input type="text" id="resep_satuan_racik_child" placeholder="g/mg">
+              </div>
+              <div class="rg-col">
+                <span class="rg-lbl">Keterangan</span>
+                <input type="text" id="resep_ket_racik_child" placeholder="Ket (opsional)">
+              </div>
+              <div>
+                <button type="button" onclick="addRacikanChild()" class="fdd-pm-btn-add" style="margin-top:20px">
+                  <i class="fa fa-plus"></i> Tambahkan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drug list table -->
+        <table id="resep-drug-table">
+          <thead>
+            <tr>
+              <th style="width:36%">Nama Obat</th>
+              <th>Signa</th>
+              <th style="width:65px;text-align:center">Jml</th>
+              <th>Keterangan</th>
+              <th style="width:46px"></th>
+            </tr>
+          </thead>
+          <tbody id="resep-drug-tbody">
+            <tr><td colspan="5" class="resep-empty-msg">Belum ada obat ditambahkan</td></tr>
+          </tbody>
+        </table>
+
+        <div id="resep-status-msg"></div>
+      </div>
+      <div class="modal-footer">
+        <span class="resep-kode-info" id="resep-kode-info"></span>
+        <button type="button" class="fdd-pm-btn-cancel" onclick="closeResepModal()"><i class="fa fa-times"></i> Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   Order Resep Dokter — Modal SOAP
+   ================================================================ */
+var resepKodePesan    = <?php echo $_resep_hdr ? json_encode($_resep_hdr->kode_pesan_resep) : 'null'?>;
+var resepEResepStatus = <?php echo ($_resep_hdr && $_resep_hdr->e_resep == 1) ? '1' : 'null'?>;
+var resepHasDrugs     = false;
+var _resepNoKunj     = '<?php echo addslashes($value->no_kunjungan)?>';
+var _resepNoReg      = '<?php echo addslashes($value->no_registrasi)?>';
+var _resepNoMr       = '<?php echo addslashes($value->no_mr)?>';
+var _resepKodePerush = '<?php echo addslashes($value->kode_perusahaan)?>';
+var _resepKodeKelom  = '<?php echo addslashes($value->kode_kelompok)?>';
+var _resepKodeBagian = '<?php echo addslashes($value->kode_bagian)?>';
+var _resepKodeDokter = '<?php echo isset($value->kode_dokter) ? addslashes($value->kode_dokter) : ''?>';
+var _resepKodeKlas   = '<?php echo isset($kode_klas) ? $kode_klas : 16?>';
+var _resepKodeProfit = '<?php echo isset($kode_profit) ? $kode_profit : 2000?>';
+
+$(document).ready(function() {
+    // Typeahead drug search in resep modal
+    if (typeof $.fn.typeahead !== 'undefined') {
+        $('#resep_obat_keyword').typeahead({
+            source: function(query, result) {
+                $.ajax({
+                    url: 'templates/references/getObatByBagianAutoCompleteNoInfoStok',
+                    data: { keyword: query, bag: '060101' },
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function(resp) {
+                        result($.map(resp, function(item) { return item; }));
+                    }
+                });
+            },
+            afterSelect: function(item) {
+                var parts = item.split(':');
+                $('#resep_kode_brg').val($.trim(parts[0]));
+                $('#resep_obat_keyword').val($.trim(parts.slice(1).join(':')));
+                $('#resep_jml_dosis').focus();
+            }
+        });
+    }
+
+    // Pre-populate table on page load via endpoint
+    if (resepKodePesan) {
+        $('#resep-kode-info').text('Kode Resep: ' + resepKodePesan);
+        loadResepDrugsModal();
+    }
+
+    // Keyboard: Enter moves to next field / submits
+    $('#resep_obat_keyword').on('keypress', function(e) { if (e.which===13){e.preventDefault();$('#resep_jml_dosis').focus();} });
+    $('#resep_jml_dosis').on('keypress', function(e) { if (e.which===13){e.preventDefault();$('#resep_jml_dosis_obat').focus();} });
+    $('#resep_jml_dosis_obat').on('keypress', function(e) { if (e.which===13){e.preventDefault();$('#resep_satuan_obat').focus();} });
+    $('#resep_satuan_obat').on('keypress', function(e) { if (e.which===13){e.preventDefault();$('#resep_aturan_pakai').focus();} });
+    $('#resep_aturan_pakai').on('keypress', function(e) { if (e.which===13){e.preventDefault();$('#resep_jml_hari').focus();} });
+    $('#resep_jml_hari').on('keypress', function(e) { if (e.which===13){e.preventDefault();$('#resep_ket_obat').focus();} });
+    $('#resep_ket_obat').on('keypress', function(e) { if (e.which===13){e.preventDefault();addObatResepModal();} });
+
+    // ── Tab switching for resep modal ──
+    $('#resep-tab-nav .resep-tab').on('click', function() {
+        var targetId = $(this).data('tab');
+        $('#resep-tab-nav .resep-tab').removeClass('active');
+        $(this).addClass('active');
+        $('.resep-tab-content').removeClass('active').hide();
+        $('#' + targetId).addClass('active').show();
+    });
+
+    // ── PRB: nonaktifkan iter ketika PRB dipilih ──
+    function syncResepIterState() {
+        var isPrb = $('input[name="resep_jenis_m"]:checked').val() === 'prb';
+        var $iterInputs = $('input[name="resep_iter_m"]');
+        if (isPrb) {
+            $iterInputs.prop('disabled', true);
+            $iterInputs.filter('[value="0"]').prop('checked', true);
+        } else {
+            $iterInputs.prop('disabled', false);
+        }
+    }
+    $('input[name="resep_jenis_m"]').on('change', syncResepIterState);
+    syncResepIterState();
+
+    // ── Racikan typeahead init for child obat ──
+    if (typeof $.fn.typeahead !== 'undefined') {
+        $('#resep_obat_racikan_keyword').typeahead({
+            source: function(query, result) {
+                $.ajax({
+                    url: 'templates/references/getObatByBagianAutoCompleteNoInfoStok',
+                    data: { keyword: query, bag: '060101' },
+                    dataType: 'json', type: 'POST',
+                    success: function(resp) {
+                        result($.map(resp, function(item) { return item; }));
+                    }
+                });
+            },
+            afterSelect: function(item) {
+                var parts = item.split(':');
+                $('#resep_kode_brg_racikan').val($.trim(parts[0]));
+                $('#resep_obat_racikan_keyword').val($.trim(parts.slice(1).join(':')));
+                $('#resep_dosis_racikan').focus();
+            }
+        });
+    }
+
+    // ── Racikan keyboard navigation ──
+    $('#resep_nama_racikan').on('keypress', function(e) { if(e.which===13){e.preventDefault();$('#resep_jml_racikan').focus();}});
+    $('#resep_jml_racikan').on('keypress', function(e) { if(e.which===13){e.preventDefault();$('#resep_dd_racikan').focus();}});
+    $('#resep_dd_racikan').on('keypress', function(e) { if(e.which===13){e.preventDefault();$('#resep_jmldos_racikan').focus();}});
+    $('#resep_jmldos_racikan').on('keypress', function(e) { if(e.which===13){e.preventDefault();$('#resep_ket_racikan').focus();}});
+    $('#resep_ket_racikan').on('keypress', function(e) { if(e.which===13){e.preventDefault();saveRacikanHeader();}});
+    $('#resep_obat_racikan_keyword').on('keypress', function(e) { if(e.which===13){e.preventDefault();$('#resep_dosis_racikan').focus();}});
+    $('#resep_dosis_racikan').on('keypress', function(e) { if(e.which===13){e.preventDefault();$('#resep_satuan_racik_child').focus();}});
+    $('#resep_ket_racik_child').on('keypress', function(e) { if(e.which===13){e.preventDefault();addRacikanChild();}});
+
+});
+
+function closeResepModal() {
+    // var adaDrug   = $('#resep-selesai-wrap').is(':visible');
+    // var belumDone = $('#btn-resep-selesai').is(':visible');
+    // if (adaDrug && belumDone) {
+    //     Swal.fire({
+    //         icon: 'warning',
+    //         title: 'Resep Belum Selesai',
+    //         html:  'Terdapat obat pada resep ini tetapi tombol <b>Resep Selesai</b> belum diklik.<br><br>Silahkan klik tombol <b style="color:#16a34a">Resep Selesai</b> terlebih dahulu agar resep terproses ke farmasi.',
+    //         confirmButtonText:  'Kembali & Selesaikan',
+    //         confirmButtonColor: '#16a34a',
+    //         showCancelButton:   false
+    //     });
+    //     return;
+    // }
+    $('#modal-resep-dokter').modal('hide');
+}
+
+function openModalResep() {
+    $('#resep-status-msg').hide();
+    $('#modal-resep-dokter').modal('show');
+    if (resepKodePesan) {
+        loadResepDrugsModal();
+    }
+}
+
+function ensureResepHeader(callback) {
+    if (resepKodePesan) { callback(resepKodePesan); return; }
+    var payload = {
+        no_registrasi:          $('#no_registrasi').val() || _resepNoReg,
+        no_kunjungan:           _resepNoKunj,
+        no_mr:                  _resepNoMr,
+        kode_perusahaan:        $('#kode_perusahaan_val').val() || _resepKodePerush,
+        kode_kelompok:          $('input[name="kode_kelompok"]').val() || _resepKodeKelom,
+        kode_klas:              _resepKodeKlas,
+        kode_profit:            _resepKodeProfit,
+        kode_bagian_asal:       _resepKodeBagian,
+        jenis_resep:            $('input[name="resep_jenis_m"]:checked').val() || 'non_prb',
+        resep_iter:             $('input[name="resep_iter_m"]:checked').val() || '0',
+        lokasi_tebus:           '1',
+        jumlah_r:               '1',
+        kode_dokter:            _resepKodeDokter,
+        keterangan_pesan_resep: $('#resep_ket_modal').val(),
+        source:                 'SOAP'
+    };
+    $.ajax({
+        url: 'farmasi/Farmasi_pesan_resep/process',
+        data: payload,
+        dataType: 'json',
+        type: 'POST',
+        success: function(res) {
+            if (res.status === 200) {
+                var m = (res.redirect || '').match(/\/form\/([^?\/]+)/);
+                if (m) {
+                    resepKodePesan = m[1];
+                    $('#resep-kode-info').text('Kode Resep: ' + resepKodePesan);
+                }
+                callback(resepKodePesan);
+            } else {
+                showResepMsg('err', res.message || 'Gagal membuat resep');
+            }
+        },
+        error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+    });
+}
+
+function addObatResepModal() {
+    var namabrg   = $.trim($('#resep_obat_keyword').val());
+    var jmlDosis  = $.trim($('#resep_jml_dosis').val());
+    var jmlDosisO = $.trim($('#resep_jml_dosis_obat').val());
+    var jmlPesan  = $.trim($('#resep_jml_pesan').val());
+
+    if (!namabrg)   { showResepMsg('err', 'Pilih nama obat terlebih dahulu'); $('#resep_obat_keyword').focus(); return; }
+    if (!jmlDosis)  { showResepMsg('err', 'Isi jumlah dosis (DD)'); $('#resep_jml_dosis').focus(); return; }
+    if (!jmlPesan)  { showResepMsg('err', 'Isi jumlah total obat'); $('#resep_jml_pesan').focus(); return; }
+    if (!jmlDosisO) { jmlDosisO = '1'; }
+
+    ensureResepHeader(function(kodePesan) {
+        var fd = {
+            submit:                'non_racikan',
+            id_template:           0,
+            id_pesan_resep_detail: 0,
+            kode_pesan_resep: kodePesan,
+            no_registrasi:    $('#no_registrasi').val() || _resepNoReg,
+            no_kunjungan:     _resepNoKunj,
+            kode_brg:         $('#resep_kode_brg').val(),
+            nama_brg:         namabrg,
+            jml_dosis:        jmlDosis,
+            jml_dosis_obat:   jmlDosisO,
+            satuan_obat:      $('#resep_satuan_obat').val() || 'Tab',
+            aturan_pakai:     $('#resep_aturan_pakai').val() || 'Sesudah Makan',
+            jml_hari:         $('#resep_jml_hari').val() || '0',
+            jml_pesan:        jmlPesan,
+            no_mr:            _resepNoMr,
+            keterangan:       $('#resep_ket_obat').val(),
+            tipe_obat:        'non_racikan',
+            parent:           '0'
+        };
+        $.ajax({
+            url: 'farmasi/E_resep/add_resep_obat',
+            data: fd,
+            dataType: 'json',
+            type: 'POST',
+            success: function(res) {
+                if (res.status === 200) {
+                    resetResepObatForm();
+                    loadResepDrugsModal();
+                    showResepMsg('ok', 'Obat berhasil ditambahkan');
+                } else {
+                    showResepMsg('err', res.message || 'Gagal menambah obat');
+                }
+            },
+            error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+        });
+    });
+}
+
+function loadResepDrugsModal() {
+    if (!resepKodePesan) return;
+    $.ajax({
+        url: 'pelayanan/Pl_pelayanan/get_resep_drugs/' + resepKodePesan,
+        dataType: 'json',
+        type: 'GET',
+        success: function(res) {
+            if (res && res.status === 200) {
+                renderResepDrugTable(res.data);
+                updateResepSoapPanel(res.data);
+                updateResepSelesaiStatus(res.e_resep, res.data);
+            }
+        }
+    });
+}
+
+function updateResepSelesaiStatus(eResep, drugs) {
+    resepEResepStatus = eResep;
+    resepHasDrugs     = (drugs && drugs.length > 0);
+    var wrap = $('#resep-selesai-wrap');
+    var btn = $('#btn-resep-selesai');
+    var lbl = $('#resep-status-done');
+    if (!resepHasDrugs) {
+        wrap.hide();
+        return;
+    }
+    wrap.show();
+    if (eResep == 1) {
+        btn.hide();
+        lbl.show();
+    } else {
+        btn.show();
+        lbl.hide();
+    }
+}
+
+function renderResepDrugTable(drugs) {
+    if (!drugs || drugs.length === 0) {
+        $('#resep-drug-tbody').html('<tr><td colspan="5" class="resep-empty-msg">Belum ada obat ditambahkan</td></tr>');
+        return;
+    }
+    var html = '';
+    $.each(drugs, function(i, d) {
+        if (d.tipe_obat === 'racikan') {
+            // Racikan — single row, children inside Nama Obat cell
+            var signa = (d.jml_dosis||'') + ' x ' + (d.jml_dosis_obat||'') + '&nbsp;' + escHtml(d.satuan_obat||'') + ' ' + escHtml(d.aturan_pakai||'');
+            html += '<tr id="rdr-' + d.id + '" class="racikan-hdr-row">';
+            // Nama Obat cell — header + bahan racik list
+            html += '<td>' + escHtml(d.nama_brg||'').toUpperCase();
+            html += '<div class="racikan-bahan-wrap">';
+            html += '<div class="rb-label">bahan racik :</div>';
+            if (d.children && d.children.length > 0) {
+                $.each(d.children, function(j, c) {
+                    html += '<span class="rb-item" id="rdr-' + c.id + '">';
+                    html += '<i class="fa fa-times" onclick="deleteObatResepModal(' + c.id + ')" title="Hapus bahan"></i> ';
+                    html += escHtml(c.nama_brg||'') + ' &nbsp; (' + (c.jml_pesan||'') + '&nbsp;' + escHtml(c.satuan_obat||'') + ')';
+                    html += '<br></span>';
+                });
+            } else {
+                html += '<div class="racikan-bahan-empty">Belum ada bahan obat</div>';
+            }
+            html += '</div></td>';
+            html += '<td>' + signa + '</td>';
+            html += '<td style="text-align:center">' + (d.jml_pesan||'-') + '</td>';
+            html += '<td>' + escHtml(d.keterangan||'-') + '</td>';
+            html += '<td>';
+            html += '<button type="button" class="btn-edit-racikan" onclick="editRacikanFromTable(' + d.id + ')" title="Edit nama racikan"><i class="fa fa-pencil"></i></button>';
+            html += '<button type="button" class="btn-add-bahan" onclick="addBahanToRacikan(\'' + escHtml(d.kode_brg||'') + '\', \'' + escHtml(d.nama_brg||'') + '\')" title="Tambah bahan obat"><i class="fa fa-plus"></i></button>';
+            html += '<button type="button" class="btn-del-drug" onclick="deleteObatResepModal(' + d.id + ')" title="Hapus racikan"><i class="fa fa-trash"></i></button>';
+            html += '</td>';
+            html += '</tr>';
+        } else {
+            // Non-racikan row
+            var signa = (d.jml_dosis||'') + ' &times; ' + (d.jml_dosis_obat||'') + ' ' + escHtml(d.satuan_obat||'') + ' ' + escHtml(d.aturan_pakai||'');
+            html += '<tr id="rdr-' + d.id + '">';
+            html += '<td>' + escHtml(d.nama_brg||'') + '</td>';
+            html += '<td>' + signa + '</td>';
+            html += '<td style="text-align:center">' + (d.jml_pesan||'-') + '</td>';
+            html += '<td>' + escHtml(d.keterangan||'-') + '</td>';
+            html += '<td><button type="button" class="btn-del-drug" onclick="deleteObatResepModal(' + d.id + ')" title="Hapus"><i class="fa fa-trash"></i></button></td>';
+            html += '</tr>';
+        }
+    });
+    $('#resep-drug-tbody').html(html);
+}
+
+function deleteObatResepModal(drugId) {
+    if (!confirm('Hapus obat ini dari resep?')) return;
+    $.ajax({
+        url: 'farmasi/E_resep/deleterowresep',
+        data: { ID: drugId, kode_pesan_resep: resepKodePesan },
+        dataType: 'json',
+        type: 'POST',
+        success: function(res) {
+            if (res.status === 200) {
+                $('#rdr-' + drugId).remove();
+                if ($('#resep-drug-tbody tr').length === 0) {
+                    $('#resep-drug-tbody').html('<tr><td colspan="5" class="resep-empty-msg">Belum ada obat ditambahkan</td></tr>');
+                }
+                loadResepDrugsModal();
+            }
+        }
+    });
+}
+
+function resetResepObatForm() {
+    $('#resep_kode_brg').val('');
+    $('#resep_obat_keyword').val('').focus();
+    $('#resep_jml_dosis').val('');
+    $('#resep_jml_dosis_obat').val('');
+    $('#resep_satuan_obat').val('Tab');
+    $('#resep_aturan_pakai').val('Sesudah Makan');
+    $('#resep_jml_hari').val('');
+    $('#resep_jml_pesan').val('');
+    $('#resep_ket_obat').val('');
+}
+
+// ── Racikan Functions ──────────────────────────────────────────────
+var _racikanParentKodeBrg = null;
+var _racikanEditId = 0; // 0 = insert mode, >0 = update mode (id of existing row)
+
+function saveRacikanHeader() {
+    var nama = $.trim($('#resep_nama_racikan').val());
+    var qty  = $.trim($('#resep_jml_racikan').val());
+    if (!nama) { showResepMsg('err', 'Isi nama racikan'); $('#resep_nama_racikan').focus(); return; }
+    if (!qty)  { showResepMsg('err', 'Isi qty racikan'); $('#resep_jml_racikan').focus(); return; }
+
+    ensureResepHeader(function(kodePesan) {
+        var fd = {
+            submit:                'header',
+            id_template:           0,
+            id_pesan_resep_detail: 0,
+            kode_pesan_resep:      kodePesan,
+            no_registrasi:         $('#no_registrasi').val() || _resepNoReg,
+            no_kunjungan:          _resepNoKunj,
+            kode_brg:              '0',
+            nama_brg:              nama,
+            jml_pesan:             qty,
+            satuan_obat:           $('#resep_satuan_racikan').val() || 'Bks',
+            no_mr:                 _resepNoMr,
+            jml_dosis:             $('#resep_dd_racikan').val() || '0',
+            jml_dosis_obat:        $('#resep_jmldos_racikan').val() || '0',
+            aturan_pakai:          $('#resep_anjuran_racikan').val() || 'Sesudah Makan',
+            keterangan:            $('#resep_ket_racikan').val(),
+            jml_hari:              0,
+            tipe_obat:             'racikan',
+            tipe_racik:            'dtd',
+            parent:                '0'
+        };
+        $.ajax({
+            url: 'farmasi/E_resep/add_resep_obat',
+            data: fd, dataType: 'json', type: 'POST',
+            success: function(res) {
+                if (res.status === 200) {
+                    _racikanParentKodeBrg = res.parent;
+                    showResepMsg('ok', 'Racikan disimpan. Tambahkan bahan obat.');
+                    $('#racikan-child-form').slideDown(200);
+                    $('#racikan-child-label').text('[ ' + nama + ' ]');
+                    $('#btn-save-racikan-hdr').prop('disabled', true).css('opacity', '.5');
+                    loadResepDrugsModal();
+                    $('#resep_obat_racikan_keyword').focus();
+                } else {
+                    showResepMsg('err', res.message || 'Gagal simpan racikan');
+                }
+            },
+            error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+        });
+    });
+}
+
+function addRacikanChild() {
+    if (!_racikanParentKodeBrg) {
+        showResepMsg('err', 'Simpan header racikan terlebih dahulu');
+        return;
+    }
+    var namaObat = $.trim($('#resep_obat_racikan_keyword').val());
+    var dosis    = $.trim($('#resep_dosis_racikan').val());
+    if (!namaObat) { showResepMsg('err', 'Pilih obat racikan'); $('#resep_obat_racikan_keyword').focus(); return; }
+    if (!dosis)    { showResepMsg('err', 'Isi dosis obat'); $('#resep_dosis_racikan').focus(); return; }
+
+    ensureResepHeader(function(kodePesan) {
+        var fd = {
+            submit:                'racikan_detail',
+            id_template:           0,
+            id_pesan_resep_detail: 0,
+            kode_pesan_resep:      kodePesan,
+            no_registrasi:         $('#no_registrasi').val() || _resepNoReg,
+            no_kunjungan:          _resepNoKunj,
+            kode_brg:              $('#resep_kode_brg_racikan').val(),
+            nama_brg:              namaObat,
+            jml_pesan:             dosis,
+            satuan_obat:           $('#resep_satuan_racik_child').val() || '',
+            no_mr:                 _resepNoMr,
+            jml_dosis:             0,
+            jml_dosis_obat:        0,
+            aturan_pakai:          '',
+            keterangan:            $('#resep_ket_racik_child').val(),
+            jml_hari:              0,
+            tipe_obat:             'racikan',
+            parent:                _racikanParentKodeBrg
+        };
+        $.ajax({
+            url: 'farmasi/E_resep/add_resep_obat',
+            data: fd, dataType: 'json', type: 'POST',
+            success: function(res) {
+                if (res.status === 200) {
+                    showResepMsg('ok', 'Bahan obat ditambahkan');
+                    resetRacikanChildForm();
+                    loadResepDrugsModal();
+                } else {
+                    showResepMsg('err', res.message || 'Gagal menambah bahan racikan');
+                }
+            },
+            error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+        });
+    });
+}
+
+function resetRacikanChildForm() {
+    $('#resep_kode_brg_racikan').val('');
+    $('#resep_obat_racikan_keyword').val('').focus();
+    $('#resep_dosis_racikan').val('');
+    $('#resep_satuan_racik_child').val('');
+    $('#resep_ket_racik_child').val('');
+}
+
+function resetRacikanForm() {
+    _racikanParentKodeBrg = null;
+    _racikanEditId = 0;
+    $('#resep_nama_racikan').val('');
+    $('#resep_jml_racikan').val('');
+    $('#resep_satuan_racikan').val('Bks');
+    $('#resep_dd_racikan').val('');
+    $('#resep_jmldos_racikan').val('');
+    $('#resep_anjuran_racikan').val('Sesudah Makan');
+    $('#resep_ket_racikan').val('');
+    $('#racikan-child-form').slideUp(200);
+    $('#racikan-child-label').text('');
+    // Reset buttons: show Simpan, hide Update
+    $('#btn-save-racikan-hdr').show().prop('disabled', false).css('opacity', '1');
+    $('#btn-update-racikan-hdr').hide();
+    resetRacikanChildForm();
+}
+
+function editRacikanFromTable(id) {
+    // Switch to racikan tab
+    $('#resep-tab-nav .resep-tab').removeClass('active');
+    $('.resep-tab[data-tab="resep-tab-racikan"]').addClass('active');
+    $('.resep-tab-content').removeClass('active').hide();
+    $('#resep-tab-racikan').addClass('active').show();
+    // Reset form first
+    resetRacikanForm();
+    // Fetch row data and populate form
+    $.getJSON('farmasi/E_resep/getrowresep', { ID: id }, function(res) {
+        if (!res) { showResepMsg('err', 'Data tidak ditemukan'); return; }
+        _racikanEditId = res.id;
+        _racikanParentKodeBrg = res.kode_brg;
+        $('#resep_nama_racikan').val(res.nama_brg);
+        $('#resep_jml_racikan').val(res.jml_pesan);
+        $('#resep_satuan_racikan').val(res.satuan_obat);
+        $('#resep_dd_racikan').val(res.jml_dosis);
+        $('#resep_jmldos_racikan').val(res.jml_dosis_obat);
+        $('#resep_anjuran_racikan').val(res.aturan_pakai);
+        $('#resep_ket_racikan').val(res.keterangan);
+        // Show update button, hide simpan button
+        $('#btn-save-racikan-hdr').hide();
+        $('#btn-update-racikan-hdr').show();
+        // Show child form ready for adding bahan
+        $('#racikan-child-form').slideDown(200);
+        $('#racikan-child-label').text('[ ' + res.nama_brg + ' ]');
+    });
+}
+
+function updateRacikanHeader() {
+    var nama = $.trim($('#resep_nama_racikan').val());
+    var qty  = $.trim($('#resep_jml_racikan').val());
+    if (!nama) { showResepMsg('err', 'Isi nama racikan'); $('#resep_nama_racikan').focus(); return; }
+    if (!qty)  { showResepMsg('err', 'Isi qty racikan'); $('#resep_jml_racikan').focus(); return; }
+
+    var fd = {
+        submit:                'header',
+        id_template:           0,
+        id_pesan_resep_detail: _racikanEditId,
+        kode_pesan_resep:      resepKodePesan,
+        no_registrasi:         $('#no_registrasi').val() || _resepNoReg,
+        no_kunjungan:          _resepNoKunj,
+        kode_brg:              _racikanParentKodeBrg,
+        nama_brg:              nama,
+        jml_pesan:             qty,
+        satuan_obat:           $('#resep_satuan_racikan').val() || 'Bks',
+        no_mr:                 _resepNoMr,
+        jml_dosis:             $('#resep_dd_racikan').val() || '0',
+        jml_dosis_obat:        $('#resep_jmldos_racikan').val() || '0',
+        aturan_pakai:          $('#resep_anjuran_racikan').val() || 'Sesudah Makan',
+        keterangan:            $('#resep_ket_racikan').val(),
+        jml_hari:              0,
+        tipe_obat:             'racikan',
+        tipe_racik:            'dtd',
+        parent:                '0'
+    };
+    $.ajax({
+        url: 'farmasi/E_resep/add_resep_obat',
+        data: fd, dataType: 'json', type: 'POST',
+        success: function(res) {
+            if (res.status === 200) {
+                showResepMsg('ok', 'Racikan berhasil diupdate');
+                $('#racikan-child-label').text('[ ' + nama + ' ]');
+                loadResepDrugsModal();
+            } else {
+                showResepMsg('err', res.message || 'Gagal update racikan');
+            }
+        },
+        error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+    });
+}
+
+function addBahanToRacikan(kodeBrg, namaRacikan) {
+    // Switch to racikan tab
+    $('#resep-tab-nav .resep-tab').removeClass('active');
+    $('.resep-tab[data-tab="resep-tab-racikan"]').addClass('active');
+    $('.resep-tab-content').removeClass('active').hide();
+    $('#resep-tab-racikan').addClass('active').show();
+    // Set parent and show child form directly
+    _racikanParentKodeBrg = kodeBrg;
+    $('#resep_nama_racikan').val(namaRacikan);
+    $('#btn-save-racikan-hdr').prop('disabled', true).css('opacity', '.5');
+    $('#racikan-child-form').slideDown(200);
+    $('#racikan-child-label').text('[ ' + namaRacikan + ' ]');
+    $('#resep_obat_racikan_keyword').focus();
+}
+
+function calcResepJml() {
+    var dd   = parseInt($('#resep_jml_dosis').val()) || 0;
+    var qty  = parseInt($('#resep_jml_dosis_obat').val()) || 0;
+    var hari = parseInt($('#resep_jml_hari').val()) || 0;
+    if (dd && qty && hari) $('#resep_jml_pesan').val(dd * qty * hari);
+}
+
+function updateResepSoapPanel(drugs) {
+    var count = (drugs && drugs.length) ? drugs.length : 0;
+    $('#soap-resep-count').text(count + ' obat');
+    if (count > 0) {
+        $('input[name="ada_resep"][value="Y"]').prop('checked', true);
+        $('#fdd_resep_list').show();
+        var html = '<table style="width:100%;font-size:12px;margin-top:6px;border-collapse:collapse">';
+        $.each(drugs, function(i, d) {
+            if (d.tipe_obat === 'racikan') {
+                html += '<tr>';
+                html += '<td style="padding:3px 8px;width:40%;vertical-align:top"><i class="fa fa-flask" style="color:#0891b2;font-size:10px"></i> <strong>' + escHtml(d.nama_brg||'').toUpperCase() + '</strong> <span style="color:#94a3b8;font-size:10px">[Racikan]</span>';
+                if (d.children && d.children.length > 0) {
+                    html += '<div style="padding:2px 0 0 12px;margin-top:2px"><div style="font-size:10px;font-style:italic;color:#64748b">bahan racik :</div>';
+                    $.each(d.children, function(j, c) {
+                        html += '<div style="font-size:11px;color:#475569;line-height:1.8">&bull; ' + escHtml(c.nama_brg||'') + ' (' + (c.jml_pesan||'') + ' ' + escHtml(c.satuan_obat||'') + ')</div>';
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<div style="font-size:10px;font-style:italic;color:#94a3b8;padding-left:12px;margin-top:2px">Belum ada bahan obat</div>';
+                }
+                html += '</td>';
+                html += '<td style="padding:3px 8px;color:#475569;vertical-align:top">' + (d.jml_dosis||'') + ' &times; ' + (d.jml_dosis_obat||'') + ' ' + escHtml(d.satuan_obat||'') + ' ' + escHtml(d.aturan_pakai||'') + '</td>';
+                html += '<td style="padding:3px 8px;color:#64748b;width:55px;vertical-align:top">' + (d.jml_pesan||'') + '</td>';
+                html += '</tr>';
+            } else {
+                html += '<tr>';
+                html += '<td style="padding:3px 8px;width:40%">' + escHtml(d.nama_brg||'') + '</td>';
+                html += '<td style="padding:3px 8px;color:#475569">' + (d.jml_dosis||'') + ' &times; ' + (d.jml_dosis_obat||'') + ' ' + escHtml(d.satuan_obat||'') + ' ' + escHtml(d.aturan_pakai||'') + '</td>';
+                html += '<td style="padding:3px 8px;color:#64748b;width:55px">' + (d.jml_pesan||'') + '</td>';
+                html += '</tr>';
+            }
+        });
+        html += '</table>';
+        $('#soap-resep-items').html(html);
+    } else {
+        $('#soap-resep-count').text('0 obat');
+    }
+    syncPengobatanTextarea();
+}
+
+function prosesResepSelesai() {
+    if (!resepKodePesan) { alert('Belum ada resep yang dibuat'); return; }
+    if (!confirm('Apakah anda yakin akan memproses resep ini?')) return;
+
+    $('#btn-resep-selesai').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+
+    $.ajax({
+        url: 'farmasi/Farmasi_pesan_resep/process',
+        data: {
+            no_registrasi:          $('#no_registrasi').val() || _resepNoReg,
+            no_kunjungan:           _resepNoKunj,
+            no_mr:                  _resepNoMr,
+            kode_perusahaan:        _resepKodePerush,
+            kode_kelompok:          _resepKodeKelom,
+            kode_klas:              _resepKodeKlas,
+            kode_profit:            _resepKodeProfit,
+            kode_bagian_asal:       _resepKodeBagian,
+            kode_dokter:            _resepKodeDokter,
+            jenis_resep:            $('input[name="resep_jenis_m"]:checked').val() || 'non_prb',
+            resep_iter:             $('input[name="resep_iter_m"]:checked').val() || '0',
+            keterangan_pesan_resep: $('#resep_ket_modal').val() || '',
+            lokasi_tebus:           '1',
+            jumlah_r:               '1',
+            kode_pesan_resep:       resepKodePesan,
+            e_resep:                1,
+            source:                 'SOAP'
+        },
+        dataType: 'json',
+        type: 'POST',
+        success: function(res) {
+            if (res.status === 200) {
+                resepEResepStatus = 1; // tandai selesai di state global
+                // Switch to "done" label
+                $('#btn-resep-selesai').hide();
+                $('#resep-status-done').show();
+                loadResepDrugsModal();
+            } else {
+                alert(res.message || 'Gagal memproses resep');
+            }
+        },
+        error: function() { alert('Gagal menghubungi server'); },
+        complete: function() {
+            $('#btn-resep-selesai').prop('disabled', false).html('<i class="fa fa-check-circle"></i> Resep Selesai');
+        }
+    });
+}
+
+function showResepMsg(type, msg) {
+    var cls = type === 'ok' ? 'msg-ok' : 'msg-err';
+    var ico = type === 'ok' ? 'check' : 'exclamation-triangle';
+    $('#resep-status-msg').attr('class', cls).html('<i class="fa fa-' + ico + '"></i> ' + msg).show();
+    setTimeout(function() { $('#resep-status-msg').fadeOut(); }, 4000);
+}
+
+function escHtml(s) {
+    return $('<span>').text(String(s)).html();
+}
+
+// ── Sync Penunjang + Resep into pl_pengobatan textarea ───────
+function syncPengobatanTextarea() {
+    var lines = [];
+
+    // 1. Collect Penunjang Medis from cards
+    var pmItems = [];
+    $('#fdd_pm_cards .fdd-pm-card').each(function() {
+        var unitLabel = $(this).find('.fdd-pm-card-unit').text().trim();
+        var chips = [];
+        $(this).find('.fdd-pm-chip').each(function() {
+            chips.push($(this).text().trim());
+        });
+        if (chips.length > 0) {
+            pmItems.push('- ' + unitLabel + ': ' + chips.join(', '));
+        } else if (unitLabel) {
+            pmItems.push('- ' + unitLabel);
+        }
+    });
+    if (pmItems.length > 0) {
+        lines.push('Pemeriksaan Penunjang:');
+        lines = lines.concat(pmItems);
+    }
+
+    // 2. Collect Resep from drug table
+    var resepItems = [];
+    $('#resep-drug-tbody tr').each(function() {
+        if ($(this).find('.resep-empty-msg').length) return;
+        var row = $(this);
+        if (row.hasClass('racikan-hdr-row')) {
+            var namaRacikan = row.find('td:first').clone().children('.racikan-bahan-wrap').remove().end().text().trim();
+            var bahanList = [];
+            row.find('.rb-item').each(function() {
+                var t = $(this).clone().children('.fa-times').remove().end().text().trim();
+                if (t) bahanList.push(t);
+            });
+            var signa = row.find('td:eq(1)').text().trim();
+            var qty = row.find('td:eq(2)').text().trim();
+            var entry = '- [Racikan] ' + namaRacikan + ' ' + signa + ' (' + qty + ')';
+            if (bahanList.length > 0) {
+                entry += '\n  Bahan: ' + bahanList.join('; ');
+            }
+            resepItems.push(entry);
+        } else {
+            var nama = row.find('td:eq(0)').text().trim();
+            var signa = row.find('td:eq(1)').text().trim();
+            var qty = row.find('td:eq(2)').text().trim();
+            if (nama) {
+                resepItems.push('- ' + nama + ' ' + signa + ' (' + qty + ')');
+            }
+        }
+    });
+    if (resepItems.length > 0) {
+        if (lines.length > 0) lines.push('');
+        lines.push('Resep Obat:');
+        lines = lines.concat(resepItems);
+    }
+
+    $('#pl_pengobatan').val(lines.join('\n'));
+}
+
+/* ── Validasi Simpan SOAP: Ada Penunjang & Ada Resep ────────────────
+   Ada Penunjang = Y  → wajib:
+     (a) minimal 1 order card di #fdd_pm_cards, DAN
+     (b) minimal 1 ceklist pemeriksaan (.fdd-pm-chip) di card manapun
+         ATAU minimal 1 pengantar lab sudah terisi (.fdd-pm-detail-label)
+   Ada Resep = Y      → wajib ada minimal 1 obat di #soap-resep-items
+   ─────────────────────────────────────────────────────────────────── */
+$(document).ready(function() {
+
+    $('#btn_save_data').on('click', function(e) {
+        var errors   = [];
+        var scrollTo = null;
+
+        /* ── 1. Cek Ada Penunjang ── */
+        if ($('input[name="ada_penunjang"]:checked').val() === 'Y') {
+
+            var pmCardCount    = $('#fdd_pm_cards .fdd-pm-card').length;
+            var pmChipCount    = $('#fdd_pm_cards .fdd-pm-chip').length;
+            var pmPengantarCount = $('#fdd_pm_cards .fdd-pm-detail-label').length;
+
+            if (pmCardCount === 0) {
+                /* Belum ada order penunjang sama sekali */
+                errors.push(
+                    '<i class="fa fa-flask" style="margin-right:5px"></i>' +
+                    '<b>Penunjang Medis</b>: Anda memilih <b>Ada Penunjang</b> ' +
+                    'namun belum ada order pemeriksaan yang ditambahkan. ' +
+                    'Klik tombol <b>Tambah</b> untuk membuat order, atau ubah pilihan ke <b>Tidak</b>.'
+                );
+                if (!scrollTo) scrollTo = $('#fdd_pm_list');
+
+            } else if (pmChipCount === 0 && pmPengantarCount === 0) {
+                /* Order sudah dibuat tapi form pengantar belum diisi / ceklist kosong */
+                errors.push(
+                    '<i class="fa fa-flask" style="margin-right:5px"></i>' +
+                    '<b>Penunjang Medis</b>: Order penunjang sudah dibuat, ' +
+                    'namun belum ada <b>ceklist pemeriksaan</b> atau <b>ceklist pengantar</b> yang terisi. ' +
+                    'Silahkan buka form <b>Pengantar Lab / Rad / Fisio</b> dan pilih minimal 1 item pemeriksaan.'
+                );
+                if (!scrollTo) scrollTo = $('#fdd_pm_cards');
+            }
+        }
+
+        /* ── 2. Cek Ada Resep ── */
+        if ($('input[name="ada_resep"]:checked').val() === 'Y') {
+            if ($('#soap-resep-items table').length === 0) {
+                errors.push(
+                    '<i class="fa fa-medkit" style="margin-right:5px"></i>' +
+                    '<b>Resep Dokter</b>: Anda memilih <b>Ada Resep</b> ' +
+                    'namun belum ada obat yang di-order. ' +
+                    'Silahkan tambahkan obat melalui modal resep atau ubah pilihan ke <b>Tidak</b>.'
+                );
+                if (!scrollTo) scrollTo = $('#fdd_resep_list');
+            } else if (resepHasDrugs && resepEResepStatus != 1) {
+                errors.push(
+                    '<i class="fa fa-check-circle" style="margin-right:5px"></i>' +
+                    '<b>Resep Dokter</b>: Terdapat obat pada resep namun <b>Resep Selesai</b> belum diklik. ' +
+                    'Klik tombol <b style="color:#16a34a">Resep Selesai</b> terlebih dahulu, setelah itu baru simpan data SOAP.'
+                );
+                if (!scrollTo) scrollTo = $('#resep-selesai-wrap');
+            }
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault();
+            $.achtung({
+                message : errors.join('<br><br>'),
+                timeout : 9,
+                className: 'achtungFail'
+            });
+            if (scrollTo && scrollTo.length) {
+                $('html,body').animate({ scrollTop: scrollTo.offset().top - 80 }, 350);
+            }
+            return false;
+        }
+    });
+
+});
+
 </script>
 

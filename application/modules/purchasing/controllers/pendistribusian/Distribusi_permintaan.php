@@ -148,13 +148,18 @@ class Distribusi_permintaan extends MX_Controller {
             $acc_by = ($row_list->acc_by ==null) ? '<i class="fa fa-exclamation-triangle bigger-150 orange"></i>' : $row_list->acc_by;
             $row[] = '<div class="center">'.$tgl_acc.'</div>';
             $row[] = '<div class="center">'.$acc_by.'</div>';
-            if($row_list->tgl_acc == null)
-            {
-                $style_status = '<span style="width: 100% !important" class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Belum diverifikasi</span>';
-            }else{
-                $style_status = ($row_list->status_acc == 1) ? '<span class="label label-success" style="width: 100% !important"><i class="fa fa-check"></i> Disetujui</span>' :'<span style="width: 100% !important" class="label label-danger"><i class="fa fa-times"></i> Tidak disetujui</span>';
+            if ($row_list->version == 0) {
+                $style_status = '<span class="label label-info" style="width: 100% !important"><i class="fa fa-share"></i> Direct Distribution</span>';
+            } else {
+                if ($row_list->tgl_acc == null) {
+                    $style_status = '<span style="width: 100% !important" class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Belum diverifikasi</span>';
+                } else {
+                    $style_status = ($row_list->status_acc == 1)
+                        ? '<span class="label label-success" style="width: 100% !important"><i class="fa fa-check"></i> Disetujui</span>'
+                        : '<span style="width: 100% !important" class="label label-danger"><i class="fa fa-times"></i> Tidak disetujui</span>';
+                }
             }
-            
+
             $row[] = '<div class="center">'.$style_status.'</div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pengiriman).'</div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_input_terima).'</div>';
@@ -246,7 +251,7 @@ class Distribusi_permintaan extends MX_Controller {
 
     public function process_pengiriman_brg_unit()
     {
-        // print_r($_POST);die;
+        // echo "<pre>";print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
@@ -277,7 +282,7 @@ class Distribusi_permintaan extends MX_Controller {
                 'kode_bagian_minta' => $this->regex->_genRegex($val->set_value('kode_bagian_minta'),'RGXQSL'),
                 'jenis_permintaan' => $this->regex->_genRegex(0,'RGXQSL'),
                 'catatan' => $this->regex->_genRegex($val->set_value('catatan'),'RGXQSL'),
-                'version' => 1,
+                'version' => isset($_POST['version']) ? $this->regex->_genRegex($val->set_value('version'),'RGXINT') : 1,
             );
             // print_r($dataexc);die;
             $dataexc['created_date'] = date('Y-m-d H:i:s');
@@ -531,6 +536,51 @@ class Distribusi_permintaan extends MX_Controller {
 
 
 
+
+    public function print_multiple()
+    {
+        $id   = $this->input->post('ID') ? $this->input->post('ID', TRUE) : '';
+        $flag = isset($_GET['flag']) ? $_GET['flag'] : 'medis';
+
+        $queryString = 'ID=' . urlencode($id) . '&flag=' . urlencode($flag);
+        echo json_encode(array('queryString' => $queryString));
+    }
+
+    public function print_multiple_preview()
+    {
+        $flag    = isset($_GET['flag']) ? $_GET['flag'] : 'medis';
+        $ids_raw = isset($_GET['ID'])   ? $_GET['ID']   : '';
+        $ids     = array_filter(array_map('intval', explode(',', $ids_raw)));
+
+        $title    = ($flag == 'non_medis') ? 'Gudang Non Medis' : 'Gudang Medis';
+        $subtitle = str_replace('_', ' ', $flag);
+
+        $permintaan = array();
+        foreach ($ids as $id) {
+            $result = $this->Distribusi_permintaan->get_brg_permintaan($flag, $id);
+            if (empty($result)) continue;
+
+            $rows = array();
+            foreach ($result as $brg) {
+                $rows[] = array(
+                    'nomor_permintaan' => $brg->nomor_permintaan,
+                    'tgl_permintaan'   => $brg->tgl_permintaan,
+                    'jenis_permintaan' => $brg->jenis_permintaan,
+                    'nama_bagian'      => $brg->nama_bagian,
+                    'barang'           => $brg,
+                );
+            }
+            $permintaan[] = $rows;
+        }
+
+        $data = array(
+            'permintaan' => $permintaan,
+            'title'      => $title,
+            'subtitle'   => $subtitle,
+            'flag'       => $flag,
+        );
+        $this->load->view('pendistribusian/Distribusi_permintaan/print_preview_multiple', $data);
+    }
 
     public function process()
     {

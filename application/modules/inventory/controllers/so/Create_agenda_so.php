@@ -80,6 +80,7 @@ class Create_agenda_so extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
+            // echo '<pre>';print_r($row_list);echo '</pre>';
             $no++;
             $row = array();
             $row[] = '<div class="center">
@@ -101,6 +102,24 @@ class Create_agenda_so extends MX_Controller {
             $row[] = $row_list->agenda_so_desc;
             $row[] = ($row_list->is_active == 'Y') ? '<div class="center"><span class="label label-sm label-success">Active</span></div>' : '<div class="center"><span class="label label-sm label-danger">Not active</span></div>';
             $row[] = $this->logs->show_logs_record_datatable($row_list);
+            
+            if ($row_list->is_frozen == 'Y') {
+                $frozen_badge  = '<span class="label label-sm label-warning"><i class="fa fa-lock"></i> Frozen</span>';
+                $frozen_time_s = $row_list->frozen_time
+                    ? '<br><small style="color:#888;font-size:9px">' . $row_list->frozen_time . '</small>'
+                    : '';
+                $btn_freeze    = '<button class="btn btn-xs btn-danger btn-so-toggle-freeze" style="margin-top:4px"'
+                    . ' data-id="' . $row_list->agenda_so_id . '" data-frozen="Y"'
+                    . ' title="Lepas Freeze Stok"><i class="fa fa-unlock"></i> Lepas Freeze</button>';
+            } else {
+                $frozen_badge  = '<span class="label label-sm label-default"><i class="fa fa-unlock-alt"></i> Not Frozen</span>';
+                $frozen_time_s = '';
+                $btn_freeze    = '<button class="btn btn-xs btn-warning btn-so-toggle-freeze" style="margin-top:4px"'
+                    . ' data-id="' . $row_list->agenda_so_id . '" data-frozen="N"'
+                    . ' title="Freeze Stok"><i class="fa fa-lock"></i> Freeze Stok</button>';
+            }
+
+            $row[] = '<div class="center">' . $frozen_badge . $frozen_time_s . '<br>' . $btn_freeze . '</div>';
                    
             $data[] = $row;
         }
@@ -194,7 +213,52 @@ class Create_agenda_so extends MX_Controller {
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
         }
-        
+
+    }
+
+    // ── Toggle is_frozen & frozen_time ──
+    public function set_frozen()
+    {
+        $id        = $this->input->post('id',  TRUE);
+        $is_frozen = $this->input->post('is_frozen', TRUE);
+        $is_frozen = ($is_frozen === 'Y') ? 'Y' : 'N';
+
+        if (!$id) {
+            echo json_encode(array('status' => 301, 'message' => 'ID tidak valid'));
+            return;
+        }
+
+        $frozen_time = ($is_frozen === 'Y') ? date('Y-m-d H:i:s') : null;
+
+        $dataexc = array(
+            'is_frozen'    => $is_frozen,
+            'frozen_time'  => $frozen_time,
+            'updated_date' => date('Y-m-d H:i:s'),
+            'updated_by'   => json_encode(array(
+                'user_id'  => $this->session->userdata('user')->user_id,
+                'fullname' => $this->session->userdata('user')->fullname,
+            )),
+        );
+
+        $this->db->trans_begin();
+        $this->Create_agenda_so->update(array('agenda_so_id' => $id), $dataexc);
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Proses gagal'));
+        } else {
+            $this->db->trans_commit();
+            $msg = ($is_frozen === 'Y')
+                ? 'Stok agenda berhasil di-freeze'
+                : 'Freeze stok agenda berhasil dilepas';
+            $this->logs->save('tc_stok_opname_agenda', $id, $msg, json_encode($dataexc), 'agenda_so_id');
+            echo json_encode(array(
+                'status'      => 200,
+                'message'     => $msg,
+                'is_frozen'   => $is_frozen,
+                'frozen_time' => $frozen_time,
+            ));
+        }
     }
 
 

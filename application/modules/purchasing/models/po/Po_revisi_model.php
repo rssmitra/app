@@ -21,7 +21,11 @@ class Po_revisi_model extends CI_Model {
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user b','b.id_dd_user=a.user_id', 'left');
 		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
-		$this->db->where('DATEDIFF(day,a.tgl_po,GETDATE()) < 60');
+		// Terapkan filter default 60 hari hanya jika tidak ada filter tanggal custom
+		$has_date_filter = (!empty($_GET['from_tgl']) || !empty($_GET['to_tgl']));
+		if (!$has_date_filter) {
+			$this->db->where('DATEDIFF(day,a.tgl_po,GETDATE()) < 60');
+		}
 		// $this->db->where('YEAR(a.tgl_po)', date('Y'));
 	}
 
@@ -35,6 +39,18 @@ class Po_revisi_model extends CI_Model {
 			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'no_po' ){
 				$this->db->like( $_GET['search_by'], $_GET['keyword'] );
 			}
+		}
+
+		// filter berdasarkan tgl po
+		$from_tgl = isset($_GET['from_tgl']) ? trim($_GET['from_tgl']) : '';
+		$to_tgl   = isset($_GET['to_tgl'])   ? trim($_GET['to_tgl'])   : '';
+		if ($from_tgl !== '' && strtotime($from_tgl)) {
+			$from_safe = $this->db->escape(date('Y-m-d', strtotime($from_tgl)));
+			$this->db->where('CONVERT(date, a.tgl_po) >= ' . $from_safe);
+		}
+		if ($to_tgl !== '' && strtotime($to_tgl)) {
+			$to_safe = $this->db->escape(date('Y-m-d', strtotime($to_tgl)));
+			$this->db->where('CONVERT(date, a.tgl_po) <= ' . $to_safe);
 		}
 
 		$i = 0;

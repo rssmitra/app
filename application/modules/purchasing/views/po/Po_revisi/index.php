@@ -192,7 +192,7 @@
           </div>
 
           <div class="form-group" style="margin-bottom:8px">
-            <label class="control-label col-md-2" style="font-size:12px">Tanggal Permintaan</label>
+            <label class="control-label col-md-2" style="font-size:12px">Tanggal PO</label>
             <div class="col-md-2">
               <div class="input-group">
                 <input class="form-control input-sm date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="" placeholder="Dari..."/>

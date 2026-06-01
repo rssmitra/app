@@ -5,7 +5,7 @@ class Create_agenda_so_model extends CI_Model {
 
 	var $table = 'tc_stok_opname_agenda';
 	var $column = array('tc_stok_opname_agenda.agenda_so_name');
-	var $select = 'tc_stok_opname_agenda.agenda_so_id, tc_stok_opname_agenda.agenda_so_name, tc_stok_opname_agenda.agenda_so_date, tc_stok_opname_agenda.agenda_so_spv, tc_stok_opname_agenda.agenda_so_time, tc_stok_opname_agenda.agenda_so_desc,tc_stok_opname_agenda.is_active, tc_stok_opname_agenda.created_date,, tc_stok_opname_agenda.created_by, tc_stok_opname_agenda.updated_date, tc_stok_opname_agenda.updated_by, agenda_so_cut_off_stock';
+	var $select = 'tc_stok_opname_agenda.agenda_so_id, tc_stok_opname_agenda.agenda_so_name, tc_stok_opname_agenda.agenda_so_date, tc_stok_opname_agenda.agenda_so_spv, tc_stok_opname_agenda.agenda_so_time, tc_stok_opname_agenda.agenda_so_desc,tc_stok_opname_agenda.is_active, tc_stok_opname_agenda.created_date,, tc_stok_opname_agenda.created_by, tc_stok_opname_agenda.updated_date, tc_stok_opname_agenda.updated_by, agenda_so_cut_off_stock, is_frozen, frozen_time';
 
 	var $order = array('tc_stok_opname_agenda.agenda_so_id' => 'DESC', 'tc_stok_opname_agenda.updated_date' => 'DESC');
 
@@ -52,6 +52,8 @@ class Create_agenda_so_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
+		$query->result();
+		// echo $this->db->last_query();die;
 		return $query->result();
 	}
 

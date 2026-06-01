@@ -5,7 +5,7 @@ $(document).ready(function() {
   $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: $('#idx_cppt_fsp').val()} , function (response) {    
     // show data
     var obj = response.result;
-    $('#editor_show_pengkajian').html(obj.catatan_pengkajian);
+    // $('#editor_show_pengkajian').html(obj.catatan_pengkajian);
     // set value input
     var value_form = response.value_form;
     $.each(value_form, function(i, item) {
