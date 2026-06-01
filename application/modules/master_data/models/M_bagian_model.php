@@ -5,7 +5,7 @@ class M_bagian_model extends CI_Model {
 
 	var $table = 'mt_bagian';
 	var $column = array('mt_bagian.nama_bagian', 'mt_bagian.kode_bagian', 'mt_bagian.group_bag', 'mt_bagian.validasi', 'mt_bagian.depo_group');
-	var $select = 'mt_bagian.*';
+	var $select = 'mt_bagian.*, grp.nama_bagian as nama_depo_group';
 	var $order = array('mt_bagian.id_mt_bagian' => 'DESC');
 
 	public function __construct()
@@ -16,27 +16,35 @@ class M_bagian_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table);
+		$this->db->join('mt_bagian grp', 'grp.kode_bagian = mt_bagian.depo_group', 'left');
 	}
 
 	private function _get_datatables_query()
 	{
-		
 		$this->_main_query();
 		$i = 0;
-	
-		foreach ($this->column as $item) 
+
+		foreach ($this->column as $item)
 		{
-			if($_POST['search']['value'])
-				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
+			if (isset($_POST['search']['value']) && $_POST['search']['value'])
+				($i === 0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
 			$column[$i] = $item;
 			$i++;
 		}
-		
-		if(isset($_POST['order']))
+
+		// ── Panel filters ─────────────────────────────────────────────────────
+		if (isset($_POST['filter_is_active']) && $_POST['filter_is_active'] !== '') {
+			$this->db->where('mt_bagian.is_active', $_POST['filter_is_active']);
+		}
+		if (isset($_POST['filter_depo_group']) && $_POST['filter_depo_group'] !== '') {
+			$this->db->where('mt_bagian.depo_group', $_POST['filter_depo_group']);
+		}
+
+		if (isset($_POST['order']))
 		{
 			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} 
-		else if(isset($this->order))
+		}
+		else if (isset($this->order))
 		{
 			$order = $this->order;
 			$this->db->order_by(key($order), $order[key($order)]);

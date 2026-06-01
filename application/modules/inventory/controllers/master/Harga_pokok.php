@@ -241,6 +241,59 @@ class Harga_pokok extends MX_Controller {
         echo json_encode(array('status' => 200, 'html' => $html));
     }
 
+    public function export_excel()
+    {
+        $list      = $this->Harga_pokok_model->get_all_for_export();
+        $kode_list = array();
+        foreach ($list as $row) {
+            $kode_list[] = $row->kode_brg;
+        }
+        $po_stats = $this->Harga_pokok_model->get_po_stats_batch($kode_list, $this->flag);
+
+        $rows = array();
+        $no   = 0;
+        foreach ($list as $row) {
+            $no++;
+            $rasio          = (isset($row->content) && (int)$row->content > 0) ? (int)$row->content : 1;
+            $ps             = isset($po_stats[$row->kode_brg]) ? $po_stats[$row->kode_brg] : null;
+            $harga_beli_ref = (float)$row->harga_beli * 1.11;
+
+            if ($ps) {
+                $hpp_val        = ((float)$ps->avg_harga_satuan / $rasio) * 1.11;
+                $harga_jual_est = (int)round($hpp_val * (1 + 33.33 / 100));
+                $po_sblm_diskon = (int)round($ps->avg_sblm_diskon / $rasio);
+                $po_stlh_diskon = (int)round($ps->wa_harga_modal  / $rasio);
+                $hpp_display    = (int)round($hpp_val);
+            } else {
+                $hpp_val        = 0;
+                $harga_jual_est = 0;
+                $po_sblm_diskon = 0;
+                $po_stlh_diskon = 0;
+                $hpp_display    = 0;
+            }
+
+            $rows[] = array(
+                'no'             => $no,
+                'kode_brg'       => $row->kode_brg,
+                'nama_brg'       => $row->nama_brg,
+                'nama_pabrik'    => isset($row->nama_pabrik) ? $row->nama_pabrik : '',
+                'satuan'         => strtoupper($row->satuan_besar) . '/' . strtoupper($row->satuan_kecil),
+                'hpp_hari_ini'   => (int)round($harga_beli_ref),
+                'hm_sblm_diskon' => $po_sblm_diskon,
+                'hm_stlh_diskon' => $po_stlh_diskon,
+                'hpp_calc'       => $hpp_display,
+                'harga_jual_est' => $harga_jual_est,
+                'updated_date'   => ($row->updated_date ? date('d/m/Y', strtotime($row->updated_date)) : '-'),
+            );
+        }
+
+        $this->load->view('master/Harga_pokok/excel_view', array(
+            'title'       => $this->title,
+            'flag_string' => $this->flag,
+            'rows'        => $rows,
+        ));
+    }
+
 }
 
 /* End of file Harga_pokok.php */

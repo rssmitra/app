@@ -95,6 +95,9 @@ td.details-control {
         <button type="button" class="btn btn-xs btn-default" id="btn-reset-hp">
           <i class="fa fa-refresh"></i> Reset
         </button>
+        <a href="#" class="btn btn-xs btn-success" id="btn-export-hp">
+          <i class="fa fa-file-excel-o"></i> Export Excel
+        </a>
       </form>
     </div>
 
@@ -219,6 +222,17 @@ $(function () {
         $('select[name="kode_golongan"]').val('');
         $('select[name="kode_sub_gol"]').val('');
         oTableHp.ajax.reload();
+    });
+
+    // ── Export Excel ──
+    $('#btn-export-hp').on('click', function (e) {
+        e.preventDefault();
+        var params = $.param({
+            flag:          _hpFlag,
+            kode_golongan: $('select[name="kode_golongan"]').val(),
+            kode_sub_gol:  $('select[name="kode_sub_gol"]').val()
+        });
+        window.open(_hpBaseUrl + '/export_excel?' + params, '_blank');
     });
 
     // ── Row expand / collapse (details-control) ──

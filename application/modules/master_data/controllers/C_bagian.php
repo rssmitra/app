@@ -25,12 +25,19 @@ class C_bagian extends MX_Controller {
     }
 
     public function index() {
-        /*define variable data*/
+        $group_list = $this->db
+            ->select('kode_bagian, nama_bagian')
+            ->from('mt_bagian')
+            ->where('group_bag', 'Group')
+            ->where('is_active', 'Y')
+            ->order_by('kode_bagian', 'ASC')
+            ->get()->result();
+
         $data = array(
-            'title' => $this->title,
+            'title'       => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
+            'group_list'  => $group_list,
         );
-        /*load view index*/
         $this->load->view('Bagian/index', $data);
     }
 
@@ -84,22 +91,61 @@ class C_bagian extends MX_Controller {
         echo json_encode( array('html' => $html) );
     }
 
+    // ── Inline toggle renderer ────────────────────────────────────────────────
+    private function _toggle($id, $field, $cur_val, $options)
+    {
+        $cur_str = (string)$cur_val;
+        $html    = '<div class="tbl-field-toggle"'
+                 . ' data-id="' . (int)$id . '"'
+                 . ' data-field="' . htmlspecialchars($field, ENT_QUOTES) . '"'
+                 . ' data-current="' . htmlspecialchars($cur_str, ENT_QUOTES) . '"'
+                 . ' style="display:inline-flex;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:11px">';
+        foreach ($options as $opt) {
+            $is_act = ($cur_str === (string)$opt['val']);
+            if ($is_act) {
+                $s = 'cursor:default;padding:3px 8px;background:' . $opt['color'] . ';color:#fff;font-weight:bold';
+            } else {
+                $s = 'cursor:pointer;padding:3px 8px;background:#f0f0f0;color:#aaa';
+            }
+            $html .= '<span class="tbl-toggle-opt" data-val="' . htmlspecialchars((string)$opt['val'], ENT_QUOTES) . '" style="' . $s . '">'
+                   . htmlspecialchars($opt['label'], ENT_QUOTES) . '</span>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
     public function get_data()
     {
         /*get data from model*/
         $list = $this->M_bagian->get_datatables();
-        // echo "<pre>"; print_r($list);die;
         $data = array();
-        $no = $_POST['start'];
+        $no   = $_POST['start'];
+
+        // Load Group options once — used for the inline parent select in every Detail row
+        $group_opts = $this->db
+            ->select('kode_bagian, nama_bagian')
+            ->from('mt_bagian')
+            ->where('group_bag', 'Group')
+            ->where('is_active', 'Y')
+            ->order_by('kode_bagian', 'ASC')
+            ->get()->result();
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+
+            // ── 0: Checkbox ───────────────────────────────────────────────────
             $row[] = '<div class="center"><label class="pos-rel">
                         <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_mt_bagian.'"/>
                         <span class="lbl"></span>
                     </label></div>';
+
+            // ── 1: Expand (DataTable detail row) ──────────────────────────────
             $row[] = '';
+
+            // ── 2: Hidden ID (used by detail loader) ──────────────────────────
             $row[] = $row_list->id_mt_bagian;
+
+            // ── 3: Actions ────────────────────────────────────────────────────
             $row[] = '<div class="center"><div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
@@ -110,20 +156,81 @@ class C_bagian extends MX_Controller {
                             <li>'.$this->authuser->show_button('master_data/C_bagian','D',$row_list->id_mt_bagian,6).'</li>
                         </ul>
                       </div></div>';
-            
-            $row[] = '<div class="center">'.$row_list->id_mt_bagian.'</div>';
-            $row[] = $row_list->nama_bagian;
-            $row[] = '<div class="center">'.$row_list->kode_bagian.'</div>';
-            $row[] = '<div class="center"><span class="label label-sm '.($row_list->group_bag == 'Group' ? 'label-info' : 'label-warning').'">'.$row_list->group_bag.'</span></div>';
-            $row[] = '<div class="center">'.($row_list->validasi ?? '-').'</div>';
-            $row[] = '<div class="center">'.($row_list->depo_group ?? '-').'</div>';
-            if((string)$row_list->is_active == 'Y'){
-                $row[] = '<div class="center"><span class="label label-sm label-success">Active</span></div>'; 
-            }else{
-                $row[] = '<div class="center"><span class="label label-sm label-danger">Not active</span></div>';
+
+            // ── 4: No ─────────────────────────────────────────────────────────
+            $row[] = '<div class="center">'.$no.'</div>';
+
+            // ── 5: Kode ───────────────────────────────────────────────────────
+            $row[] = '<div class="center"><b>'.$row_list->kode_bagian.'</b></div>';
+
+            // ── 6: Nama Bagian ────────────────────────────────────────────────
+            $row[] = strtoupper($row_list->nama_bagian);
+
+            // ── 7: Nama Singkat ───────────────────────────────────────────────
+            $short = isset($row_list->short_name) && $row_list->short_name ? $row_list->short_name : '<span style="color:#aaa">-</span>';
+            $row[] = strtoupper($short);
+
+            // ── 8: Nama Group ─────────────────────────────────────────────────
+            // Group rows → static badge (they ARE the parent, no parent select needed)
+            // Detail rows → inline select to assign / change parent Group
+            if ($row_list->group_bag === 'Group') {
+                $row[] = '<div class="center"><span class="label label-sm label-info">Group</span></div>';
+            } else {
+                $cur_parent = isset($row_list->depo_group) ? $row_list->depo_group : '';
+                $sel = '<select class="form-control input-sm tbl-parent-select"'
+                     . ' style="min-width:140px" data-id="' . $row_list->id_mt_bagian . '">'
+                     . '<option value="">-- Pilih Group --</option>';
+                foreach ($group_opts as $g) {
+                    $selected = ($cur_parent === $g->kode_bagian) ? 'selected' : '';
+                    $sel .= '<option value="' . $g->kode_bagian . '" ' . $selected . '>'
+                          . $g->kode_bagian . ' &ndash; ' . $g->nama_bagian . '</option>';
+                }
+                $sel .= '</select>';
+                $row[] = $sel;
             }
+
+            // ── 9: Depo? ──────────────────────────────────────────────────────
+            $is_depo = isset($row_list->is_depo) ? (string)$row_list->is_depo : 'N';
+            $row[] = '<div class="center">' . $this->_toggle($row_list->id_mt_bagian, 'is_depo', $is_depo, array(
+                array('val' => 'Y', 'label' => 'On',    'color' => '#8e44ad'),
+                array('val' => 'N', 'label' => 'Off', 'color' => '#95a5a6'),
+            )) . '</div>';
+
+            // ── 10: Depo Group ────────────────────────────────────────────────
+            $depo_grp       = isset($row_list->depo_group)       && $row_list->depo_group       ? $row_list->depo_group       : '';
+            $nama_depo_grp  = isset($row_list->nama_depo_group)  && $row_list->nama_depo_group  ? $row_list->nama_depo_group  : '';
+            if ($depo_grp) {
+                $row[] = '<div class="center"><b>' . $depo_grp . '</b>'
+                       . ($nama_depo_grp ? '<br><small style="color:#555">' . $nama_depo_grp . '</small>' : '')
+                       . '</div>';
+            } else {
+                $row[] = '<div class="center"><span style="color:#aaa">-</span></div>';
+            }
+
+            // ── 11: Publik? ───────────────────────────────────────────────────
+            $is_pub = isset($row_list->is_public) ? (string)$row_list->is_public : 'N';
+            $row[] = '<div class="center">' . $this->_toggle($row_list->id_mt_bagian, 'is_public', $is_pub, array(
+                array('val' => '1', 'label' => 'On',  'color' => '#27ae60'),
+                array('val' => '0', 'label' => 'Off', 'color' => '#95a5a6'),
+            )) . '</div>';
+
+            // ── 12: Pelayanan / Backoffice ────────────────────────────────────
+            $pel = isset($row_list->pelayanan) ? (string)$row_list->pelayanan : '0';
+            $row[] = '<div class="center">' . $this->_toggle($row_list->id_mt_bagian, 'pelayanan', $pel, array(
+                array('val' => '1', 'label' => 'On',  'color' => '#2980b9'),
+                array('val' => '0', 'label' => 'Off', 'color' => '#e67e22'),
+            )) . '</div>';
+
+            // ── 13: Status Aktif ──────────────────────────────────────────────
+            $is_act = isset($row_list->is_active) ? (string)$row_list->is_active : 'N';
+            $row[] = '<div class="center">' . $this->_toggle($row_list->id_mt_bagian, 'is_active', $is_act, array(
+                array('val' => 'Y', 'label' => 'On',    'color' => '#27ae60'),
+                array('val' => 'N', 'label' => 'Off', 'color' => '#e74c3c'),
+            )) . '</div>';
+
+            // ── 14: Last Update ───────────────────────────────────────────────
             $row[] = $this->logs->show_logs_record_datatable($row_list);
-                   
+
             $data[] = $row;
         }
 
@@ -157,20 +264,21 @@ class C_bagian extends MX_Controller {
             $id = ($this->input->post('id'))?$this->input->post('id'):0;
 
             $dataexc = array(
-                'kode_bagian' => $this->regex->_genRegex( $this->input->post('kode_bagian') , 'RGXQSL'),
-                'nama_bagian' => $this->regex->_genRegex( $val->set_value('nama_bagian') , 'RGXQSL'),
-                'group_bag' => $this->regex->_genRegex( $this->input->post('group_bag') , 'RGXQSL'),
-                'validasi' => $this->regex->_genRegex( $this->input->post('validasi') , 'RGXQSL'),
-                'depo_group' => $this->regex->_genRegex( $this->input->post('depo_group') , 'RGXQSL'),
-                'pelayanan' => $this->regex->_genRegex( $this->input->post('pelayanan') , 'RGXINT'),
-                'status_aktif' => $this->regex->_genRegex( $this->input->post('status_aktif') , 'RGXINT'),
-                'kode_poli_bpjs' => $this->regex->_genRegex( $this->input->post('kode_poli_bpjs') , 'RGXQSL'),
-                'has_observe_room' => $this->regex->_genRegex( $this->input->post('has_observe_room') , 'RGXQSL'),
-                'is_public' => $this->regex->_genRegex( $this->input->post('is_public') , 'RGXINT'),
-                'short_name' => $this->regex->_genRegex( $this->input->post('short_name') , 'RGXQSL'),
-                'id_satu_sehat' => $this->regex->_genRegex( $this->input->post('id_satu_sehat') , 'RGXQSL'),
-                'location_id' => $this->regex->_genRegex( $this->input->post('location_id') , 'RGXQSL'),
-                'is_active' => $this->regex->_genRegex( $this->input->post('is_active') , 'RGXQSL'),
+                'kode_bagian'      => $this->regex->_genRegex( $this->input->post('kode_bagian')      , 'RGXQSL'),
+                'nama_bagian'      => $this->regex->_genRegex( $val->set_value('nama_bagian')          , 'RGXQSL'),
+                'short_name'       => $this->regex->_genRegex( $this->input->post('short_name')        , 'RGXQSL'),
+                'group_bag'        => $this->regex->_genRegex( $this->input->post('group_bag')         , 'RGXQSL'),
+                'validasi'         => $this->regex->_genRegex( $this->input->post('validasi')          , 'RGXQSL'),
+                'is_depo'          => $this->regex->_genRegex( $this->input->post('is_depo')           , 'RGXQSL'),
+                'depo_group'       => $this->regex->_genRegex( $this->input->post('depo_group')        , 'RGXQSL'),
+                'has_observe_room' => $this->regex->_genRegex( $this->input->post('has_observe_room')  , 'RGXQSL'),
+                'pelayanan'        => $this->regex->_genRegex( $this->input->post('pelayanan')         , 'RGXINT'),
+                'status_aktif'     => $this->regex->_genRegex( $this->input->post('status_aktif')      , 'RGXINT'),
+                'kode_poli_bpjs'   => $this->regex->_genRegex( $this->input->post('kode_poli_bpjs')    , 'RGXQSL'),
+                'is_public'        => $this->regex->_genRegex( $this->input->post('is_public')         , 'RGXINT'),
+                'id_satu_sehat'    => $this->regex->_genRegex( $this->input->post('id_satu_sehat')     , 'RGXQSL'),
+                'location_id'      => $this->regex->_genRegex( $this->input->post('location_id')       , 'RGXQSL'),
+                'is_active'        => $this->regex->_genRegex( $this->input->post('is_active')         , 'RGXQSL'),
             );
 
             // DEBUG: Log the data being saved
@@ -206,6 +314,70 @@ class C_bagian extends MX_Controller {
         }
     }
 
+    // ── Inline parent update (from table select) ─────────────────────────────
+
+    public function update_parent()
+    {
+        $id         = (int)$this->input->post('id');
+        $kode_group = $this->input->post('kode_group');
+
+        if (!$id) {
+            echo json_encode(array('status' => 301, 'message' => 'ID tidak valid'));
+            return;
+        }
+
+        $fld = array(
+            'depo_group'   => ($kode_group !== '' ? $kode_group : null),
+            'updated_date' => date('Y-m-d H:i:s'),
+            'updated_by'   => json_encode(array(
+                'user_id'  => $this->session->userdata('user')->user_id,
+                'fullname' => $this->session->userdata('user')->fullname,
+            )),
+        );
+
+        $this->M_bagian->update(array('id_mt_bagian' => $id), $fld);
+
+        if ($this->db->trans_status() === FALSE) {
+            echo json_encode(array('status' => 301, 'message' => 'Gagal menyimpan parent group'));
+        } else {
+            echo json_encode(array('status' => 200, 'message' => 'Parent group berhasil diperbarui'));
+        }
+    }
+
+    // ── Inline field toggle update ────────────────────────────────────────────
+
+    public function update_field()
+    {
+        $id    = (int)$this->input->post('id');
+        $field = $this->input->post('field');
+        $value = $this->input->post('value');
+
+        $allowed = array('is_depo', 'is_public', 'pelayanan', 'is_active');
+        if (!in_array($field, $allowed, true) || !$id) {
+            echo json_encode(array('status' => 301, 'message' => 'Parameter tidak valid'));
+            return;
+        }
+
+        $save_value = ($field === 'pelayanan') ? (int)$value : (string)$value;
+
+        $fld = array(
+            $field         => $save_value,
+            'updated_date' => date('Y-m-d H:i:s'),
+            'updated_by'   => json_encode(array(
+                'user_id'  => $this->session->userdata('user')->user_id,
+                'fullname' => $this->session->userdata('user')->fullname,
+            )),
+        );
+
+        $this->M_bagian->update(array('id_mt_bagian' => $id), $fld);
+
+        if ($this->db->trans_status() === FALSE) {
+            echo json_encode(array('status' => 301, 'message' => 'Gagal menyimpan perubahan'));
+        } else {
+            echo json_encode(array('status' => 200, 'message' => 'Berhasil diperbarui'));
+        }
+    }
+
     public function get_bagian_dropdown()
     {
         $this->db->select('id_mt_bagian as id, kode_bagian, nama_bagian, group_bag');
@@ -222,6 +394,17 @@ class C_bagian extends MX_Controller {
     }
 
 
+    public function get_next_kode_group()
+    {
+        $result = $this->db->query(
+            "SELECT MAX(CAST(kode_bagian AS INT)) as last_kode FROM mt_bagian WHERE group_bag = 'Group'"
+        )->row();
+
+        $next_kode = ($result && $result->last_kode) ? ($result->last_kode + 1) : 10000;
+
+        echo json_encode(array('next_kode' => (string)$next_kode));
+    }
+
     public function get_next_kode_bagian_by_validasi()
     {
         $selected_kode = $this->input->get('kode_bagian');
@@ -237,8 +420,9 @@ class C_bagian extends MX_Controller {
         // Find the MAX numeric kode_bagian that starts with selected_kode, then add 1
         $query = "SELECT MAX(CAST(kode_bagian AS INT)) as last_kode 
                   FROM mt_bagian 
-                  WHERE kode_bagian LIKE ? AND is_active = 'Y'";
-        $result = $this->db->query($query, array($pattern))->row();
+                  WHERE validasi = ? AND is_active = 'Y'";
+                //   echo '[GET_NEXT_KODE] Query: ' . $query . ' | Validasi: ' . $validasi;
+        $result = $this->db->query($query, array($validasi))->row();
         
         // If max exists, increment by 1; otherwise start with parent + 001
         if ($result && $result->last_kode) {
@@ -249,12 +433,41 @@ class C_bagian extends MX_Controller {
         }
         
         // Pad to ensure it's a valid width (7 digits for kode_bagian)
-        $next_kode_str = str_pad((string)$next_kode, 7, '0', STR_PAD_LEFT);
+        $next_kode_str = str_pad((string)$next_kode, 6, '0', STR_PAD_LEFT);
         
         echo json_encode(array(
             'next_kode' => $next_kode_str,
             'validasi' => $validasi
         ));
+    }
+
+    public function export_excel()
+    {
+        $filter_is_active  = $this->input->get('filter_is_active');
+        $filter_depo_group = $this->input->get('filter_depo_group');
+
+        $this->db->select('mt_bagian.*, grp.nama_bagian as nama_depo_group');
+        $this->db->from('mt_bagian');
+        $this->db->join('mt_bagian grp', 'grp.kode_bagian = mt_bagian.depo_group', 'left');
+
+        if ($filter_is_active !== '' && $filter_is_active !== null) {
+            $this->db->where('mt_bagian.is_active', $filter_is_active);
+        }
+        if ($filter_depo_group !== '' && $filter_depo_group !== null) {
+            $this->db->where('mt_bagian.depo_group', $filter_depo_group);
+        }
+
+        $this->db->order_by('mt_bagian.group_bag', 'ASC');
+        $this->db->order_by('mt_bagian.kode_bagian', 'ASC');
+
+        $list = $this->db->get()->result();
+
+        $data = array(
+            'title' => $this->title,
+            'list'  => $list,
+        );
+
+        $this->load->view('Bagian/excel_view', $data);
     }
 
     public function delete()

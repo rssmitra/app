@@ -82,6 +82,14 @@ class Harga_pokok_model extends CI_Model {
         return $this->db->get()->result();
     }
 
+    public function get_all_for_export()
+    {
+        $this->_main_query();
+        $this->_apply_filter();
+        $this->db->order_by('b.nama_brg', 'ASC');
+        return $this->db->get()->result();
+    }
+
     public function count_filtered()
     {
         $this->_main_query();
