@@ -1,42 +1,90 @@
-<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+<style>
+/* ── Agenda info card ── */
+.lhs-agenda-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #0891b2;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+.lhs-agenda-card .lhs-label {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 2px;
+}
+.lhs-agenda-card .lhs-value {
+    font-size: 13px;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* ── Tabs ── */
+.lhs-tab-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+.lhs-tab-nav a.lhs-tab-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid #0891b2;
+    color: #0891b2;
+    text-decoration: none;
+    transition: .2s;
+    white-space: nowrap;
+}
+.lhs-tab-nav a.lhs-tab-btn.active,
+.lhs-tab-nav a.lhs-tab-btn:hover {
+    background: #0891b2;
+    color: #fff;
+}
+
+/* ── Tab content area ── */
+#tabs_so {
+    min-height: 120px;
+}
+.lhs-welcome-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    padding: 16px 20px;
+    color: #0369a1;
+    font-size: 13px;
+}
+.lhs-welcome-box i {
+    font-size: 22px;
+    opacity: .8;
+}
+</style>
+
 <script>
-jQuery(function($) {
-
-  $('.date-picker').datepicker({
-    autoclose: true,
-    todayHighlight: true
-  })
-  //show datepicker when clicking on the icon
-  .next().on(ace.click_event, function(){
-    $(this).prev().focus();
-  });
-});
-
-$(document).ready(function(){
-    
+$(document).ready(function() {
     $('#form_Lap_hasil_so').ajaxForm({
-      beforeSend: function() {
-        achtungShowLoader();  
-      },
-      uploadProgress: function(event, position, total, percentComplete) {
-      },
-      complete: function(xhr) {     
-        var data=xhr.responseText;
-        var jsonResponse = JSON.parse(data);
-
-        if(jsonResponse.status === 200){
-          $.achtung({message: jsonResponse.message, timeout:5});
-          $('#page-area-content').load('inventory/so/Lap_hasil_so?_=' + (new Date()).getTime());
-        }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
-        achtungHideLoader();
-      }
-    }); 
-
-})
-
+        beforeSend: function() { achtungShowLoader(); },
+        complete: function(xhr) {
+            var jsonResponse = JSON.parse(xhr.responseText);
+            if (jsonResponse.status === 200) {
+                $.achtung({ message: jsonResponse.message, timeout: 5 });
+                $('#page-area-content').load('inventory/so/Lap_hasil_so?_=' + (new Date()).getTime());
+            } else {
+                $.achtung({ message: jsonResponse.message, timeout: 5, className: 'achtungFail' });
+            }
+            achtungHideLoader();
+        }
+    });
+});
 </script>
 
 <div class="page-header">
@@ -47,106 +95,82 @@ $(document).ready(function(){
       <?php echo $breadcrumbs?>
     </small>
   </h1>
-</div><!-- /.page-header -->
+</div>
 
 <div class="row">
   <div class="col-xs-12">
-    <!-- PAGE CONTENT BEGINS -->
-          <div class="widget-body">
-            <div class="widget-main no-padding">
-              <form class="form-horizontal" method="post" id="form_Lap_hasil_so" action="<?php echo site_url('inventory/so/Lap_hasil_so/process')?>" enctype="multipart/form-data" >
-                <br>
 
-                <a onclick="getMenu('inventory/so/Lap_hasil_so')" href="#" class="btn btn-sm btn-success">
-                  <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
-                  Kembali ke daftar
-                </a>
-                <hr class="separator">
+    <form class="form-horizontal" method="post" id="form_Lap_hasil_so"
+          action="<?php echo site_url('inventory/so/Lap_hasil_so/process')?>"
+          enctype="multipart/form-data">
 
-                <p><b>AGENDA KEGIATAN STOK OPNAME</b></p>
-                <div class="form-group">
-                  <label class="control-label col-md-2">Agenda SO</label>
-                  <div class="col-md-3" style="margin-top:5px; margin-left:5px">
-                    <?php echo isset($value->agenda_so_name)?$value->agenda_so_name:''?>
-                  </div>
-                  <label class="control-label col-md-2">Tanggal Pelaksanaan</label>
-                  <div class="col-md-3" style="margin-top:5px; margin-left:5px">
-                    <?php echo isset($value->agenda_so_date)?$this->tanggal->formatDate($value->agenda_so_date):''?>
-                  </div>
-                </div>
+      <a onclick="getMenu('inventory/so/Lap_hasil_so')" href="#" class="btn btn-sm btn-default">
+        <i class="fa fa-arrow-left"></i> Kembali ke Daftar
+      </a>
 
-                <div class="form-group">
-                  <label class="control-label col-md-2">Penanggung Jawab</label>
-                  <div class="col-md-4" style="margin-top:5px; margin-left:5px">
-                    <?php echo isset($value->agenda_so_spv)?$value->agenda_so_spv:''?>
-                  </div>
-                </div>
+      <hr class="separator">
 
-                <div class="form-group">
-                  <label class="control-label col-md-2">Keterangan</label>
-                  <div class="col-md-10" style="margin-top:5px; margin-left:5px">
-                    <?php echo isset($value->agenda_so_desc)?$value->agenda_so_desc:''?>
-                  </div>
-                </div>
-                <hr class="separator">
-
-                <div class="tabbable">  
-
-              <ul class="nav nav-tabs" id="myTab">
-
-                <li>
-                  <a data-toggle="tab" id="tabs_medis" href="#" data-id="<?php echo $value->agenda_so_id?>/medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')">
-                    <i class="green ace-icon fa fa-history bigger-120"></i>
-                    Hasil Stok Opname Unit (Medis)
-                  </a>
-                </li>
-
-                <li>
-                  <a data-toggle="tab" data-id="<?php echo $value->agenda_so_id?>/non_medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so" id="tabs_non_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')" >
-                    <i class="red ace-icon fa fa-list bigger-120"></i>
-                    Hasil Stok Opname Unit (Non Medis)
-                  </a>
-                </li>
-
-                <li>
-                  <a data-toggle="tab" id="tabs_medis" href="#" data-id="<?php echo $value->agenda_so_id?>/medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so_rs" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')">
-                    <i class="green ace-icon fa fa-history bigger-120"></i>
-                    Stok Opname RS (Medis)
-                  </a>
-                </li>
-
-                <li>
-                  <a data-toggle="tab" data-id="<?php echo $value->agenda_so_id?>/non_medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so_rs" id="tabs_non_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')" >
-                    <i class="red ace-icon fa fa-list bigger-120"></i>
-                    Stok Opname RS (Non Medis)
-                  </a>
-                </li>
-
-              </ul>
-
-              <div class="tab-content">
-
-                <div id="tabs_so">
-                  <div class="alert alert-block alert-success">
-                      <p>
-                        <strong>
-                          <i class="ace-icon fa fa-check"></i>
-                          Selamat Datang!
-                        </strong> 
-                        Klik tab untuk melihat data hasil Stok Opname (SO).
-                      </p>
-                    </div>
-                </div>
-
-              </div>
-
-            </div>
-              </form>
+      <!-- Agenda Info Card -->
+      <div class="lhs-agenda-card">
+        <div class="row">
+          <div class="col-sm-6 col-md-3" style="margin-bottom:8px">
+            <div class="lhs-label">Agenda SO</div>
+            <div class="lhs-value"><?php echo isset($value->agenda_so_name) ? $value->agenda_so_name : '-' ?></div>
+          </div>
+          <div class="col-sm-6 col-md-3" style="margin-bottom:8px">
+            <div class="lhs-label">Tanggal Pelaksanaan</div>
+            <div class="lhs-value">
+              <?php echo isset($value->agenda_so_date) ? $this->tanggal->formatDate($value->agenda_so_date) : '-' ?>
             </div>
           </div>
-    
-    <!-- PAGE CONTENT ENDS -->
-  </div><!-- /.col -->
-</div><!-- /.row -->
+          <div class="col-sm-6 col-md-3" style="margin-bottom:8px">
+            <div class="lhs-label">Penanggung Jawab</div>
+            <div class="lhs-value"><?php echo isset($value->agenda_so_spv) ? $value->agenda_so_spv : '-' ?></div>
+          </div>
+          <div class="col-sm-12 col-md-3" style="margin-bottom:8px">
+            <div class="lhs-label">Keterangan</div>
+            <div class="lhs-value"><?php echo isset($value->agenda_so_desc) ? $value->agenda_so_desc : '-' ?></div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Tabs -->
+      <div class="lhs-tab-nav">
+        <a href="#" class="lhs-tab-btn"
+           data-url="inventory/so/Lap_hasil_so/view_data_bag_so"
+           data-id="<?php echo $value->agenda_so_id?>/medis"
+           onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so'); $('.lhs-tab-btn').removeClass('active'); $(this).addClass('active'); return false;">
+          <i class="fa fa-medkit"></i> Hasil SO Unit (Medis)
+        </a>
+        <a href="#" class="lhs-tab-btn"
+           data-url="inventory/so/Lap_hasil_so/view_data_bag_so"
+           data-id="<?php echo $value->agenda_so_id?>/non_medis"
+           onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so'); $('.lhs-tab-btn').removeClass('active'); $(this).addClass('active'); return false;">
+          <i class="fa fa-archive"></i> Hasil SO Unit (Non Medis)
+        </a>
+        <a href="#" class="lhs-tab-btn"
+           data-url="inventory/so/Lap_hasil_so/view_data_bag_so_rs"
+           data-id="<?php echo $value->agenda_so_id?>/medis"
+           onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so'); $('.lhs-tab-btn').removeClass('active'); $(this).addClass('active'); return false;">
+          <i class="fa fa-hospital-o"></i> Stok Opname RS (Medis)
+        </a>
+        <a href="#" class="lhs-tab-btn"
+           data-url="inventory/so/Lap_hasil_so/view_data_bag_so_rs"
+           data-id="<?php echo $value->agenda_so_id?>/non_medis"
+           onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so'); $('.lhs-tab-btn').removeClass('active'); $(this).addClass('active'); return false;">
+          <i class="fa fa-list-alt"></i> Stok Opname RS (Non Medis)
+        </a>
+      </div>
 
+      <!-- Tab Content -->
+      <div id="tabs_so">
+        <div class="lhs-welcome-box">
+          <i class="fa fa-info-circle"></i>
+          <span>Pilih tab di atas untuk melihat data hasil Stok Opname (SO).</span>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>

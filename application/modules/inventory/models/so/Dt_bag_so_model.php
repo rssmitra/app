@@ -73,10 +73,19 @@ class Dt_bag_so_model extends CI_Model {
 	}
 
 	public function _main_query_all_dt(){
-		$table = ($_GET['flag']=='medis') ? $this->table : $this->table_nm;
+		$table    = ($_GET['flag']=='medis') ? $this->table      : $this->table_nm;
+		$t_barang = ($_GET['flag']=='medis') ? 'mt_barang'       : 'mt_barang_nm';
+
+		$this->db->select(
+			$table.'.kode_bagian, '.$table.'.kode_brg, '
+			.$table.'.stok_sekarang, '.$table.'.set_status_aktif, '
+			.$table.'.stok_exp, '.$table.'.will_stok_exp, '
+			.$t_barang.'.content'
+		);
 		$this->db->from($table);
 		$this->db->where('agenda_so_id', $_GET['agenda_so_id']);
-		$this->db->join('mt_bagian','mt_bagian.kode_bagian='.$table.'.kode_bagian');
+		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian='.$table.'.kode_bagian');
+		$this->db->join($t_barang,   $t_barang.'.kode_brg='.$table.'.kode_brg', 'left');
 
 		return $this->db->get()->result();
 	}

@@ -1310,7 +1310,7 @@ final Class Master {
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
 		
-		$data = $db->select(''.$custom['table'].'.'.$custom['id'].', '.$custom['name'].'')->join('mt_bagian', 'mt_bagian.depo_group='.$custom['table'].'.kode_bagian','left')->group_by(''.$custom['table'].'.'.$custom['id'].', '.$custom['name'].'')->where($custom['where'])->get($custom['table'])->result_array();
+		$data = $db->select(''.$custom['table'].'.'.$custom['id'].', '.$custom['name'].'')->group_by(''.$custom['table'].'.'.$custom['id'].', '.$custom['name'].'')->where($custom['where'])->get($custom['table'])->result_array();
 		
         //$data = $db->where($custom['where'])->get($custom['table'])->result_array();
 		

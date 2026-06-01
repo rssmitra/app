@@ -20,6 +20,7 @@ class Lap_hasil_so extends MX_Controller {
         $this->load->model('inventory/so/Dt_bag_so_model', 'Dt_bag_so');
         $this->load->model('inventory/so/Dt_bag_so_rs_model', 'Dt_bag_so_rs');
         $this->load->model('inventory/so/Dt_hasil_so_model', 'Dt_hasil_so');
+        $this->load->model('inventory/master/Harga_pokok_model', 'Harga_pokok_model');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -275,202 +276,251 @@ class Lap_hasil_so extends MX_Controller {
 
     public function get_data_bag_so()
     {
+        $flag = isset($_GET['flag']) ? $_GET['flag'] : 'medis';
+
         /*get data from model*/
-        $list = $this->Dt_bag_so->get_datatables();
+        $list    = $this->Dt_bag_so->get_datatables();
         $list_dt = $this->Dt_bag_so->_main_query_all_dt();
-        // echo '<pre>';print_r($list_dt);die;
-        $data = array();
-        $no = $_POST['start'];
+
+        // ── Batch WA price lookup (1 query for all items on page) ────────────
+        $kode_list = array();
+        foreach ($list_dt as $r) { $kode_list[] = $r->kode_brg; }
+        $po_map = !empty($kode_list)
+            ? $this->Harga_pokok_model->get_po_stats_batch(array_unique($kode_list), $flag)
+            : array();
+        // ─────────────────────────────────────────────────────────────────────
+
+        $arr_aktif         = array();
+        $arr_not_aktif     = array();
+        $arr_exp           = array();
+        $arr_will_exp      = array();
+        $arr_total_aktif   = array(); // Rp per kode_bagian
 
         foreach ($list_dt as $row_dt) {
-            
-            if( $row_dt->set_status_aktif == 1 || $row_dt->set_status_aktif != 0 ){
+
+            if ($row_dt->set_status_aktif == 1 || $row_dt->set_status_aktif != 0) {
                 $arr_aktif[$row_dt->kode_bagian][] = true;
             }
-            if( $row_dt->set_status_aktif == 0 ){
+            if ($row_dt->set_status_aktif == 0) {
                 $arr_not_aktif[$row_dt->kode_bagian][] = true;
             }
-
-            if( $row_dt->stok_exp > 0 ){
+            if ($row_dt->stok_exp > 0) {
                 $arr_exp[$row_dt->kode_bagian][] = true;
             }
-
-            if( $row_dt->will_stok_exp > 0 ){
+            if ($row_dt->will_stok_exp > 0) {
                 $arr_will_exp[$row_dt->kode_bagian][] = true;
             }
+
+            // accumulate Rp total persediaan for active items only
+            if ($row_dt->set_status_aktif == 1 && $row_dt->stok_sekarang > 0) {
+                $ps    = isset($po_map[$row_dt->kode_brg]) ? $po_map[$row_dt->kode_brg] : null;
+                $rasio = ($row_dt->content > 0) ? (int)$row_dt->content : 1;
+                $harga = ($ps && $ps->wa_harga_modal > 0)
+                    ? (int)round($ps->wa_harga_modal / $rasio)
+                    : 0;
+                if ($harga > 0) {
+                    if (!isset($arr_total_aktif[$row_dt->kode_bagian])) {
+                        $arr_total_aktif[$row_dt->kode_bagian] = 0;
+                    }
+                    $arr_total_aktif[$row_dt->kode_bagian] += round($harga * $row_dt->stok_sekarang);
+                }
+            }
         }
-        // echo '<pre>';print_r($arr_not_aktif);die;
+
+        $data = array();
+        $no   = $_POST['start'];
 
         foreach ($list as $row_list) {
             $no++;
-            $row = array();
-            $count_aktif = isset($arr_aktif[$row_list->kode_bagian]) ? count($arr_aktif[$row_list->kode_bagian]) : 0;
-            $count_not_aktif = isset($arr_not_aktif[$row_list->kode_bagian])?count($arr_not_aktif[$row_list->kode_bagian]): 0;
-            $count_exp = isset($arr_exp[$row_list->kode_bagian])?count($arr_exp[$row_list->kode_bagian]): 0;
-            $count_will_exp = isset($arr_will_exp[$row_list->kode_bagian])?count($arr_will_exp[$row_list->kode_bagian]): 0;
-            $total = $count_aktif + $count_not_aktif + $count_exp + $count_will_exp;
+            $count_aktif     = isset($arr_aktif[$row_list->kode_bagian])     ? count($arr_aktif[$row_list->kode_bagian])     : 0;
+            $count_not_aktif = isset($arr_not_aktif[$row_list->kode_bagian]) ? count($arr_not_aktif[$row_list->kode_bagian]) : 0;
+            $count_exp       = isset($arr_exp[$row_list->kode_bagian])       ? count($arr_exp[$row_list->kode_bagian])       : 0;
+            $count_will_exp  = isset($arr_will_exp[$row_list->kode_bagian])  ? count($arr_will_exp[$row_list->kode_bagian])  : 0;
+            $total           = $count_aktif + $count_not_aktif;
+            $total_persediaan = isset($arr_total_aktif[$row_list->kode_bagian])
+                ? $arr_total_aktif[$row_list->kode_bagian]
+                : 0;
+
+            $row   = array();
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_bagian.'</div>';
-            $row[] = '<a href="#" onclick="getMenuTabs('."'inventory/so/Lap_hasil_so/view_data_hasil_so/".$_GET['agenda_so_id']."/".$row_list->kode_bagian."/".$_GET['flag']."'".', '."'tabs_so'".')">'.ucwords($row_list->nama_bagian).'</a>';
+            $row[] = '<a href="#" onclick="getMenuTabs('
+                ."'inventory/so/Lap_hasil_so/view_data_hasil_so/".$_GET['agenda_so_id']."/".$row_list->kode_bagian."/".$flag."'"
+                .', '."'tabs_so'".')">'.ucwords($row_list->nama_bagian).'</a>';
             $row[] = '<div class="center">'.$count_aktif.'</div>';
             $row[] = '<div class="center">'.$count_not_aktif.'</div>';
             $row[] = '<div class="center">'.$count_will_exp.'</div>';
             $row[] = '<div class="center">'.$count_exp.'</div>';
             $row[] = '<div class="center">'.$total.'</div>';
-                   
+            $row[] = '<div align="right">Rp '.number_format($total_persediaan, 0, ',', '.').'</div>';
+
             $data[] = $row;
         }
 
         $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Dt_bag_so->count_all(),
-                        "recordsFiltered" => $this->Dt_bag_so->count_filtered(),
-                        "data" => $data,
-                );
-        //output to json format
+            'draw'            => $_POST['draw'],
+            'recordsTotal'    => $this->Dt_bag_so->count_all(),
+            'recordsFiltered' => $this->Dt_bag_so->count_filtered(),
+            'data'            => $data,
+        );
         echo json_encode($output);
     }
 
     public function get_data_bag_so_rs()
     {
+        $flag = isset($_GET['flag']) ? $_GET['flag'] : 'medis';
+
         /*get data from model*/
         $list = $this->Dt_bag_so_rs->get_datatables();
-        $data = array();
-        $no = $_POST['start'];
 
-        $arr_harga = [];
-        $arr_harga_not_active = [];
-        $arr_harga_brg_exp = [];
-        $arr_harga_brg_will_exp = [];
+        // ── Batch WA price lookup (1 query for entire page) ──────────────────
+        $kode_list = array();
+        foreach ($list as $r) { $kode_list[] = $r->kode_brg; }
+        $po_map = !empty($kode_list)
+            ? $this->Harga_pokok_model->get_po_stats_batch(array_unique($kode_list), $flag)
+            : array();
+        // ─────────────────────────────────────────────────────────────────────
+
+        $data                   = array();
+        $arr_harga              = array();
+        $arr_harga_not_active   = array();
+        $arr_harga_brg_exp      = array();
+        $arr_harga_brg_will_exp = array();
+        $no = $_POST['start'];
 
         foreach ($list as $row_list) {
             $no++;
-            $row = array();
+
+            // WA harga modal setelah diskon ÷ rasio = harga per satuan kecil
+            $ps    = isset($po_map[$row_list->kode_brg]) ? $po_map[$row_list->kode_brg] : null;
+            $rasio = (isset($row_list->content) && $row_list->content > 0) ? (int)$row_list->content : 1;
+            $harga_sat_kecil = ($ps && $ps->wa_harga_modal > 0)
+                ? (int)round($ps->wa_harga_modal / $rasio)
+                : 0;
+            $total = $row_list->stok_sekarang * $harga_sat_kecil;
+
+            $row   = array();
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="get_rincian_log('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'</a></div>';
             $row[] = '<div class="left">'.$row_list->nama_brg.'</div>';
             $row[] = '<div class="left">'.$row_list->satuan_kecil.'</div>';
-            $row[] = '<div class="center">'.number_format($row_list->stok_sebelum).'</div>';
-            $row[] = '<div class="center">'.number_format($row_list->stok_sekarang).'</div>';
-            $row[] = '<div class="center">'.number_format($row_list->stok_exp).'</div>';
-            $row[] = '<div class="center">'.number_format($row_list->will_stok_exp).'</div>';
-            $harga = isset($row_list->harga_beli)?$row_list->harga_beli:0;
-            $content = isset($row_list->content)?$row_list->content:0;
-            $hpa = ($content > 0) ? $harga / $content : 0;
-            $total = $row_list->stok_sekarang * $harga;
-            $row[] = '<div align="right">'.number_format($harga).'</div>';
-            $row[] = '<div align="right">'.number_format($total).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->stok_sebelum).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->stok_sekarang).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->stok_exp).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->will_stok_exp).'</div>';
+            $row[] = '<div align="right">'.number_format($harga_sat_kecil, 0, ',', '.').'</div>';
+            $row[] = '<div align="right">'.number_format($total, 0, ',', '.').'</div>';
             $data[] = $row;
 
-            if( $row_list->harga_beli != 0 AND $row_list->stok_sekarang != 0 ){
-                $harga_beli = ( $row_list->harga_beli != 0 ) ? ($row_list->harga_beli) : 0;
-                // barang aktif
-                if( $row_list->set_status_aktif == 1 ){
-                    $arr_harga[] = round($harga_beli * $row_list->stok_sekarang);
+            // accumulate totals using WA price
+            if ($harga_sat_kecil > 0 && $row_list->stok_sekarang > 0) {
+                if ($row_list->set_status_aktif == 1) {
+                    $arr_harga[] = round($harga_sat_kecil * $row_list->stok_sekarang);
                 }
-
-                if( $row_list->set_status_aktif == 0 ){
-                    $arr_harga_not_active[] = round($harga_beli * $row_list->stok_sekarang);
+                if ($row_list->set_status_aktif == 0) {
+                    $arr_harga_not_active[] = round($harga_sat_kecil * $row_list->stok_sekarang);
                 }
-
-                if( $row_list->stok_exp > 0 ){
-                    $arr_harga_brg_exp[] = round($harga_beli * $row_list->stok_exp);
-                }
-
-                if( $row_list->will_stok_exp > 0 ){
-                    $arr_harga_brg_will_exp[] = round($harga_beli * $row_list->will_stok_exp);
-                }
-
             }
-
+            if ($harga_sat_kecil > 0 && $row_list->stok_exp > 0) {
+                $arr_harga_brg_exp[] = round($harga_sat_kecil * $row_list->stok_exp);
+            }
+            if ($harga_sat_kecil > 0 && $row_list->will_stok_exp > 0) {
+                $arr_harga_brg_will_exp[] = round($harga_sat_kecil * $row_list->will_stok_exp);
+            }
         }
 
         $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Dt_bag_so_rs->count_all(),
-                        "recordsFiltered" => $this->Dt_bag_so_rs->count_filtered(),
-                        "data" => $data,
-                        'total_rp_aktif' => array_sum($arr_harga),
-                        'total_rp_not_aktif' => array_sum($arr_harga_not_active),
-                        'total_rp_exp' => array_sum($arr_harga_brg_exp),
-                        'total_rp_will_exp' => array_sum($arr_harga_brg_will_exp),
-                        
-                );
-        //output to json format
+            'draw'            => $_POST['draw'],
+            'recordsTotal'    => $this->Dt_bag_so_rs->count_all(),
+            'recordsFiltered' => $this->Dt_bag_so_rs->count_filtered(),
+            'data'            => $data,
+            'total_rp_aktif'     => array_sum($arr_harga),
+            'total_rp_not_aktif' => array_sum($arr_harga_not_active),
+            'total_rp_exp'       => array_sum($arr_harga_brg_exp),
+            'total_rp_will_exp'  => array_sum($arr_harga_brg_will_exp),
+        );
         echo json_encode($output);
     }
 
     public function get_data_hasil_bag_so()
     {
+        $flag = isset($_GET['flag']) ? $_GET['flag'] : 'medis';
+
         /*get data from model*/
         $list = $this->Dt_hasil_so->get_datatables();
-        $data = array();
-        $arr_harga = [];
-        $arr_harga_not_active = [];
-        $arr_harga_brg_exp = [];
-        $arr_harga_brg_will_exp = [];
 
+        // ── Batch WA price lookup (1 query for entire page) ──────────────────
+        $kode_list = array();
+        foreach ($list as $r) { $kode_list[] = $r->kode_brg; }
+        $po_map = !empty($kode_list)
+            ? $this->Harga_pokok_model->get_po_stats_batch(array_unique($kode_list), $flag)
+            : array();
+        // ─────────────────────────────────────────────────────────────────────
+
+        $data                   = array();
+        $arr_harga              = array();
+        $arr_harga_not_active   = array();
+        $arr_harga_brg_exp      = array();
+        $arr_harga_brg_will_exp = array();
         $no = $_POST['start'];
+
         foreach ($list as $row_list) {
-            // $hpa = ( !empty($row_list->harga_beli) ) ? $row_list->harga_beli : 0 ;
-            // $harga_beli = ( $hpa > 0 AND $row_list->content > 0) ? ($hpa / $row_list->content) : 0;
-            $harga_beli = $row_list->harga_beli;
-            // $total = $row_list->stok_sekarang * $hpa;
-            $totalr = $row_list->stok_sekarang * $harga_beli;
             $no++;
-            $row = array();
+
+            // WA harga modal setelah diskon ÷ rasio = harga per satuan kecil
+            $ps    = isset($po_map[$row_list->kode_brg]) ? $po_map[$row_list->kode_brg] : null;
+            $rasio = ($row_list->content > 0) ? (int)$row_list->content : 1;
+            $harga_sat_kecil = ($ps && $ps->wa_harga_modal > 0)
+                ? (int)round($ps->wa_harga_modal / $rasio)
+                : 0;
+            $totalr = $row_list->stok_sekarang * $harga_sat_kecil;
+
+            $row   = array();
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_brg.'</div>';
             $row[] = $row_list->nama_brg;
-            // $row[] = '<div align="right">'.number_format($hpa).'</div>';
-            $row[] = '<div align="right">'.number_format($harga_beli).'</div>';
+            $row[] = '<div align="right">'.number_format($harga_sat_kecil, 0, ',', '.').'</div>';
             $row[] = '<div class="center">'.$row_list->satuan_kecil.'</div>';
-            // $row[] = '<div class="center">'.$row_list->content.'</div>';
-            $row[] = '<div class="center">'.$row_list->stok_sebelum.'</div>';
-            $row[] = '<div class="center">'.$row_list->stok_sekarang.'</div>';
-            $row[] = '<div class="center">'.$row_list->will_stok_exp.'</div>';
-            $row[] = '<div class="center">'.$row_list->stok_exp.'</div>';
-            // $row[] = '<div align="right">'.number_format($total).'</div>';
-            $row[] = '<div align="right">'.number_format($totalr).'</div>';
-            $status_aktif = ($row_list->set_status_aktif==0)?'<span style="color:red; font-weight: bold;">Not Active</span>':'<span style="color:green; font-weight: bold;">Active</span>';
+            $row[] = '<div class="center">'.number_format($row_list->stok_sebelum).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->stok_sekarang).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->will_stok_exp).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->stok_exp).'</div>';
+            $row[] = '<div align="right">'.number_format($totalr, 0, ',', '.').'</div>';
+            $status_aktif = ($row_list->set_status_aktif == 0)
+                ? '<span style="color:red;font-weight:bold">Not Active</span>'
+                : '<span style="color:green;font-weight:bold">Active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
             $row[] = $row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname);
-            
-            if( $row_list->harga_beli != 0 AND $row_list->stok_sekarang != 0 ){
-                $harga_beli = $row_list->harga_beli;
-                // barang aktif
-                if( $row_list->set_status_aktif == 1 ){
-                    $arr_harga[] = round($harga_beli * $row_list->stok_sekarang);
-                }
 
-                if( $row_list->set_status_aktif == 0 ){
-                    $arr_harga_not_active[] = round($harga_beli * $row_list->stok_sekarang);
+            // accumulate totals using WA price
+            if ($harga_sat_kecil > 0 && $row_list->stok_sekarang > 0) {
+                if ($row_list->set_status_aktif == 1) {
+                    $arr_harga[] = round($harga_sat_kecil * $row_list->stok_sekarang);
                 }
-
-                if( $row_list->stok_exp > 0 ){
-                    $arr_harga_brg_exp[] = round($harga_beli * $row_list->stok_exp);
+                if ($row_list->set_status_aktif == 0) {
+                    $arr_harga_not_active[] = round($harga_sat_kecil * $row_list->stok_sekarang);
                 }
-
-                if( $row_list->will_stok_exp > 0 ){
-                    $arr_harga_brg_will_exp[] = round($harga_beli * $row_list->will_stok_exp);
-                }
-
+            }
+            if ($harga_sat_kecil > 0 && $row_list->stok_exp > 0) {
+                $arr_harga_brg_exp[] = round($harga_sat_kecil * $row_list->stok_exp);
+            }
+            if ($harga_sat_kecil > 0 && $row_list->will_stok_exp > 0) {
+                $arr_harga_brg_will_exp[] = round($harga_sat_kecil * $row_list->will_stok_exp);
             }
 
             $data[] = $row;
         }
 
         $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Dt_hasil_so->count_all(),
-                        "recordsFiltered" => $this->Dt_hasil_so->count_filtered(),
-                        "data" => $data,
-                        'total_rp_aktif' => array_sum($arr_harga),
-                        'total_rp_not_aktif' => array_sum($arr_harga_not_active),
-                        'total_rp_exp' => array_sum($arr_harga_brg_exp),
-                        'total_rp_will_exp' => array_sum($arr_harga_brg_will_exp),
-                );
-        //output to json format
+            'draw'            => $_POST['draw'],
+            'recordsTotal'    => $this->Dt_hasil_so->count_all(),
+            'recordsFiltered' => $this->Dt_hasil_so->count_filtered(),
+            'data'            => $data,
+            'total_rp_aktif'     => array_sum($arr_harga),
+            'total_rp_not_aktif' => array_sum($arr_harga_not_active),
+            'total_rp_exp'       => array_sum($arr_harga_brg_exp),
+            'total_rp_will_exp'  => array_sum($arr_harga_brg_will_exp),
+        );
         echo json_encode($output);
     }
 
