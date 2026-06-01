@@ -210,16 +210,21 @@ class Lap_hasil_so extends MX_Controller {
     public function excel()
     {
         $data = array();
+        $flag = isset($_GET['flag']) ? $_GET['flag'] : 'medis';
         /*define data variabel*/
-        $data['title'] = $this->master->get_string_data('nama_bagian','mt_bagian', array('kode_bagian' => $_GET['kode_bagian']));
-        $data['value'] = $this->Lap_hasil_so->get_by_id($_GET['agenda_so_id']);
-        $data['result_content'] = $this->Dt_hasil_so->get_all_data();
-        // get discount terakhir per kode_brg dari PO terbaru
-        $data['discount_map'] = $this->Dt_hasil_so->get_discount_terakhir($_GET['flag']);
-        // echo '<pre>';print_r($data);die;
-        $data['kode_bagian'] = $_GET['kode_bagian'];
-        $data['agenda_so_id'] = $_GET['agenda_so_id'];
-        $data['flag'] = $_GET['flag'];
+        $data['title']       = $this->master->get_string_data('nama_bagian','mt_bagian', array('kode_bagian' => $_GET['kode_bagian']));
+        $data['value']       = $this->Lap_hasil_so->get_by_id($_GET['agenda_so_id']);
+        $list                = $this->Dt_hasil_so->get_all_data();
+        // Batch WA price lookup (harga modal setelah diskon)
+        $kode_list = array();
+        foreach ($list as $r) { $kode_list[] = $r->kode_brg; }
+        $data['po_map']         = !empty($kode_list)
+            ? $this->Harga_pokok_model->get_po_stats_batch(array_unique($kode_list), $flag)
+            : array();
+        $data['result_content'] = $list;
+        $data['kode_bagian']    = $_GET['kode_bagian'];
+        $data['agenda_so_id']   = $_GET['agenda_so_id'];
+        $data['flag']           = $flag;
         /*load form view*/
         $this->load->view('so/Lap_hasil_so/hasil_excel_so', $data);
     }

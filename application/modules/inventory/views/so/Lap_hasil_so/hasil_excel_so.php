@@ -23,9 +23,9 @@
   );
 
   foreach ($result_content as $rd) {
-    $h       = $rd->harga_beli;
-    $d_pct   = isset($discount_map[$rd->kode_brg]) ? (float)$discount_map[$rd->kode_brg] : 0;
-    $h_netto = $h * (1 - $d_pct / 100);          // harga setelah diskon
+    $ps      = isset($po_map[$rd->kode_brg]) ? $po_map[$rd->kode_brg] : null;
+    $rasio   = ($rd->content > 0) ? (int)$rd->content : 1;
+    $h_netto = ($ps && $ps->wa_harga_modal > 0) ? (int)round($ps->wa_harga_modal / $rasio) : 0;
     $t  = $h_netto * $rd->stok_sekarang;
     $te = $h_netto * $rd->stok_exp;
     $tw = $h_netto * $rd->will_stok_exp;
@@ -91,7 +91,6 @@
       <td style="color:#fff;width:90px;">KODE</td>
       <td style="color:#fff;width:220px;">NAMA BARANG</td>
       <td style="color:#fff;width:110px;text-align:right;">HARGA SATUAN<br>RATA-RATA (Rp)</td>
-      <td style="color:#fff;width:80px;text-align:center;">DISKON PO<br>TERAKHIR (%)</td>
       <td style="color:#fff;width:70px;text-align:center;">STOK<br>SEBELUM</td>
       <td style="color:#fff;width:70px;text-align:center;">HASIL SO</td>
       <td style="color:#fff;width:65px;text-align:center;">EXPIRED</td>
@@ -99,7 +98,7 @@
       <td style="color:#fff;width:85px;text-align:center;">SATUAN</td>
       <td style="color:#fff;width:130px;text-align:right;">TOTAL PERSEDIAAN<br>(Rp)</td>
       <td style="color:#fff;width:130px;text-align:right;">TOTAL EXPIRED<br>(Rp)</td>
-      <td style="color:#fff;width:130px;text-align:right;">TOTAL EXPIRED<br>-3 BLN (Rp)</td>
+      <!-- <td style="color:#fff;width:130px;text-align:right;">TOTAL EXPIRED<br>-3 BLN (Rp)</td> -->
       <td style="color:#fff;width:70px;text-align:center;">STATUS</td>
       <td style="color:#fff;width:75px;text-align:center;">KONDISI SO</td>
       <td style="color:#fff;width:130px;">PETUGAS</td>
@@ -116,10 +115,9 @@
         $satuan = ($row_data->satuan_kecil == $row_data->satuan_besar)
           ? $row_data->satuan_kecil
           : $row_data->satuan_kecil . '/ ' . $row_data->satuan_besar;
-        $hreal      = $row_data->harga_beli;
-        $diskon_pct = isset($discount_map[$row_data->kode_brg])
-                        ? (float)$discount_map[$row_data->kode_brg] : 0;
-        $harga_netto    = $hreal * (1 - $diskon_pct / 100); // harga setelah diskon
+        $ps          = isset($po_map[$row_data->kode_brg]) ? $po_map[$row_data->kode_brg] : null;
+        $rasio       = ($row_data->content > 0) ? (int)$row_data->content : 1;
+        $harga_netto = ($ps && $ps->wa_harga_modal > 0) ? (int)round($ps->wa_harga_modal / $rasio) : 0;
         $total          = $harga_netto * $row_data->stok_sekarang;
         $total_exp      = $harga_netto * $row_data->stok_exp;
         $total_will_exp = $harga_netto * $row_data->will_stok_exp;
@@ -136,15 +134,13 @@
         } else {
           $kondisi = 'Lebih';  $kbg = '#e3f2fd'; $kclr = '#0d47a1';
         }
-        $row_bg         = ($no % 2 == 0) ? '#f9fafb' : '#ffffff';
-        $diskon_display = ($diskon_pct > 0) ? number_format($diskon_pct, 2, ',', '.') . '%' : '-';
+        $row_bg = ($no % 2 == 0) ? '#f9fafb' : '#ffffff';
     ?>
     <tr bgcolor="<?php echo $row_bg; ?>">
       <td align="center"><?php echo $no; ?></td>
       <td><?php echo htmlspecialchars($row_data->kode_brg); ?></td>
       <td><?php echo htmlspecialchars($row_data->nama_brg); ?></td>
-      <td align="right"><?php echo (int)$hreal; ?></td>
-      <td align="center"><?php echo $diskon_display; ?></td>
+      <td align="right"><?php echo $harga_netto; ?></td>
       <td align="center"><?php echo $row_data->stok_sebelum; ?></td>
       <td align="center"><?php echo $row_data->stok_sekarang; ?></td>
       <td align="center"><?php echo $row_data->stok_exp; ?></td>
@@ -152,7 +148,7 @@
       <td align="center"><?php echo htmlspecialchars($satuan); ?></td>
       <td align="right"><?php echo (int)$total; ?></td>
       <td align="right"><?php echo (int)$total_exp; ?></td>
-      <td align="right"><?php echo (int)$total_will_exp; ?></td>
+      <!-- <td align="right"><?php echo (int)$total_will_exp; ?></td> -->
       <td align="center" style="font-weight:bold;color:<?php echo $status_color; ?>;"><?php echo $status; ?></td>
       <td align="center" bgcolor="<?php echo $kbg; ?>" style="font-weight:bold;color:<?php echo $kclr; ?>;"><?php echo $kondisi; ?></td>
       <td><?php echo htmlspecialchars($row_data->nama_petugas); ?></td>
@@ -162,10 +158,10 @@
 
     <!-- Baris total -->
     <tr bgcolor="#e8eaf6" style="font-weight:bold;">
-      <td colspan="10" align="right" style="padding-right:8px;">TOTAL KESELURUHAN</td>
+      <td colspan="9" align="right" style="padding-right:8px;">TOTAL KESELURUHAN</td>
       <td align="right"><?php echo (int)$totalhasil; ?></td>
       <td align="right"><?php echo (int)$arr_totalhasil_exp; ?></td>
-      <td align="right"><?php echo (int)$arr_totalhasil_will_exp; ?></td>
+      <!-- <td align="right"><?php echo (int)$arr_totalhasil_will_exp; ?></td> -->
       <td></td><td></td><td></td><td></td>
     </tr>
   </tbody>

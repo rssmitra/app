@@ -70,6 +70,7 @@ class Dt_hasil_so_model extends CI_Model {
 	function get_all_data()
 	{
 		$this->_main_query();
+		$this->db->order_by('nama_brg', 'ASC');
 		$query = $this->db->get();
 		return $query->result();
 	}
