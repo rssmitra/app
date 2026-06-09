@@ -1210,46 +1210,61 @@ $(document).ready(function() {
               $eresep_result = isset($eresep[$value->no_registrasi][$value->no_kunjungan]) ? $eresep[$value->no_registrasi][$value->no_kunjungan] : array();
               if(count($eresep_result) > 0):
                 foreach($eresep_result as $key_er => $val_er):
+                  $_resep_uid   = 'rm_resep_' . preg_replace('/[^a-zA-Z0-9]/', '_', $key_er);
+                  $_jumlah_obat = count($val_er);
             ?>
-              <div style="font-size:11px; color:#92400e; margin-bottom:4px;">
-                <i class="fa fa-clock-o"></i> Tanggal resep: <em><?php echo $this->tanggal->formatDateTime($val_er[0]->created_date); ?></em>
+              <!-- Toggle header resep -->
+              <div style="background:#fff;border:1px solid #fde68a;border-radius:6px;margin-bottom:6px;overflow:hidden;">
+                <div onclick="toggleRmResep('<?php echo $_resep_uid; ?>')" style="cursor:pointer;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;background:#fffbeb;user-select:none;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <i class="fa fa-file-text-o" style="color:#d97706;"></i>
+                    <span style="font-size:11px;color:#92400e;font-weight:600;">
+                      <i class="fa fa-clock-o"></i> <?php echo $this->tanggal->formatDateTime($val_er[0]->created_date); ?>
+                    </span>
+                    <span style="font-size:10px;color:#b45309;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;padding:1px 8px;"><?php echo $_jumlah_obat; ?> obat</span>
+                  </div>
+                  <span id="arrow_<?php echo $_resep_uid; ?>" style="color:#d97706;font-size:11px;display:inline-flex;transition:transform .2s;"><i class="fa fa-chevron-down"></i></span>
+                </div>
+                <!-- Detail obat (tersembunyi by default) -->
+                <div id="<?php echo $_resep_uid; ?>" style="display:none;padding:0 8px 8px 8px;">
+                  <table class="rm-resep-table">
+                    <thead>
+                      <tr>
+                        <th width="32px">No</th>
+                        <th>Nama Obat &amp; Aturan Pakai</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                        $no = 0;
+                        foreach ($val_er as $ker => $ver):
+                          $no++;
+                          $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
+                          $html_racikan  = ($child_racikan != '') ? '<div style="padding:6px 10px; margin-top:4px; background:#fff8e7; border-radius:4px; font-size:11px; font-style:italic; color:#92400e;">Bahan racik:<br>'.$child_racikan.'</div>' : '';
+                      ?>
+                        <tr>
+                          <td align="center" valign="top" style="color:#94a3b8;"><?php echo $no; ?></td>
+                          <td>
+                            <strong style="font-size:12.5px;"><?php echo strtoupper($ver->nama_brg); ?></strong>
+                            <?php echo $html_racikan; ?>
+                            <div style="color:#475569; margin-top:3px; font-size:11.5px;">
+                              <?php echo $ver->jml_dosis; ?> &times; <?php echo $ver->jml_dosis_obat; ?> <?php echo $ver->satuan_obat; ?> &mdash; <?php echo $ver->aturan_pakai; ?>
+                            </div>
+                            <div style="color:#64748b; font-size:11px;">Qty: <?php echo $ver->jml_pesan; ?> <?php echo $ver->satuan_obat; ?><?php echo $ver->keterangan ? ' &mdash; '.$ver->keterangan : ''; ?></div>
+                          </td>
+                        </tr>
+                      <?php endforeach; ?>
+                      <tr>
+                        <td colspan="2" style="padding:8px; text-align:center; background:#fffbeb;">
+                          <a href="#" class="rm-btn rm-btn-blue" onclick="resepkan_ulang(<?php echo $ver->kode_pesan_resep; ?>)">
+                            <i class="fa fa-repeat"></i> Resepkan Kembali
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <table class="rm-resep-table">
-                <thead>
-                  <tr>
-                    <th width="32px">No</th>
-                    <th>Nama Obat &amp; Aturan Pakai</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                    $no = 0;
-                    foreach ($val_er as $ker => $ver):
-                      $no++;
-                      $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
-                      $html_racikan  = ($child_racikan != '') ? '<div style="padding:6px 10px; margin-top:4px; background:#fff8e7; border-radius:4px; font-size:11px; font-style:italic; color:#92400e;">Bahan racik:<br>'.$child_racikan.'</div>' : '';
-                  ?>
-                    <tr>
-                      <td align="center" valign="top" style="color:#94a3b8;"><?php echo $no; ?></td>
-                      <td>
-                        <strong style="font-size:12.5px;"><?php echo strtoupper($ver->nama_brg); ?></strong>
-                        <?php echo $html_racikan; ?>
-                        <div style="color:#475569; margin-top:3px; font-size:11.5px;">
-                          <?php echo $ver->jml_dosis; ?> &times; <?php echo $ver->jml_dosis_obat; ?> <?php echo $ver->satuan_obat; ?> &mdash; <?php echo $ver->aturan_pakai; ?>
-                        </div>
-                        <div style="color:#64748b; font-size:11px;">Qty: <?php echo $ver->jml_pesan; ?> <?php echo $ver->satuan_obat; ?><?php echo $ver->keterangan ? ' &mdash; '.$ver->keterangan : ''; ?></div>
-                      </td>
-                    </tr>
-                  <?php endforeach; ?>
-                  <tr>
-                    <td colspan="2" style="padding:8px; text-align:center; background:#fffbeb;">
-                      <a href="#" class="rm-btn rm-btn-blue" onclick="resepkan_ulang(<?php echo $ver->kode_pesan_resep; ?>)">
-                        <i class="fa fa-repeat"></i> Resepkan Kembali
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             <?php endforeach; else: ?>
               <span style="color:#94a3b8; font-size:12px;">Belum ada e-Resep pada kunjungan ini</span>
             <?php endif; ?>
@@ -1479,4 +1494,17 @@ function showStatusLokalisModal(taggingJson, imgId) {
 $(document).on('click', '#rm-lokalis-modal', function(e) {
   if (e.target === this) $(this).hide();
 });
+
+function toggleRmResep(id) {
+  var detail = document.getElementById(id);
+  var arrow  = document.getElementById('arrow_' + id);
+  if (!detail) return;
+  if (detail.style.display === 'none' || detail.style.display === '') {
+    detail.style.display = 'block';
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+  } else {
+    detail.style.display = 'none';
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+  }
+}
 </script>

@@ -2,6 +2,135 @@
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 
+<style>
+/* ── Filter card ── */
+.eb-filter-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 20px 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.eb-filter-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0891b2;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e0f2fe;
+}
+.eb-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin-bottom: 10px;
+    align-items: flex-end;
+}
+.eb-filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+}
+.eb-filter-group.fg-sm  { min-width: 120px; max-width: 160px; }
+.eb-filter-group.fg-md  { min-width: 180px; max-width: 260px; }
+.eb-filter-group.fg-lg  { flex: 1; min-width: 200px; }
+.eb-filter-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+/* Direct-child selectors avoid conflicting with Bootstrap's input-group table-cell layout */
+.eb-filter-group > select,
+.eb-filter-group > input[type="text"] {
+    height: 30px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0 8px;
+    color: #1e293b;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+}
+/* Bootstrap 3 uses display:table-cell for input-group — do NOT override display.
+   Only set height/font; Bootstrap handles border-radius, border joins, and width. */
+.eb-filter-group .input-group > .form-control {
+    height: 30px;
+    font-size: 12px;
+    border-color: #cbd5e1;
+}
+.eb-filter-group .input-group-addon {
+    height: 30px;
+    padding: 4px 9px;
+    font-size: 12px;
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    cursor: pointer;
+}
+
+/* Penjamin radios */
+.eb-penjamin-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 5px 0 2px;
+}
+.eb-penjamin-wrap .eb-radio-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: #334155;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+/* Date range separator */
+.eb-date-sep {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    padding-bottom: 6px;
+    align-self: flex-end;
+}
+
+/* Action buttons row */
+.eb-btn-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 2px;
+}
+
+/* ── Table header ── */
+#dynamic-table thead th {
+    background: linear-gradient(135deg, #0369a1, #0891b2);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    border-color: #0284c7 !important;
+    white-space: nowrap;
+    vertical-align: middle !important;
+}
+#dynamic-table tbody tr:hover {
+    background-color: #f0f9ff !important;
+}
+</style>
+
 <script>
 
   jQuery(function($) {
@@ -10,7 +139,6 @@
       autoclose: true,
       todayHighlight: true
     })
-    //show datepicker when clicking on the icon
     .next().on(ace.click_event, function(){
       $(this).prev().focus();
     });
@@ -18,10 +146,10 @@
 
   $(document).ready(function(){
 
-    oTable = $('#dynamic-table').DataTable({ 
-            
-        "processing": true, //Feature control the processing indicator.
-        "serverSide": true, //Feature control DataTables' server-side processing mode.
+    oTable = $('#dynamic-table').DataTable({
+
+        "processing": true,
+        "serverSide": true,
         "ordering": false,
         "searching": false,
         "bPaginate": true,
@@ -32,13 +160,20 @@
             "type": "POST"
         },
         "columnDefs": [
-            { 
-                "targets": [ -1 ], //last column
-                "orderable": false, //set not orderable
+            {
+                "targets": [ -1 ],
+                "orderable": false,
             },
-            {"aTargets" : [0], "mData" : 1, "sClass":  "details-control"}, 
+            {"aTargets" : [0], "mData" : 1, "sClass":  "details-control"},
             { "visible": false, "targets": [1,2,3] },
-            ],
+        ],
+        "language": {
+            "processing":  '<i class="fa fa-spinner fa-spin"></i> Memuat data...',
+            "zeroRecords": 'Tidak ada data ditemukan',
+            "emptyTable":  'Tidak ada data tersedia',
+            "search":      'Cari:',
+            "paginate": { "first": "Pertama", "last": "Terakhir", "next": "&raquo;", "previous": "&laquo;" }
+        }
 
     });
 
@@ -48,27 +183,20 @@
         var data = oTable.row( $(this).parents('tr') ).data();
         var no_kunjungan = data[ 2 ];
         var no_registrasi = data[ 3 ];
-        
 
         if ( row.child.isShown() ) {
-            // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
         }
         else {
-            /*data*/
-            
             $.getJSON("pelayanan/Pl_pelayanan/view_detail_resume_medis/" + no_registrasi+"/"+no_kunjungan , '', function (data) {
                 response_data = data;
-                // Open this row
                 row.child( format( response_data ) ).show();
                 tr.addClass('shown');
             });
-            
         }
     });
 
-  
     $('#btn_search_data').click(function (e) {
         e.preventDefault();
         $.ajax({
@@ -77,11 +205,11 @@
             data: $('#form_search').serialize(),
             dataType: "json",
             beforeSend: function() {
-            achtungShowLoader();  
+                achtungShowLoader();
             },
             success: function(data) {
-            achtungHideLoader();
-            find_data_reload(data,'tarif/Mst_tarif');
+                achtungHideLoader();
+                find_data_reload(data,'tarif/Mst_tarif');
             }
         });
     });
@@ -91,61 +219,48 @@
         find_data_reload();
     });
 
-    $( ".form-control" )    
-      .keypress(function(event) {  
-        var keycode =(event.keyCode?event.keyCode:event.which);  
-        if(keycode ==13){   
-          event.preventDefault();  
-          $('#btn_search_data').click();  
-          return false;  
-        }  
+    $( ".form-control" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which);
+        if(keycode ==13){
+          event.preventDefault();
+          $('#btn_search_data').click();
+          return false;
+        }
     });
 
-
-    $('#btn_update_session_poli').click(function (e) {  
-
+    $('#btn_update_session_poli').click(function (e) {
         achtungShowLoader();
-
         $.ajax({
             url: "pelayanan/Pl_pelayanan/destroy_session_kode_bagian",
-            data: { kode: $('#sess_kode_bagian').val()},            
+            data: { kode: $('#sess_kode_bagian').val()},
             dataType: "json",
             type: "POST",
             complete: function (xhr) {
-                var data=xhr.responseText;  
-                var jsonResponse = JSON.parse(data);  
-                if(jsonResponse.status === 200){  
-                $.achtung({message: jsonResponse.message, timeout:5}); 
-                getMenu('pelayanan/Pl_pelayanan');
-                }else{          
-                $.achtung({message: jsonResponse.message, timeout:5});  
-                } 
+                var data=xhr.responseText;
+                var jsonResponse = JSON.parse(data);
+                if(jsonResponse.status === 200){
+                    $.achtung({message: jsonResponse.message, timeout:5});
+                    getMenu('pelayanan/Pl_pelayanan');
+                }else{
+                    $.achtung({message: jsonResponse.message, timeout:5});
+                }
                 achtungHideLoader();
             }
         });
-
     });
 
-    $('select[name="poliklinik"]').change(function () {      
-
-        $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {              
-
-            $('#select_dokter option').remove();                
-
-            $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
-
-            $.each(data, function (i, o) {                  
-
-                $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));                    
-                    
-            });      
-
-
-        });    
-
+    $('select[name="poliklinik"]').change(function () {
+        $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {
+            $('#select_dokter option').remove();
+            $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));
+            $.each(data, function (i, o) {
+                $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));
+            });
+        });
     });
 
-})
+  })
 
 function format ( data ) {
   return data.html;
@@ -160,80 +275,69 @@ function reload_data(){
 }
 
 function cancel_visit(no_registrasi, no_kunjungan){
-
-    preventDefault();  
-
+    preventDefault();
     achtungShowLoader();
-
     $.ajax({
         url: "pelayanan/Pl_pelayanan/cancel_visit",
-        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#sess_kode_bagian').val() },            
+        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#sess_kode_bagian').val() },
         dataType: "json",
         type: "POST",
         complete: function (xhr) {
-            var data=xhr.responseText;  
-            var jsonResponse = JSON.parse(data);  
-            if(jsonResponse.status === 200){  
-            $.achtung({message: jsonResponse.message, timeout:5}); 
-            getMenu('pelayanan/Pl_pelayanan');
-            }else{          
-            $.achtung({message: jsonResponse.message, timeout:5});  
-            } 
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+                $.achtung({message: jsonResponse.message, timeout:5});
+                getMenu('pelayanan/Pl_pelayanan');
+            }else{
+                $.achtung({message: jsonResponse.message, timeout:5});
+            }
             achtungHideLoader();
         }
     });
-
 }
 
 function rollback(no_registrasi, no_kunjungan, flag){
-
-    preventDefault();  
-
+    preventDefault();
     achtungShowLoader();
-
     $.ajax({
         url: "pelayanan/Pl_pelayanan/rollback",
-        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },            
+        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },
         dataType: "json",
         type: "POST",
         complete: function (xhr) {
-            var data=xhr.responseText;  
-            var jsonResponse = JSON.parse(data);  
-            if(jsonResponse.status === 200){  
-              $.achtung({message: jsonResponse.message, timeout:5}); 
-            reload_table();
-            //getMenu('pelayanan/Pl_pelayanan');
-            }else{          
-              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
-            } 
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+                $.achtung({message: jsonResponse.message, timeout:5});
+                reload_table();
+            }else{
+                $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+            }
             achtungHideLoader();
         }
     });
-
 }
 
 function selesaikanKunjungan(no_registrasi, no_kunjungan){
-
-  preventDefault(); 
-  achtungShowLoader();
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan/processSelesaikanKunjungan",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan},            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-          var data=xhr.responseText;  
-          var jsonResponse = JSON.parse(data);  
-          if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          reload_data();
-          }else{          
-            $.achtung({message: jsonResponse.message, timeout:5});  
-          } 
-          achtungHideLoader();
-      }
-  });
-
+    preventDefault();
+    achtungShowLoader();
+    $.ajax({
+        url: "pelayanan/Pl_pelayanan/processSelesaikanKunjungan",
+        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan},
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+                $.achtung({message: jsonResponse.message, timeout:5});
+                reload_data();
+            }else{
+                $.achtung({message: jsonResponse.message, timeout:5});
+            }
+            achtungHideLoader();
+        }
+    });
 }
 
 </script>
@@ -246,138 +350,121 @@ function selesaikanKunjungan(no_registrasi, no_kunjungan){
         <?php echo $title?>
         <small>
           <i class="ace-icon fa fa-angle-double-right"></i>
-          <?php echo isset($breadcrumbs)?$breadcrumbs:''?>
+          <?php echo isset($breadcrumbs) ? $breadcrumbs : ''?>
         </small>
       </h1>
-    </div><!-- /.page-header -->
+    </div>
 
-    <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan/find_data">
+    <form method="post" id="form_search" action="pelayanan/Pl_pelayanan/find_data">
 
-    <div class="col-md-12">
+      <!-- Filter Card -->
+      <div class="eb-filter-card">
+        <div class="eb-filter-title"><i class="fa fa-filter"></i> Filter Pencarian</div>
 
-      <!-- <center><h4><?php echo strtoupper($nama_bagian); ?> <br> <small style="font-size:12px"><b><?php echo isset($nama_dokter)?'('.strtoupper($nama_dokter).')<br>':''?></b> </small><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data per Hari ini yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?> </small></h4></center>
-      <br> -->
-
-      <!-- hidden form -->
-      <!-- <input type="hidden" name="sess_kode_bagian" value="<?php echo ($this->session->userdata('kode_bagian'))?$this->session->userdata('kode_bagian'):''?>" id="sess_kode_bagian"> -->
-      <div class="form-group">
-          <label class="control-label col-md-2">Pencarian berdasarkan</label>
-          <div class="col-md-2">
+        <!-- Row 1: Pencarian + Poli + Dokter -->
+        <div class="eb-filter-row">
+          <div class="eb-filter-group fg-sm">
+            <label>Cari Berdasarkan</label>
             <select name="search_by" class="form-control">
-              <option value="">-Silahkan Pilih-</option>
+              <option value="">— Pilih —</option>
               <option value="tc_kunjungan.no_mr" selected>No MR</option>
               <option value="pl_tc_poli.nama_pasien">Nama Pasien</option>
             </select>
           </div>
 
-          <label class="control-label col-md-1">Keyword</label>
-          <div class="col-md-2">
-            <input type="text" class="form-control" name="keyword" id="keyword_form">
+          <div class="eb-filter-group fg-md">
+            <label>Keyword</label>
+            <input type="text" class="form-control" name="keyword" id="keyword_form" placeholder="Ketik kata kunci...">
           </div>
 
-      </div>
-
-      <div class="form-group">
-        <label class="control-label col-md-2">Poli/Klinik</label>
-        <div class="col-md-4">
+          <div class="eb-filter-group fg-lg">
+            <label>Poli / Klinik</label>
             <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
-        </div>
-      </div>
+          </div>
 
-      <div class="form-group">
-        <label class="control-label col-md-2">Dokter</label>
-        <div class="col-md-4">
-          <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
+          <div class="eb-filter-group fg-lg">
+            <label>Dokter</label>
+            <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="control-label col-md-2">Penjamin</label>
-        <div class="col-md-8" style="padding-left: 17px; margin-top: 3px;">
-          <label>
-            <input name="penjamin" type="radio" class="ace" value="0"  />
-            <span class="lbl"> Umum</span>
-          </label>
-          <label>
-            <input name="penjamin" type="radio" class="ace" value="1"  />
-            <span class="lbl"> Asuransi</span>
-          </label>
-          <label>
-            <input name="penjamin" type="radio" class="ace" value="120"  />
-            <span class="lbl"> BPJS Kesehatan</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="control-label col-md-2">Tanggal Registrasi</label>
-          <div class="col-md-2">
-            <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar bigger-110"></i>
-              </span>
+        <!-- Row 2: Penjamin + Tanggal + Buttons -->
+        <div class="eb-filter-row">
+          <div class="eb-filter-group" style="min-width:300px;">
+            <label>Penjamin</label>
+            <div class="eb-penjamin-wrap">
+              <label class="eb-radio-item">
+                <input name="penjamin" type="radio" class="ace" value="0">
+                <span>Umum</span>
+              </label>
+              <label class="eb-radio-item">
+                <input name="penjamin" type="radio" class="ace" value="1">
+                <span>Asuransi</span>
+              </label>
+              <label class="eb-radio-item">
+                <input name="penjamin" type="radio" class="ace" value="120">
+                <span>BPJS Kesehatan</span>
+              </label>
             </div>
           </div>
 
-          <label class="control-label col-md-1">s/d</label>
-          <div class="col-md-2">
+          <div class="eb-filter-group fg-sm">
+            <label>Tanggal Dari</label>
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar bigger-110"></i>
-              </span>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="" placeholder="yyyy-mm-dd">
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             </div>
           </div>
-      </div>
 
-      <div class="form-group">
-        <label class="control-label col-md-2 ">&nbsp;</label>
-        <div class="col-md-10" style="margin-left:6px">
-          <a href="#" id="btn_search_data" class="btn btn-xs btn-primary" action="pelayanan/Pl_pelayanan/find_data">
-            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-            Search
-          </a>
-          <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
-            <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-            Reset
-          </a>
+          <div class="eb-date-sep">s/d</div>
+
+          <div class="eb-filter-group fg-sm">
+            <label>Tanggal Sampai</label>
+            <div class="input-group">
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="" placeholder="yyyy-mm-dd">
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+          </div>
+
+          <div class="eb-filter-group" style="min-width:auto;">
+            <label>&nbsp;</label>
+            <div class="eb-btn-row">
+              <a href="#" id="btn_search_data" class="btn btn-sm btn-primary" action="pelayanan/Pl_pelayanan/find_data">
+                <i class="fa fa-search"></i> Cari
+              </a>
+              <a href="#" id="btn_reset_data" class="btn btn-sm btn-default">
+                <i class="fa fa-refresh"></i> Reset
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
-    </div>
-
-    <hr class="separator">
-    <!-- div.dataTables_borderWrap -->
-    <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry" class="table table-bordered table-hover">
-       <thead>
-        <tr>  
-          <th width="50px" class="center"></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th width="100px">No MR</th>
-          <th>Nama Pasien</th>
-          <th>Penjamin</th>
-          <th width="200px">Tanggal Kunjungan</th>
-          <th>Dokter</th>
-          <th>Perawat/Dokter/Petugas Input</th>
-          <th>Status</th>          
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    </div>
+      <!-- DataTable -->
+      <table id="dynamic-table"
+             base-url="pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry"
+             class="table table-bordered table-hover table-condensed"
+             style="font-size:12px; width:100%">
+        <thead>
+          <tr>
+            <th width="30px"  class="center"></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th width="60px"  class="center">Aksi</th>
+            <th width="100px" class="center">No MR</th>
+            <th>Nama Pasien</th>
+            <th width="140px">Penjamin</th>
+            <th width="190px">Tanggal Kunjungan</th>
+            <th width="160px">Dokter</th>
+            <th width="140px">Petugas Input</th>
+            <th width="120px" class="center">Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
     </form>
 
-  </div><!-- /.col -->
-</div><!-- /.row -->
-
-<!-- <script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script> -->
-
-
-
+  </div>
+</div>

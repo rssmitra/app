@@ -196,7 +196,7 @@ class Input_dt_so_model extends CI_Model {
         $start  = (int)$_POST['start'];
         $length = (int)$_POST['length'];
         // ORDER BY uses column aliases from the inner SELECT (v.is_active → status_aktif, etc.)
-        $order  = 'nama_brg ASC';
+        $order  = 'status_aktif DESC, nama_brg ASC, nama_golongan ASC';
 
         if ($length != -1) {
             // ROW_NUMBER() pagination — SQL Server 2008 compatible (no OFFSET…FETCH)

@@ -99,10 +99,11 @@
       <td style="color:#fff;width:130px;text-align:right;">TOTAL PERSEDIAAN<br>(Rp)</td>
       <td style="color:#fff;width:130px;text-align:right;">TOTAL EXPIRED<br>(Rp)</td>
       <!-- <td style="color:#fff;width:130px;text-align:right;">TOTAL EXPIRED<br>-3 BLN (Rp)</td> -->
-      <td style="color:#fff;width:70px;text-align:center;">STATUS</td>
+      <td style="color:#fff;width:70px;text-align:center;">STATUS BARANG</td>
       <td style="color:#fff;width:75px;text-align:center;">KONDISI SO</td>
       <td style="color:#fff;width:130px;">PETUGAS</td>
       <td style="color:#fff;width:120px;text-align:center;">WAKTU INPUT</td>
+      <td style="color:#fff;width:120px;text-align:center;">STATUS DATA</td>
     </tr>
   </thead>
   <tbody>
@@ -153,6 +154,13 @@
       <td align="center" bgcolor="<?php echo $kbg; ?>" style="font-weight:bold;color:<?php echo $kclr; ?>;"><?php echo $kondisi; ?></td>
       <td><?php echo htmlspecialchars($row_data->nama_petugas); ?></td>
       <td align="center"><?php echo $this->tanggal->formatDateTime($row_data->tgl_stok_opname); ?></td>
+      <?php
+        $so_status = isset($row_data->status_so) ? $row_data->status_so : null;
+        if ($row_data->status_so == 'final')     { $ss_label = 'Final';       $ss_clr = '#1b5e20'; $ss_bg = '#e8f5e9'; }
+        elseif ($row_data->status_so == 'draft') { $ss_label = 'Draft';       $ss_clr = '#7d4e00'; $ss_bg = '#fff8e1'; }
+        else                            { $ss_label = 'Belum Input'; $ss_clr = '#555555'; $ss_bg = '#f5f5f5'; }
+      ?>
+      <td align="center" bgcolor="<?php echo $ss_bg; ?>" style="font-weight:bold;color:<?php echo $ss_clr; ?>;"><?php echo $ss_label; ?></td>
     </tr>
     <?php endforeach; ?>
 
@@ -162,7 +170,7 @@
       <td align="right"><?php echo (int)$totalhasil; ?></td>
       <td align="right"><?php echo (int)$arr_totalhasil_exp; ?></td>
       <!-- <td align="right"><?php echo (int)$arr_totalhasil_will_exp; ?></td> -->
-      <td></td><td></td><td></td><td></td>
+      <td></td><td></td><td></td><td></td><td></td>
     </tr>
   </tbody>
 </table>
@@ -243,7 +251,7 @@
       <td style="color:#fff;width:80px;text-align:center;">JML ITEM</td>
       <td style="color:#fff;width:160px;text-align:right;">TOTAL PERSEDIAAN (Rp)</td>
       <td style="color:#fff;width:160px;text-align:right;">TOTAL EXPIRED (Rp)</td>
-      <td style="color:#fff;width:160px;text-align:right;">TOTAL EXPIRED -3 BLN (Rp)</td>
+      <!-- <td style="color:#fff;width:160px;text-align:right;">TOTAL EXPIRED -3 BLN (Rp)</td> -->
       <td style="color:#fff;width:80px;text-align:center;">% ITEM</td>
       <td style="color:#fff;width:180px;">KETERANGAN</td>
     </tr>
@@ -265,7 +273,7 @@
       <td align="center"><?php echo $kv['count']; ?></td>
       <td align="right"><?php echo (int)$kv['total']; ?></td>
       <td align="right"><?php echo (int)$kv['total_exp']; ?></td>
-      <td align="right"><?php echo (int)$kv['total_will_exp']; ?></td>
+      <!-- <td align="right"><?php echo (int)$kv['total_will_exp']; ?></td> -->
       <td align="center"><?php echo $pct; ?>%</td>
       <td><?php echo $km['ket']; ?></td>
     </tr>
@@ -275,7 +283,7 @@
       <td align="center"><?php echo $k_grand; ?></td>
       <td align="right"><?php echo (int)$grand['total']; ?></td>
       <td align="right"><?php echo (int)$grand['total_exp']; ?></td>
-      <td align="right"><?php echo (int)$grand['total_will_exp']; ?></td>
+      <!-- <td align="right"><?php echo (int)$grand['total_will_exp']; ?></td> -->
       <td align="center">100%</td>
       <td></td>
     </tr>

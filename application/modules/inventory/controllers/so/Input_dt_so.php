@@ -58,8 +58,9 @@ class Input_dt_so extends MX_Controller {
             $recordsFiltered = $this->Input_dt_so->count_filtered();
         }
 
-        $data = array();
-        $no   = (int)$_POST['start'];
+        $data        = array();
+        $no          = (int)$_POST['start'];
+        $is_sysadmin = $this->authuser->has_access($this->session->userdata('user')->user_id, [1, 27]);
 
         foreach ($list as $r) {
             $no++;
@@ -234,6 +235,14 @@ class Input_dt_so extends MX_Controller {
             if ($status_so === 'final') {
                 $btn = '<div style="margin-top:5px;color:#27ae60;font-size:11px">'
                      . '<i class="fa fa-lock"></i> Finalized</div>';
+                if ($is_sysadmin) {
+                    $btn .= '<div style="margin-top:4px">'
+                          . '<button class="btn btn-xs btn-warning" style="white-space:nowrap;font-size:10px"'
+                          . ' title="Rollback ke Draft (Sysadmin)"'
+                          . ' onclick="rollbackToDraft(\'' . $kode_brg . '\',\'' . $kode_bag . '\',' . $agenda_id . ')">'
+                          . '<i class="fa fa-undo"></i> Rollback Draft</button>'
+                          . '</div>';
+                }
             } elseif ($status_so === 'draft') {
                 $btn = '<div style="margin-top:5px">'
                      . '<button class="btn btn-xs btn-success" style="white-space:nowrap"'
@@ -247,7 +256,7 @@ class Input_dt_so extends MX_Controller {
                      . '<i class="fa fa-save"></i> Save Draft</button>'
                      . '</div>';
             }
-            $row[] = '<div class="center">' . $badge . $petugas_info . $btn . '</div>';
+            $row[] = '<div class="center" id="row_act_' . $row_id . '">' . $badge . $petugas_info . $btn . '</div>';
 
             $data[] = $row;
         }
@@ -348,6 +357,41 @@ class Input_dt_so extends MX_Controller {
         } else {
             $this->db->trans_commit();
             echo json_encode(array('status' => 200, 'message' => 'Data berhasil difinalisasi dan stok telah dimutasi'));
+        }
+    }
+
+    // ── Rollback Final → Draft (sysadmin only) ──────────────────────────────
+
+    public function rollback_to_draft_so() {
+        // Role guard — only sysadmin (role_id = 1) may rollback
+        if (!$this->authuser->is_administrator($this->session->userdata('user')->user_id)) {
+            echo json_encode(array('status' => 403, 'message' => 'Akses ditolak. Hanya Sysadmin yang dapat melakukan rollback status Final.'));
+            return;
+        }
+
+        $kode_bagian  = $this->input->post('kode_bagian');
+        $kode_brg     = $this->input->post('kode_brg');
+        $agenda_so_id = $this->input->post('agenda_so_id');
+
+        if (!$kode_bagian || !$kode_brg || !$agenda_so_id) {
+            echo json_encode(array('status' => 301, 'message' => 'Parameter tidak lengkap'));
+            return;
+        }
+
+        $table = ($kode_bagian === '070101') ? 'tc_stok_opname_nm' : 'tc_stok_opname';
+
+        $this->db->where(array(
+            'kode_brg'     => $kode_brg,
+            'agenda_so_id' => (int)$agenda_so_id,
+            'kode_bagian'  => $kode_bagian,
+            'status_so'    => 'final',   // only rollback rows that are actually final
+        ));
+        $this->db->update($table, array('status_so' => 'draft'));
+
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(array('status' => 200, 'message' => 'Status berhasil dikembalikan ke Draft'));
+        } else {
+            echo json_encode(array('status' => 301, 'message' => 'Rollback gagal: data tidak ditemukan atau sudah dalam status Draft'));
         }
     }
 

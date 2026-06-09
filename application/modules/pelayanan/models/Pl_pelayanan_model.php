@@ -21,9 +21,11 @@ class Pl_pelayanan_model extends CI_Model {
 		return $this->db->insert_id();
 	}
 
-	private function _main_query(){
-		$this->db->select('CAST(tgl_lhr as DATE) as tgl_lhr');
-		$this->db->select('CAST(dbo.fn_HitungUmur(mt_master_pasien.tgl_lhr, tc_registrasi.tgl_jam_masuk) as NVARCHAR(50)) as umur_lengkap');
+	private function _main_query($include_udf = TRUE){
+		if ($include_udf) {
+			$this->db->select('CAST(tgl_lhr as DATE) as tgl_lhr');
+			$this->db->select('CAST(dbo.fn_HitungUmur(mt_master_pasien.tgl_lhr, tc_registrasi.tgl_jam_masuk) as NVARCHAR(50)) as umur_lengkap');
+		}
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan','('.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan AND '.$this->table.'.kode_bagian = tc_kunjungan.kode_bagian_tujuan)','left');
@@ -38,8 +40,8 @@ class Pl_pelayanan_model extends CI_Model {
 
 	private function _get_datatables_query()
 	{
-		
-		$this->_main_query();
+		// Skip the per-row scalar UDF (fn_HitungUmur) — not needed for the billing list
+		$this->_main_query(FALSE);
 		// $this->db->select("(select top 1 kode_penunjang from pm_tc_penunjang left join tc_kunjungan as kunjungan_pm on kunjungan_pm.no_kunjungan = pm_tc_penunjang.no_kunjungan where kunjungan_pm.no_registrasi = tc_kunjungan.no_registrasi and kode_bagian = '050101') as lab");
 		// $this->db->select("(select top 1 kode_penunjang from pm_tc_penunjang left join tc_kunjungan as kunjungan_pm_rad on kunjungan_pm_rad.no_kunjungan = pm_tc_penunjang.no_kunjungan where kunjungan_pm_rad.no_registrasi = tc_kunjungan.no_registrasi and kode_bagian = '050201') as rad");
 		// $this->db->select("(select top 1 kode_penunjang from pm_tc_penunjang left join tc_kunjungan as kunjungan_pm_fis on kunjungan_pm_fis.no_kunjungan = pm_tc_penunjang.no_kunjungan where kunjungan_pm_fis.no_registrasi = tc_kunjungan.no_registrasi and kode_bagian = '050301') as fis");
@@ -73,16 +75,27 @@ class Pl_pelayanan_model extends CI_Model {
 		}
 		
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");	
+			// Sargable range scan — avoids CONVERT() wrapper on the column
+			$from = date('Y-m-d', strtotime($_GET['from_tgl']));
+			$to   = date('Y-m-d', strtotime($_GET['to_tgl'].' +1 day'));
+			$this->db->where("pl_tc_poli.tgl_jam_poli >= '".$from." 00:00:00'", NULL, FALSE);
+			$this->db->where("pl_tc_poli.tgl_jam_poli <  '".$to." 00:00:00'", NULL, FALSE);
 			$this->db->order_by('pl_tc_poli.tgl_jam_poli', 'ASC');
 		}else{
 			if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
 				if( $_GET['keyword'] != '' ){
-					$this->db->where( 'YEAR(pl_tc_poli.tgl_jam_poli) = ', date('Y') );
+					// Sargable range scan for full year — avoids YEAR() wrapper
+					$year = date('Y');
+					$this->db->where("pl_tc_poli.tgl_jam_poli >= '".$year."-01-01 00:00:00'", NULL, FALSE);
+					$this->db->where("pl_tc_poli.tgl_jam_poli <  '".($year + 1)."-01-01 00:00:00'", NULL, FALSE);
 					$this->db->order_by('pl_tc_poli.tgl_jam_poli', 'DESC');
 				}
 			}else{
-				$this->db->where( 'CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d') );
+				// Sargable range scan for today — avoids CAST(col AS DATE)
+				$today    = date('Y-m-d');
+				$tomorrow = date('Y-m-d', strtotime('+1 day'));
+				$this->db->where("pl_tc_poli.tgl_jam_poli >= '".$today." 00:00:00'", NULL, FALSE);
+				$this->db->where("pl_tc_poli.tgl_jam_poli <  '".$tomorrow." 00:00:00'", NULL, FALSE);
 			}
 		}
 
@@ -210,8 +223,7 @@ class Pl_pelayanan_model extends CI_Model {
 	function count_filtered()
 	{
 		$this->_get_datatables_query();
-		$query = $this->db->get();
-		return $query->num_rows();
+		return $this->db->count_all_results();
 	}
 
 	public function count_all()

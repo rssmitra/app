@@ -12,7 +12,8 @@ jQuery(function($) {
 });
 
 /* ── Pending save context (used when selisih modal is required) ── */
-var _pendingSave = null;
+var _pendingSave  = null;
+var _is_sysadmin  = <?php echo ($this->authuser->is_administrator($this->session->userdata('user')->user_id)) ? 'true' : 'false'; ?>;
 
 $(document).ready(function() {
 
@@ -79,7 +80,8 @@ $(document).ready(function() {
       $('#row_klar_' + _pendingSave.row_id).val(klar);
       _doSave(_pendingSave.kode_brg, _pendingSave.kode_bag, _pendingSave.agenda_so_id,
               _pendingSave.row_id,   _pendingSave.type,     klar,
-              _pendingSave.stok_akhir, _pendingSave.cutoff, _pendingSave.mv_in, _pendingSave.mv_out);
+              _pendingSave.stok_akhir, _pendingSave.cutoff, _pendingSave.mv_in, _pendingSave.mv_out,
+              _pendingSave.nama_brg,  _pendingSave.satuan);
     }
     $('#modalSelisihKlarifikasi').modal('hide');
   });
@@ -145,7 +147,7 @@ function saveDraftRow(kode_brg, kode_bag, agenda_so_id, stok_akhir, cutoff, mv_i
                       cutoff, mv_in, mv_out, nama_brg, satuan);
   } else {
     _doSave(kode_brg, kode_bag, agenda_so_id, row_id, 'draft',
-            $('#row_klar_' + row_id).val(), stok_akhir, cutoff, mv_in, mv_out);
+            $('#row_klar_' + row_id).val(), stok_akhir, cutoff, mv_in, mv_out, nama_brg, satuan);
   }
 }
 
@@ -172,7 +174,7 @@ function saveFinalRow(kode_brg, kode_bag, agenda_so_id, stok_akhir, cutoff, mv_i
                       cutoff, mv_in, mv_out, nama_brg, satuan);
   } else {
     _doSave(kode_brg, kode_bag, agenda_so_id, row_id, 'final',
-            $('#row_klar_' + row_id).val(), stok_akhir, cutoff, mv_in, mv_out);
+            $('#row_klar_' + row_id).val(), stok_akhir, cutoff, mv_in, mv_out, nama_brg, satuan);
   }
 }
 
@@ -181,7 +183,8 @@ function _showSelisihModal(kode_brg, kode_bag, agenda_so_id, row_id, stok_so, st
                             cutoff, mv_in, mv_out, nama_brg, satuan) {
   _pendingSave = { kode_brg: kode_brg, kode_bag: kode_bag, agenda_so_id: agenda_so_id,
                    row_id: row_id, type: type,
-                   stok_akhir: stok_akhir, cutoff: cutoff, mv_in: mv_in, mv_out: mv_out };
+                   stok_akhir: stok_akhir, cutoff: cutoff, mv_in: mv_in, mv_out: mv_out,
+                   nama_brg: nama_brg, satuan: satuan };
 
   var stok_exp = parseInt($('#row_exp_' + row_id).val(), 10) || 0;
   var stok_adj = parseInt($('#row_adj_' + row_id).val(), 10) || 0;
@@ -216,17 +219,30 @@ function _showSelisihModal(kode_brg, kode_bag, agenda_so_id, row_id, stok_so, st
   $('#modalSelisihKlarifikasi').modal('show');
 }
 
-/* ── Internal: execute the AJAX save ── */
-function _doSave(kode_brg, kode_bag, agenda_so_id, row_id, type, klarifikasi, stok_akhir, cutoff, mv_in, mv_out) {
-  achtungShowLoader();
+/* ── Internal: execute the AJAX save (no global overlay — button shows loading state) ── */
+function _doSave(kode_brg, kode_bag, agenda_so_id, row_id, type, klarifikasi, stok_akhir, cutoff, mv_in, mv_out, nama_brg, satuan) {
+  nama_brg = nama_brg || '';
+  satuan   = satuan   || '';
+
   var endpoint  = (type === 'final') ? 'inventory/so/Input_dt_so/save_final_so'
                                      : 'inventory/so/Input_dt_so/save_draft_so';
   var is_active = $('#stat_on_off_' + row_id).is(':checked') ? 1 : 0;
   var stok_so   = parseInt($('#row_so_'  + row_id).val(), 10) || 0;
   var stok_exp  = parseInt($('#row_exp_' + row_id).val(), 10) || 0;
   var stok_adj  = parseInt($('#row_adj_' + row_id).val(), 10) || 0;
-  /* Selisih = SO + Expired + Adjustment − Stok Akhir Berjalan */
   var selisih   = (stok_so + stok_exp + stok_adj) - (stok_akhir || 0);
+
+  /* ── Put save button into loading state ── */
+  var $actCell  = $('#row_act_' + row_id);
+  var $btn      = $actCell.find('button').first();
+  var origHtml  = $btn.length ? $btn.html()         : '';
+  var origClass = $btn.length ? $btn.attr('class')  : '';
+  if ($btn.length) {
+    $btn.prop('disabled', true)
+        .html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...')
+        .removeClass('btn-info btn-success btn-warning btn-danger')
+        .addClass('btn-default');
+  }
 
   $.ajax({
     url:  endpoint,
@@ -241,7 +257,6 @@ function _doSave(kode_brg, kode_bag, agenda_so_id, row_id, type, klarifikasi, st
       stok_adjustment:      stok_adj,
       klarifikasi_stok:     klarifikasi || $('#row_klar_' + row_id).val(),
       status_aktif:         is_active,
-      /* Snapshot + calculated fields */
       stok_akhir_berjalan:  stok_akhir  || 0,
       stok_cutoff:          cutoff       || 0,
       total_pemasukan:      mv_in        || 0,
@@ -250,16 +265,63 @@ function _doSave(kode_brg, kode_bag, agenda_so_id, row_id, type, klarifikasi, st
       stok_final:           stok_so + stok_adj
     },
     complete: function(xhr) {
-      var res = JSON.parse(xhr.responseText);
+      var res;
+      try { res = JSON.parse(xhr.responseText); } catch(e) { res = {status: 500, message: 'Server error'}; }
       if (res.status === 200) {
         $.achtung({message: res.message, timeout: 3});
-        oTable.ajax.reload(null, false);
+        /* Update action cell in-place — no DataTable reload needed */
+        _updateActCell($actCell, row_id, kode_brg, kode_bag, agenda_so_id,
+                       type, stok_akhir, cutoff, mv_in, mv_out, nama_brg, satuan);
       } else {
         $.achtung({message: res.message, timeout: 5, className: 'achtungFail'});
+        /* Restore button on failure */
+        if ($btn.length) {
+          $btn.prop('disabled', false).html(origHtml).attr('class', origClass);
+        }
       }
-      achtungHideLoader();
     }
   });
+}
+
+/* ── Update action cell in-place after a successful save ── */
+function _updateActCell($actCell, row_id, kode_brg, kode_bag, agenda_so_id,
+                        type, stok_akhir, cutoff, mv_in, mv_out, nama_brg, satuan) {
+  var now = new Date();
+  var ts  = ('0'+now.getHours()).slice(-2) + ':' + ('0'+now.getMinutes()).slice(-2)
+          + ':' + ('0'+now.getSeconds()).slice(-2);
+
+  $actCell.empty();
+
+  if (type === 'final') {
+    $actCell
+      .append('<span class="label label-success"><i class="fa fa-lock"></i> Final</span>')
+      .append('<br><small style="color:#aaa">' + ts + '</small>')
+      .append('<div style="margin-top:5px;color:#27ae60;font-size:11px"><i class="fa fa-lock"></i> Finalized</div>');
+    if (_is_sysadmin) {
+      $actCell.append(
+        $('<div style="margin-top:4px"></div>').append(
+          $('<button class="btn btn-xs btn-warning" style="white-space:nowrap;font-size:10px" title="Rollback ke Draft (Sysadmin)">')
+            .html('<i class="fa fa-undo"></i> Rollback Draft')
+            .on('click', function() { rollbackToDraft(kode_brg, kode_bag, agenda_so_id); })
+        )
+      );
+    }
+  } else {
+    /* draft saved → promote button to Save Final */
+    $actCell
+      .append('<span class="label label-warning"><i class="fa fa-edit"></i> Draft</span>')
+      .append('<br><small style="color:#aaa">' + ts + '</small>')
+      .append(
+        $('<div style="margin-top:5px"></div>').append(
+          $('<button class="btn btn-xs btn-success" style="white-space:nowrap">')
+            .html('<i class="fa fa-check-circle"></i> Save Final')
+            .on('click', function() {
+              saveFinalRow(kode_brg, kode_bag, agenda_so_id,
+                           stok_akhir, cutoff, mv_in, mv_out, nama_brg, satuan);
+            })
+        )
+      );
+  }
 }
 
 /* ── Status Aktif toggle ── */
@@ -292,7 +354,7 @@ function setStatusAktifBrg(kode_brg, kode_bag, agenda_so_id, stok_akhir, cutoff,
           _doSave(kode_brg, kode_bag, agenda_so_id, row_id, 'draft', '',
                   stok_akhir, cutoff, mv_in, mv_out);
         } else {
-          reset_table(kode_bag);
+          // reset_table(kode_bag);
         }
       } else {
         $.achtung({message: res.message, timeout: 5, className: 'achtungFail'});
@@ -314,6 +376,37 @@ function find_data_reload() {
   var golongan = ($('#kode_bagian').val() == '070101') ? $('#kode_golongan').val() : $('#kode_kategori').val();
   var rak      = ($('#kode_bagian').val() == '070101') ? $('#rak_nm').val()        : $('#rak_m').val();
   oTable.ajax.url($('#dt-input-so-bag').attr('base-url') + '&gol=' + golongan + '&rak=' + rak).load();
+}
+
+/* ── Rollback Final → Draft (sysadmin only) ── */
+function rollbackToDraft(kode_brg, kode_bag, agenda_so_id) {
+  if (!confirm(
+    'Kembalikan status FINAL ke DRAFT?\n\n' +
+    'PERHATIAN: Mutasi stok yang sudah terjadi tidak akan dibalik otomatis.\n' +
+    'Lakukan rollback ini hanya jika benar-benar diperlukan!'
+  )) { return; }
+
+  achtungShowLoader();
+  $.ajax({
+    url:      'inventory/so/Input_dt_so/rollback_to_draft_so',
+    type:     'POST',
+    dataType: 'json',
+    data: {
+      kode_bagian:  kode_bag,
+      kode_brg:     kode_brg,
+      agenda_so_id: agenda_so_id
+    },
+    complete: function(xhr) {
+      var res = JSON.parse(xhr.responseText);
+      if (res.status === 200) {
+        $.achtung({message: res.message, timeout: 4});
+        oTable.ajax.reload(null, false);
+      } else {
+        $.achtung({message: res.message, timeout: 6, className: 'achtungFail'});
+      }
+      achtungHideLoader();
+    }
+  });
 }
 </script>
 

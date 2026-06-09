@@ -1006,7 +1006,6 @@ class References extends MX_Controller {
 		}
 		echo json_encode($arrResult);
 		
-		
 	}
 
 	public function getPaketMCU()

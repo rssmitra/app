@@ -468,33 +468,34 @@ class Pl_pelayanan_ri extends MX_Controller {
             $racikan_data = array();
 
             if (!empty($_kunjungan_ids)) {
-                if($_item->tipe == 'RJ'){
-                    // Pre-load e-Resep hanya untuk kunjungan yang tampil (bukan semua no_mr)
-                    $eresep_all = $this->db
-                        ->select('no_kunjungan, kode_pesan_resep, kode_brg, nama_brg, jml_dosis, jml_dosis_obat, satuan_obat, aturan_pakai, jml_pesan, keterangan, created_date')
-                        ->where_in('no_kunjungan', $_kunjungan_ids)
-                        ->where('parent', '0')
+                // Pre-load e-Resep untuk semua kunjungan (RI maupun RJ)
+                $eresep_all = $this->db
+                    ->select('no_kunjungan, kode_pesan_resep, kode_brg, nama_brg, jml_dosis, jml_dosis_obat, satuan_obat, aturan_pakai, jml_pesan, keterangan, created_date')
+                    ->where_in('no_kunjungan', $_kunjungan_ids)
+                    ->where('parent', '0')
+                    ->get('fr_tc_pesan_resep_detail')->result();
+
+                $_all_resep_kode = array();
+                foreach ($eresep_all as $_er) {
+                    $eresep_data[$_er->no_kunjungan][$_er->kode_pesan_resep][] = $_er;
+                    $_all_resep_kode[] = $_er->kode_pesan_resep;
+                }
+
+                // Pre-load semua bahan racik sekaligus — hindari N+1 query per item obat
+                if (!empty($_all_resep_kode)) {
+                    $racikan_all = $this->db
+                        ->select('kode_pesan_resep, parent, id, kode_brg, nama_brg, jml_pesan, satuan_obat')
+                        ->where_in('kode_pesan_resep', array_unique($_all_resep_kode))
+                        ->where('parent !=', '0')
                         ->get('fr_tc_pesan_resep_detail')->result();
-
-                    $_all_resep_kode = array();
-                    foreach ($eresep_all as $_er) {
-                        $eresep_data[$_er->no_kunjungan][$_er->kode_pesan_resep][] = $_er;
-                        $_all_resep_kode[] = $_er->kode_pesan_resep;
-                    }
-
-                    // Pre-load semua bahan racik sekaligus — hindari N+1 query per item obat
-                    if (!empty($_all_resep_kode)) {
-                        $racikan_all = $this->db
-                            ->select('kode_pesan_resep, parent, id, kode_brg, nama_brg, jml_pesan, satuan_obat')
-                            ->where_in('kode_pesan_resep', array_unique($_all_resep_kode))
-                            ->where('parent !=', '0')
-                            ->get('fr_tc_pesan_resep_detail')->result();
-                        foreach ($racikan_all as $_r) {
-                            $racikan_data[$_r->kode_pesan_resep][$_r->parent][] = $_r;
-                        }
+                    foreach ($racikan_all as $_r) {
+                        $racikan_data[$_r->kode_pesan_resep][$_r->parent][] = $_r;
                     }
                 }
             }
+
+            // Tracker: tanggal yang sudah ditampilkan e-resep RI (supaya tidak muncul ganda)
+            $_ri_eresep_shown_dates = array();
 
             // menampilkan riwayat dan cppt keseluruhan
             foreach ($list as $row_list) {
@@ -549,114 +550,176 @@ class Pl_pelayanan_ri extends MX_Controller {
 
                     $soap = '<div class="cppt-card-wrap"><div class="cppt-card-body">';
 
-                    // ── S: Subjective ──
-                    $soap .= '<div class="cppt-section cppt-s">';
-                    $soap .= '<div class="cppt-title"><i class="fa fa-comment-o"></i> S &mdash; Subjective</div>';
-                    $soap .= '<span class="cppt-flabel">Anamnesa / Keluhan Pasien</span>';
-                    $soap .= '<div class="cppt-fval">'.($row_list->subjective ? nl2br($row_list->subjective) : '<span style="color:#94a3b8">—</span>').'</div>';
+                    if($row_list->tipe == 'RI'){
+                        // ── SOAP ringkas khusus RI: hanya 4 field utama ──
 
-                    // Riwayat Pasien
-                    $_rpd     = isset($row_list->rp_penyakit_dahulu)     ? strtolower(trim($row_list->rp_penyakit_dahulu)) : '';
-                    $_rpd_ket = isset($row_list->rp_penyakit_dahulu_ket) ? trim($row_list->rp_penyakit_dahulu_ket) : '';
-                    $_ro      = isset($row_list->rp_operasi)             ? strtolower(trim($row_list->rp_operasi)) : '';
-                    $_ro_ket  = isset($row_list->rp_operasi_ket)         ? trim($row_list->rp_operasi_ket) : '';
-                    $_ra      = isset($row_list->rp_alergi)              ? strtolower(trim($row_list->rp_alergi)) : '';
-                    $_ra_ket  = isset($row_list->rp_alergi_ket)          ? trim($row_list->rp_alergi_ket) : '';
-                    if($_rpd || $_ro || $_ra){
-                        $soap .= '<span class="cppt-flabel" style="margin-top:8px;">Riwayat Pasien</span>';
-                        $soap .= '<div class="cppt-riwayat-list">';
-                        if($_rpd){
-                            $soap .= '<div class="cppt-riwayat-item"><i class="fa fa-history" style="color:#0ea5e9;"></i><div>';
-                            $soap .= '<span class="cppt-rw-label">Riwayat Penyakit Dahulu:</span> ';
-                            $soap .= '<span class="cppt-rw-val '.($_rpd==='ada'?'ada':'tidak').'">'.ucfirst($_rpd).'</span>';
-                            if($_rpd==='ada' && $_rpd_ket) $soap .= '<div class="cppt-rw-ket">'.$_rpd_ket.'</div>';
-                            $soap .= '</div></div>';
-                        }
-                        if($_ro){
-                            $soap .= '<div class="cppt-riwayat-item"><i class="fa fa-medkit" style="color:#d97706;"></i><div>';
-                            $soap .= '<span class="cppt-rw-label">Riwayat Operasi:</span> ';
-                            $soap .= '<span class="cppt-rw-val '.($_ro==='ada'?'ada':'tidak').'">'.ucfirst($_ro).'</span>';
-                            if($_ro==='ada' && $_ro_ket) $soap .= '<div class="cppt-rw-ket">'.$_ro_ket.'</div>';
-                            $soap .= '</div></div>';
-                        }
-                        if($_ra){
-                            $soap .= '<div class="cppt-riwayat-item"><i class="fa fa-exclamation-triangle" style="color:#dc2626;"></i><div>';
-                            $soap .= '<span class="cppt-rw-label">Riwayat Alergi:</span> ';
-                            $soap .= '<span class="cppt-rw-val '.($_ra==='ada'?'ada':'tidak').'">'.ucfirst($_ra).'</span>';
-                            if($_ra==='ada' && $_ra_ket) $soap .= '<div class="cppt-rw-ket">'.$_ra_ket.'</div>';
-                            $soap .= '</div></div>';
+                        // S
+                        $soap .= '<div class="cppt-section cppt-s">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-comment-o"></i> S &mdash; Subjective</div>';
+                        $soap .= '<div class="cppt-fval">'.($row_list->subjective ? nl2br($row_list->subjective) : '<span style="color:#94a3b8">—</span>').'</div>';
+                        $soap .= '</div>';
+
+                        // O
+                        $soap .= '<div class="cppt-section cppt-o">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-stethoscope"></i> O &mdash; Objective</div>';
+                        $soap .= '<div class="cppt-fval">'.($row_list->objective ? nl2br($row_list->objective) : '<span style="color:#94a3b8">—</span>').'</div>';
+                        $soap .= '</div>';
+
+                        // A
+                        $soap .= '<div class="cppt-section cppt-a">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-flask"></i> A &mdash; Assessment</div>';
+                        $soap .= '<div class="cppt-fval">'.($row_list->assesment ? nl2br($row_list->assesment) : '<span style="color:#94a3b8">—</span>').'</div>';
+                        $soap .= '</div>';
+
+                        // P
+                        $soap .= '<div class="cppt-section cppt-p">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-list-ul"></i> P &mdash; Planning</div>';
+                        $soap .= '<div class="cppt-fval">'.($row_list->planning ? nl2br($row_list->planning) : '<span style="color:#94a3b8">—</span>').'</div>';
+                        if($btn_monitoring) $soap .= '<div style="margin-top:6px;">'.$btn_monitoring.'</div>';
+                        $soap .= '</div>';
+
+                    }else{
+                        // ── SOAP lengkap untuk RJ ──
+
+                        // S: Subjective
+                        $soap .= '<div class="cppt-section cppt-s">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-comment-o"></i> S &mdash; Subjective</div>';
+                        $soap .= '<span class="cppt-flabel">Anamnesa / Keluhan Pasien</span>';
+                        $soap .= '<div class="cppt-fval">'.($row_list->subjective ? nl2br($row_list->subjective) : '<span style="color:#94a3b8">—</span>').'</div>';
+
+                        // Riwayat Pasien
+                        $_rpd     = isset($row_list->rp_penyakit_dahulu)     ? strtolower(trim($row_list->rp_penyakit_dahulu)) : '';
+                        $_rpd_ket = isset($row_list->rp_penyakit_dahulu_ket) ? trim($row_list->rp_penyakit_dahulu_ket) : '';
+                        $_ro      = isset($row_list->rp_operasi)             ? strtolower(trim($row_list->rp_operasi)) : '';
+                        $_ro_ket  = isset($row_list->rp_operasi_ket)         ? trim($row_list->rp_operasi_ket) : '';
+                        $_ra      = isset($row_list->rp_alergi)              ? strtolower(trim($row_list->rp_alergi)) : '';
+                        $_ra_ket  = isset($row_list->rp_alergi_ket)          ? trim($row_list->rp_alergi_ket) : '';
+                        if($_rpd || $_ro || $_ra){
+                            $soap .= '<span class="cppt-flabel" style="margin-top:8px;">Riwayat Pasien</span>';
+                            $soap .= '<div class="cppt-riwayat-list">';
+                            if($_rpd){
+                                $soap .= '<div class="cppt-riwayat-item"><i class="fa fa-history" style="color:#0ea5e9;"></i><div>';
+                                $soap .= '<span class="cppt-rw-label">Riwayat Penyakit Dahulu:</span> ';
+                                $soap .= '<span class="cppt-rw-val '.($_rpd==='ada'?'ada':'tidak').'">'.ucfirst($_rpd).'</span>';
+                                if($_rpd==='ada' && $_rpd_ket) $soap .= '<div class="cppt-rw-ket">'.$_rpd_ket.'</div>';
+                                $soap .= '</div></div>';
+                            }
+                            if($_ro){
+                                $soap .= '<div class="cppt-riwayat-item"><i class="fa fa-medkit" style="color:#d97706;"></i><div>';
+                                $soap .= '<span class="cppt-rw-label">Riwayat Operasi:</span> ';
+                                $soap .= '<span class="cppt-rw-val '.($_ro==='ada'?'ada':'tidak').'">'.ucfirst($_ro).'</span>';
+                                if($_ro==='ada' && $_ro_ket) $soap .= '<div class="cppt-rw-ket">'.$_ro_ket.'</div>';
+                                $soap .= '</div></div>';
+                            }
+                            if($_ra){
+                                $soap .= '<div class="cppt-riwayat-item"><i class="fa fa-exclamation-triangle" style="color:#dc2626;"></i><div>';
+                                $soap .= '<span class="cppt-rw-label">Riwayat Alergi:</span> ';
+                                $soap .= '<span class="cppt-rw-val '.($_ra==='ada'?'ada':'tidak').'">'.ucfirst($_ra).'</span>';
+                                if($_ra==='ada' && $_ra_ket) $soap .= '<div class="cppt-rw-ket">'.$_ra_ket.'</div>';
+                                $soap .= '</div></div>';
+                            }
+                            $soap .= '</div>';
                         }
                         $soap .= '</div>';
-                    }
-                    $soap .= '</div>';
 
-                    // ── O: Objective ──
-                    $soap .= '<div class="cppt-section cppt-o">';
-                    $soap .= '<div class="cppt-title"><i class="fa fa-stethoscope"></i> O &mdash; Objective</div>';
-                    // Vital signs
-                    $has_ttv = ($row_list->tinggi_badan || $row_list->berat_badan || $row_list->tekanan_darah || $row_list->nadi || $row_list->suhu);
-                    $soap .= '<span class="cppt-flabel">Vital Sign</span><div class="cppt-ttv">';
-                    $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">TB</span><span class="cppt-ttv-val">'.($row_list->tinggi_badan ?: '—').'</span><span class="cppt-ttv-unit">cm</span></div>';
-                    $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">BB</span><span class="cppt-ttv-val">'.($row_list->berat_badan ?: '—').'</span><span class="cppt-ttv-unit">kg</span></div>';
-                    $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">TD</span><span class="cppt-ttv-val">'.($row_list->tekanan_darah ?: '—').'</span><span class="cppt-ttv-unit">mmHg</span></div>';
-                    $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">Nadi</span><span class="cppt-ttv-val">'.($row_list->nadi ?: '—').'</span><span class="cppt-ttv-unit">bpm</span></div>';
-                    $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">Suhu</span><span class="cppt-ttv-val">'.($row_list->suhu ?: '—').'</span><span class="cppt-ttv-unit">&deg;C</span></div>';
-                    $soap .= '</div>';
-                    $soap .= '<span class="cppt-flabel" style="margin-top:6px;">Pemeriksaan Fisik</span>';
-                    $soap .= '<div class="cppt-fval">'.($row_list->objective ? nl2br($row_list->objective) : '<span style="color:#94a3b8">—</span>').'</div>';
-                    // Status Lokalis
-                    $_has_lokalis = isset($row_list->rp_anatomi_tagging) && $row_list->rp_anatomi_tagging && $row_list->rp_anatomi_tagging !== '[]';
-                    if($_has_lokalis){
-                        $soap .= '<a href="#" class="rm-lokalis-btn" data-tagging="'.htmlspecialchars($row_list->rp_anatomi_tagging, ENT_QUOTES).'" data-img="'.(isset($row_list->rp_anatomi_img) ? $row_list->rp_anatomi_img : 0).'" onclick="showStatusLokalisModal(this.getAttribute(\'data-tagging\'),this.getAttribute(\'data-img\')); return false;"><i class="fa fa-map-marker"></i> Status Lokalis</a>';
-                    }
-                    $soap .= '</div>';
+                        // O: Objective
+                        $soap .= '<div class="cppt-section cppt-o">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-stethoscope"></i> O &mdash; Objective</div>';
+                        $soap .= '<span class="cppt-flabel">Vital Sign</span><div class="cppt-ttv">';
+                        $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">TB</span><span class="cppt-ttv-val">'.($row_list->tinggi_badan ?: '—').'</span><span class="cppt-ttv-unit">cm</span></div>';
+                        $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">BB</span><span class="cppt-ttv-val">'.($row_list->berat_badan ?: '—').'</span><span class="cppt-ttv-unit">kg</span></div>';
+                        $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">TD</span><span class="cppt-ttv-val">'.($row_list->tekanan_darah ?: '—').'</span><span class="cppt-ttv-unit">mmHg</span></div>';
+                        $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">Nadi</span><span class="cppt-ttv-val">'.($row_list->nadi ?: '—').'</span><span class="cppt-ttv-unit">bpm</span></div>';
+                        $soap .= '<div class="cppt-ttv-item"><span class="cppt-ttv-lbl">Suhu</span><span class="cppt-ttv-val">'.($row_list->suhu ?: '—').'</span><span class="cppt-ttv-unit">&deg;C</span></div>';
+                        $soap .= '</div>';
+                        $soap .= '<span class="cppt-flabel" style="margin-top:6px;">Pemeriksaan Fisik</span>';
+                        $soap .= '<div class="cppt-fval">'.($row_list->objective ? nl2br($row_list->objective) : '<span style="color:#94a3b8">—</span>').'</div>';
+                        $_has_lokalis = isset($row_list->rp_anatomi_tagging) && $row_list->rp_anatomi_tagging && $row_list->rp_anatomi_tagging !== '[]';
+                        if($_has_lokalis){
+                            $soap .= '<a href="#" class="rm-lokalis-btn" data-tagging="'.htmlspecialchars($row_list->rp_anatomi_tagging, ENT_QUOTES).'" data-img="'.(isset($row_list->rp_anatomi_img) ? $row_list->rp_anatomi_img : 0).'" onclick="showStatusLokalisModal(this.getAttribute(\'data-tagging\'),this.getAttribute(\'data-img\')); return false;"><i class="fa fa-map-marker"></i> Status Lokalis</a>';
+                        }
+                        $soap .= '</div>';
 
-                    // ── A: Assessment ──
-                    $soap .= '<div class="cppt-section cppt-a">';
-                    $soap .= '<div class="cppt-title"><i class="fa fa-flask"></i> A &mdash; Assessment</div>';
-                    $soap .= '<span class="cppt-flabel">Diagnosa Primer (ICD-10)</span>';
-                    $kode_icd = isset($row_list->kode_icd_diagnosa) ? $row_list->kode_icd_diagnosa : '';
-                    $soap .= '<div class="cppt-fval">'.($kode_icd ? '<strong>'.$kode_icd.'</strong> &mdash; '.$row_list->assesment : ($row_list->assesment ? nl2br($row_list->assesment) : '<span style="color:#94a3b8">—</span>')).'</div>';
-                    // Diagnosa Sekunder
-                    $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Diagnosa Sekunder</span>';
-                    $soap .= '<div style="background:#fff;border:1px solid #ddd8fe;border-radius:5px;padding:5px 8px;min-height:24px;line-height:22px;font-size:12px;">';
-                    $arr_ds = isset($row_list->diagnosa_sekunder) ? array_filter(array_map('trim', explode('|', $row_list->diagnosa_sekunder))) : [];
-                    if(count($arr_ds) > 0){
-                        foreach($arr_ds as $_ds) $soap .= '<span class="multi-typeahead"><span style="display:none">|</span><span class="text_icd_10"> '.$_ds.' </span></span>';
-                    }else{
-                        $soap .= '<span style="color:#94a3b8;font-size:12px;">Tidak ada diagnosa sekunder</span>';
-                    }
-                    $soap .= '</div>';
-                    // Prosedur ICD-9
-                    $kode9 = isset($row_list->kode_icd9) ? $row_list->kode_icd9 : '';
-                    $text9 = isset($row_list->text_icd9) ? $row_list->text_icd9 : '';
-                    $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Prosedur / Tindakan (ICD-9)</span>';
-                    $soap .= '<div class="cppt-fval">'.($kode9 ? '<strong>'.$kode9.'</strong> &mdash; '.$text9 : '<span style="color:#94a3b8">—</span>').'</div>';
-                    $soap .= '</div>';
+                        // A: Assessment
+                        $soap .= '<div class="cppt-section cppt-a">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-flask"></i> A &mdash; Assessment</div>';
+                        $soap .= '<span class="cppt-flabel">Diagnosa Primer (ICD-10)</span>';
+                        $kode_icd = isset($row_list->kode_icd_diagnosa) ? $row_list->kode_icd_diagnosa : '';
+                        $soap .= '<div class="cppt-fval">'.($kode_icd ? '<strong>'.$kode_icd.'</strong> &mdash; '.$row_list->assesment : ($row_list->assesment ? nl2br($row_list->assesment) : '<span style="color:#94a3b8">—</span>')).'</div>';
+                        $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Diagnosa Sekunder</span>';
+                        $soap .= '<div style="background:#fff;border:1px solid #ddd8fe;border-radius:5px;padding:5px 8px;min-height:24px;line-height:22px;font-size:12px;">';
+                        $arr_ds = isset($row_list->diagnosa_sekunder) ? array_filter(array_map('trim', explode('|', $row_list->diagnosa_sekunder))) : [];
+                        if(count($arr_ds) > 0){
+                            foreach($arr_ds as $_ds) $soap .= '<span class="multi-typeahead"><span style="display:none">|</span><span class="text_icd_10"> '.$_ds.' </span></span>';
+                        }else{
+                            $soap .= '<span style="color:#94a3b8;font-size:12px;">Tidak ada diagnosa sekunder</span>';
+                        }
+                        $soap .= '</div>';
+                        $kode9 = isset($row_list->kode_icd9) ? $row_list->kode_icd9 : '';
+                        $text9 = isset($row_list->text_icd9) ? $row_list->text_icd9 : '';
+                        $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Prosedur / Tindakan (ICD-9)</span>';
+                        $soap .= '<div class="cppt-fval">'.($kode9 ? '<strong>'.$kode9.'</strong> &mdash; '.$text9 : '<span style="color:#94a3b8">—</span>').'</div>';
+                        $soap .= '</div>';
 
-                    // ── P: Planning ──
-                    $soap .= '<div class="cppt-section cppt-p">';
-                    $soap .= '<div class="cppt-title"><i class="fa fa-list-ul"></i> P &mdash; Planning</div>';
-                    $soap .= '<span class="cppt-flabel">Rencana Asuhan / Anjuran Dokter</span>';
-                    $soap .= '<div class="cppt-fval">'.($row_list->planning ? nl2br($row_list->planning) : '<span style="color:#94a3b8">—</span>').'</div>';
-                    $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Resep Dokter</span>';
-                    $resep_farmasi = isset($row_list->resep_farmasi) ? $row_list->resep_farmasi : '';
-                    $soap .= '<div class="cppt-fval">'.($resep_farmasi ? nl2br($resep_farmasi) : '<span style="color:#94a3b8">—</span>').'</div>';
-                    $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Tanggal Kontrol Kembali</span>';
-                    $tgl_kontrol = (isset($row_list->tgl_kontrol_kembali) && $row_list->tgl_kontrol_kembali) ? $this->tanggal->formatDate($row_list->tgl_kontrol_kembali) : '';
-                    $cat_kontrol = isset($row_list->catatan_kontrol_kembali) ? $row_list->catatan_kontrol_kembali : '';
-                    $soap .= '<div class="cppt-fval">'.($tgl_kontrol ? $tgl_kontrol.($cat_kontrol ? ' &mdash; '.$cat_kontrol : '') : '<span style="color:#94a3b8">—</span>').'</div>';
-                    if($btn_monitoring) $soap .= '<div style="margin-top:6px;">'.$btn_monitoring.'</div>';
-                    $soap .= '</div>';
+                        // P: Planning
+                        $soap .= '<div class="cppt-section cppt-p">';
+                        $soap .= '<div class="cppt-title"><i class="fa fa-list-ul"></i> P &mdash; Planning</div>';
+                        $soap .= '<span class="cppt-flabel">Rencana Asuhan / Anjuran Dokter</span>';
+                        $soap .= '<div class="cppt-fval">'.($row_list->planning ? nl2br($row_list->planning) : '<span style="color:#94a3b8">—</span>').'</div>';
+                        $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Resep Dokter</span>';
+                        $resep_farmasi = isset($row_list->resep_farmasi) ? $row_list->resep_farmasi : '';
+                        $soap .= '<div class="cppt-fval">'.($resep_farmasi ? nl2br($resep_farmasi) : '<span style="color:#94a3b8">—</span>').'</div>';
+                        $soap .= '<span class="cppt-flabel" style="margin-top:5px;">Tanggal Kontrol Kembali</span>';
+                        $tgl_kontrol = (isset($row_list->tgl_kontrol_kembali) && $row_list->tgl_kontrol_kembali && substr($row_list->tgl_kontrol_kembali, 0, 4) !== '1900') ? $this->tanggal->formatDate($row_list->tgl_kontrol_kembali) : '';
+                        $cat_kontrol = isset($row_list->catatan_kontrol_kembali) ? $row_list->catatan_kontrol_kembali : '';
+                        $soap .= '<div class="cppt-fval">'.($tgl_kontrol ? $tgl_kontrol.($cat_kontrol ? ' &mdash; '.$cat_kontrol : '') : '<span style="color:#94a3b8">—</span>').'</div>';
+                        if($btn_monitoring) $soap .= '<div style="margin-top:6px;">'.$btn_monitoring.'</div>';
+                        $soap .= '</div>';
 
-                    if($_item->tipe == 'RJ'){
+                    } // end tipe RI / RJ
+
+                    if($row_list->tipe == 'RJ' || $row_list->tipe == 'RI'){
                         // ── e-Resep ──
                         $row_eresep = isset($eresep_data[$row_list->no_kunjungan]) ? $eresep_data[$row_list->no_kunjungan] : [];
+                        // Untuk RI: hanya tampilkan resep yang tanggalnya sama dengan tanggal CPPT,
+                        // dan hanya pada CPPT pertama di tanggal tersebut
+                        if($row_list->tipe == 'RI'){
+                            $_tgl_cppt = substr($row_list->tanggal, 0, 10);
+                            if(in_array($_tgl_cppt, $_ri_eresep_shown_dates)){
+                                // Tanggal ini sudah ditampilkan resepnya — kosongkan agar tidak muncul lagi
+                                $row_eresep = [];
+                            }else{
+                                $_row_eresep_filtered = array();
+                                foreach($row_eresep as $_kode_resep => $_val_er){
+                                    if(substr($_val_er[0]->created_date, 0, 10) === $_tgl_cppt){
+                                        $_row_eresep_filtered[$_kode_resep] = $_val_er;
+                                    }
+                                }
+                                $row_eresep = $_row_eresep_filtered;
+                                if(!empty($row_eresep)){
+                                    // Tandai tanggal ini sudah ditampilkan
+                                    $_ri_eresep_shown_dates[] = $_tgl_cppt;
+                                }
+                            }
+                        }
                         $soap .= '<div class="cppt-section cppt-r" style="margin-bottom:0;">';
                         $soap .= '<div class="cppt-title" style="color:#92400e;"><i class="fa fa-medkit"></i> e-Resep &mdash; Obat yang Diresepkan</div>';
                         if(count($row_eresep) > 0){
                             foreach($row_eresep as $_kode_resep => $_val_er){
-                                $soap .= '<div style="font-size:11px;color:#92400e;margin-bottom:4px;"><i class="fa fa-clock-o"></i> Tanggal resep: <em>'.$this->tanggal->formatDateTime($_val_er[0]->created_date).'</em></div>';
+                                $_jumlah_obat = count($_val_er);
+                                $_resep_uid   = 'resep_'.preg_replace('/[^a-zA-Z0-9]/', '_', $_kode_resep);
+                                // ── Toggle header (klik untuk show/hide detail) ──
+                                $soap .= '<div style="background:#fff;border:1px solid #fde68a;border-radius:6px;margin-bottom:6px;overflow:hidden;">';
+                                $soap .= '<div onclick="toggleResepDetail(\''.$_resep_uid.'\')" style="cursor:pointer;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;background:#fffbeb;user-select:none;">';
+                                $soap .=   '<div style="display:flex;align-items:center;gap:6px;">';
+                                $soap .=     '<i class="fa fa-file-text-o" style="color:#d97706;"></i>';
+                                $soap .=     '<span style="font-size:11px;color:#92400e;font-weight:600;"><i class="fa fa-clock-o"></i> '.$this->tanggal->formatDateTime($_val_er[0]->created_date).'</span>';
+                                $soap .=     '<span style="font-size:10px;color:#b45309;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;padding:1px 8px;">'.$_jumlah_obat.' obat</span>';
+                                $soap .=   '</div>';
+                                $soap .=   '<span id="arrow_'.$_resep_uid.'" style="color:#d97706;font-size:11px;display:inline-flex;transition:transform .2s;"><i class="fa fa-chevron-down"></i></span>';
+                                $soap .= '</div>';
+                                // ── Detail obat (tersembunyi by default) ──
+                                $soap .= '<div id="'.$_resep_uid.'" style="display:none;padding:0 8px 8px 8px;">';
                                 $soap .= '<table class="cppt-resep-table"><thead><tr><th width="28">No</th><th>Nama Obat &amp; Aturan Pakai</th></tr></thead><tbody>';
                                 $_no_er = 0;
                                 foreach($_val_er as $_ver){
@@ -678,9 +741,11 @@ class Pl_pelayanan_ri extends MX_Controller {
                                     $soap .= '</td></tr>';
                                 }
                                 $soap .= '</tbody></table>';
+                                $soap .= '</div>'; // end detail
+                                $soap .= '</div>'; // end card resep
                             }
                         }else{
-                            $soap .= '<span style="color:#94a3b8;font-size:12px;">Belum ada e-Resep pada kunjungan ini</span>';
+                            $soap .= '-';
                         }
                         $soap .= '</div>';
                         $soap .= '</div></div>';

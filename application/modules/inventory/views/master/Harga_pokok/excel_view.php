@@ -43,11 +43,11 @@
       <td><?php echo $r['nama_brg']; ?></td>
       <td><?php echo $r['nama_pabrik']; ?></td>
       <td align="center"><?php echo $r['satuan']; ?></td>
-      <td align="right"><?php echo $r['hpp_hari_ini']   > 0 ? number_format($r['hpp_hari_ini'],   0, ',', '.') : '-'; ?></td>
-      <td align="right"><?php echo $r['hm_sblm_diskon'] > 0 ? number_format($r['hm_sblm_diskon'], 0, ',', '.') : '-'; ?></td>
-      <td align="right"><?php echo $r['hm_stlh_diskon'] > 0 ? number_format($r['hm_stlh_diskon'], 0, ',', '.') : '-'; ?></td>
-      <td align="right"><?php echo $r['hpp_calc']        > 0 ? number_format($r['hpp_calc'],       0, ',', '.') : '-'; ?></td>
-      <td align="right"><?php echo $r['harga_jual_est']  > 0 ? number_format($r['harga_jual_est'], 0, ',', '.') : '-'; ?></td>
+      <td align="right"><?php echo $r['hpp_hari_ini']   > 0 ? $r['hpp_hari_ini'] : '-'; ?></td>
+      <td align="right"><?php echo $r['hm_sblm_diskon'] > 0 ? $r['hm_sblm_diskon'] : '-'; ?></td>
+      <td align="right"><?php echo $r['hm_stlh_diskon'] > 0 ? $r['hm_stlh_diskon'] : '-'; ?></td>
+      <td align="right"><?php echo $r['hpp_calc']        > 0 ? $r['hpp_calc'] : '-'; ?></td>
+      <td align="right"><?php echo $r['harga_jual_est']  > 0 ? $r['harga_jual_est'] : '-'; ?></td>
       <td align="center"><?php echo $r['updated_date']; ?></td>
     </tr>
     <?php endforeach; ?>

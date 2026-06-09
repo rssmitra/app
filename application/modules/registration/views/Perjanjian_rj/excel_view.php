@@ -1,58 +1,47 @@
-<?php 
-
-  header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-  header("Content-Disposition: attachment; filename=".'export_perjanjian_'.date('Ymd').".xls");  //File name extension was wrong
+<?php
+  header("Content-Type: application/vnd.ms-excel; charset=utf-8");
+  header("Content-Disposition: attachment; filename=export_perjanjian_" . date('Ymd') . ".xls");
   header("Expires: 0");
   header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-  header("Cache-Control: private",false);
-  
-
+  header("Cache-Control: private", false);
 ?>
-
 <html>
 <head>
-  <title>Laporan Umum</title>
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <title><?php echo $title?></title>
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 11px; }
+    table { border-collapse: collapse; width: 100%; }
+    th { background: #0369a1; color: #fff; padding: 6px 8px; text-align: left; font-size: 11px; text-transform: uppercase; }
+    td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    h3 { color: #0369a1; margin-bottom: 4px; }
+    .param { font-size: 10px; color: #64748b; margin-bottom: 12px; }
+  </style>
 </head>
 <body>
-  <div class="row">
-    <div class="col-xs-12">
+  <h3><?php echo $title?></h3>
+  <div class="param">Dicetak pada: <?php echo date('d-m-Y H:i:s')?></div>
 
-      <center><h4><?php echo $title?></h4></center>
-      <b>Parameter :</b> <i><?php echo print_r($_GET);?></i>
-
-      <table class="table">
-        <thead>
-          <tr>
-            <th>NO</th>
-            <?php 
-              foreach($fields as $field){
-                echo '<th>'.strtoupper($field->name).'</th>';
-            }?>
-          </tr>
-        </thead>
-        <tbody>
-          <?php $no = 0; foreach($data as $row_data) : $no++; ?>
-            <tr>
-              <td align="center"><?php echo $no;?></td>
-              <?php 
-              foreach($fields as $row_field){
-                  $field_name = $row_field->name;
-                  echo '<td>'.strtoupper($row_data->$field_name).'</td>';
-              }?>
-            </tr>
+  <table>
+    <thead>
+      <tr>
+        <th>NO</th>
+        <?php foreach ($fields as $field): ?>
+          <th><?php echo strtoupper($field->name)?></th>
+        <?php endforeach; ?>
+      </tr>
+    </thead>
+    <tbody>
+      <?php $no = 0; foreach ($data as $row_data): $no++; ?>
+        <tr>
+          <td align="center"><?php echo $no?></td>
+          <?php foreach ($fields as $row_field): ?>
+            <?php $fn = $row_field->name; ?>
+            <td><?php echo strtoupper($row_data->$fn)?></td>
           <?php endforeach; ?>
-        </tbody>
-      </table>
-
-    </div><!-- /.col -->
-  </div><!-- /.row -->
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
 </body>
 </html>
-
-
-
-
-
-

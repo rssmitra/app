@@ -113,6 +113,8 @@
 .cppt-rw-val.ada   { color:#dc2626; font-weight:600; }
 .cppt-rw-val.tidak { color:#16a34a; }
 .cppt-rw-ket { color:#64748b; font-size:11px; font-style:italic; margin-top:2px; }
+/* e-Resep toggle arrow saat terbuka */
+.cppt-resep-arrow-open { transform: rotate(180deg) !important; }
 /* e-Resep table */
 .cppt-resep-table {
   width: 100%;
@@ -419,6 +421,19 @@ function print_resume(no_registrasi){
   preventDefault();
   show_modal('registration/reg_pasien/view_detail_resume_medis/'+no_registrasi, 'RESUME MEDIS PASIEN');
 
+}
+
+function toggleResepDetail(id) {
+  var detail = document.getElementById(id);
+  var arrow  = document.getElementById('arrow_' + id);
+  if (!detail) return;
+  if (detail.style.display === 'none' || detail.style.display === '') {
+    detail.style.display = 'block';
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+  } else {
+    detail.style.display = 'none';
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+  }
 }
 
 </script>

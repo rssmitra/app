@@ -467,6 +467,8 @@ class Lap_hasil_so extends MX_Controller {
         $arr_harga_not_active   = array();
         $arr_harga_brg_exp      = array();
         $arr_harga_brg_will_exp = array();
+        $arr_harga_selisih      = array(); // Rp nilai selisih stok kurang
+        $arr_harga_lebih        = array(); // Rp nilai selisih stok lebih
         $no = $_POST['start'];
 
         foreach ($list as $row_list) {
@@ -488,6 +490,21 @@ class Lap_hasil_so extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->satuan_kecil.'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sebelum).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sekarang).'</div>';
+            // ── Selisih & Status SO ──────────────────────────────────────────
+            $selisih = (int)$row_list->stok_sekarang - (int)$row_list->stok_sebelum;
+            if ($selisih == 0) {
+                $sel_color  = '#2e7d32'; $sel_prefix = '';
+                $sts_label  = 'Sesuai';  $sts_bg = '#e8f5e9'; $sts_color = '#1b5e20';
+            } elseif ($selisih < 0) {
+                $sel_color  = '#c62828'; $sel_prefix = '';
+                $sts_label  = 'Kurang';  $sts_bg = '#fff3e0'; $sts_color = '#e65100';
+            } else {
+                $sel_color  = '#1565c0'; $sel_prefix = '+';
+                $sts_label  = 'Lebih';   $sts_bg = '#e3f2fd'; $sts_color = '#0d47a1';
+            }
+            $row[] = '<div class="center" style="font-weight:bold;color:'.$sel_color.';">'.$sel_prefix.number_format($selisih).'</div>';
+            $row[] = '<div class="center" style="font-weight:600;color:'.$sts_color.';background:'.$sts_bg.';border-radius:4px;padding:1px 4px;">'.$sts_label.'</div>';
+            // ────────────────────────────────────────────────────────────────
             $row[] = '<div class="center">'.number_format($row_list->will_stok_exp).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_exp).'</div>';
             $row[] = '<div align="right">'.number_format($totalr, 0, ',', '.').'</div>';
@@ -495,6 +512,10 @@ class Lap_hasil_so extends MX_Controller {
                 ? '<span style="color:red;font-weight:bold">Not Active</span>'
                 : '<span style="color:green;font-weight:bold">Active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
+            $klarifikasi = (isset($row_list->klarifikasi_stok) && $row_list->klarifikasi_stok != '')
+                ? '<span title="'.htmlspecialchars($row_list->klarifikasi_stok).'">'.htmlspecialchars($row_list->klarifikasi_stok).'</span>'
+                : '<span style="color:#aaa;font-style:italic;">-</span>';
+            $row[] = $klarifikasi;
             $row[] = $row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname);
 
             // accumulate totals using WA price
@@ -512,6 +533,14 @@ class Lap_hasil_so extends MX_Controller {
             if ($harga_sat_kecil > 0 && $row_list->will_stok_exp > 0) {
                 $arr_harga_brg_will_exp[] = round($harga_sat_kecil * $row_list->will_stok_exp);
             }
+            // Selisih / Lebih — Rp nilai qty yang berbeda dari stok sebelum
+            if ($harga_sat_kecil > 0 && $selisih != 0) {
+                if ($selisih < 0) {
+                    $arr_harga_selisih[] = round($harga_sat_kecil * abs($selisih));
+                } else {
+                    $arr_harga_lebih[] = round($harga_sat_kecil * $selisih);
+                }
+            }
 
             $data[] = $row;
         }
@@ -525,6 +554,8 @@ class Lap_hasil_so extends MX_Controller {
             'total_rp_not_aktif' => array_sum($arr_harga_not_active),
             'total_rp_exp'       => array_sum($arr_harga_brg_exp),
             'total_rp_will_exp'  => array_sum($arr_harga_brg_will_exp),
+            'total_rp_selisih'   => array_sum($arr_harga_selisih),
+            'total_rp_lebih'     => array_sum($arr_harga_lebih),
         );
         echo json_encode($output);
     }

@@ -35,6 +35,40 @@
 .lhsb-sc-nonaktif { background: linear-gradient(135deg, #64748b, #475569); }
 .lhsb-sc-exp      { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 .lhsb-sc-will_exp { background: linear-gradient(135deg, #d97706, #b45309); }
+.lhsb-sc-selisih  { background: linear-gradient(135deg, #e65100, #bf360c); }
+.lhsb-sc-lebih    { background: linear-gradient(135deg, #1565c0, #0d47a1); }
+
+/* ── Filter bar ── */
+.lhsb-filter-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+.lhsb-filter-bar label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin: 0;
+    white-space: nowrap;
+}
+.lhsb-filter-bar select {
+    height: 28px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0 6px;
+    background: #fff;
+    color: #1e293b;
+    min-width: 130px;
+}
 
 /* ── Table header ── */
 .lhsb-thead th {
@@ -70,7 +104,12 @@ $(document).ready(function() {
         bInfo:      false,
         ajax: {
             url:  $('#dt-bag-so').attr('base-url'),
-            type: 'POST'
+            type: 'POST',
+            data: function(d) {
+                d.filter_status_so  = $('#filter_status_so').val()  || '';
+                d.filter_status_brg = $('#filter_status_brg').val() || '';
+                return d;
+            }
         },
         drawCallback: function(response) {
             var d = response.json;
@@ -78,10 +117,12 @@ $(document).ready(function() {
             $('#total_hasil_so_not_aktif').text(formatMoney(d.total_rp_not_aktif));
             $('#total_hasil_so_exp').text(formatMoney(d.total_rp_exp));
             $('#total_hasil_so_will_exp').text(formatMoney(d.total_rp_will_exp));
+            $('#total_rp_selisih').text(formatMoney(d.total_rp_selisih));
+            $('#total_rp_lebih').text(formatMoney(d.total_rp_lebih));
         },
         columnDefs: [
             { targets: [-1], orderable: false },
-            { targets: [7], visible: false },   // Expired -3 Bln (disembunyikan)
+            { targets: [9], visible: false },   // Expired -3 Bln (disembunyikan)
             { aTargets: [1], sClass: 'hidden-480' },
             { aTargets: [3], sClass: 'hidden-480' }
         ],
@@ -92,6 +133,18 @@ $(document).ready(function() {
             search:      'Cari:',
             paginate:    { first: 'Pertama', last: 'Terakhir', next: '&raquo;', previous: '&laquo;' }
         }
+    });
+
+    // Filter change → reload table (use element selector, NOT global oTable —
+    // als_datatable.js overwrites oTable after this ready callback)
+    $('#filter_status_so, #filter_status_brg').on('change', function() {
+        $('#dt-bag-so').DataTable().ajax.reload();
+    });
+
+    $('#btn_reset_filter').on('click', function() {
+        $('#filter_status_so').val('');
+        $('#filter_status_brg').val('');
+        $('#dt-bag-so').DataTable().ajax.reload();
     });
 
 });
@@ -135,11 +188,37 @@ $(document).ready(function() {
         <div class="lhsb-sc-value">Rp. <span id="total_hasil_so_exp">—</span></div>
         <div class="lhsb-sc-sub">Total nilai barang kadaluarsa</div>
       </div>
-      <!-- <div class="lhsb-summary-card lhsb-sc-will_exp">
-        <div class="lhsb-sc-label"><i class="fa fa-clock-o"></i> Mendekati Expired (-3 Bln)</div>
-        <div class="lhsb-sc-value">Rp. <span id="total_hasil_so_will_exp">—</span></div>
-        <div class="lhsb-sc-sub">Total nilai barang hampir kadaluarsa</div>
-      </div> -->
+      <div class="lhsb-summary-card lhsb-sc-selisih">
+        <div class="lhsb-sc-label"><i class="fa fa-arrow-down"></i> Selisih (Kurang)</div>
+        <div class="lhsb-sc-value">Rp. <span id="total_rp_selisih">—</span></div>
+        <div class="lhsb-sc-sub">Nilai Rp stok kurang dari sistem</div>
+      </div>
+      <div class="lhsb-summary-card lhsb-sc-lebih">
+        <div class="lhsb-sc-label"><i class="fa fa-arrow-up"></i> Selisih (Lebih)</div>
+        <div class="lhsb-sc-value">Rp. <span id="total_rp_lebih">—</span></div>
+        <div class="lhsb-sc-sub">Nilai Rp stok lebih dari sistem</div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="lhsb-filter-bar">
+      <label><i class="fa fa-filter"></i> Filter:</label>
+      <label>Status SO</label>
+      <select id="filter_status_so">
+        <option value="">— Semua —</option>
+        <option value="sesuai">Sesuai</option>
+        <option value="kurang">Kurang</option>
+        <option value="lebih">Lebih</option>
+      </select>
+      <label>Status Barang</label>
+      <select id="filter_status_brg">
+        <option value="">— Semua —</option>
+        <option value="1">Aktif</option>
+        <option value="0">Tidak Aktif</option>
+      </select>
+      <button id="btn_reset_filter" class="btn btn-xs btn-default" type="button">
+        <i class="fa fa-times"></i> Reset
+      </button>
     </div>
 
     <!-- DataTable -->
@@ -149,16 +228,19 @@ $(document).ready(function() {
       <thead>
         <tr class="lhsb-thead">
           <th width="30px"  class="center"></th>
-          <th width="100px">Kode Barang</th>
+          <th width="100px">Kode</th>
           <th>Nama Barang</th>
-          <th width="110px" class="text-right">Harga Satuan Kecil</th>
+          <th width="110px" class="text-right">Harga Satuan</th>
           <th width="90px"  class="center">Satuan Kecil</th>
           <th width="100px" class="text-right">Stok Sebelum</th>
           <th width="90px"  class="text-right">Hasil SO</th>
+          <th width="80px"  class="text-right">Selisih</th>
+          <th width="85px"  class="center">Status SO</th>
           <th width="110px" class="text-right" style="display:none">Expired (-3 Bln)</th>
           <th width="90px"  class="text-right">Expired</th>
           <th width="100px" class="text-right">Total Hasil</th>
           <th width="100px" class="center">Status Barang</th>
+          <th width="220px">Klarifikasi SO</th>
           <th width="">Petugas</th>
         </tr>
       </thead>

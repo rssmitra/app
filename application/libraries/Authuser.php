@@ -382,6 +382,18 @@ final Class Authuser {
         }
     }
 
+    public function has_access($user_id, $array_role_id){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        // cek is administrator
+        $result = $db->where_in('role_id', $array_role_id)->get_where('tmp_user_has_role', array('user_id' => $user_id));
+        if($result->num_rows() > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 	
 
 }

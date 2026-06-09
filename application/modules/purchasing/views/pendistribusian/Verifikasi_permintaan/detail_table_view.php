@@ -158,8 +158,8 @@
           <td>Verifikator</td>
           <td>:
             <?php echo $this->master->get_ttd_data(($flag == 'medis')?'verifikator_m_1' : 'verifikator_nm_1','label'); ?>
-            (<?php echo $this->master->get_ttd_data('verifikator_m_1','value'); ?>)
-            <span style="color: red; font-style: italic; font-size: 11px"> &mdash; Menunggu persetujuan..</span>
+            (<?php echo $this->master->get_ttd_data(($flag == 'medis')?'verifikator_m_1' : 'verifikator_nm_1','value'); ?>)
+            <span style="color: red; font-style: italic; font-size: 11px"> &mdash; Menunggu persetujuanxx..</span>
             <input type="hidden" name="pemeriksa" id="verifikator_m_1" value="<?php echo $this->master->get_ttd_data(($flag == 'medis')?'verifikator_m_1' : 'verifikator_nm_1','label'); ?>">
           </td>
         </tr>

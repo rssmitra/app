@@ -6,7 +6,7 @@ class Dt_hasil_so_model extends CI_Model {
 	var $table = 'tc_stok_opname';
 	var $table_nm = 'tc_stok_opname_nm';
 	var $column = array('nama_brg');
-	var $select = 'mt_bagian.kode_bagian, nama_bagian, nama_brg, stok_sebelum, stok_sekarang, tgl_stok_opname, nama_petugas, harga_pembelian_terakhir, set_status_aktif, stok_exp, will_stok_exp';
+	var $select = 'mt_bagian.kode_bagian, nama_bagian, nama_brg, stok_sebelum, stok_sekarang, tgl_stok_opname, nama_petugas, harga_pembelian_terakhir, set_status_aktif, stok_exp, will_stok_exp, status_so';
 	var $order = array('nama_brg' => 'ASC');
 
 	public function __construct()
@@ -21,6 +21,7 @@ class Dt_hasil_so_model extends CI_Model {
 		
 		$this->db->select($join_t_brg.'.harga_beli');
 		$this->db->select($this->select);
+		$this->db->select('a.klarifikasi_stok');
 		$this->db->select(''.$join_t_brg.'.kode_brg');
 		$this->db->select(''.$join_t_brg.'.satuan_besar');
 		$this->db->select(''.$join_t_brg.'.satuan_kecil');
@@ -33,12 +34,28 @@ class Dt_hasil_so_model extends CI_Model {
 
 	private function _get_datatables_query()
 	{
-		
+
 		$this->_main_query();
 
+		// ── Custom filters ────────────────────────────────────────────────────
+		if (!empty($_POST['filter_status_so'])) {
+			$fs = $_POST['filter_status_so'];
+			if ($fs === 'sesuai') {
+				$this->db->where('a.stok_sekarang = a.stok_sebelum', NULL, FALSE);
+			} elseif ($fs === 'kurang') {
+				$this->db->where('a.stok_sekarang < a.stok_sebelum', NULL, FALSE);
+			} elseif ($fs === 'lebih') {
+				$this->db->where('a.stok_sekarang > a.stok_sebelum', NULL, FALSE);
+			}
+		}
+		if (isset($_POST['filter_status_brg']) && $_POST['filter_status_brg'] !== '') {
+			$this->db->where('a.set_status_aktif', (int)$_POST['filter_status_brg']);
+		}
+		// ─────────────────────────────────────────────────────────────────────
+
 		$i = 0;
-	
-		foreach ($this->column as $item) 
+
+		foreach ($this->column as $item)
 		{
 			if($_POST['search']['value'])
 				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
