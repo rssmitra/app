@@ -230,8 +230,12 @@ function selectPatient(noKunjungan, noRegistrasi, namaPasien, noMr, penjamin, tu
     $('#ttv_audit_petugas').text(petugasText);
     $('#ttv_audit_waktu').text(waktuText);
     $('#ttv-audit-banner').show();
+    $('#ttv_log_petugas').text(petugasText);
+    $('#ttv_log_waktu').text(waktuText);
+    $('#ttv-log-info').show();
   } else {
     $('#ttv-audit-banner').hide();
+    $('#ttv-log-info').hide();
   }
 
   // Show form area
@@ -944,6 +948,35 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
     min-width: 90px; color: #3b82f6; font-weight: 600; display: flex; align-items: center; gap: 4px;
   }
   .ttv-audit-val { color: #0f172a; font-weight: 500; }
+
+  /* ── TTV Log Strip (before save button) ───────────────────────── */
+  .ttv-log-strip {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    margin: 0 16px 10px;
+    padding: 7px 12px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #86efac;
+    border-left: 3px solid #22c55e;
+    border-radius: 6px;
+    font-size: 11.5px;
+  }
+  .ttv-log-label {
+    font-weight: 700; color: #15803d;
+    display: flex; align-items: center; gap: 4px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .ttv-log-label i { font-size: 11px; }
+  .ttv-log-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 9px;
+    background: #fff;
+    border: 1px solid #86efac;
+    border-radius: 20px;
+    color: #166534; font-weight: 600;
+    font-size: 11px; white-space: nowrap;
+  }
+  .ttv-log-chip i { color: #16a34a; font-size: 10px; }
+  .ttv-log-sep { color: #86efac; font-weight: 700; font-size: 14px; }
 </style>
 
 <div id="ttv-wrap">
@@ -1091,24 +1124,6 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
             <i class="fa fa-heartbeat"></i> Form Tanda-Tanda Vital (TTV)
           </div>
 
-          <!-- Audit Banner: tampil jika TTV sudah terisi -->
-          <div id="ttv-audit-banner" style="display:none">
-            <div class="ttv-audit-banner">
-              <div class="ttv-audit-icon"><i class="fa fa-info-circle"></i></div>
-              <div class="ttv-audit-body">
-                <div class="ttv-audit-title">TTV Sudah Diinput</div>
-                <div class="ttv-audit-row">
-                  <span class="ttv-audit-lbl"><i class="fa fa-user-md"></i> Petugas</span>
-                  <span class="ttv-audit-val" id="ttv_audit_petugas">-</span>
-                </div>
-                <div class="ttv-audit-row">
-                  <span class="ttv-audit-lbl"><i class="fa fa-clock-o"></i> Waktu Input</span>
-                  <span class="ttv-audit-val" id="ttv_audit_waktu">-</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div class="ttv-form-grid">
             <div class="ttv-input-group">
               <div class="ttv-input-label">
@@ -1187,6 +1202,24 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
                   <span class="ttv-iter-pill-text">3x</span>
                 </label>
               </div>
+            </div>
+          </div>
+
+          <!-- Informasi log waktu dan petugas -->
+          <div id="ttv-log-info" style="display:none">
+            <div class="ttv-log-strip">
+              <span class="ttv-log-label">
+                <i class="fa fa-history"></i> Update Terakhir
+              </span>
+              <span class="ttv-log-chip">
+                <i class="fa fa-user-md"></i>
+                <span id="ttv_log_petugas">-</span>
+              </span>
+              <span class="ttv-log-sep">&middot;</span>
+              <span class="ttv-log-chip">
+                <i class="fa fa-clock-o"></i>
+                <span id="ttv_log_waktu">-</span>
+              </span>
             </div>
           </div>
 
