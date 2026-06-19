@@ -86,44 +86,47 @@ class Distribusi_permintaan extends MX_Controller {
             $row[] = '';
             $row[] = $row_list->id_tc_permintaan_inst;
             
-            $btn_rollback = '';
             // === KOLOM ACTION : DISTRIBUSI ===
-            if ($row_list->tgl_input_terima == null && $row_list->yg_terima == null){
-                $btn_rollback = '<a href="javascript:void(0)" onclick="rollbackStatus(\''.$row_list->id_tc_permintaan_inst.'\',\''.$_GET['flag'].'\')" 
-                class="label label-xs label-danger" style="width:100%">
-                Rollback
-                </a>';
-            }
+            $flag_param  = $this->db->escape_str($_GET['flag']);
+            $id_perm     = $row_list->id_tc_permintaan_inst;
+            $url_dist    = base_url() . 'purchasing/pendistribusian/Pengiriman_unit/form/' . $id_perm . '?flag=' . $flag_param;
 
-            if ($row_list->total_diterima == 0) {
+            $btn_dist    = '<a href="#" onclick="getMenu(\'' . $url_dist . '\')"
+                              class="label label-xs label-primary" style="display:block;margin-bottom:3px">
+                              <i class="fa fa-paper-plane"></i> Distribusi
+                           </a>';
+            $btn_partial = '<a href="#" onclick="getMenu(\'' . $url_dist . '\')"
+                              class="label label-xs label-warning" style="display:block;margin-bottom:3px">
+                              <i class="fa fa-paper-plane"></i> Distribusi (Partial)
+                           </a>';
+            $btn_rollback = '<a href="javascript:void(0)"
+                               onclick="rollbackStatus(\'' . $id_perm . '\',\'' . $flag_param . '\')"
+                               class="label label-xs label-danger" style="display:block">
+                               <i class="fa fa-undo"></i> Rollback
+                             </a>';
 
-            // belum ada penerimaan sama sekali
-            $row[] = '<div class="center">
-                <a href="#" onclick="getMenu(\''.base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag'].'\')" 
-                   class="label label-xs label-primary" style="width:100%">
-                   Distribusi
-                </a>
+            if ($row_list->tgl_input_terima != null && $row_list->yg_terima != null) {
 
-                '.$btn_rollback.'
+                // STATUS: Selesai — semua sudah diterima
+                $row[] = '<div class="center">
+                    <i class="fa fa-check-circle" style="color:#15803d;font-size:16px" title="Selesai"></i>
+                  </div>';
 
-              </div>';
+            } elseif ($row_list->total_diterima > 0 && $row_list->total_diterima < $row_list->total_permintaan) {
 
-            } elseif ($row_list->total_diterima < $row_list->total_permintaan) {
+                // STATUS: Dikirim sebagian (partial) — masih bisa distribusi lanjutan
+                $row[] = '<div class="center">' . $btn_partial . '</div>';
 
-            // sudah sebagian
-            $row[] = '<div class="center">
-                <a href="#" onclick="getMenu(\''.base_url().'purchasing/pendistribusian/Pengiriman_unit/form/'.$row_list->id_tc_permintaan_inst.'?flag='.$_GET['flag'].'\')" 
-                   class="label label-xs label-warning" style="width:100%">
-                   Distribusi (Partial)
-                </a>
-              </div>';
+            } elseif ($row_list->tgl_pengiriman != null && $row_list->tgl_input_terima == null && $row_list->yg_terima == null) {
+
+                // STATUS: Belum diterima user — sudah dikirim, menunggu konfirmasi penerimaan
+                $row[] = '<div class="center">' . $btn_rollback . '</div>';
 
             } else {
 
-            // sudah full
-            $row[] = '<div class="center">
-                <i class="fa fa-check green bigger-120"></i>
-              </div>';
+                // STATUS: Belum dikirim — tampilkan tombol distribusi dan rollback
+                $row[] = '<div class="center">' . $btn_dist . $btn_rollback . '</div>';
+
             }
 
             $row[] = '<div class="center">'.$row_list->id_tc_permintaan_inst.'</div>';

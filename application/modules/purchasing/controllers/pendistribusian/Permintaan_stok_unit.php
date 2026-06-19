@@ -316,7 +316,7 @@ class Permintaan_stok_unit extends MX_Controller {
                 'flag' => $_POST['flag'],
                 'kode_bagian' => $kode_bagian,
                 'flag_form' => isset($_POST['flag_form'])?$_POST['flag_form']:'',
-                'is_bhp' => isset($_POST['is_bhp'])?$_POST['is_bhp']:'',
+                'is_bhp' => (isset($_POST['is_bhp']) && intval($_POST['is_bhp']) === 1) ? 1 : 0,
                 'is_restock' => isset($_POST['restock'])?$_POST['restock']:1,
             );
             // print_r($dataexc);die;

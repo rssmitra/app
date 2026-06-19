@@ -291,7 +291,7 @@ class Pengiriman_unit_model extends CI_Model {
 		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 		$kode_gudang = ($flag=='non_medis')?'070101':'060201';
 
-		$this->db->select('a.id_tc_permintaan_inst_det, e.kode_bagian_minta as kode_bagian, CAST(jumlah_permintaan as INT) as qty, jumlah_penerimaan , a.kode_brg, c.nama_brg, c.content as rasio, c.satuan_kecil as satuan, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_gudang, g.nama_bagian, CAST(c.harga_beli as INT) as harga, CAST(e.catatan as NVARCHAR(1000)) as catatan, e.tgl_acc, e.acc_by, e.status_acc, e.no_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, h.nama_brg as brg_revisi, CAST(a.rev_qty as INT) as qty_revisi, a.is_bhp, a.rev_kode_brg, CAST(a.rev_qty as INT) as rev_qty, a.status_verif');
+		$this->db->select('a.id_tc_permintaan_inst_det, e.kode_bagian_minta as kode_bagian, CAST(jumlah_permintaan as INT) as qty, jumlah_penerimaan , a.kode_brg, c.nama_brg, c.content as rasio, c.satuan_kecil as satuan, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_gudang, g.nama_bagian, CAST(c.harga_beli as INT) as harga, CAST(e.catatan as NVARCHAR(1000)) as catatan, e.tgl_acc, e.acc_by, e.status_acc, e.no_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, h.nama_brg as brg_revisi, CAST(a.rev_qty as INT) as qty_revisi, a.is_bhp, a.rev_kode_brg, CAST(a.rev_qty as INT) as rev_qty, a.status_verif, a.jml_acc_atasan');
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
 		$this->db->join($table.' e', 'e.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'left');
@@ -300,9 +300,10 @@ class Pengiriman_unit_model extends CI_Model {
 		$this->db->join($mt_barang.' h', 'h.kode_brg=a.rev_kode_brg', 'left');
 		$id = (is_array($id_tc_permintaan_inst_det)) ? implode(',', $id_tc_permintaan_inst_det) : $id_tc_permintaan_inst_det ;
 		$this->db->where('a.id_tc_permintaan_inst_det IN ('.$id.')');
-		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian, CAST(c.harga_beli as INT), CAST(e.catatan as NVARCHAR(1000)), e.no_acc, e.tgl_acc, e.acc_by, e.status_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, h.nama_brg, a.rev_qty, a.is_bhp, a.rev_kode_brg, a.status_verif');
+		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_minta, jumlah_permintaan, jumlah_penerimaan , a.kode_brg, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian, CAST(c.harga_beli as INT), CAST(e.catatan as NVARCHAR(1000)), e.no_acc, e.tgl_acc, e.acc_by, e.status_acc, e.yg_terima, e.tgl_pengiriman, e.yg_serah, e.nomor_pengiriman, e.tgl_input_terima, h.nama_brg, a.rev_qty, a.is_bhp, a.rev_kode_brg, a.status_verif, a.jml_acc_atasan');
 		$this->db->order_by('c.nama_brg ASC');
 		$cart_data = $this->db->get()->result();
+		// echo "<pre>";print_r($this->db->last_query());die;
 		return $cart_data;
 
 	}

@@ -77,6 +77,7 @@ class E_resep_rj extends MX_Controller {
         }
         $data = array();
         $no = $_POST['start'];
+        // echo '<pre>';print_r($list);die;
         foreach ($list as $row_list) {
             $no++;
             $row = array();
@@ -84,14 +85,12 @@ class E_resep_rj extends MX_Controller {
             $row[] = '';
             $row[] = $row_list->kode_pesan_resep;
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$row_list->tipe_pelayanan."'".')" class="label label-primary">'.$row_list->kode_pesan_resep.'</a></div>';
-            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $jenis_resep = ($row_list->jenis_resep == 'prb')?'<span class="red">PRB</span>':'<span class="green">NON PRB</span>';
-            $tipe_layan = ($row_list->tipe_pelayanan == 'RI')?'<span style="font-weight: bold; color: blue">[RI]</span>':'<span style="font-weight: bold; color: black">[RJ]</span>';
-            $row[] = '<div class="center">'.$tipe_layan.'<br><b>'.$jenis_resep.'</b>  </div>';
-            $row[] = '<div class="center"><b>'.$row_list->no_mr.'</b></div>';
-            $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = $row_list->nama_pegawai;
-            $row[] = ucwords($row_list->nama_bagian);
+            $iter = ($row_list->resep_iter > 0) ? '<span class="red" style="font-weight: bold;">ITERASI '.$row_list->resep_iter.' x</span>' : '';
+            $tipe_layan = ($row_list->tipe_pelayanan == 'RI')?'<span style="font-weight: bold; color: blue">RI</span>':'<span style="font-weight: bold; color: black">RJ</span>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'<br><b>'.$tipe_layan.' - '.$jenis_resep.'</b><br>'.$iter.'</div>';
+            $row[] = '<div class="left"><b>'.$row_list->no_mr.'</b><br>'.strtoupper($row_list->nama_pasien).'</div>';
+            $row[] = $row_list->nama_pegawai.'<br>'. ucwords($row_list->nama_bagian);
             $penjamin = (!empty($row_list->nama_perusahaan))?$row_list->nama_perusahaan:$row_list->nama_kelompok;
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
             $row[] = ucwords($penjamin).$no_sep;

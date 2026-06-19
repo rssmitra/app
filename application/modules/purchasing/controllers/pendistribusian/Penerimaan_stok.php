@@ -276,69 +276,172 @@ class Penerimaan_stok extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pengiriman_unit->get_cart_data();
-        // echo '<pre>';print_r($list);die;
-        
-        $data = array();
+
+        $data      = array();
         $arr_count = array();
-        $no=0;
+        $no        = 0;
+
+        // ── Batch queries: distribusi terakhir & transaksi pelayanan ──────────
+        $dist_map  = [];
+        $trans_map = [];
+
+        if (!empty($list)) {
+            $kode_brgs   = array_unique(array_map(function($r){ return $r->kode_brg; }, $list));
+            $kode_bagian = $list[0]->kode_bagian;
+            $flag        = $this->input->get('flag') ?: 'medis';
+            $tbl         = ($flag === 'non_medis') ? 'tc_permintaan_inst_nm'     : 'tc_permintaan_inst';
+            $tbl_det     = ($flag === 'non_medis') ? 'tc_permintaan_inst_nm_det' : 'tc_permintaan_inst_det';
+
+            $brgs_esc = array_map([$this->db, 'escape_str'], $kode_brgs);
+            $brgs_in  = "'".implode("','", $brgs_esc)."'";
+            $bag_esc  = $this->db->escape_str($kode_bagian);
+
+            // 1. Distribusi terakhir yang sudah dikirim per kode_brg ke unit ini
+            $sql_dist = "
+                SELECT kode_brg, tgl_pengiriman, jumlah_penerimaan as jumlah_kirim
+                FROM (
+                    SELECT b.kode_brg, a.tgl_pengiriman, b.jumlah_penerimaan,
+                           ROW_NUMBER() OVER (PARTITION BY b.kode_brg ORDER BY a.tgl_pengiriman DESC) AS rn
+                    FROM $tbl a
+                    INNER JOIN $tbl_det b ON b.id_tc_permintaan_inst = a.id_tc_permintaan_inst
+                    WHERE a.kode_bagian_minta = '$bag_esc'
+                      AND b.kode_brg IN ($brgs_in)
+                      AND (a.status_batal IS NULL OR a.status_batal != 1)
+                      AND a.tgl_pengiriman IS NOT NULL
+                      AND b.jumlah_penerimaan > 0
+                ) t WHERE rn = 1
+            ";
+            foreach ($this->db->query($sql_dist)->result() as $r) {
+                $dist_map[$r->kode_brg] = $r;
+            }
+
+            // 2. Jumlah pasien & mutasi sejak distribusi terakhir s/d hari ini
+            $sql_trans = "
+                SELECT t.kode_barang,
+                       COUNT(DISTINCT t.no_kunjungan)       AS jml_pasien,
+                       SUM(CAST(t.jumlah AS FLOAT))         AS jml_mutasi,
+                       CONVERT(VARCHAR(10), dist.tgl_dist_terakhir, 103) AS tgl_mulai
+                FROM tc_trans_pelayanan t
+                INNER JOIN (
+                    SELECT b.kode_brg,
+                           MAX(a.tgl_pengiriman) AS tgl_dist_terakhir
+                    FROM {$tbl} a
+                    INNER JOIN {$tbl_det} b ON b.id_tc_permintaan_inst = a.id_tc_permintaan_inst
+                    WHERE a.kode_bagian_minta = '$bag_esc'
+                      AND b.kode_brg IN ($brgs_in)
+                      AND (a.status_batal IS NULL OR a.status_batal != 1)
+                      AND a.tgl_pengiriman IS NOT NULL
+                      AND b.jumlah_kirim > 0
+                    GROUP BY b.kode_brg
+                ) dist ON dist.kode_brg = t.kode_barang
+                       AND t.tgl_transaksi >= dist.tgl_dist_terakhir
+                WHERE t.kode_barang IN ($brgs_in)
+                  AND t.kode_bagian  = '$bag_esc'
+                  AND t.tgl_transaksi <= GETDATE()
+                GROUP BY t.kode_barang, dist.tgl_dist_terakhir
+            ";
+            foreach ($this->db->query($sql_trans)->result() as $r) {
+                $trans_map[$r->kode_barang] = $r;
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
         foreach ($list as $row_list) {
             $no++;
             $row = array();
 
-            if($row_list->status_verif == 1){
-                if($row_list->jumlah_penerimaan > 0){
-                    $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
-                }else{
-                    if($row_list->jumlah_kirim > 0){
-                        $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_permintaan_inst_det.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                      </div>'; 
-                      $arr_count[] = 1; 
-                    }else{
-                        $row[] = '<div class="center"><i class="fa fa-times red"></i></div>';
-                    }   
-                }
-                
-            }else{
-                $row[] = '<div class="center"><i class="fa fa-times red"></i></div>';
-            }
-            
-            $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="left">'.$row_list->kode_brg.'</div>';
-            $nama_brg = ($row_list->brg_revisi == null) ? $row_list->nama_brg : '<s style="color: red">'.$row_list->nama_brg.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->brg_revisi;
-            $qty = ($row_list->qty_revisi == null) ? $row_list->qty : '<s style="color: red">'.$row_list->qty.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->qty_revisi;
+            $stok_aktual = (!empty($row_list->stok_gdg_revisi))
+                ? intval($row_list->stok_gdg_revisi)
+                : intval($row_list->jumlah_stok_gudang);
 
-            $stok_gudang = ($row_list->stok_gdg_revisi == null) ? $row_list->jumlah_stok_gudang : '<s style="color: red">'.$row_list->jumlah_stok_gudang.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->stok_gdg_revisi;
+            if ($row_list->status_verif == 1) {
+                if ($row_list->jumlah_penerimaan > 0) {
+                    // Sudah diterima
+                    $row[] = '<div class="center"><i class="fa fa-check" style="color:#15803d"></i></div>';
+                } else {
+                    if ($row_list->jumlah_kirim > 0) {
+                        // Belum diterima, sudah dikirim — tampilkan checkbox
+                        $row[] = '<div class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" name="selected_id[]"
+                                       value="'.$row_list->id_tc_permintaan_inst_det.'"
+                                       data-nama="'.htmlspecialchars($row_list->nama_brg, ENT_QUOTES).'" />
+                                <span class="lbl"></span>
+                            </label>
+                          </div>';
+                        $arr_count[] = 1;
+                    } else {
+                        $row[] = '<div class="center"><i class="fa fa-times" style="color:#c0392b"></i></div>';
+                    }
+                }
+            } else {
+                $row[] = '<div class="center"><i class="fa fa-times" style="color:#c0392b"></i></div>';
+            }
+
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="left" style="font-size:11px">'.$row_list->kode_brg.'</div>';
+
+            $nama_brg = ($row_list->brg_revisi == null)
+                ? $row_list->nama_brg
+                : '<s style="color:#c0392b">'.$row_list->nama_brg.'</s> <i class="fa fa-arrow-right" style="color:#888"></i> <b>'.$row_list->brg_revisi.'</b>';
+            $qty = ($row_list->qty_revisi == null)
+                ? $row_list->qty
+                : '<s style="color:#c0392b">'.$row_list->qty.'</s> <i class="fa fa-arrow-right" style="color:#888"></i> <b>'.$row_list->qty_revisi.'</b>';
+            $stok_gudang = ($row_list->stok_gdg_revisi == null)
+                ? number_format($row_list->jumlah_stok_gudang)
+                : '<s style="color:#c0392b">'.number_format($row_list->jumlah_stok_gudang).'</s> <i class="fa fa-arrow-right" style="color:#888"></i> <b>'.number_format($row_list->stok_gdg_revisi).'</b>';
+
             $row[] = '<div class="left">'.$nama_brg.'</div>';
             $row[] = '<div class="center">'.$row_list->satuan.'</div>';
-            $row[] = '<div class="center">'.$row_list->jumlah_stok_sebelumnya.'</div>';
-            $row[] = '<div class="center">'.$qty.'</div>';
-            $row[] = '<div class="center">'.$row_list->jml_acc_atasan.'</div>';
             $row[] = '<div class="center">'.$stok_gudang.'</div>';
-            $row[] = '<div class="center">'.$row_list->keterangan_verif.'</div>';
-            $row[] = '<div style="text-align: right">'.number_format($row_list->harga).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->jumlah_stok_sebelumnya).'</div>';
+            $row[] = '<div class="center">'.$qty.'</div>';
+            $row[] = '<div class="center"><b>'.$row_list->jml_acc_atasan.'</b></div>';
 
-            // if($row_list->status_verif == 1){
-            //     if($row_list->jumlah_penerimaan > 0){
-            //         $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
-            //     }else{
-            //         $row[] = '<div style="text-align: center"><a class="label label-xs label-success" onclick="edit_brg('.$row_list->id_tc_permintaan_inst_det.', '."'Penyesuaian Permintaan Barang x Distribusi'".')" href="#"><span><i class="fa fa-pencil"></i></span></a></div>';
-            //     }
-            // }else{
-            //     $row[] = '<div class="center">-</div>';
-            // }
+            // ── Kolom: Jml Dikirim (read-only) ─────────────────────────────
+            $row[] = '<div class="center" style="font-weight:700;color:#1a4f8a">'
+                   . ($row_list->jumlah_kirim > 0
+                        ? number_format($row_list->jumlah_kirim)
+                        : '<span style="color:#94a3b8">—</span>')
+                   . '</div>';
+            // ──────────────────────────────────────────────────────────────
 
-            
-                  
+            // ── Kolom: Distribusi Terakhir ──────────────────────────────────
+            if (isset($dist_map[$row_list->kode_brg])) {
+                $d     = $dist_map[$row_list->kode_brg];
+                $tgl_d = date('d/m/Y', strtotime($d->tgl_pengiriman));
+                $row[] = '<div class="center" style="font-size:11px;line-height:1.5">'
+                       . '<div style="color:#1a4f8a;font-weight:700">'.$tgl_d.'</div>'
+                       . '<div style="color:#555">'.number_format($d->jumlah_kirim).' '.$row_list->satuan.'</div>'
+                       . '</div>';
+            } else {
+                $row[] = '<div class="center" style="color:#94a3b8;font-size:11px">—</div>';
+            }
+            // ── Kolom: Jml Pasien & Mutasi (sejak distribusi terakhir) ─────
+            if (isset($trans_map[trim($row_list->kode_brg)])) {
+                $t        = $trans_map[trim($row_list->kode_brg)];
+                $tgl_hari = date('d/m/Y');
+                $row[] = '<div class="center" style="font-size:11px;line-height:1.6">'
+                       . '<div><span style="color:#15803d;font-weight:700">'.intval($t->jml_pasien).'</span>'
+                       . ' <span style="color:#777;font-size:10px">pasien</span></div>'
+                       . '<div><span style="color:#1a4f8a;font-weight:700">'.number_format($t->jml_mutasi).'</span>'
+                       . ' <span style="color:#777;font-size:10px">mutasi</span></div>'
+                       . '<div style="color:#94a3b8;font-size:10px;margin-top:2px">'.$t->tgl_mulai.' &ndash; '.$tgl_hari.'</div>'
+                       . '</div>';
+            } else {
+                $row[] = '<div class="center" style="color:#94a3b8;font-size:11px">—<br>'
+                       . '<span style="font-size:10px">Belum ada<br>distribusi</span></div>';
+            }
+            // ───────────────────────────────────────────────────────────────
+
+            $row[] = '<div class="center" style="font-size:11px">'.$row_list->keterangan_verif.'</div>';
+
             $data[] = $row;
         }
 
         $output = array(
             "total_belum_diterima" => array_sum($arr_count),
-            "data" => $data,
+            "data"                 => $data,
         );
         //output to json format
         echo json_encode($output);

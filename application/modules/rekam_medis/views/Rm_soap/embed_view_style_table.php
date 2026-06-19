@@ -114,6 +114,32 @@
   .emr-link:hover { text-decoration: underline; }
   .dash { color: #94a3b8; font-size: 11px; }
 
+  /* ── E-Resep accordion ── */
+  .er-acc-hdr {
+    display: -webkit-box; display: -ms-flexbox; display: flex;
+    -webkit-box-align: center; -ms-flex-align: center; align-items: center;
+    gap: 4px;
+    background: #e0f2fe; border: 1px solid #bae6fd;
+    border-radius: 4px; padding: 3px 7px;
+    font-size: 10px; font-weight: 700; color: #0369a1;
+    cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+    margin-bottom: 2px; width: 100%;
+  }
+  .er-acc-hdr:hover { background: #bae6fd; }
+  .er-acc-count {
+    margin-left: auto; font-weight: 600;
+    background: #0369a1; color: #fff;
+    border-radius: 10px; padding: 0 6px; font-size: 9px;
+  }
+  .er-acc-arrow { font-size: 9px; color: #0369a1; -ms-flex-negative: 0; flex-shrink: 0; }
+  .er-acc-body {
+    display: none;
+    padding: 3px 0 3px 6px;
+    border-left: 2px solid #bae6fd;
+    margin-bottom: 4px;
+  }
+  .er-acc-body.open { display: block; }
+
   /* ── Empty state ── */
   .empty-state { text-align: center; padding: 48px 16px; color: #94a3b8; }
   .empty-state .icon { font-size: 36px; margin-bottom: 8px; }
@@ -200,14 +226,11 @@
     <thead>
       <tr>
         <th style="width:40px;text-align:center;">No</th>
-        <th style="width:120px;">Tanggal</th>
-        <th style="width:140px;">PPA</th>
+        <th style="width:120px;">Tanggal & PPA</th>
         <th style="min-width:170px;">Subjective</th>
         <th style="min-width:170px;">Objective</th>
         <th style="min-width:170px;">Assesment</th>
         <th style="min-width:170px;">Planning</th>
-        <th style="min-width:160px;">Eresep</th>
-        <th style="min-width:160px;">Penunjang</th>
         <th style="min-width:130px;">File EMR</th>
       </tr>
     </thead>
@@ -248,15 +271,13 @@
         <div style="font-size:11px;color:#1a4f8a;font-weight:600;margin-top:3px;">
           <?php echo $this->tanggal->formatDateTime($row->tanggal); ?>
         </div>
-      </td>
-
-      <!-- PPA -->
-      <td>
+        
         <small style="color:#94a3b8;display:block;"><?php echo strtoupper(htmlspecialchars($row->ppa)); ?></small>
         <span style="font-weight:600;"><?php echo htmlspecialchars($row->nama_ppa); ?></span>
         <?php if ($row->kode_icd_diagnosa): ?>
           <div style="margin-top:4px;">
             <span class="diagnosa-chip"><?php echo htmlspecialchars($row->kode_icd_diagnosa); ?></span>
+            
           </div>
         <?php endif; ?>
       </td>
@@ -345,10 +366,7 @@
             <?php if ($row->jumlah_iter): ?> &times; <?php echo $row->jumlah_iter; ?><?php endif; ?>
           </div>
         <?php endif; ?>
-      </td>
-
-      <!-- E-Resep -->
-      <td>
+        <!-- eresep accordion -->
         <?php if (!empty($map_eresep[$kunjungan_key])): ?>
           <?php
             $er_by_trans = array();
@@ -359,51 +377,48 @@
           ?>
           <?php foreach ($er_by_trans as $trans_key => $ers):
             $er_total = count($ers);
-            $er_extra = $er_total - 1;
+            $acc_id   = 'eracc_' . $idx . '_' . preg_replace('/[^a-z0-9]/i', '_', $trans_key);
           ?>
-            <div class="er-group" style="margin-bottom:5px;">
-              <span style="font-size:10px;font-weight:700;color:#0ea5e9;"><?php echo htmlspecialchars($trans_key); ?></span>
-              <?php if (!empty($ers[0]->tgl_trans)): ?>
-                <span style="font-size:10px;color:#94a3b8;"> &mdash; <?php echo $this->tanggal->formatDate($ers[0]->tgl_trans); ?></span>
-              <?php endif; ?>
-              <ol style="padding-left:14px;margin:3px 0 0;">
-                <?php foreach ($ers as $er_i => $er): ?>
-                  <li class="<?php echo ($er_i > 0) ? 'er-extra' : ''; ?>"
-                      style="font-size:11px;margin-bottom:3px;<?php echo ($er_i > 0) ? 'display:none;' : ''; ?>">
-                    <span class="drug-name"><?php echo strtoupper(htmlspecialchars($er->nama_brg)); ?></span>
-                    <?php if ($er->jml_dosis && $er->jml_dosis_obat): ?>
-                      <br>
-                      <span class="drug-dose">
-                        <?php echo $er->jml_dosis; ?> &times; <?php echo $er->jml_dosis_obat; ?>
-                        <?php echo htmlspecialchars($er->satuan_obat); ?>
-                        &mdash; <?php echo htmlspecialchars($er->aturan_pakai); ?>
-                        <?php if ($er->jml_pesan): ?>
-                          (Qty: <?php echo $er->jml_pesan; ?> <?php echo htmlspecialchars($er->satuan_obat); ?>)
-                        <?php endif; ?>
-                      </span>
-                    <?php elseif ($er->aturan_pakai): ?>
-                      <br><span class="drug-dose"><?php echo htmlspecialchars($er->aturan_pakai); ?></span>
-                    <?php endif; ?>
-                    <?php if ($er->keterangan): ?>
-                      <br><span style="font-size:10px;color:#94a3b8;"><?php echo htmlspecialchars($er->keterangan); ?></span>
-                    <?php endif; ?>
-                  </li>
-                <?php endforeach; ?>
-              </ol>
-              <?php if ($er_extra > 0): ?>
-                <button class="btn-toggle" onclick="toggleEresep(this)" data-extra="<?php echo $er_extra; ?>">
-                  +<?php echo $er_extra; ?> obat lainnya &#8595;
-                </button>
-              <?php endif; ?>
+            <div class="er-group" style="margin-bottom:3px;">
+              <div class="er-acc-hdr" onclick="toggleErAcc(this)" data-target="<?php echo $acc_id; ?>">
+                <span><?php echo htmlspecialchars($trans_key); ?></span>
+                <?php if (!empty($ers[0]->tgl_trans)): ?>
+                  <span style="color:#64748b;font-weight:400;">&mdash; <?php echo $this->tanggal->formatDate($ers[0]->tgl_trans); ?></span>
+                <?php endif; ?>
+                <span class="er-acc-count"><?php echo $er_total; ?> obat</span>
+                <span class="er-acc-arrow">&#9660;</span>
+              </div>
+              <div class="er-acc-body" id="<?php echo $acc_id; ?>">
+                <ol style="padding-left:14px;margin:3px 0 0;">
+                  <?php foreach ($ers as $er): ?>
+                    <li style="font-size:11px;margin-bottom:3px;">
+                      <span class="drug-name"><?php echo strtoupper(htmlspecialchars($er->nama_brg)); ?></span>
+                      <?php if ($er->jml_dosis && $er->jml_dosis_obat): ?>
+                        <br>
+                        <span class="drug-dose">
+                          <?php echo $er->jml_dosis; ?> &times; <?php echo $er->jml_dosis_obat; ?>
+                          <?php echo htmlspecialchars($er->satuan_obat); ?>
+                          &mdash; <?php echo htmlspecialchars($er->aturan_pakai); ?>
+                          <?php if ($er->jml_pesan): ?>
+                            (Qty: <?php echo $er->jml_pesan; ?> <?php echo htmlspecialchars($er->satuan_obat); ?>)
+                          <?php endif; ?>
+                        </span>
+                      <?php elseif ($er->aturan_pakai): ?>
+                        <br><span class="drug-dose"><?php echo htmlspecialchars($er->aturan_pakai); ?></span>
+                      <?php endif; ?>
+                      <?php if ($er->keterangan): ?>
+                        <br><span style="font-size:10px;color:#94a3b8;"><?php echo htmlspecialchars($er->keterangan); ?></span>
+                      <?php endif; ?>
+                    </li>
+                  <?php endforeach; ?>
+                </ol>
+              </div>
             </div>
           <?php endforeach; ?>
         <?php else: ?>
           <span class="dash">&#8212;</span>
         <?php endif; ?>
-      </td>
-
-      <!-- Penunjang -->
-      <td>
+        <!-- penunjang -->
         <?php if (!empty($map_penunjang[$registrasi_key])): ?>
           <?php
             $pnj_by_dept = array();
@@ -552,21 +567,18 @@ function toggleCell(btn) {
   }
 }
 
-/* ── E-Resep item toggle ── */
-function toggleEresep(btn) {
-  var group  = btn.parentNode;
-  var extras = group.querySelectorAll('.er-extra');
-  var isOpen = btn.getAttribute('data-open') === '1';
-  var count  = parseInt(btn.getAttribute('data-extra'), 10) || extras.length;
-  for (var i = 0; i < extras.length; i++) {
-    extras[i].style.display = isOpen ? 'none' : '';
-  }
+/* ── E-Resep accordion toggle ── */
+function toggleErAcc(hdr) {
+  var body  = document.getElementById(hdr.getAttribute('data-target'));
+  var arrow = hdr.querySelector('.er-acc-arrow');
+  if (!body) return;
+  var isOpen = (' ' + body.className + ' ').indexOf(' open ') !== -1;
   if (isOpen) {
-    btn.setAttribute('data-open', '0');
-    btn.innerHTML = '+' + count + ' obat lainnya &#8595;';
+    body.className = body.className.replace(/\s*open\s*/g, ' ').replace(/^\s+|\s+$/g, '');
+    if (arrow) arrow.innerHTML = '&#9660;';
   } else {
-    btn.setAttribute('data-open', '1');
-    btn.innerHTML = 'Lebih sedikit &#8593;';
+    body.className += ' open';
+    if (arrow) arrow.innerHTML = '&#9650;';
   }
 }
 
@@ -579,7 +591,7 @@ $(document).ready(function () {
     'lengthMenu'  : [10, 25, 50, 100],
     'autoWidth'   : false,
     'columnDefs'  : [
-      { 'orderable': false, 'targets': [2, 3, 4, 5, 6, 7, 8, 9] }
+      { 'orderable': false, 'targets': [2, 3, 4, 5, 6] }
     ],
     'language': {
       'search'       : 'Cari:',

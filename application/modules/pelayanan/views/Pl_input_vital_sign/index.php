@@ -98,8 +98,11 @@ function loadWorklist(){
         var nadi = extractInputValue(row[13]);
         var suhu = extractInputValue(row[14]);
         // row[15] = Assesmen, row[16] = resep_iter, row[17] = jumlah_iter
-        var resepIter = row[16] || '';
+        // row[18] = updated_by (petugas TTV), row[19] = updated_at (waktu TTV)
+        var resepIter  = row[16] || '';
         var jumlahIter = row[17] || '';
+        var ttvPetugas = row[18] || '';
+        var ttvWaktu   = row[19] || '';
 
         var hasTTV = (tb || bb || td_val || nadi || suhu);
         if(hasTTV) sudahIsi++; else belumIsi++;
@@ -112,7 +115,7 @@ function loadWorklist(){
         var isSelected = (selectedPatient && selectedPatient.noKunjungan == noKunjungan) ? 'ttv-selected' : '';
 
         var html = '<tr class="ttv-wl-item ' + statusClass + ' ' + isSelected + '" ' +
-          'onclick="selectPatient(\'' + noKunjungan + '\', \'' + noRegistrasi + '\', \'' + escape(namaPasien) + '\', \'' + escape(noMr) + '\', \'' + escape(penjamin) + '\', \'' + escape(tujuan) + '\', \'' + escape(tglKunjungan) + '\', \'' + escape(tb) + '\', \'' + escape(bb) + '\', \'' + escape(td_val) + '\', \'' + escape(nadi) + '\', \'' + escape(suhu) + '\', \'' + escape(resepIter) + '\', \'' + escape(jumlahIter) + '\')">' +
+          'onclick="selectPatient(\'' + noKunjungan + '\', \'' + noRegistrasi + '\', \'' + escape(namaPasien) + '\', \'' + escape(noMr) + '\', \'' + escape(penjamin) + '\', \'' + escape(tujuan) + '\', \'' + escape(tglKunjungan) + '\', \'' + escape(tb) + '\', \'' + escape(bb) + '\', \'' + escape(td_val) + '\', \'' + escape(nadi) + '\', \'' + escape(suhu) + '\', \'' + escape(resepIter) + '\', \'' + escape(jumlahIter) + '\', \'' + escape(ttvPetugas) + '\', \'' + escape(ttvWaktu) + '\')">' +
           '<td><div class="ttv-wl-card">' +
           '<div class="ttv-wl-top">' +
           '<span class="ttv-wl-no">' + (i+1) + '</span>' +
@@ -160,8 +163,8 @@ function extractInputValue(html){
   return match ? match[1] : '';
 }
 
-function selectPatient(noKunjungan, noRegistrasi, namaPasien, noMr, penjamin, tujuan, tglKunjungan, tb, bb, td_val, nadi, suhu, resepIter, jumlahIter){
-  
+function selectPatient(noKunjungan, noRegistrasi, namaPasien, noMr, penjamin, tujuan, tglKunjungan, tb, bb, td_val, nadi, suhu, resepIter, jumlahIter, ttvPetugas, ttvWaktu){
+
   selectedPatient = {
     noKunjungan: noKunjungan,
     noRegistrasi: noRegistrasi,
@@ -176,7 +179,9 @@ function selectPatient(noKunjungan, noRegistrasi, namaPasien, noMr, penjamin, tu
     nadi: unescape(nadi),
     suhu: unescape(suhu),
     resepIter: unescape(resepIter || ''),
-    jumlahIter: unescape(jumlahIter || '')
+    jumlahIter: unescape(jumlahIter || ''),
+    ttvPetugas: unescape(ttvPetugas || ''),
+    ttvWaktu: unescape(ttvWaktu || '')
   };
 
   // Highlight selected
@@ -215,6 +220,18 @@ function selectPatient(noKunjungan, noRegistrasi, namaPasien, noMr, penjamin, tu
     $('input[name="resep_iter"][value="N"]').prop('checked', true);
     $('input[name="jumlah_iter"]').prop('checked', false);
     $('#ttv_iter_detail').hide();
+  }
+
+  // Show/hide TTV audit info banner
+  var hasTTV = (selectedPatient.tb || selectedPatient.bb || selectedPatient.td || selectedPatient.nadi || selectedPatient.suhu);
+  if(hasTTV && (selectedPatient.ttvPetugas || selectedPatient.ttvWaktu)){
+    var petugasText = selectedPatient.ttvPetugas || '-';
+    var waktuText   = selectedPatient.ttvWaktu   || '-';
+    $('#ttv_audit_petugas').text(petugasText);
+    $('#ttv_audit_waktu').text(waktuText);
+    $('#ttv-audit-banner').show();
+  } else {
+    $('#ttv-audit-banner').hide();
   }
 
   // Show form area
@@ -899,6 +916,34 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
     .ttv-body { padding: 8px; }
     .ttv-form-grid { grid-template-columns: 1fr; }
   }
+
+  /* ── TTV Audit Banner ──────────────────────────────────────────── */
+  .ttv-audit-banner {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin: 10px 14px 0;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #93c5fd;
+    border-radius: 8px;
+    border-left: 4px solid #2563eb;
+  }
+  .ttv-audit-icon {
+    font-size: 18px; color: #2563eb; flex-shrink: 0; margin-top: 1px;
+  }
+  .ttv-audit-body { flex: 1; min-width: 0; }
+  .ttv-audit-title {
+    font-size: 11px; font-weight: 700; color: #1e40af;
+    text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px;
+  }
+  .ttv-audit-row {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #1e3a5f; margin-bottom: 3px;
+  }
+  .ttv-audit-row:last-child { margin-bottom: 0; }
+  .ttv-audit-lbl {
+    min-width: 90px; color: #3b82f6; font-weight: 600; display: flex; align-items: center; gap: 4px;
+  }
+  .ttv-audit-val { color: #0f172a; font-weight: 500; }
 </style>
 
 <div id="ttv-wrap">
@@ -1045,6 +1090,25 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
           <div class="ttv-panel-hdr">
             <i class="fa fa-heartbeat"></i> Form Tanda-Tanda Vital (TTV)
           </div>
+
+          <!-- Audit Banner: tampil jika TTV sudah terisi -->
+          <div id="ttv-audit-banner" style="display:none">
+            <div class="ttv-audit-banner">
+              <div class="ttv-audit-icon"><i class="fa fa-info-circle"></i></div>
+              <div class="ttv-audit-body">
+                <div class="ttv-audit-title">TTV Sudah Diinput</div>
+                <div class="ttv-audit-row">
+                  <span class="ttv-audit-lbl"><i class="fa fa-user-md"></i> Petugas</span>
+                  <span class="ttv-audit-val" id="ttv_audit_petugas">-</span>
+                </div>
+                <div class="ttv-audit-row">
+                  <span class="ttv-audit-lbl"><i class="fa fa-clock-o"></i> Waktu Input</span>
+                  <span class="ttv-audit-val" id="ttv_audit_waktu">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="ttv-form-grid">
             <div class="ttv-input-group">
               <div class="ttv-input-label">

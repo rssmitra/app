@@ -108,6 +108,8 @@ class Pl_input_vital_sign extends MX_Controller {
             $row[] = '<div class="center"><a href="#" class="label label-xs label-primary" onclick="getMenu('."'pelayanan/Pl_input_vital_sign/assesmen_rj/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?type=Rajal&no_mr=".$row_list->no_mr."'".')">Assesmen</a></div>';
             $row[] = isset($row_list->resep_iter) ? $row_list->resep_iter : '';
             $row[] = isset($row_list->jumlah_iter) ? $row_list->jumlah_iter : '';
+            $row[] = isset($row_list->updated_by) ? $row_list->updated_by : '';   // [18] petugas input TTV
+            $row[] = isset($row_list->updated_at) ? $row_list->updated_at : '';   // [19] waktu input TTV
 
             if($row_list->status_batal==1){
                 $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
@@ -158,6 +160,8 @@ class Pl_input_vital_sign extends MX_Controller {
                 'no_registrasi' => $_POST['no_registrasi'],
                 'no_kunjungan' => $_POST['no_kunjungan'],
                 $_POST['type'] => $this->input->post('value'),
+                'updated_by'   => $this->session->userdata('user')->fullname,
+                'updated_at'   => date('Y-m-d H:i:s'),
             );
 
             if( isset($riwayat->kode_riwayat) ){
@@ -214,6 +218,8 @@ class Pl_input_vital_sign extends MX_Controller {
                 'suhu'          => $this->input->post('suhu'),
                 'resep_iter'    => $this->input->post('resep_iter') ? $this->input->post('resep_iter') : 'N',
                 'jumlah_iter'   => ($this->input->post('resep_iter') == 'Y') ? $this->input->post('jumlah_iter') : null,
+                'updated_by'    => $this->session->userdata('user')->fullname,
+                'updated_at'    => date('Y-m-d H:i:s'),
             );
 
             if( isset($riwayat->kode_riwayat) ){

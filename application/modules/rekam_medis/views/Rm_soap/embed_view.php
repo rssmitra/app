@@ -124,6 +124,30 @@
 
   .dash { color: #94a3b8; font-size: 11px; }
 
+  /* ── E-Resep accordion ── */
+  .er-acc-hdr {
+    display: flex; align-items: center; gap: 5px;
+    background: #e0f2fe; border: 1px solid #bae6fd;
+    border-radius: 4px; padding: 4px 8px;
+    font-size: 10px; font-weight: 700; color: #0369a1;
+    cursor: pointer; user-select: none;
+    margin-bottom: 2px;
+  }
+  .er-acc-hdr:hover { background: #bae6fd; }
+  .er-acc-count {
+    margin-left: auto; font-weight: 600;
+    background: #0369a1; color: #fff;
+    border-radius: 10px; padding: 0 6px; font-size: 9px;
+  }
+  .er-acc-arrow { font-size: 9px; color: #0369a1; flex-shrink: 0; }
+  .er-acc-body {
+    display: none;
+    padding: 3px 0 3px 8px;
+    border-left: 2px solid #bae6fd;
+    margin-bottom: 6px;
+  }
+  .er-acc-body.open { display: block; }
+
   /* ── Riwayat table ── */
   .riwayat-table { font-size: 11px; width: 100%; margin-top: 5px; border-collapse: collapse; }
   .riwayat-table td { padding: 1px 4px; vertical-align: top; }
@@ -393,12 +417,19 @@
               $er_by_trans[$er->kode_trans_far ?: 'LAINNYA'][] = $er;
             }
           ?>
-          <?php foreach ($er_by_trans as $trans_key => $ers): ?>
-            <div class="trans-group">
-              <span class="trans-label"><?php echo htmlspecialchars($trans_key); ?></span>
+          <?php foreach ($er_by_trans as $trans_key => $ers):
+            $er_total = count($ers);
+            $acc_id   = 'eracc_' . $idx . '_' . preg_replace('/[^a-z0-9]/i', '_', $trans_key);
+          ?>
+            <div class="er-acc-hdr" onclick="toggleErAcc(this)" data-target="<?php echo $acc_id; ?>">
+              <span><?php echo htmlspecialchars($trans_key); ?></span>
               <?php if (!empty($ers[0]->tgl_trans)): ?>
-                <span class="trans-date">&mdash; <?php echo $this->tanggal->formatDate($ers[0]->tgl_trans); ?></span>
+                <span style="color:#64748b;font-weight:400;">&mdash; <?php echo $this->tanggal->formatDate($ers[0]->tgl_trans); ?></span>
               <?php endif; ?>
+              <span class="er-acc-count"><?php echo $er_total; ?> obat</span>
+              <span class="er-acc-arrow">&#9660;</span>
+            </div>
+            <div class="er-acc-body" id="<?php echo $acc_id; ?>">
               <ol class="drug-list">
                 <?php foreach ($ers as $er): ?>
                   <li>
@@ -554,6 +585,20 @@ function toggleCard(id) {
   var hdr  = document.getElementById('hdr_' + id);
   body.classList.toggle('open');
   hdr.classList.toggle('open');
+}
+
+function toggleErAcc(hdr) {
+  var body  = document.getElementById(hdr.getAttribute('data-target'));
+  var arrow = hdr.querySelector('.er-acc-arrow');
+  if (!body) return;
+  var isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.classList.remove('open');
+    if (arrow) arrow.innerHTML = '&#9660;';
+  } else {
+    body.classList.add('open');
+    if (arrow) arrow.innerHTML = '&#9650;';
+  }
 }
 </script>
 </body>

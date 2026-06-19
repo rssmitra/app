@@ -185,27 +185,74 @@ class Po_penerbitan_model extends CI_Model {
 	}
 
 	public function get_po($flag, $id){
-		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
-		$table = ($flag=='non_medis')?'tc_po_nm_det':'tc_po_det';
-		$join_po = ($flag=='non_medis')?'tc_po_nm':'tc_po';
-		$join = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
-		$tc_permohonan = ($flag=='non_medis')?'tc_permohonan_nm':'tc_permohonan';
+		$mt_barang     = ($flag == 'non_medis') ? 'mt_barang_nm'     : 'mt_barang';
+		$table         = ($flag == 'non_medis') ? 'tc_po_nm_det'     : 'tc_po_det';
+		$join_po       = ($flag == 'non_medis') ? 'tc_po_nm'         : 'tc_po';
+		$join_rekap    = ($flag == 'non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok';
+		$tc_permohonan = ($flag == 'non_medis') ? 'tc_permohonan_nm' : 'tc_permohonan';
 
-		$this->db->select('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan as harga_satuan, a.harga_satuan_netto as harga_satuan_netto, a.jumlah_harga_netto as jumlah_harga_netto,a.jumlah_harga as jumlah_harga, a.discount, a.discount_rp as discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn as ppn, a.ppn as ppn_brg, b.total_sbl_ppn as total_sbl_ppn, b.total_stl_ppn as total_stl_ppn, b.discount_harga as total_diskon, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim as estimasi_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik, b.jenis_po, d.jml_sat_kcl');
-		$this->db->select('CAST(c.spesifikasi as NVARCHAR(2000)) as spesifikasi');
-		$this->db->select('CAST(f.keterangan as NVARCHAR(2000)) as keterangan_permohonan');
-		$this->db->from(''.$table.' a');
-		$this->db->join($join_po.' b', 'b.id_tc_po=a.id_tc_po', 'left');
-		$this->db->join($tc_permohonan.'_det f', 'f.id_tc_permohonan_det=a.id_tc_permohonan_det', 'left');
-		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
-		$this->db->join($join.' d', 'd.kode_brg=a.kode_brg', 'left');
-		$this->db->join('mt_supplier e', 'e.kodesupplier=b.kodesupplier', 'left');
+		$id = (is_array($id)) ? implode(',', $id) : $id;
 
-		$id = (is_array($id)) ? implode(',', $id) : $id ;
-		$this->db->where('a.id_tc_po IN ('.$id.')');
-		$this->db->group_by('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan, a.harga_satuan_netto, a.jumlah_harga_netto,a.jumlah_harga, a.discount, a.discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn, b.total_sbl_ppn, b.total_stl_ppn, b.discount_harga, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik, b.jenis_po, a.ppn, CAST(c.spesifikasi as NVARCHAR(2000)), CAST(f.keterangan as NVARCHAR(2000)), d.jml_sat_kcl');
-		$this->db->order_by('c.nama_brg ASC');
-		return $this->db->get()->result();
+		// JOIN langsung ke mt_rekap_stok menyebabkan row duplikat karena tabel
+		// tersebut memiliki banyak baris per kode_brg (satu per lokasi gudang).
+		// Solusi: pra-agregasi SUM(jml_sat_kcl) per kode_brg dalam subquery
+		// sehingga setiap item hanya menghasilkan satu baris tanpa GROUP BY luar.
+		$sql = "
+			SELECT
+				a.id_tc_po_det,
+				a.id_tc_po,
+				a.id_tc_permohonan_det,
+				a.id_tc_permohonan,
+				a.kode_brg,
+				a.jumlah_besar,
+				a.jumlah_besar_acc,
+				a.content,
+				a.harga_satuan,
+				a.harga_satuan_netto,
+				a.jumlah_harga_netto,
+				a.jumlah_harga,
+				a.discount,
+				a.discount_rp,
+				a.ppn                                AS ppn_brg,
+				c.nama_brg,
+				c.satuan_besar,
+				c.spesifikasi,
+				b.no_po,
+				b.tgl_po,
+				b.ppn,
+				b.total_sbl_ppn,
+				b.total_stl_ppn,
+				b.discount_harga                     AS total_diskon,
+				b.term_of_pay,
+				b.diajukan_oleh,
+				b.tgl_kirim                          AS estimasi_kirim,
+				b.no_urut_periodik,
+				b.jenis_po,
+				e.namasupplier,
+				e.alamat,
+				e.kota,
+				e.telpon1,
+				f.keterangan AS keterangan_permohonan,
+				d.jml_sat_kcl
+			FROM {$table} a
+			LEFT JOIN {$join_po} b
+				ON b.id_tc_po = a.id_tc_po
+			LEFT JOIN {$tc_permohonan}_det f
+				ON f.id_tc_permohonan_det = a.id_tc_permohonan_det
+			LEFT JOIN {$mt_barang} c
+				ON c.kode_brg = a.kode_brg
+			LEFT JOIN (
+				SELECT kode_brg, SUM(jml_sat_kcl) AS jml_sat_kcl
+				FROM   {$join_rekap}
+				GROUP  BY kode_brg
+			) d ON d.kode_brg = a.kode_brg
+			LEFT JOIN mt_supplier e
+				ON e.kodesupplier = b.kodesupplier
+			WHERE a.id_tc_po IN ({$id})
+			ORDER BY c.nama_brg ASC
+		";
+
+		return $this->db->query($sql)->result();
 	}
 
 	public function rollback_po($flag, $id)

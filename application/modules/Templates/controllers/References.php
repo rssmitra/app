@@ -2305,39 +2305,204 @@ class References extends MX_Controller {
 
 	public function getItemBarangDetailByUnit()
 	{
-		$table = ($_GET['flag']=='non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
-		$join = ($_GET['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+		$flag      = isset($_GET['flag'])      ? $_GET['flag']      : 'medis';
+		$kode_brg  = isset($_GET['kode_brg'])  ? $_GET['kode_brg']  : '';
+		$from_unit = isset($_GET['from_unit']) ? $_GET['from_unit'] : '';
 
+		$table = ($flag == 'non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok';
+		$join  = ($flag == 'non_medis') ? 'mt_barang_nm'    : 'mt_barang';
+
+		// ── 1. Data stok barang ──────────────────────────────────────────────
 		$this->db->from($table.' as a');
-		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg' , 'left');
-		$this->db->where('a.kode_brg', $_GET['kode_brg']);
-		$this->db->where('a.kode_bagian', $_GET['from_unit']);
+		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg', 'left');
+		$this->db->where('a.kode_brg', $kode_brg);
+		$this->db->where('a.kode_bagian', $from_unit);
 		$result = $this->db->get()->row();
 
-		// echo "<pre>";print_r($this->db->last_query());die;
 		if(!$result){
-			echo json_encode( array('data' => 0, 'html' => '<div class="alert alert-danger"><b>Pemberitahuan!</b><br>Kartu Stok belum tersedia</div>' ) );
+			$html_err = '
+				<div style="border:1px solid #f5c6cb;border-radius:5px;overflow:hidden">
+					<div style="background:#c0392b;color:#fff;padding:7px 12px;font-size:12px;font-weight:700">
+						<i class="fa fa-exclamation-triangle"></i> Kartu Stok Tidak Tersedia
+					</div>
+					<div style="padding:10px 12px;font-size:12px;color:#721c24;background:#fff5f5">
+						Barang ini belum memiliki kartu stok pada unit yang dipilih.
+					</div>
+				</div>';
+			echo json_encode(array('data' => 0, 'html' => $html_err));
 			return;
 		}
 
-		$html = '';
-		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;
-		$warning_stok = ($result->jml_sat_kcl <= 0) ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '' ;
-		$link_image = ( $result->path_image != NULL ) ? PATH_IMG_MST_BRG.$result->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
-		$html .= '<div class="widget-box">
-                    <div class="widget-body" style="background: #edf3f4;">
-                      <div class="widget-main">
-                          <b><span style="font-size: 13px">'.$result->kode_brg.' - '.$result->nama_brg.'</span></b><br>
-                          Sisa stok '.$stok_akhir.' '.$result->satuan_kecil.' | Harga satuan '.number_format($result->harga_beli).',- '.$warning_stok.'
-                      </div>
-                    </div>
-				  </div>
-				  <div>
-					<label class="label label-xs label-primary">Image </label> <br>
-					<div class="center"><img src="'.base_url().$link_image.'" width="50%" style="   border: 1px solid darkgrey;padding: 3px;"></div>
-				  </div>';
+		// ── 2. Permintaan terakhir dari unit ini untuk barang ini ────────────
+		$this->db->select('a.nomor_permintaan, a.tgl_permintaan, a.status_selesai, a.status_batal, a.status_acc, b.jumlah_permintaan, b.jumlah_penerimaan, b.jumlah_kirim');
+		$this->db->from('tc_permintaan_inst a');
+		$this->db->join('tc_permintaan_inst_det b', 'b.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'inner');
+		$this->db->where('a.kode_bagian_minta', $from_unit);
+		$this->db->where('b.kode_brg', $kode_brg);
+		$this->db->where('(a.status_batal != 1 or a.status_batal IS NULL)' );
+		$this->db->order_by('a.tgl_permintaan', 'DESC');
+		$this->db->limit(1);
+		$last_req = $this->db->get()->row();
+		// echo $this->db->last_query();die;
 
-		echo json_encode( array('data' => $result, 'html' => $html ) );
+		// ── 3. Distribusi terakhir yang sudah selesai dikirim ────────────────
+		$this->db->select('a.nomor_permintaan, a.nomor_pengiriman, a.tgl_pengiriman, a.tgl_input_terima, b.jumlah_kirim, b.jumlah_penerimaan');
+		$this->db->from('tc_permintaan_inst a');
+		$this->db->join('tc_permintaan_inst_det b', 'b.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'inner');
+		$this->db->where('a.kode_bagian_minta', $from_unit);
+		$this->db->where('b.kode_brg', $kode_brg);
+		$this->db->where('(a.status_batal != 1 or a.status_batal IS NULL)' );
+		$this->db->where('a.tgl_pengiriman IS NOT NULL', NULL, FALSE);
+		$this->db->order_by('a.tgl_pengiriman', 'DESC');
+		$this->db->limit(1);
+		$last_dist = $this->db->get()->row();
+
+		// ── 4. Bangun HTML ───────────────────────────────────────────────────
+		$link_image = ($result->path_image != NULL)
+			? PATH_IMG_MST_BRG.$result->path_image
+			: PATH_IMG_MST_BRG.'no-image.jpg';
+
+		// Stok styling
+		$stok_val = intval($result->jml_sat_kcl);
+		if($stok_val <= 0){
+			$stok_color = '#c0392b';
+			$stok_bg    = '#fff5f5';
+			$stok_icon  = 'fa-times-circle';
+			$stok_label = 'Habis';
+		} elseif(isset($result->stok_minimum) && $stok_val <= intval($result->stok_minimum)){
+			$stok_color = '#e67e22';
+			$stok_bg    = '#fffbeb';
+			$stok_icon  = 'fa-exclamation-triangle';
+			$stok_label = 'Kritis';
+		} else {
+			$stok_color = '#15803d';
+			$stok_bg    = '#f0fdf4';
+			$stok_icon  = 'fa-check-circle';
+			$stok_label = 'Tersedia';
+		}
+
+		// Permintaan terakhir
+		if($last_req){
+			$tgl_req    = date('d/m/Y', strtotime($last_req->tgl_permintaan));
+			$st_req     = $last_req->status_selesai ? '<span style="color:#15803d;font-weight:700">Selesai</span>' : '<span style="color:#e67e22;font-weight:700">Proses</span>';
+			$row_req    = '
+				<tr>
+					<td style="color:#555;padding:4px 0;width:115px">No. Permintaan</td>
+					<td style="padding:4px 0"><b>'.$last_req->nomor_permintaan.'</b></td>
+				</tr>
+				<tr>
+					<td style="color:#555;padding:4px 0">Tgl Permintaan</td>
+					<td style="padding:4px 0">'.$tgl_req.'</td>
+				</tr>
+				<tr>
+					<td style="color:#555;padding:4px 0">Qty Diminta</td>
+					<td style="padding:4px 0"><b>'.intval($last_req->jumlah_permintaan).'</b> '.$result->satuan_kecil.'</td>
+				</tr>
+				<tr>
+					<td style="color:#555;padding:4px 0">Status</td>
+					<td style="padding:4px 0">'.$st_req.'</td>
+				</tr>';
+		} else {
+			$row_req = '<tr><td colspan="2" style="color:#94a3b8;font-style:italic;padding:6px 0">Belum ada riwayat permintaan</td></tr>';
+		}
+
+		// Distribusi terakhir
+		if($last_dist){
+			$tgl_dist  = date('d/m/Y', strtotime($last_dist->tgl_pengiriman));
+			$tgl_terima = $last_dist->tgl_input_terima ? date('d/m/Y', strtotime($last_dist->tgl_input_terima)) : '-';
+			$row_dist  = '
+				<tr>
+					<td style="color:#555;padding:4px 0;width:115px">No. Pengiriman</td>
+					<td style="padding:4px 0"><b>'.$last_dist->nomor_pengiriman.'</b></td>
+				</tr>
+				<tr>
+					<td style="color:#555;padding:4px 0">Tgl Kirim</td>
+					<td style="padding:4px 0">'.$tgl_dist.'</td>
+				</tr>
+				<tr>
+					<td style="color:#555;padding:4px 0">Qty Kirim</td>
+					<td style="padding:4px 0"><b>'.intval($last_dist->jumlah_penerimaan).'</b> '.$result->satuan_kecil.'</td>
+				</tr>
+				<tr>
+					<td style="color:#555;padding:4px 0">Tgl Diterima</td>
+					<td style="padding:4px 0">'.$tgl_terima.'</td>
+				</tr>';
+		} else {
+			$row_dist = '<tr><td colspan="2" style="color:#94a3b8;font-style:italic;padding:6px 0">Belum ada riwayat distribusi</td></tr>';
+		}
+
+		$html = '
+		<div style="border:1px solid #b8d0e8;border-radius:7px;overflow:hidden;box-shadow:0 2px 8px rgba(26,79,138,.09);font-size:12px">
+
+			<!-- Header barang -->
+			<div style="background:linear-gradient(135deg,#1a4f8a 0%,#2c6fad 100%);color:#fff;padding:9px 13px">
+				<div style="font-weight:700;font-size:13px;margin-bottom:2px">
+					<i class="fa fa-cube"></i> '.$result->kode_brg.'
+				</div>
+				<div style="font-size:11px;opacity:.9;line-height:1.4">'.$result->nama_brg.'</div>
+			</div>
+
+			<!-- Stok & Harga -->
+			<div style="background:'.$stok_bg.';border-bottom:1px solid #d0dce8;padding:9px 13px">
+				<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+					<div>
+						<div style="color:#555;font-size:11px;margin-bottom:2px">Sisa Stok</div>
+						<div style="font-size:16px;font-weight:800;color:'.$stok_color.'">
+							'.$stok_val.' <span style="font-size:11px;font-weight:400">'.$result->satuan_kecil.'</span>
+						</div>
+					</div>
+					<div style="text-align:right">
+						<span style="background:'.$stok_color.';color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700">
+							<i class="fa '.$stok_icon.'"></i> '.$stok_label.'
+						</span>
+					</div>
+				</div>
+				'.( isset($result->stok_minimum) && intval($result->stok_minimum) > 0 ? '
+				<div style="margin-top:5px;font-size:11px;color:#555">
+					Min. Stok: <b>'.intval($result->stok_minimum).'</b> &nbsp;|&nbsp;
+					Harga Satuan: <b>Rp '.number_format($result->harga_beli).',-</b>
+				</div>' : '
+				<div style="margin-top:5px;font-size:11px;color:#555">
+					Harga Satuan: <b>Rp '.number_format($result->harga_beli).',-</b>
+				</div>' ).'
+			</div>
+
+			<!-- Permintaan Terakhir -->
+			<div style="border-bottom:1px solid #d0dce8">
+				<div style="background:#f0f5fb;border-bottom:1px solid #d0dce8;padding:5px 13px;font-weight:700;color:#1a4f8a;font-size:11px">
+					<i class="fa fa-clock-o"></i> Permintaan Terakhir
+				</div>
+				<div style="padding:4px 13px 8px">
+					<table style="width:100%;border-collapse:collapse;font-size:12px">
+						'.$row_req.'
+					</table>
+				</div>
+			</div>
+
+			<!-- Distribusi Terakhir -->
+			<div style="border-bottom:1px solid #d0dce8">
+				<div style="background:#f0f5fb;border-bottom:1px solid #d0dce8;padding:5px 13px;font-weight:700;color:#1a4f8a;font-size:11px">
+					<i class="fa fa-truck"></i> Distribusi Terakhir
+				</div>
+				<div style="padding:4px 13px 8px">
+					<table style="width:100%;border-collapse:collapse;font-size:12px">
+						'.$row_dist.'
+					</table>
+				</div>
+			</div>
+
+			<!-- Gambar barang -->
+			<div style="padding:10px 13px;text-align:center;background:#fafcff">
+				<div style="font-size:11px;color:#6b8cae;margin-bottom:6px;font-weight:600">
+					<i class="fa fa-image"></i> Foto Barang
+				</div>
+				<img src="'.base_url().$link_image.'" alt="'.$result->nama_brg.'"
+				     style="max-width:100%;max-height:130px;border:1px solid #c0d4e8;border-radius:4px;padding:3px;object-fit:contain">
+			</div>
+
+		</div>';
+
+		echo json_encode(array('data' => $result, 'html' => $html));
 	}
 
 	public function getSubBagian($pelayanan='')
@@ -2355,8 +2520,7 @@ class References extends MX_Controller {
 		$no_mr = (string)$mr;
 
 		// resume medis pasien
-		$limit = isset($_GET['key'])?$_GET['key']:35;
-		// $result = $this->db->select('th_riwayat_pasien.*, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien')->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit($limit)->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_mr' => $no_mr))->result();
+		$limit = isset($_GET['key'])?$_GET['key']:50;
 
 		$result = $this->db->select('view_cppt.*, view_cppt.tanggal as tgl_periksa, id as kode_riwayat, nama_ppa as dokter_pemeriksa, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien, tc_kunjungan.status_batal, th_riwayat_pasien.riwayat_penyakit_dahulu as rp_penyakit_dahulu, th_riwayat_pasien.riwayat_penyakit_dahulu_ket as rp_penyakit_dahulu_ket, th_riwayat_pasien.riwayat_operasi as rp_operasi, th_riwayat_pasien.riwayat_operasi_ket as rp_operasi_ket, th_riwayat_pasien.riwayat_alergi as rp_alergi, th_riwayat_pasien.riwayat_alergi_ket as rp_alergi_ket, th_riwayat_pasien.anatomi_tagging as rp_anatomi_tagging, th_riwayat_pasien.anatomi_img as rp_anatomi_img', FALSE)
 		->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = view_cppt.no_kunjungan', 'left')

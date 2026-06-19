@@ -22,6 +22,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=fr_tc_far.no_registrasi','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left');
+		$this->db->where($this->table.'.kode_trans_far is not null');
 		$this->db->group_by($this->select);
 
 	}
@@ -64,7 +65,13 @@ class Pengambilan_resep_iter_model extends CI_Model {
 			$this->db->like('fr_tc_far.no_resep', $_GET['flag']);
 		}
 
-		
+		if( isset($_GET['status_iter']) AND $_GET['status_iter'] !== '' AND $_GET['status_iter'] !== 'All' ){
+			if( $_GET['status_iter'] == '1' ){
+				$this->db->where('fr_tc_resep_iter.status_iter', '1');
+			} else {
+				$this->db->where("(fr_tc_resep_iter.status_iter IS NULL OR fr_tc_resep_iter.status_iter <> '1')");
+			}
+		}
 
 		$i = 0;
 	

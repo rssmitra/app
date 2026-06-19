@@ -273,25 +273,60 @@ class Pengiriman_unit extends MX_Controller {
             // echo "<pre>";print_r($dataexc);die;
             $newId = $this->Pengiriman_unit->update($table, ['id_tc_permintaan_inst' => $_POST['id']], $dataexc);
 
-            $cart_data = $this->Pengiriman_unit->get_cart_data_by_id($_POST['flag_cart'], $_POST['selected_id']);
-            // echo "<pre>";print_r($cart_data);die;
+            $cart_data     = $this->Pengiriman_unit->get_cart_data_by_id($_POST['flag_cart'], $_POST['selected_id']);
+            $qty_kirim_map = isset($_POST['qty_kirim']) && is_array($_POST['qty_kirim']) ? $_POST['qty_kirim'] : [];
+
+            // ── Validasi: cek stok gudang tidak kosong sebelum proses ─────────────
+            $mt_rekap          = ($table === 'tc_permintaan_inst_nm') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok';
+            $stok_kosong_items = [];
+            foreach ($cart_data as $row_brg) {
+                $eff_kode    = (!empty($row_brg->rev_kode_brg)) ? $row_brg->rev_kode_brg : $row_brg->kode_brg;
+                $eff_nama    = (!empty($row_brg->brg_revisi))   ? $row_brg->brg_revisi   : $row_brg->nama_brg;
+                $kode_gd_esc = $this->db->escape_str($kode_gudang);
+                $kode_br_esc = $this->db->escape_str($eff_kode);
+                $stok_r      = $this->db->query(
+                    "SELECT jml_sat_kcl FROM $mt_rekap WHERE kode_brg='$kode_br_esc' AND kode_bagian_gudang='$kode_gd_esc'"
+                )->row();
+                $stok_val = ($stok_r && !empty($stok_r->jml_sat_kcl)) ? intval($stok_r->jml_sat_kcl) : 0;
+                if ($stok_val <= 0) {
+                    $stok_kosong_items[] = htmlspecialchars($eff_nama, ENT_QUOTES);
+                }
+            }
+            if (!empty($stok_kosong_items)) {
+                $this->db->trans_rollback();
+                echo json_encode([
+                    'status'  => 301,
+                    'message' => 'Stok gudang kosong! Barang berikut tidak dapat didistribusikan:<br><b>'
+                                 . implode(', ', $stok_kosong_items) . '</b>',
+                ]);
+                return;
+            }
+            // ─────────────────────────────────────────────────────────────────────
+
             // update stok gudang
             foreach( $cart_data as $row_brg ){
-                
-                // kurang stok gudang
-                $kode_brg = ($row_brg->rev_kode_brg != NULL || !empty($row_brg->rev_kode_brg) ) ? $row_brg->rev_kode_brg : $row_brg->kode_brg ;
-                $qty_brg = ($row_brg->rev_qty != NULL || !empty($row_brg->rev_qty) ) ? $row_brg->rev_qty : $row_brg->qty ;
+                // kode & qty: gunakan revisi jika ada
+                $kode_brg = (!empty($row_brg->rev_kode_brg)) ? $row_brg->rev_kode_brg : $row_brg->kode_brg;
+                $qty_auto = (!empty($row_brg->rev_qty))      ? $row_brg->rev_qty      : $row_brg->qty;
 
-                // update status verif di detail permintaan
+                // qty kirim: ambil dari input form jika ada, fallback ke qty_auto
+                $id_det  = $row_brg->id_tc_permintaan_inst_det;
+                $qty_brg = (isset($qty_kirim_map[$id_det]) && intval($qty_kirim_map[$id_det]) > 0)
+                         ? intval($qty_kirim_map[$id_det])
+                         : $qty_auto;
+
+                // batasi agar tidak melebihi jumlah yg disetujui
+                if ($qty_brg > intval($row_brg->jml_acc_atasan)) {
+                    $qty_brg = intval($row_brg->jml_acc_atasan);
+                }
+
                 $update_detail = array(
-                    'tgl_kirim' => date('Y-m-d H:i:s'),
-                    'jumlah_kirim' => $qty_brg,
+                    'tgl_kirim'     => date('Y-m-d H:i:s'),
+                    'jumlah_kirim'  => $qty_brg,
                     'petugas_kirim' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'),
                 );
-                // update table permintaan detail
-                $this->Pengiriman_unit->update($table.'_det', ['id_tc_permintaan_inst_det' => $row_brg->id_tc_permintaan_inst_det], $update_detail);
-                // proses stok
-                $this->stok_barang->stock_process($kode_brg, $qty_brg, $kode_gudang, 3 ," ".$nama_bagian." &nbsp; [".$_POST['id']."] ", 'reduce');
+                $this->Pengiriman_unit->update($table.'_det', ['id_tc_permintaan_inst_det' => $id_det], $update_detail);
+                $this->stok_barang->stock_process($kode_brg, $qty_brg, $kode_gudang, 3, ' '.$nama_bagian.' &nbsp; ['.$_POST['id'].'] ', 'reduce');
                 $this->db->trans_commit();
 
             }
@@ -313,65 +348,224 @@ class Pengiriman_unit extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pengiriman_unit->get_cart_data();
-        // echo '<pre>';print_r($list);die;
-        
-        $data = array();
+
+        $data      = array();
         $arr_count = array();
-        $no=0;
+        $no        = 0;
+
+        // ── Batch queries: distribusi terakhir & transaksi pelayanan ──────────
+        $dist_map  = [];
+        $trans_map = [];
+
+        if (!empty($list)) {
+            $kode_brgs   = array_unique(array_map(function($r){ return $r->kode_brg; }, $list));
+            $kode_bagian = $list[0]->kode_bagian; // kode_bagian_minta
+            $flag        = $this->input->get('flag') ?: 'medis';
+            $tbl         = ($flag === 'non_medis') ? 'tc_permintaan_inst_nm'     : 'tc_permintaan_inst';
+            $tbl_det     = ($flag === 'non_medis') ? 'tc_permintaan_inst_nm_det' : 'tc_permintaan_inst_det';
+
+            $brgs_esc = array_map([$this->db, 'escape_str'], $kode_brgs);
+            $brgs_in  = "'".implode("','", $brgs_esc)."'";
+            $bag_esc  = $this->db->escape_str($kode_bagian);
+
+            // 1. Distribusi terakhir yang sudah dikirim per kode_brg ke unit ini
+            $sql_dist = "
+                SELECT kode_brg, tgl_pengiriman, jumlah_penerimaan as jumlah_kirim
+                FROM (
+                    SELECT b.kode_brg, a.tgl_pengiriman, b.jumlah_penerimaan,
+                           ROW_NUMBER() OVER (PARTITION BY b.kode_brg ORDER BY a.tgl_pengiriman DESC) AS rn
+                    FROM $tbl a
+                    INNER JOIN $tbl_det b ON b.id_tc_permintaan_inst = a.id_tc_permintaan_inst
+                    WHERE a.kode_bagian_minta = '$bag_esc'
+                      AND b.kode_brg IN ($brgs_in)
+                      AND (a.status_batal IS NULL OR a.status_batal != 1)
+                      AND a.tgl_pengiriman IS NOT NULL
+                      AND b.jumlah_penerimaan > 0
+                ) t WHERE rn = 1
+            ";
+            foreach ($this->db->query($sql_dist)->result() as $r) {
+                $dist_map[$r->kode_brg] = $r;
+            }
+
+            // 2. Jumlah pasien & mutasi sejak distribusi terakhir s/d hari ini
+            //    Date range per item: tgl_pengiriman terakhir (dari dist_map) → GETDATE()
+            //    JOIN subquery distribusi agar filter tanggal bersifat dinamis per kode_brg
+            $sql_trans = "
+                SELECT t.kode_barang,
+                       COUNT(DISTINCT t.no_kunjungan)       AS jml_pasien,
+                       SUM(CAST(t.jumlah AS FLOAT))         AS jml_mutasi,
+                       CONVERT(VARCHAR(10), dist.tgl_dist_terakhir, 103) AS tgl_mulai
+                FROM tc_trans_pelayanan t
+                INNER JOIN (
+                    SELECT b.kode_brg,
+                           MAX(a.tgl_pengiriman) AS tgl_dist_terakhir
+                    FROM {$tbl} a
+                    INNER JOIN {$tbl_det} b ON b.id_tc_permintaan_inst = a.id_tc_permintaan_inst
+                    WHERE a.kode_bagian_minta = '$bag_esc'
+                      AND b.kode_brg IN ($brgs_in)
+                      AND (a.status_batal IS NULL OR a.status_batal != 1)
+                      AND a.tgl_pengiriman IS NOT NULL
+                      AND b.jumlah_kirim > 0
+                    GROUP BY b.kode_brg
+                ) dist ON dist.kode_brg = t.kode_barang
+                       AND t.tgl_transaksi >= dist.tgl_dist_terakhir
+                WHERE t.kode_barang IN ($brgs_in)
+                  AND t.kode_bagian  = '$bag_esc'
+                  AND t.tgl_transaksi <= GETDATE()
+                GROUP BY t.kode_barang, dist.tgl_dist_terakhir
+            ";
+            // echo "<pre>";print_r($sql_trans);die;
+            foreach ($this->db->query($sql_trans)->result() as $r) {
+                $trans_map[$r->kode_barang] = $r;
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+            
+            // Stok gudang aktual (pakai stok revisi jika ada)
+            $stok_aktual = (!empty($row_list->stok_gdg_revisi))
+                ? intval($row_list->stok_gdg_revisi)
+                : intval($row_list->jumlah_stok_gudang);
+
+            $is_pending  = false;
+            $stok_kosong = false;
 
             if($row_list->status_verif == 1){
                 if($row_list->jumlah_kirim == $row_list->jml_acc_atasan){
-                    $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
-                }else{
+                    // Sudah terkirim semua
+                    $row[] = '<div class="center"><i class="fa fa-check" style="color:#15803d"></i></div>';
+                } elseif($stok_aktual <= 0) {
+                    // Stok gudang kosong — tidak bisa distribusi
+                    $row[] = '<div class="center" title="Stok gudang kosong, tidak dapat didistribusikan">'
+                           . '<i class="fa fa-ban" style="color:#c0392b;font-size:14px"></i>'
+                           . '</div>';
+                    $stok_kosong = true;
+                } else {
+                    // Pending, stok tersedia — tampilkan checkbox
                     $row[] = '<div class="center">
                         <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_permintaan_inst_det.'"/>
+                            <input type="checkbox" class="ace" name="selected_id[]"
+                                   value="'.$row_list->id_tc_permintaan_inst_det.'"
+                                   data-nama="'.htmlspecialchars($row_list->nama_brg, ENT_QUOTES).'"
+                                   data-stok="'.$stok_aktual.'"/>
                             <span class="lbl"></span>
                         </label>
-                      </div>';   
-                      $arr_count[] = 1; 
+                      </div>';
+                    $arr_count[] = 1;
+                    $is_pending  = true;
                 }
-            }else{
-                $row[] = '<div class="center"><i class="fa fa-times red"></i></div>';
+            } else {
+                $row[] = '<div class="center"><i class="fa fa-times" style="color:#c0392b"></i></div>';
             }
-            
-            $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="left">'.$row_list->kode_brg.'</div>';
-            $nama_brg = ($row_list->brg_revisi == null) ? $row_list->nama_brg : '<s style="color: red">'.$row_list->nama_brg.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->brg_revisi;
-            $qty = ($row_list->qty_revisi == null) ? $row_list->qty : '<s style="color: red">'.$row_list->qty.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->qty_revisi;
 
-            $stok_gudang = ($row_list->stok_gdg_revisi == null) ? $row_list->jumlah_stok_gudang : '<s style="color: red">'.$row_list->jumlah_stok_gudang.'</s> <i class="fa fa-arrow-right"></i> '.$row_list->stok_gdg_revisi;
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="left" style="font-size:11px">'.$row_list->kode_brg.'</div>';
+
+            $nama_brg = ($row_list->brg_revisi == null)
+                ? $row_list->nama_brg
+                : '<s style="color:#c0392b">'.$row_list->nama_brg.'</s> <i class="fa fa-arrow-right" style="color:#888"></i> <b>'.$row_list->brg_revisi.'</b>';
+            $qty = ($row_list->qty_revisi == null)
+                ? $row_list->qty
+                : '<s style="color:#c0392b">'.$row_list->qty.'</s> <i class="fa fa-arrow-right" style="color:#888"></i> <b>'.$row_list->qty_revisi.'</b>';
+            $stok_gudang = ($row_list->stok_gdg_revisi == null)
+                ? number_format($row_list->jumlah_stok_gudang)
+                : '<s style="color:#c0392b">'.number_format($row_list->jumlah_stok_gudang).'</s> <i class="fa fa-arrow-right" style="color:#888"></i> <b>'.number_format($row_list->stok_gdg_revisi).'</b>';
+
             $row[] = '<div class="left">'.$nama_brg.'</div>';
             $row[] = '<div class="center">'.$row_list->satuan.'</div>';
-            $row[] = '<div class="center">'.number_format($stok_gudang).'</div>';
+            $row[] = '<div class="center">'.$stok_gudang.'</div>';
             $row[] = '<div class="center">'.number_format($row_list->jumlah_stok_sebelumnya).'</div>';
             $row[] = '<div class="center">'.$qty.'</div>';
-            $row[] = '<div class="center">'.$row_list->jml_acc_atasan.'</div>';
-            $row[] = '<div class="center">'.$row_list->jumlah_kirim.'</div>';
-            $row[] = '<div style="text-align: right">'.number_format($row_list->harga).'</div>';
-            $row[] = '<div class="center">'.$row_list->keterangan_verif.'</div>';
+            $row[] = '<div class="center"><b>'.$row_list->jml_acc_atasan.'</b></div>';
+
+            // ── Kolom: Jml Kirim — input jika masih pending, teks jika sudah selesai ──
+            if ($is_pending) {
+                $_acc         = intval($row_list->jml_acc_atasan);
+                $_id          = $row_list->id_tc_permintaan_inst_det;
+                $_stok_kurang = ($stok_aktual < $_acc);
+                // Jika stok gudang tidak mencukupi, default & maksimal = stok aktual
+                $_max     = $_stok_kurang ? $stok_aktual : $_acc;
+                $_default = $_stok_kurang ? $stok_aktual : $_acc;
+
+                $input_class = 'qty-kirim-input' . ($_stok_kurang ? ' stok-kurang' : '');
+                $input_html  = '<input type="number" '
+                             . 'name="qty_kirim['.$_id.']" '
+                             . 'id="qk_'.$_id.'" '
+                             . 'class="'.$input_class.'" '
+                             . 'data-id="'.$_id.'" '
+                             . 'data-acc="'.$_acc.'" '
+                             . 'data-stok="'.$stok_aktual.'" '
+                             . 'data-max="'.$_max.'" '
+                             . 'value="'.$_default.'" '
+                             . 'min="1" max="'.$_max.'">';
+
+                $warn_html = '';
+                if ($_stok_kurang) {
+                    $warn_html = '<div class="stok-warn-badge">'
+                               . '<i class="fa fa-exclamation-triangle"></i> Stok tidak mencukupi<br>'
+                               . '<span>Tersedia <b>'.$stok_aktual.'</b> &mdash; Disetujui <b>'.$_acc.'</b></span>'
+                               . '</div>';
+                }
+
+                $row[] = '<div class="center">' . $input_html . $warn_html . '</div>';
+            } else {
+                $row[] = '<div class="center" style="font-weight:700;color:#15803d">'
+                       . ($row_list->jumlah_kirim > 0 ? number_format($row_list->jumlah_kirim) : '<span style="color:#94a3b8">—</span>')
+                       . '</div>';
+            }
+            // ────────────────────────────────────────────────────────────────
+
+            // ── Kolom: Distribusi Terakhir ──────────────────────────────────
+            if (isset($dist_map[$row_list->kode_brg])) {
+                $d     = $dist_map[$row_list->kode_brg];
+                $tgl_d = date('d/m/Y', strtotime($d->tgl_pengiriman));
+                $row[] = '<div class="center" style="font-size:11px;line-height:1.5">'
+                       . '<div style="color:#1a4f8a;font-weight:700">'.$tgl_d.'</div>'
+                       . '<div style="color:#555">'.number_format($d->jumlah_kirim).' '.$row_list->satuan.'</div>'
+                       . '</div>';
+            } else {
+                $row[] = '<div class="center" style="color:#94a3b8;font-size:11px">—</div>';
+            }
+            // ── Kolom: Jml Pasien & Mutasi (sejak distribusi terakhir) ─────
+            if (isset($trans_map[trim($row_list->kode_brg)])) {
+                $t        = $trans_map[trim($row_list->kode_brg)];
+                $tgl_hari = date('d/m/Y');
+                $row[] = '<div class="center" style="font-size:11px;line-height:1.6">'
+                       . '<div><span style="color:#15803d;font-weight:700">'.intval($t->jml_pasien).'</span>'
+                       . ' <span style="color:#777;font-size:10px">pasien</span></div>'
+                       . '<div><span style="color:#1a4f8a;font-weight:700">'.number_format($t->jml_mutasi).'</span>'
+                       . ' <span style="color:#777;font-size:10px">mutasi</span></div>'
+                       . '<div style="color:#94a3b8;font-size:10px;margin-top:2px">'.$t->tgl_mulai.' &ndash; '.$tgl_hari.'</div>'
+                       . '</div>';
+            } else {
+                $row[] = '<div class="center" style="color:#94a3b8;font-size:11px">—<br>'
+                       . '<span style="font-size:10px">Belum ada<br>distribusi</span></div>';
+            }
+            // ───────────────────────────────────────────────────────────────
+
+            // $row[] = '<div style="text-align:right;font-size:11px">'.number_format($row_list->harga).'</div>';
+            $row[] = '<div class="center" style="font-size:11px">'.$row_list->keterangan_verif.'</div>';
 
             if($row_list->status_verif == 1){
                 if($row_list->jumlah_kirim > 0){
-                    $row[] = '<div class="center"><i class="fa fa-check green"></i></div>';
+                    $row[] = '<div class="center"><i class="fa fa-check" style="color:#15803d"></i></div>';
                 }else{
-                    $row[] = '<div style="text-align: center"><a class="label label-xs label-success" onclick="edit_brg('.$row_list->id_tc_permintaan_inst_det.', '."'Penyesuaian Permintaan Barang x Distribusi'".')" href="#"><span><i class="fa fa-pencil"></i></span></a></div>';
+                    $row[] = '<div class="center"><a class="label label-xs label-success" onclick="edit_brg('.$row_list->id_tc_permintaan_inst_det.', '."'Penyesuaian Permintaan Barang x Distribusi'".')" href="#"><i class="fa fa-pencil"></i></a></div>';
                 }
             }else{
-                $row[] = '<div class="center">-</div>';
+                $row[] = '<div class="center" style="color:#94a3b8">—</div>';
             }
-   
+
             $data[] = $row;
         }
 
         $output = array(
             "total_belum_didistribusi" => array_sum($arr_count),
-            "data" => $data,
+            "data"                     => $data,
         );
-        //output to json format
         echo json_encode($output);
     }
 

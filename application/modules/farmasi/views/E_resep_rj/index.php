@@ -348,11 +348,8 @@ $('#resep_batal').on('change', function() {
                 <th width="40px"></th>
                 <th style="width: 50px">Kode</th>
                 <th style="width: 130px">Tgl Pesan</th>
-                <th style="width: 100px">Jenis Resep</th>
-                <th style="width: 100px">No MR</th>
-                <th>Nama Pasien</th>
-                <th>Dokter</th>
-                <th>Asal Unit</th>
+                <th style="width: 150px">No MR</th>
+                <th>Dokter/Spesialis</th>
                 <th>Penjamin</th>
                 <?php if($flag == 'RJ') : ?>
                 <th width="180px">Diagnosa Akhir</th>
