@@ -410,17 +410,22 @@
       $('#btn-ru-eresep').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
       $('#btn-ru-soap').prop('disabled', true);
 
+      var ruIter  = $('input[name="ru_resep_iter"]:checked').val()  || '0';
+      var ruJenis = $('input[name="ru_jenis_resep"]:checked').val() || 'non_prb';
+
       var formData = {
           kode_pesan_resep : kode_pesan_resep,
           no_registrasi    : $('#no_registrasi').val(),
           no_kunjungan     : $('#no_kunjungan').val(),
           no_mr            : $('#noMrHidden').val(),
-          kode_kelompok    : $('#kode_kelompok').val(),
-          kode_perusahaan  : $('#kode_perusahaan_val').val(),
-          kode_klas        : $('#kode_klas').val(),
-          kode_profit      : $('#kode_profit').val(),
-          kode_bagian_asal : $('#kode_bagian_asal').val(),
-          kode_dokter      : $('#kode_dokter_poli').val()
+          kode_kelompok    : $('#kode_kelompok').val()       || 0,
+          kode_perusahaan  : $('#kode_perusahaan_val').val() || 0,
+          kode_klas        : $('#kode_klas').val()            || 0,
+          kode_profit      : $('#kode_profit').val()          || 0,
+          kode_bagian_asal : $('#kode_bagian_asal').val()     || '',
+          kode_dokter      : $('#kode_dokter_poli').val()     || '',
+          resep_iter       : ruIter,
+          jenis_resep      : ruJenis
       };
 
       $.ajax({
@@ -433,7 +438,7 @@
               $('.nav-list li').removeClass('active');
               $('li#li_tabs_farmasi').addClass('active');
               getMenuTabs(
-                  'farmasi/Farmasi_pesan_resep/pesan_resep/'+$('#no_kunjungan').val()+'/'+$('#kode_klas').val()+'/'+$('#kode_profit').val(),
+                  'farmasi/Farmasi_pesan_resep/pesan_resep/'+$('#no_kunjungan').val()+'/'+(formData.kode_klas || 0)+'/'+(formData.kode_profit || 0),
                   'tabs_form_pelayanan'
               );
           },

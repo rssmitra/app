@@ -593,6 +593,7 @@ class E_resep extends MX_Controller {
                 'created_date' => date('Y-m-d H:i:s'),
                 'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'),
                 'e_resep' => 1,
+                'resep_iter' => $this->input->post('resep_iter') ?: 0,
             );
             // print_r($dataexc);die;
             /*save post data*/
@@ -693,8 +694,6 @@ class E_resep extends MX_Controller {
 
             $id = ($this->input->post('id_pesan_resep_detail')) ? $this->input->post('id_pesan_resep_detail') : "0";
             
-            // print_r($table);die;
-
             $dataexc = array(
                 'kode_pesan_resep' => $this->regex->_genRegex($this->form_validation->set_value('kode_pesan_resep'), 'RGXINT'),
                 'no_registrasi' => $this->regex->_genRegex($this->form_validation->set_value('no_registrasi'), 'RGXINT'),
@@ -726,7 +725,6 @@ class E_resep extends MX_Controller {
                 $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                // print_r($table);
                 // print_r($dataexc);die;
                 $this->db->insert($table, $dataexc);
                 $newId = $this->db->insert_id();

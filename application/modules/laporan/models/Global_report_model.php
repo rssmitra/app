@@ -1771,6 +1771,54 @@ public function pengadaan_mod_8(){
 			return $query;
 		
 	}
+
+	public function so_mod_4(){
+		
+		$tbl_mt_depo_stok = ($_POST['bagian'] == '070101') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
+		$tbl_mt_barang = ($_POST['bagian'] == '070101') ? 'mt_barang_nm_migration' : 'mt_barang_migration' ;
+		$flag_brg = ($_POST['bagian'] == '070101') ? 'non_medis' : 'medis' ;
+
+		$query = "SELECT 
+					c.kode_brg_admedika AS KODE_BARANG,
+					c.nama_brg AS NAMA_BARANG,
+					a.jml_sat_kcl AS VOLUME,
+					c.satuan_kecil AS KODE_SATUAN,
+					ed.tgl_expired AS TGL_KADALUARSA,
+					
+					-- HARGA_SATUAN: Gunakan DECIMAL bukan INT
+					CASE 
+						WHEN wa.weighted_avg IS NOT NULL AND ISNUMERIC(wa.weighted_avg) = 1
+							THEN CAST(wa.weighted_avg AS DECIMAL(18,0))
+						WHEN ISNUMERIC(c.harga_beli) = 1 AND CAST(c.harga_beli AS DECIMAL(18,0)) > 0 
+							THEN CAST(c.harga_beli AS DECIMAL(18,0))
+						ELSE CAST(1 AS DECIMAL(18,0))
+					END AS HARGA_SATUAN,
+					
+					-- TOTAL: Harga × Volume
+					CASE 
+						WHEN wa.weighted_avg IS NOT NULL AND ISNUMERIC(wa.weighted_avg) = 1
+							THEN CAST(wa.weighted_avg AS DECIMAL(18,0)) * a.jml_sat_kcl
+						WHEN ISNUMERIC(c.harga_beli) = 1 AND CAST(c.harga_beli AS DECIMAL(18,0)) > 0 
+							THEN CAST(c.harga_beli AS DECIMAL(18,0)) * a.jml_sat_kcl
+						ELSE CAST(1 AS DECIMAL(18,0)) * a.jml_sat_kcl
+					END AS TOTAL,
+					
+					a.kode_brg AS KODE_BARANG_LAMA
+					
+				FROM ".$tbl_mt_depo_stok." a
+				LEFT JOIN ".$tbl_mt_barang." c ON c.kode_brg = a.kode_brg
+				OUTER APPLY dbo.fn_weighted_avg_harga_po_itvf(a.kode_brg, '".$flag_brg."') wa
+				OUTER APPLY dbo.fn_get_expired_date(a.kode_brg, '".$flag_brg."') ed
+
+				WHERE a.kode_bagian = '".trim($_POST['bagian'])."' 
+				AND (c.nama_brg IS NOT NULL OR c.kode_brg_admedika IS NOT NULL)
+				
+				ORDER BY c.nama_brg ASC";
+
+		return $query;	
+	}
+
+
 	public function lainnyabillingdokter_mod_1(){
 
 		$query = "select kode_tc_trans_kasir, no_kunjungan, tc_trans_pelayanan.no_registrasi, b.no_sep, tc_trans_pelayanan.no_mr, nama_pasien_layan, nama_tindakan,

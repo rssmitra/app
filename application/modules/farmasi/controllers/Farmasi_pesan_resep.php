@@ -136,7 +136,10 @@ class Farmasi_pesan_resep extends MX_Controller {
             $row[] = '';
             $btn_delete = ($row_list->status_tebus==null)?'<li><a href="#" id="btn_delete_data" onclick="delete_pesan_resep('.$row_list->kode_pesan_resep.')">Hapus</a></li>':'';
 
-            $row[] = '<div class="center"><div class="btn-group">
+            if($row_list->lock_eresep == 1){
+                $row[] = '<div class="center"><i class="fa fa-lock red bigger-200"></i></div>';
+            }else{
+                $row[] = '<div class="center"><div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                         </button>
@@ -145,6 +148,7 @@ class Farmasi_pesan_resep extends MX_Controller {
                             '.$btn_delete.'
                         </ul>
                       </div></div>';
+            }
 
             $jenis_resep = ($row_list->jenis_resep == 'prb') ? '<span class="red">[PRB]</span><br>' : '<span class="green">[NON PRB]</span><br>';
             $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'<br>'.$row_list->source.'</div>';

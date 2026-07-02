@@ -573,6 +573,7 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/so?mod=1'?>"><i class="fa fa-caret-right report-arrow"></i><span class="report-num">1</span><span class="report-name">Daftar Barang Yang Akan di Stok Opname</span></a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/so?mod=2'?>"><i class="fa fa-caret-right report-arrow"></i><span class="report-num">2</span><span class="report-name">Laporan Hasil SO</span></a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/so?mod=3'?>"><i class="fa fa-caret-right report-arrow"></i><span class="report-num">3</span><span class="report-name">Laporan Sebelum SO</span></a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/so?mod=4'?>"><i class="fa fa-caret-right report-arrow"></i><span class="report-num">4</span><span class="report-name">Migrasi Stok Admedika</span></a></li>
 										</ul>
 									</div>
 								</div>

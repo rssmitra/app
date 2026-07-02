@@ -322,7 +322,7 @@ final class Tarif extends AvObjects {
         $db->join('mt_master_tarif c','c.kode_tarif=b.referensi','left');
         $db->join('mt_klas','mt_klas.kode_klas=mt_master_tarif_detail.kode_klas','left');
         $db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=mt_master_tarif.jenis_tindakan','left');
-        $db->where('mt_master_tarif_detail.kode_tarif='.$kode_tarif.' and (mt_master_tarif_detail.kode_klas='.$kode_klas.' or mt_master_tarif_detail.kode_klas=0)');
+        $db->where('mt_master_tarif_detail.kode_tarif='.$kode_tarif.' and (mt_master_tarif_detail.kode_klas='.$kode_klas.')');
         $db->where( array('mt_master_tarif_detail.is_active' => 'Y') );
 
         $db->group_by('mt_master_tarif_detail.kode_master_tarif_detail,mt_master_tarif_detail.kode_tarif,mt_master_tarif_detail.kode_klas,mt_master_tarif_detail.bill_rs, mt_master_tarif_detail.bill_dr1, mt_master_tarif_detail.bill_dr2, mt_master_tarif_detail.bill_dr3, mt_master_tarif_detail.bhp, mt_master_tarif_detail.alkes, mt_master_tarif_detail.alat_rs, mt_master_tarif_detail.pendapatan_rs, mt_master_tarif.nama_tarif, mt_klas.nama_klas, mt_jenis_tindakan.jenis_tindakan, mt_master_tarif_detail.kamar_tindakan,mt_master_tarif_detail.revisi_ke, mt_master_tarif.jenis_tindakan, mt_master_tarif.kode_bagian, mt_master_tarif_detail.total, mt_master_tarif_detail.revisi_ke,b.nama_tarif, c.nama_tarif, c.kode_tarif, mt_master_tarif_detail.adm, mt_master_tarif.new_tarif_2025');

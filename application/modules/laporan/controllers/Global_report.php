@@ -1223,6 +1223,27 @@ class Global_report extends MX_Controller {
             $this->load->view('Global_report/v_sblm_so', $data);
                 
     }
+
+    public function show_data_format_admedika(){
+
+        $query_data = $this->Global_report->get_data();
+        
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'agenda_so' => $_POST['agenda_so'],
+            'status' => $_POST['status'],
+            'bagian' => $_POST['bagian'],
+            'result' => $query_data,
+        );
+
+        // echo '<pre>';print_r($query_data['data']);die;
+        
+        $this->load->view('Global_report/v_format_admedika', $data);
+                
+    }
+
+
     public function show_data_rl1(){
 
         $query_data = $this->Global_report->get_data();

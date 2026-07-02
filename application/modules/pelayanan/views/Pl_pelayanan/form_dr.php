@@ -621,9 +621,201 @@ function show_icare() {
     
 }
 
+function ensureResepHeader(callback) {
+    if (resepKodePesan) { callback(resepKodePesan); return; }
+    var payload = {
+        no_registrasi:          $('#no_registrasi').val() || _resepNoReg,
+        no_kunjungan:           _resepNoKunj,
+        no_mr:                  _resepNoMr,
+        kode_perusahaan:        $('#kode_perusahaan_val').val() || _resepKodePerush,
+        kode_kelompok:          $('input[name="kode_kelompok"]').val() || _resepKodeKelom,
+        kode_klas:              _resepKodeKlas,
+        kode_profit:            _resepKodeProfit,
+        kode_bagian_asal:       _resepKodeBagian,
+        jenis_resep:            $('input[name="resep_jenis_m"]:checked').val() || 'non_prb',
+        resep_iter:             $('input[name="resep_iter_m"]:checked').val() || '0',
+        lokasi_tebus:           '1',
+        jumlah_r:               '1',
+        kode_dokter:            _resepKodeDokter,
+        keterangan_pesan_resep: $('#resep_ket_modal').val(),
+        source:                 'SOAP'
+    };
+    $.ajax({
+        url: 'farmasi/Farmasi_pesan_resep/process',
+        data: payload,
+        dataType: 'json',
+        type: 'POST',
+        success: function(res) {
+            if (res.status === 200) {
+                var m = (res.redirect || '').match(/\/form\/([^?\/]+)/);
+                if (m) {
+                    resepKodePesan = m[1];
+                    $('#resep-kode-info').text('Kode Resep: ' + resepKodePesan);
+                }
+                callback(resepKodePesan);
+            } else {
+                showResepMsg('err', res.message || 'Gagal membuat resep');
+            }
+        },
+        error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+    });
+}
+
+function closeResepModal() {
+    // var adaDrug   = $('#resep-selesai-wrap').is(':visible');
+    // var belumDone = $('#btn-resep-selesai').is(':visible');
+    // if (adaDrug && belumDone) {
+    //     Swal.fire({
+    //         icon: 'warning',
+    //         title: 'Resep Belum Selesai',
+    //         html:  'Terdapat obat pada resep ini tetapi tombol <b>Resep Selesai</b> belum diklik.<br><br>Silahkan klik tombol <b style="color:#16a34a">Resep Selesai</b> terlebih dahulu agar resep terproses ke farmasi.',
+    //         confirmButtonText:  'Kembali & Selesaikan',
+    //         confirmButtonColor: '#16a34a',
+    //         showCancelButton:   false
+    //     });
+    //     return;
+    // }
+    $('#modal-resep-dokter').modal('hide');
+}
+
+function openModalResep() {
+    $('#resep-status-msg').hide();
+    $('#modal-resep-dokter').modal('show');
+    if (resepKodePesan) {
+        loadResepDrugsModal();
+    }
+}
+
+function ensureResepHeader(callback) {
+    if (resepKodePesan) { callback(resepKodePesan); return; }
+    var payload = {
+        no_registrasi:          $('#no_registrasi').val() || _resepNoReg,
+        no_kunjungan:           _resepNoKunj,
+        no_mr:                  _resepNoMr,
+        kode_perusahaan:        $('#kode_perusahaan_val').val() || _resepKodePerush,
+        kode_kelompok:          $('input[name="kode_kelompok"]').val() || _resepKodeKelom,
+        kode_klas:              _resepKodeKlas,
+        kode_profit:            _resepKodeProfit,
+        kode_bagian_asal:       _resepKodeBagian,
+        jenis_resep:            $('input[name="resep_jenis_m"]:checked').val() || 'non_prb',
+        resep_iter:             $('input[name="resep_iter_m"]:checked').val() || '0',
+        lokasi_tebus:           '1',
+        jumlah_r:               '1',
+        kode_dokter:            _resepKodeDokter,
+        keterangan_pesan_resep: $('#resep_ket_modal').val(),
+        source:                 'SOAP'
+    };
+    $.ajax({
+        url: 'farmasi/Farmasi_pesan_resep/process',
+        data: payload,
+        dataType: 'json',
+        type: 'POST',
+        success: function(res) {
+            if (res.status === 200) {
+                var m = (res.redirect || '').match(/\/form\/([^?\/]+)/);
+                if (m) {
+                    resepKodePesan = m[1];
+                    $('#resep-kode-info').text('Kode Resep: ' + resepKodePesan);
+                }
+                callback(resepKodePesan);
+            } else {
+                showResepMsg('err', res.message || 'Gagal membuat resep');
+            }
+        },
+        error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+    });
+}
+
+function addObatResepModal() {
+    var namabrg   = $.trim($('#resep_obat_keyword').val());
+    var jmlDosis  = $.trim($('#resep_jml_dosis').val());
+    var jmlDosisO = $.trim($('#resep_jml_dosis_obat').val());
+    var jmlPesan  = $.trim($('#resep_jml_pesan').val());
+
+    if (!namabrg)   { showResepMsg('err', 'Pilih nama obat terlebih dahulu'); $('#resep_obat_keyword').focus(); return; }
+    if (!jmlDosis)  { showResepMsg('err', 'Isi jumlah dosis (DD)'); $('#resep_jml_dosis').focus(); return; }
+    if (!jmlPesan)  { showResepMsg('err', 'Isi jumlah total obat'); $('#resep_jml_pesan').focus(); return; }
+    if (!jmlDosisO) { jmlDosisO = '1'; }
+
+    ensureResepHeader(function(kodePesan) {
+        var fd = {
+            submit:                'non_racikan',
+            id_template:           0,
+            id_pesan_resep_detail: 0,
+            kode_pesan_resep: kodePesan,
+            no_registrasi:    $('#no_registrasi').val() || _resepNoReg,
+            no_kunjungan:     _resepNoKunj,
+            kode_brg:         $('#resep_kode_brg').val(),
+            nama_brg:         namabrg,
+            jml_dosis:        jmlDosis,
+            jml_dosis_obat:   jmlDosisO,
+            satuan_obat:      $('#resep_satuan_obat').val() || 'Tab',
+            aturan_pakai:     $('#resep_aturan_pakai').val() || 'Sesudah Makan',
+            jml_hari:         $('#resep_jml_hari').val() || '0',
+            jml_pesan:        jmlPesan,
+            no_mr:            _resepNoMr,
+            keterangan:       $('#resep_ket_obat').val(),
+            tipe_obat:        'non_racikan',
+            parent:           '0'
+        };
+        $.ajax({
+            url: 'farmasi/E_resep/add_resep_obat',
+            data: fd,
+            dataType: 'json',
+            type: 'POST',
+            success: function(res) {
+                if (res.status === 200) {
+                    resetResepObatForm();
+                    loadResepDrugsModal();
+                    showResepMsg('ok', 'Obat berhasil ditambahkan');
+                } else {
+                    showResepMsg('err', res.message || 'Gagal menambah obat');
+                }
+            },
+            error: function() { showResepMsg('err', 'Gagal menghubungi server'); }
+        });
+    });
+}
+
+function loadResepDrugsModal() {
+    if (!resepKodePesan) return;
+    $.ajax({
+        url: 'pelayanan/Pl_pelayanan/get_resep_drugs/' + resepKodePesan,
+        dataType: 'json',
+        type: 'GET',
+        success: function(res) {
+            if (res && res.status === 200) {
+                renderResepDrugTable(res.data);
+                updateResepSoapPanel(res.data);
+                updateResepSelesaiStatus(res.e_resep, res.data);
+            }
+        }
+    });
+}
+
 </script>
 
 <style type="text/css">
+
+    
+  #modal-resep-dokter .modal-header { background:#0f172a;color:#fff;padding:12px 16px;border-radius:6px 6px 0 0; }
+  #modal-resep-dokter .modal-header .modal-title { font-size:15px;font-weight:600; }
+  #modal-resep-dokter .modal-header .close { color:#fff;opacity:.7;margin-top:-2px; }
+  #modal-resep-dokter .modal-header .close:hover { opacity:1; }
+  #modal-resep-dokter .modal-content { border-radius:6px; }
+  #modal-resep-dokter .modal-body { padding:16px 18px;max-height:75vh;overflow-y:auto; }
+  #modal-resep-dokter .modal-footer { padding:10px 18px;display:flex;align-items:center;justify-content:space-between; }
+
+  .rsb-wrap { display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:12px; }
+  .rsb-group { display:flex;flex-direction:column;gap:4px; }
+  .rsb-label { font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px; }
+  .rsb-radios { display:flex;gap:10px;align-items:center; }
+  .rsb-radio-opt { display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;font-weight:400; }
+  .rsb-radio-opt:has(input:disabled) { opacity:.4; cursor:not-allowed; pointer-events:none; }
+  .rsb-ket { flex:1;min-width:180px; }
+  .rsb-ket input { width:100%;padding:5px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:13px; }
+
+
   /* ── Scoped to #fd-wrap ──────────────────────────────────────── */
   #fd-wrap {
     font-family: 'Segoe UI', system-ui, Arial, sans-serif;
