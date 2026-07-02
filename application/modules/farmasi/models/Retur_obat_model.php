@@ -46,7 +46,7 @@ class Retur_obat_model extends CI_Model {
 				$this->db->where('DATEDIFF(Day, tgl_trans, getdate()) <= 60');
 			}else{
 				if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-					$this->db->where("fr_tc_far.tgl_trans BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
+					$this->db->where("CAST(fr_tc_far.tgl_trans as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
 				}else{
 					$this->db->where('CAST(tgl_trans as DATE) = ', date('Y-m-d'));
 				}
